@@ -1,0 +1,32 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('sigue_cta_log', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('username')->nullable(); 
+            $table->datetime('tanggal')->nullable(); 
+            $table->string('status')->nullable(); 
+            $table->string('ip_address')->nullable();
+            $table->string('no_referensi')->nullable(); 
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('sigue_cta_log');
+    }
+};
