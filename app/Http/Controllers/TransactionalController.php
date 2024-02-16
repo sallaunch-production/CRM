@@ -9,23 +9,30 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
-use App\Models\TransaksiReceive;
-use App\Models\TransaksiSend;
+use Yajra\DataTables\Facades\Datatables;
 use App\Models\TransaksiSendPos;
 use DB;
 
 class TransactionalController extends Controller
 {
 
-    public function transaksi(){ 
+    public function transaksi(Request $request)
+    { 
         //  cek berhasil login 
         if(Auth::check()){
-            $hariini = date("Y-m-d H:i:s");
-            $query = DB::table('transaksi_valid')->offset(10)
-                ->limit(5)->orderBy('tanggal','desc')->get();
-            return view('reporting.transaksi', [
-                'hariini' => $hariini,'query'=>$query
-             ]);
+          if ($request->ajax()) {
+           $query = DB::table('transaksi_valid')->get();
+            return Datatables::of($data)
+                ->addIndexColumn()
+                /*->addColumn('action', function($row){
+                    $actionBtn = '<a href="javascript:void(0)" class="edit btn btn-success btn-sm">Edit</a> <a href="javascript:void(0)" class="delete btn btn-danger btn-sm">Delete</a>';
+                    return $actionBtn;
+                })*/
+                //->rawColumns(['action'])
+                ->make(true);
+        }
+          
+            return view('reporting.transaksi');
 
         }
 

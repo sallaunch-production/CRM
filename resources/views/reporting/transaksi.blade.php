@@ -27,10 +27,9 @@
                             @endif
 
                            
-                            <table  id="example" class="table table-responsive table-striped  table-bordered">
+                            <table  id="example" class="table table-responsive table-striped  table-bordered data-table">
                                 <thead>
                                   <tr>
-                                  <th>No</th>
                                   <th>Nama Penerima</th>
                                   <th>Nama Pengirim</th>      
                                   <th>Negara Pengirim</th>
@@ -55,33 +54,6 @@
                                 </thead>
                                 <tbody>
                                 
-                                    @foreach ($query  as $key => $transactions)
-                                    <tr>
-                                        <th >{{$key+1 }}</th>
-                                        <td>{{ $transactions->nama_penerima }}</td>
-                                        <td>{{ $transactions->nama_pengirim }}</td>
-                                        <td>{{ $transactions->negara_pengirim }}</td>
-                                        <td>{{ ($transactions->bsubanyak) }}</td>
-                                        <td>{{ $transactions->no_referensi }}</td>
-                                        <td>{{ $transactions->identitas }}</td>
-                                        <td>{{ $transactions->nomor_identitas }}</td>
-                                        <td>{{ $transactions->tanggal_lahir }}</td>
-                                        <td>{{ $transactions->alamat_penerima }}</td>
-                                        <td>{{ $transactions->alamat_domisili_penerima }}</td>
-                                        <td>{{ $transactions->telepon_penerima }}</td>
-                                        <td>{{ $transactions->kota_penerima }}</td>
-                                        <td>{{ $transactions->pekerjaan }}</td>
-                                        <td>{{ $transactions->tujuan_penggunaan_dana }}</td>
-                                        <td>{{ $transactions->hubungan }}</td>
-                                        <td>{{ $transactions->kewarganegaraan }}</td>
-                                        <td>{{ $transactions->jenis_kelamin }}</td>
-                                        <td>{{ $transactions->kota_kelahiran }}</td>
-                                        <td>{{ $transactions->id_pos }}</td>
-                                        <td>{{ $transactions->tanggal }}</td>
-                                      
-                                      </tr>
-                                    @endforeach
-                               
                                  
                                 </tbody>
                               </table>
@@ -95,6 +67,41 @@
 @stop
 
 @section('js')
+
+<script type="text/javascript">
+  $(function () {
+      
+    var table = $('.data-table').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: "{{ route('transaksi') }}",
+        columns: [
+            {data: 'nama_penerima', name: 'nama_penerima'},
+            {data: 'nama_pengirim', name: 'nama_pengirim'},
+            {data: 'negara_pengirim', name: 'negara_pengirim'},
+            {data: 'bsubanyak', name: 'bsubanyak'},
+            {data: 'no_referensi', name: 'no_referensi'},
+            {data: 'identitas', name: 'identitas'},
+            {data: 'nomor_identitas', name: 'nomor_identitas'},
+            {data: 'tanggal_lahir', name: 'tanggal_lahir'},
+            {data: 'alamat_penerima', name: 'alamat_penerima'},
+            {data: 'alamat_domisili_penerima', name: 'alamat_domisili_penerima'},
+            {data: 'telepon_penerima', name: 'telepon_penerima'},
+            {data: 'kota_penerima', name: 'kota_penerima'},
+            {data: 'pekerjaan', name: 'pekerjaan'},
+            {data: 'tujuan_penggunaan_dana', name: 'tujuan_penggunaan_dana'},
+            {data: 'hubungan', name: 'hubungan'},
+            {data: 'kewarganegaraan', name: 'kewarganegaraan'},
+            {data: 'jenis_kelamin', name: 'jenis_kelamin'},
+            {data: 'kota_kelahiran', name: 'kota_kelahiran'},
+            {data: 'id_pos', name: 'id_pos'},
+            {data: 'tanggal', name: 'tanggal'},
+            //{data: 'action', name: 'action', orderable: false, searchable: false},
+        ]
+    });
+      
+  });
+</script>
 <script type="text/javascript">
   $(document).ready(function() {
     $('#example').DataTable();

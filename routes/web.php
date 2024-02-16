@@ -43,6 +43,8 @@ Route::get('nopend',[App\Http\Controllers\NopendController::class,'nopend'])->na
 Route::get('agent_sort',[App\Http\Controllers\NopendController::class,'agent_sort'])->name('agent_sort');
 Route::post('cari_nopend',[App\Http\Controllers\NopendController::class,'cari_nopend'])->name('cari_nopend');
 Route::post('cari_agent',[App\Http\Controllers\NopendController::class,'cari_agent'])->name('cari_agent');
+Route::post('cari_agent_belumaktif',[App\Http\Controllers\NopendController::class,'cari_agent_belumaktif'])->name('cari_agent_belumaktif');
+
 
 
 });

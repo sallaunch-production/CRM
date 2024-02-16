@@ -7,16 +7,17 @@
 <div class="container mt-4">
     <div class="row justify-content-center">
         <div class="col-md-12"><br>
+        @if(session('success'))
+                            <div class="alert alert-primary alert-dismissible fade show" id="success-alert" role="alert">
+                               <strong>{{  session('success') }}</strong>
+                                
+                              </div><br>
+                            @endif
         <div class="card card-outline card-primary">
                
 
                 <div class="card-body">
-                    @if(session('success'))
-                            <div class="alert alert-success alert-dismissible fade show" id="success-alert" role="alert">
-                               <strong>{{  session('success') }}</strong>
-                                
-                              </div>
-                            @endif
+                   
                   <div class="row">
                             <h1> Selamat Datang di Dashboard CRM Arsema</h1>
 							<p style=font-size:15px;>Dashboard ini merupakan sebuah aplikasi yang dikembangkan untuk Customer Relationship Management ARSEMA. </p><p style=font-size:15px;> Contact Us : info@arsema.co.id | https://arsema.co.id</p>

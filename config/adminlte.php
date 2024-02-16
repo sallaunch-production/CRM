@@ -340,7 +340,97 @@ return [
             'url'  => 'transaksi_send_pos',
             'icon' => 'fa fa-book fa-fw',
         ],
+        [
+            'text'    => 'Customer Profile',
+            'icon'    => 'fas fa-fw fa-clipboard',
+            'submenu' => [
+                [
+                    'text' => 'Customer',
+                    'url'  => '#',
+                    'icon'    => 'fas fa-fw fa-clipboard',
+                    
+                ],
+                [
+                    'text' => 'Profile',
+                    'url'  => '#',
+                    'icon'    => 'fas fa-fw fa-clipboard',
+                    
+                ],
+                [
+                    'text' => 'Sales',
+                    'url'  => '#',
+                    'icon'    => 'fas fa-fw fa-clipboard',
+                    
+                ],
+                [
+                    'text' => 'New Customer',
+                    'url'  => '#',
+                    'icon'    => 'fas fa-fw fa-clipboard',
+                    
+                ],
+            ]
+        ],
 
+        [
+            'text'    => 'Sanction List',
+            'icon'    => 'fas fa-fw fa-clipboard',
+            'submenu' => [
+                [
+                    'text' => 'Sanction',
+                    'url'  => '#',
+                    'icon'    => 'fas fa-fw fa-clipboard',
+                    
+                ],
+                [
+                    'text' => 'Screening',
+                    'url'  => '#',
+                    'icon'    => 'fas fa-fw fa-clipboard',
+                    
+                ],
+                [
+                    'text' => 'Sales',
+                    'url'  => '#',
+                    'icon'    => 'fas fa-fw fa-clipboard',
+                    
+                ],
+                [
+                    'text' => 'New Customer',
+                    'url'  => '#',
+                    'icon'    => 'fas fa-fw fa-clipboard',
+                    
+                ],
+            ]
+        ],
+        [
+            'text'    => 'Filtering Transaction',
+            'icon'    => 'fas fa-fw fa-clipboard',
+            'submenu' => [
+                [
+                    'text' => 'High Risk Country Transaction',
+                    'url'  => '#',
+                    'icon'    => 'fas fa-fw fa-clipboard',
+                    
+                ],
+                [
+                    'text' => 'Filtering Transaction',
+                    'url'  => '#',
+                    'icon'    => 'fas fa-fw fa-clipboard',
+                    
+                ],
+                [
+                    'text' => 'Kota',
+                    'url'  => '#',
+                    'icon'    => 'fas fa-fw fa-clipboard',
+                    
+                ],
+                [
+                    'text' => 'Negara',
+                    'url'  => '#',
+                    'icon'    => 'fas fa-fw fa-clipboard',
+                    
+                ],
+            ]
+        ],
         [
             'text' => 'Nopend / Id Pos',
             'url'  => 'nopend',
@@ -350,6 +440,26 @@ return [
         [
             'text' => 'Agent Id',
             'url'  => 'agent_sort',
+            'icon' => 'fa fa-book fa-fw',
+        ],
+        [
+            'text' => 'Refund History Arsema',
+            'url'  => '#',
+            'icon' => 'fa fa-book fa-fw',
+        ],
+        [
+            'text' => 'Refund History PT POS',
+            'url'  => '#',
+            'icon' => 'fa fa-book fa-fw',
+        ],
+        [
+            'text' => 'Amend History PT POS',
+            'url'  => '#',
+            'icon' => 'fa fa-book fa-fw',
+        ],
+        [
+            'text' => 'Screening Transaction ',
+            'url'  => '#',
             'icon' => 'fa fa-book fa-fw',
         ],
        

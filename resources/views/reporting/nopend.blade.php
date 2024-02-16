@@ -3,7 +3,7 @@
 @section('title','Agent Connect')
     
 @section('content_header')
-    <h1>INVOICE SEND POS</h1>
+    <h1>Form Cek Nopend / Id Pos</h1>
 @stop
 @section('content')
 <div class="container-fluid">
@@ -28,26 +28,23 @@
                             <div class="row">
                             <br><br> 
                                 <form action="{{ route('cari_nopend')}}"  method="POST">
-                                @csrf
-                                    <h2>Form Cek Nopend / Id Pos</h2>
-                                   
-                                    <div class=form-group>
-                                        <input type=text name=nopend class=form-control style=width:300px required maxlength=7 placeholder="Masukkan 2 sampai 5 karakter awal nopend" minlength=2>
-                                        
-                                        </div>
-                                    <div class=form-group>
-                                        
-                                        <input type=submit name=submit value=Cari class="btn btn-info">
-                                        <button type="submit" class="btn bg-danger btn-flat margin" >Cari</button>
-                                        
-                                        </div>
+                                    @csrf
+                                        <h2></h2>
+                                    
+                                        <div class=form-group>
+                                            <input type=text name=nopend class=form-control style=width:300px required maxlength=7 placeholder="Masukkan 2 sampai 5 karakter awal nopend" minlength=2>
+                                            
+                                            </div>
+                                        <div class=form-group>
+                                            <button type="submit" class="btn bg-danger btn-flat margin" >Cari</button>
+                                            </div>
                                     
                                     </form>
                             </div>
                             @if($jum>0)
-                            <b>Nopend {{$nopend}} ada</b><br><br>";
+                            <b>Nopend {{$nopend}} ada</b><br><br>
                                 
-                                <table id="example" class="display" cellspacing="0" width="100%">
+                            <table  id="example" class="table table-responsive table-striped  table-bordered">
                                 <thead>
                                 <tr>
                                     <th>No</th>
@@ -72,11 +69,11 @@
                                 @foreach ($query  as $key => $transactions)
                                 <tr>
                                     <th >{{$key+1 }}</th>
-                                    <td>$transactions->id_pos</td>
-                                    <td>$transactions->agent_id</td>
-                                    <td>$transactions->nama</td>
-                                    <td>$transactions->legacy</td>
-                                    <td>$transactions->alamat</td>
+                                    <td>{{$transactions->id_pos}}</td>
+                                    <td>{{$transactions->agent_id}}</td>
+                                    <td>{{$transactions->nama}}</td>
+                                    <td>{{$transactions->legacy}}</td>
+                                    <td>{{$transactions->alamat}}</td>
                                             
 								  </tr>
 
@@ -85,7 +82,7 @@
                                 </tbody>
 			                </table>	
                             @elseif($ques>0)
-                                <table id="example" class="display" cellspacing="0" width="100%">
+                            <table  id="example" class="table table-responsive table-striped  table-bordered">
                                     <thead>
                                        <tr>
                                             <th>No</th>
@@ -120,7 +117,7 @@
                                     </tbody>
 			                </table>
                             @else
-                                 <b>Nopend belum terdaftar</b>
+                                
                             @endif
                             </div>
                             </div>
