@@ -3,7 +3,7 @@
 @section('title','Agent Connect')
     
 @section('content_header')
-    <h1>MoneyGram Send Reversal</h1>
+    <h1>Report</h1>
 @stop
 @section('content')
 <div class="container-fluid">
@@ -25,22 +25,29 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                               </div>
                             @endif
-                            <br>
-                            <div class="col-md-8">
-                            <h2>MoneyGram Send Reversal transaction</h2>
-                            <form role="form" action=# method=post>
-                            @csrf
-                                <div class="box-body">
-                                    <div class="form-group">
-                                        <label for="exampleInputName2">Reference Number</label><br>
-                                        <input type="text" class="form-control" id="exampleInputName2" required name=refnumber><br>
+                          
+                            
+                                <h2> &nbsp;&nbsp; &nbsp;&nbsp;Agent id terdaftar</h2>
+                                <hr></hr><br>
+                                <div class=col-md-6>
+                        
+                                    <form action="{{ route('cari_agent')}}"  method="POST">
+                                    @csrf
+                                    
+                                        <div class=form-group>
+                                            <label>Tanggal Transaksi </label>   
+                                            <table class="table table-border">
+                                            <tr><td><input type='text' class="form-control" id="daterange" name="reservation"/></td></tr> 
+                                            
+                                            </table>
                                         </div>
-                                    <div class="box-footer">
-                                       <button type="submit" class="btn btn-primary">Inquiry</button>
-                                    </div>
-                                </div>
-                            </form>
-                            </div>
+                                        
+                                        <div class=form-group>
+                                            <input type=submit class="btn btn-info" value=CARI>
+                                        </div>
+                                    </form>
+                               
+                            </div>  
                         </div><!--card-body-->
 
                     </div><!--card-->
@@ -52,6 +59,7 @@
 @section('js')
 <script type="text/javascript">
   $(document).ready(function() {
+    $('#daterange').daterangepicker();
     $('#example').DataTable();
 } );
 </script>

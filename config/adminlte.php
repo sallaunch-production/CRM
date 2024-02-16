@@ -14,7 +14,7 @@ return [
     |
     */
 
-    'title' => 'Arsema',
+    'title' => 'CRM Arsema',
     'title_prefix' => '',
     'title_postfix' => '',
 
@@ -63,7 +63,7 @@ return [
     |
     */
 
-    'logo' => '<b>Arsema</b>',
+    'logo' => '<b>CRM Arsema</b>',
     'logo_img' => 'vendor/adminlte/dist/img/logo arsema.png',
     'logo_img_class' => 'brand-image img-circle elevation-3',
     'logo_img_xl' => null,
@@ -331,223 +331,28 @@ return [
             //'label_color' => 'success',
         ],
         [
-            'text'    => 'Checking',
-            'icon'    => 'fas fa-fw fa-clipboard',
-            'submenu' => [
-                [
-                    'text' => 'Viewing',
-                    'url'  => 'viewing',
-                    'icon'    => 'fas fa-fw fa-clipboard',
-                    
-                ],
-                [
-                    'text' => 'Request Setor',
-                    'url'  => 'request_setor',  
-                    'icon'    => 'fas fa-fw fa-clipboard',
-                    
-                ],
-                [
-                    'text' => 'Request Setor Send',
-                    'url'  => 'transaksi_anomali',
-                    'icon'    => 'fas fa-fw fa-clipboard',
-                    
-                ],
-                [
-                    'text' => 'Search And Print',
-                    'url'  => 'search',
-                    'icon'    => 'fas fa-fw fa-clipboard',
-                 
-                ],
-                [
-                    'text' => 'Error Test',
-                    'url'  => 'error_test',
-                    'icon'    => 'fas fa-fw fa-clipboard',
-                    
-                ],
-                
-                [
-                    'text' => 'Server Connection',
-                    'url'  => 'cek-status',
-                    'icon'    => 'fas fa-fw fa-clipboard',
-                   
-                ],
-            ]
+            'text' => 'Transaksi',
+            'url'  => 'transaksi',
+            'icon' => 'fa fa-book fa-fw',
         ],
         [
-            'text'    => 'Transactional',
-            'icon'    => 'fas fa-fw fa-cube',
-            'submenu' => [
-               
-                [
-                    'text' => 'Amend Moneygram',
-                    'url'  => 'amend',
-                    'icon'    => 'fas fa-fw fa-cube',
-                ],
-                [
-                    'text' => 'Amend PT POS',
-                    'url'  => 'amend_pos',
-                    'icon'    => 'fas fa-fw fa-cube',
-                ],
-                [
-                    'text' => 'Send Reversal MG',
-                    'url'  => 'sendreversal',
-                    'icon'    => 'fas fa-fw fa-cube',
-                ],
-                [
-                    'text' => 'Send Reversal PT POS',
-                    'url'  => 'sendreversalpos',
-                    'icon'    => 'fas fa-fw fa-cube',
-                ]
-            ]
+            'text' => 'Transaksi Send Pos',
+            'url'  => 'transaksi_send_pos',
+            'icon' => 'fa fa-book fa-fw',
         ],
+
         [
-            'text'    => 'Reporting',
-            'icon'    => 'fas fa-fw fa-fax',
-            'submenu' => [
-                [
-                    'text' => 'Transactional',
-                    'url'  => 'transaksi',
-                    'icon'    => 'fas fa-fw fa-fax',
-                ],
-                [
-                    'text' => 'Compare Transaction',
-                    'url'  => 'transaksi_compare',
-                    'icon'    => 'fas fa-fw fa-fax',
-                ],
-                [
-                    'text' => 'Direct by Period',
-                    'url'  => 'direct_report',
-                    'icon'    => 'fas fa-fw fa-fax',
-                ],
-                [
-                    'text' => 'Direct Receive',
-                    'url'  => 'transaksi_direct',
-                    'icon'    => 'fas fa-fw fa-fax',
-                ],
-                [
-                    'text' => 'Direct Send',
-                    'url'  => 'transaksi_send',
-                    'icon'    => 'fas fa-fw fa-fax',
-                ],
-                [
-                    'text' => 'Receive PT POS',
-                    'url'  => 'report_pos',
-                    'icon'    => 'fas fa-fw fa-fax',
-                ],
-                [
-                    'text' => 'Send PT POS',
-                    'url'  => '/transaksi_send_pos',
-                    'icon'    => 'fas fa-fw fa-fax',
-                ],
-                [
-                    'text' => 'MTO',
-                    'url'  => 'mto_report',
-                    'icon'    => 'fas fa-fw fa-fax',
-                ], 
-                 [
-                    'text' => 'Invoicing',
-                    'url'  => 'report_send_invoice',
-                    'icon'    => 'fas fa-fw fa-fax',
-                 ],
-                 [
-                    'text' => 'Rekonsiliasi',
-                    'url'  => 'rekons',
-                    'icon'    => 'fas fa-fw fa-fax',
-                 ],
-                 [
-                    'text' => 'Rekonsiliasi Send',
-                    'url'  => 'rekonssend',
-                    'icon'    => 'fas fa-fw fa-fax',
-                ]
-            ]
+            'text' => 'Nopend / Id Pos',
+            'url'  => 'nopend',
+            'icon' => 'fa fa-book fa-fw',
         ],
-        
+
         [
-            'text'    => 'Entry',
-            'icon'    => 'fas fa-fw fa-calculator',
-            'submenu' => [
-                [
-                    'text' => 'Balance',
-                    'url'  => 'saldo',
-                    'icon'    => 'fas fa-fw fa-calculator',
-                ],
-                [
-                    'text' => 'Blocking',
-                    'url'  => 'blocking',
-                    'icon'    => 'fas fa-fw fa-calculator',
-                ],
-                [
-                    'text' => 'Exception Transaction',
-                    'url'  => 'reject',
-                    'icon'    => 'fas fa-fw fa-calculator',
-                ]
-            ]
+            'text' => 'Agent Id',
+            'url'  => 'agent_sort',
+            'icon' => 'fa fa-book fa-fw',
         ],
-        /*
-        [
-            'text' => 'profile',
-            'url'  => 'admin/settings',
-            'icon' => 'fas fa-fw fa-user',
-        ],
-        [
-            'text' => 'change_password',
-            'url'  => 'admin/settings',
-            'icon' => 'fas fa-fw fa-lock',
-        ],
-        [
-            'text'    => 'multilevel',
-            'icon'    => 'fas fa-fw fa-share',
-            'submenu' => [
-                [
-                    'text' => 'level_one',
-                    'url'  => '#',
-                ],
-                [
-                    'text'    => 'level_one',
-                    'url'     => '#',
-                    'submenu' => [
-                        [
-                            'text' => 'level_two',
-                            'url'  => '#',
-                        ],
-                        [
-                            'text'    => 'level_two',
-                            'url'     => '#',
-                            'submenu' => [
-                                [
-                                    'text' => 'level_three',
-                                    'url'  => '#',
-                                ],
-                                [
-                                    'text' => 'level_three',
-                                    'url'  => '#',
-                                ],
-                            ],
-                        ],
-                    ],
-                ],
-                [
-                    'text' => 'level_one',
-                    'url'  => '#',
-                ],
-            ],
-        ],
-        ['header' => 'labels'],
-        [
-            'text'       => 'important',
-            'icon_color' => 'red',
-            'url'        => '#',
-        ],
-        [
-            'text'       => 'warning',
-            'icon_color' => 'yellow',
-            'url'        => '#',
-        ],
-        [
-            'text'       => 'information',
-            'icon_color' => 'cyan',
-            'url'        => '#',
-        ],*/
+       
     ],
 
     /*

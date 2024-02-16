@@ -3,7 +3,7 @@
 @section('title','Agent Connect')
     
 @section('content_header')
-    <h1>Send's PT POS</h1>
+    <h1>Transaksi</h1>
 @stop
 @section('content')
 <div class="container-fluid">
@@ -25,73 +25,75 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                               </div>
                             @endif
-
                            
                             <table  id="example" class="table table-responsive table-striped  table-bordered">
                                 <thead>
                                   <tr>
                                     <th scope="col">#</th>
-                                    <th scope="col">No Referensi</th>
-                                    <th scope="col">Negara Penerima</th>
-                                    <th scope="col">BSU</th>
-                                    <th scope="col">Fee</th>
-                                    <th scope="col">Total Collect</th>
-                                    <th scope="col">Nopend</th> 
-                                    <th scope="col">Nama Penerima</th>  
-                                    <th scope="col">Nama Pengirim</th>  
-                                    <th scope="col">Identitas</th>   
-                                    <th scope="col">Nomor Identitas</th>   
-                                    <th scope="col">Tanggal Lahir</th>   
-                                    <th scope="col">Alamat</th>   
-                                    <th scope="col">Telepon Penerima</th>
-                                    <th scope="col">Telepon Pengirim</th> 
-                                    <th scope="col">Kota</th>     
-                                    <th scope="col">Pekerjaan</th>   
-                                    <th scope="col">Jenis Pengiriman</th>   
-                                    <th scope="col">Hubungan Pengiriman</th>   
-                                    <th scope="col">Kewarganegraan</th>      
-                                    <th scope="col">Tujuan Penggunaan Dana</th> 
-                                    <th scope="col">Kota Kelahiran</th>     
-                                    <th scope="col">Jenis Kelamin</th>     
-                                    <th scope="col">Tanggal</th>   
+                                    <th>No Referensi</th>  
+                                    <th>Negara Penerima</th>
+                                    <th>BSU</th>
+                                    <th>Fee</th>
+                                    <th>Total Collect</th>
+                                    <th>Nama Penerima</th>
+                                    <th>Nama Pengirim</th>                                   
+                                    <th>Identitas</th>
+                                    <th>Nomor Identitas</th>
+                                    <th>Tanggal Lahir</th> 
+                                    <th>Kota Lahir Pengirim</th>       
+                                    <th>Alamat Penerima</th>   
+                                    <th>Telepon Penerima</th>
+                                    <th>Telepon Pengirim</th>
+                                    <th>Kota </th>
+                                    <th>Pekerjaan</th>
+                                    <th>Alamat Identitas Pengirim</th>
+                                    <th>Alamat Domisili Pengirim</th>
+                                    <th>Jenis Pengiriman</th>
+                                    <th>Hubungan Pengirim</th>
+                                    <th>Kewarganegaraan</th>
+                                    <th>Tujuan Penggunaan Dana</th>
+                                    <th>Kota Kelahiran</th>
+                                    <th>Jenis Kelamin</th>
+                                    <th>Tanggal</th>  
                                   </tr>
                                 </thead>
                                 <tbody>
                                 
-                                    @foreach ($transaction  as $key => $transactions)
+                                    @foreach ($query  as $key => $transactions)
                                     <tr>
                                         <th >{{$key+1 }}</th>
                                         <td>{{ $transactions->no_referensi }}</td>
-                                        <td>{{ $transactions->nama_pengirim }}</td>
+                                        <td>{{ $transactions->negara_penerima }}</td>
                                         <td>{{ number_format($transactions->amount) }}</td>
                                         <td>{{ number_format($transactions->sending_fee) }}</td>
                                         <td>{{ number_format($transactions->total_collect_amount) }}</td>
-                                        <td>{{ $transactions->id_pos }}</td>
                                         <td>{{ $transactions->nama_penerima }}</td>
                                         <td>{{ $transactions->nama_pengirim }}</td>
                                         <td>{{ $transactions->identitas }}</td>
                                         <td>{{ $transactions->nomor_identitas }}</td>
                                         <td>{{ $transactions->tanggal_lahir }}</td>
-                                        <td>{{ $transactions->alamat_pengirim }}</td>
+                                        <td>{{ $transactions->kota_lahir_pengirim }}</td>
+                                        <td>{{ $transactions->alamat_penerima }}</td>
                                         <td>{{ $transactions->telepon_penerima }}</td>
                                         <td>{{ $transactions->telpon_pengirim }}</td>
-                                        <td>{{ $transactions->kota_pengirim }}</td>
+                                        <td>{{ $transactions->kota_penerima }}</td>
                                         <td>{{ $transactions->pekerjaan }}</td>
+                                        <td>{{ $transactions->alamat_pengirim }}</td>
+                                        <td>{{ $transactions->alamat_domisili_pengirim }}</td>
                                         <td>{{ $transactions->opt_display }}</td>
                                         <td>{{ $transactions->hubungan_pengirim }}</td>
                                         <td>{{ $transactions->negara_domisili_pengirim }}</td>
                                         <td>{{ $transactions->tujuan_penggunaan_dana }}</td>
-                                        <td>{{ $transactions->kota_kelahiran }}</td>
+                                        <td>{{ $transactions->kota_lahir_pengirim }}</td>
                                         <td>{{ $transactions->jenis_kelamin }}</td>
                                         <td>{{ $transactions->tanggal }}</td>
-                                      
                                       </tr>
                                     @endforeach
                                
                                  
                                 </tbody>
                               </table>
-                              
+</div>
                         </div><!--card-body-->
 
                     </div><!--card-->

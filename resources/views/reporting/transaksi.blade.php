@@ -3,7 +3,7 @@
 @section('title','Agent Connect')
     
 @section('content_header')
-    <h1>Direct Send</h1>
+    <h1>Transaksi Receive</h1>
 @stop
 @section('content')
 <div class="container-fluid">
@@ -30,41 +30,53 @@
                             <table  id="example" class="table table-responsive table-striped  table-bordered">
                                 <thead>
                                   <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">No Refrensi</th>  
-	                                  <th scope="col">Negara Penerima</th>
-                                    <th scope="col">BSU</th>
-                                    <th scope="col">Nama Penerima</th>
-                                    <th scope="col">Nama Pengirim</th>                             
-                                    <th scope="col">Identitas</th>
-                                    <th scope="col">Nomor Identitas</th>
-                                    <th scope="col">Tanggal Lahir</th>      
-                                    <th scope="col">Alamat </th>
-                                    <th scope="col">Telepon Penerima</th>
-                                    <th scope="col">Telepon Pengirim</th>
-                                    <th scope="col">Kota </th>
-                                    <th scope="col">Pekerjaan</th>
-                                    <th scope="col">Tanggal</th>  
+                                  <th>No</th>
+                                  <th>Nama Penerima</th>
+                                  <th>Nama Pengirim</th>      
+                                  <th>Negara Pengirim</th>
+                                  <th>BSU</th>
+                                  <th>No Refrensi</th>                                       
+                                  <th>Identitas</th>
+                                  <th>Nomor Identitas</th>
+                                  <th>Tanggal Lahir</th>      
+                                  <th>Alamat Identitas Penerima</th>   
+                                  <th>Alamat Domisili Penerima</th>
+                                  <th>Telepon Penerima</th>
+                                  <th>Kota Penerima</th>
+                                  <th>Pekerjaan</th>
+                                  <th>Tujuan Penggunaan Dana</th>
+                                  <th>Hubungan</th>
+                                  <th>Kewarganegaraan</th>
+                                  <th>Jenis Kelamin</th>
+                                  <th>Kota Kelahiran</th>
+                                  <th>Id Pos</th>
+                                  <th>Tanggal</th>
                                   </tr>
                                 </thead>
                                 <tbody>
                                 
-                                    @foreach ($transaction  as $key => $transactions)
+                                    @foreach ($query  as $key => $transactions)
                                     <tr>
                                         <th >{{$key+1 }}</th>
-                                        <td>{{ $transactions->no_referensi }}</td>
-                                        <td>{{ $transactions->negara_penerima }}</td>
-                                        <td>{{ number_format($transactions->amount) }}</td>
                                         <td>{{ $transactions->nama_penerima }}</td>
                                         <td>{{ $transactions->nama_pengirim }}</td>
+                                        <td>{{ $transactions->negara_pengirim }}</td>
+                                        <td>{{ ($transactions->bsubanyak) }}</td>
+                                        <td>{{ $transactions->no_referensi }}</td>
                                         <td>{{ $transactions->identitas }}</td>
                                         <td>{{ $transactions->nomor_identitas }}</td>
                                         <td>{{ $transactions->tanggal_lahir }}</td>
-                                        <td>{{ $transactions->alamat_pengirim }}</td>
+                                        <td>{{ $transactions->alamat_penerima }}</td>
+                                        <td>{{ $transactions->alamat_domisili_penerima }}</td>
                                         <td>{{ $transactions->telepon_penerima }}</td>
-                                        <td>{{ $transactions->telpon_pengirim }}</td>
                                         <td>{{ $transactions->kota_penerima }}</td>
                                         <td>{{ $transactions->pekerjaan }}</td>
+                                        <td>{{ $transactions->tujuan_penggunaan_dana }}</td>
+                                        <td>{{ $transactions->hubungan }}</td>
+                                        <td>{{ $transactions->kewarganegaraan }}</td>
+                                        <td>{{ $transactions->jenis_kelamin }}</td>
+                                        <td>{{ $transactions->kota_kelahiran }}</td>
+                                        <td>{{ $transactions->id_pos }}</td>
                                         <td>{{ $transactions->tanggal }}</td>
                                       
                                       </tr>

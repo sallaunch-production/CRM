@@ -17,12 +17,14 @@ use DB;
 class TransactionalController extends Controller
 {
 
-    public function amend(){ 
+    public function transaksi(){ 
         //  cek berhasil login 
         if(Auth::check()){
             $hariini = date("Y-m-d H:i:s");
-            return view('transactional.amend', [
-                'hariini' => $hariini
+            $query = DB::table('transaksi_valid')->offset(10)
+                ->limit(5)->orderBy('tanggal','desc')->get();
+            return view('reporting.transaksi', [
+                'hariini' => $hariini,'query'=>$query
              ]);
 
         }
@@ -31,39 +33,13 @@ class TransactionalController extends Controller
       }
 
 
-      public function amend_pos(){ 
+      public function transaksi_send_pos(){ 
         //  cek berhasil login 
         if(Auth::check()){
             $hariini = date("Y-m-d H:i:s");
-            return view('transactional.amendpos', [
-                'hariini' => $hariini
-             ]);
-
-        }
-
-        return redirect('login')->with('You dont have access');
-      } 
-      
-      public function send_reversal(){ 
-        //  cek berhasil login 
-        if(Auth::check()){
-            $hariini = date("Y-m-d H:i:s");
-            return view('transactional.sendreversal', [
-                'hariini' => $hariini
-             ]);
-
-        }
-
-        return redirect('login')->with('You dont have access');
-      }
-
-
-      public function send_reversalpos(){ 
-        //  cek berhasil login 
-        if(Auth::check()){
-            $hariini = date("Y-m-d H:i:s");
-            return view('transactional.sendreversalpos', [
-                'hariini' => $hariini
+            $query = TransaksiSendPos::orderBy('tanggal','desc')->get();
+            return view('reporting.transaksi_send_pos', [
+                'hariini' => $hariini,'query'=>$query
              ]);
 
         }
