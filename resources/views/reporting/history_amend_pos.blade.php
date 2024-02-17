@@ -57,7 +57,15 @@
                                         <td>{{ $amends->operator }}</td>
                                         <td>{{ $amends->checker }}</td>
                                         <td>{{ $amends->approval }}</td>
-                                        <td>{{ $amends->status }}</td>
+                                        <td>
+                                            @if($amends->status=="0")
+                                                Maker
+                                            @elseif($amends->status=="0")
+                                                Checker
+                                            @else
+                                                Approval
+                                            @endif
+                                        </td>
                                         <td>{{ $amends->tanggal }}</td>
                                         <td>{{ $amends->created_at }}</td>
                                     </tr>

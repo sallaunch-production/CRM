@@ -50,12 +50,12 @@
                                     <div class=col-md-12>
                                     @if(!empty($tanggal_dari))
                                                
-                                    <hr></hr>
+                                  
                                     <table class="table table-border">
                                     
                                     <tr><td>Total agent id aktif Dari : {{$tanggal_dari}} | Sampai : {{$tanggal_sampai}} : <b>{{$jum}}</b></td></tr> 
                                     <tr><td>Total agent id aktif seluruhnya: <b>{{$jumkah}}</b></td></tr> 
-                                    <tr><td>Total agent id belum aktif: <b> {{$belumaktif}} </b>&nbsp;&nbsp;&nbsp;
+                                    <tr><td>Total agent id belum aktif: <b> {{$belumaktif}} </b>&nbsp;
                                     <form action="{{ route('cari_agent_belumaktif')}}"  method="POST">
                                     @csrf  
                                       <input type="hidden" name="tanggal_dari" value="{{$tanggal_dari}}"/>
@@ -65,7 +65,7 @@
                                     </td></tr> 
                                     </table>
 
-                                    <table  id="example" class="table table-responsive table-striped  table-bordered" style="width:100%;">
+                                    <table  id="example" class="table  table-striped  table-bordered">
                                             <thead>
                                             <tr>
                                                 <th>No</th>
@@ -87,8 +87,9 @@
                                                 @foreach ($quer  as $key => $dat)
                                                 <tr>
                                                     <?php
-                                                      $nopend=substr($dat->id_pos,0,5);		
-                                                      $datakota=DB::table('nopend_lama')->where('kpc','LIKE',$nopend.'%')->get();
+                                                    $nopend=substr($dat->id_pos,0,5);	
+                                                    $datakota=DB::table('nopend_lama')->where('kpc','LIKE',$nopend.'%')->get();
+                                                    
                                                     ?>
                                                     <th >{{$key+1 }}</th>
                                                     <td>{{$dat->agent_id}} {{($dat->nama)}}</td>
@@ -98,7 +99,7 @@
                                                 @endforeach
                                             </tbody>
                                         </table>
-                                    @elseif(!empty($belumaktif))
+                                    @elseif(!empty($belumaktifnya))
                                     <h2>Data Agent Id belum aktif</h2>
                                         <table id="example" class="display" cellspacing="0" width="100%">
                                         <thead>
@@ -126,6 +127,7 @@
                                             <td>$dat->{{id_pos}}</td>
                                         </tr>
                                         @endforeach
+
                                         </tbody>
                                         </table>
 

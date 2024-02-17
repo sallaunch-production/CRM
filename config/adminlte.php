@@ -443,6 +443,16 @@ return [
             'icon' => 'fa fa-book fa-fw',
         ],
         [
+            'text' => 'Laporan',
+            'url'  => '#',
+            'icon' => 'fa fa-book fa-fw',
+        ],
+        [
+            'text' => 'Upload proof of payment',
+            'url'  => '#',
+            'icon' => 'fa fa-book fa-fw',
+        ],
+        [
             'text' => 'History Refund Arsema',
             'url'  => 'history_refund',
             'icon' => 'fa fa-book fa-fw',

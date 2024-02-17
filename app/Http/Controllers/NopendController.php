@@ -94,15 +94,16 @@ class NopendController extends Controller
       public function cari_agent_belumaktif(Request $request)
       {
         if(Auth::check()){
-            $belumaktif="ya";
+            $belumaktifnya="ya";
+            $jum="";$jumkah=""; $quer="";$belumaktif="";
             $tanggal_dari= $request->tanggal_dari;
             $tanggal_sampai= $request->tanggal_sampai;
             $quer=DB::table('agent_id_test')->whereNotIn('id_pos', function($q){
-                                $q->select('id_pos')->from('transaksi_valid')->whereNotNull('id_pos');
+                                $q->select('id_pos')->from('transaksi_valid')->where('tanggal','<=',$tanggal_sampai)->whereNotNull('id_pos');
                             })->groupBy('id_pos','id')->orderBy('id')->get();
             
             return view('reporting.agent_sort',[
-                'quernya'=>$quer,'tanggal_dari'=>$tanggal_dari,'belumaktif'=>$belumaktif,'tanggal_sampai'=>$tanggal_sampai
+               'quer'=>$quer,'tanggal_dari_s'=>$tanggal_dari,'belumaktifnya'=>$belumaktifnya,'belumaktif'=>$belumaktif,'tanggal_sampai'=>$tanggal_sampai,'jum'=>$jum,'jumkah'=>$jumkah,
             ]);
         }
 

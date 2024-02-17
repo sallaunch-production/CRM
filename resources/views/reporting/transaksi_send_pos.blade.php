@@ -26,7 +26,7 @@
                               </div>
                             @endif
                            
-                            <table  id="example" class="table table-responsive table-striped  table-bordered">
+                            <table  id="example" class="table table-responsive table-striped  table-bordered" style="width:100%">
                                 <thead>
                                   <tr>
                                     <th scope="col">#</th>
@@ -59,37 +59,6 @@
                                 </thead>
                                 <tbody>
                                 
-                                    @foreach ($query  as $key => $transactions)
-                                    <tr>
-                                        <th >{{$key+1 }}</th>
-                                        <td>{{ $transactions->no_referensi }}</td>
-                                        <td>{{ $transactions->negara_penerima }}</td>
-                                        <td>{{ number_format($transactions->amount) }}</td>
-                                        <td>{{ number_format($transactions->sending_fee) }}</td>
-                                        <td>{{ number_format($transactions->total_collect_amount) }}</td>
-                                        <td>{{ $transactions->nama_penerima }}</td>
-                                        <td>{{ $transactions->nama_pengirim }}</td>
-                                        <td>{{ $transactions->identitas }}</td>
-                                        <td>{{ $transactions->nomor_identitas }}</td>
-                                        <td>{{ $transactions->tanggal_lahir }}</td>
-                                        <td>{{ $transactions->kota_lahir_pengirim }}</td>
-                                        <td>{{ $transactions->alamat_penerima }}</td>
-                                        <td>{{ $transactions->telepon_penerima }}</td>
-                                        <td>{{ $transactions->telpon_pengirim }}</td>
-                                        <td>{{ $transactions->kota_penerima }}</td>
-                                        <td>{{ $transactions->pekerjaan }}</td>
-                                        <td>{{ $transactions->alamat_pengirim }}</td>
-                                        <td>{{ $transactions->alamat_domisili_pengirim }}</td>
-                                        <td>{{ $transactions->opt_display }}</td>
-                                        <td>{{ $transactions->hubungan_pengirim }}</td>
-                                        <td>{{ $transactions->negara_domisili_pengirim }}</td>
-                                        <td>{{ $transactions->tujuan_penggunaan_dana }}</td>
-                                        <td>{{ $transactions->kota_lahir_pengirim }}</td>
-                                        <td>{{ $transactions->jenis_kelamin }}</td>
-                                        <td>{{ $transactions->tanggal }}</td>
-                                      </tr>
-                                    @endforeach
-                               
                                  
                                 </tbody>
                               </table>
@@ -103,6 +72,54 @@
 @stop
 
 @section('js')
+
+<script type="text/javascript">
+  $(function () {
+      
+    var table = $('.table-bordered').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: "{{ route('transaksi_send_pos') }}",
+        columns: [
+            {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+            {data: 'no_referensi', name: 'no_referensi'},
+            {data: 'negara_penerima', name: 'negara_penerima'},
+            {data: 'amount', name: 'amount'},
+            {data: 'sending_fee', name: 'sending_fee'},
+            {data: 'total_collect_amount', name: 'total_collect_amount'},
+            {data: 'nama_penerima', name: 'nama_penerima'},
+            {data: 'nama_pengirim', name: 'nama_pengirim'},
+            {data: 'identitas', name: 'identitas'},
+            {data: 'nomor_identitas', name: 'nomor_identitas'},
+            {data: 'tanggal_lahir', name: 'tanggal_lahir'},
+            {data: 'kota_lahir_pengirim', name: 'kota_lahir_pengirim'},
+            {data: 'alamat_penerima', name: 'alamat_penerima'},
+            {data: 'telepon_penerima', name: 'telepon_penerima'},
+            {data: 'telpon_pengirim', name: 'telpon_pengirim'},
+            {data: 'kota_penerima', name: 'kota_penerima'},
+            {data: 'pekerjaan', name: 'pekerjaan'},
+            {data: 'alamat_pengirim', name: 'alamat_pengirim'},
+            {data: 'alamat_domisili_pengirim', name: 'alamat_domisili_pengirim'},
+            {data: 'opt_display', name: 'opt_display'},
+            {data: 'hubungan_pengirim', name: 'hubungan_pengirim'},
+            {data: 'negara_domisili_pengirim', name: 'negara_domisili_pengirim'},
+            {data: 'tujuan_penggunaan_dana', name: 'tujuan_penggunaan_dana'},
+            {data: 'kota_lahir_pengirim', name: 'kota_lahir_pengirim'},
+            {data: 'jenis_kelamin', name: 'jenis_kelamin'},
+            {data: 'tanggal', name: 'tanggal'},
+           
+        ]
+    });
+    t.on('order.dt search.dt', function () {
+        let i = 1;
+ 
+        t.cells(null, 0, { search: 'applied', order: 'applied' }).every(function (cell) {
+            this.data(i++);
+        });
+    }).draw();
+        });
+   
+</script>
 <script type="text/javascript">
   $(document).ready(function() {
     $('#example').DataTable();
