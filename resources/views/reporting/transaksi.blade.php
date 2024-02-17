@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title','Agent Connect')
+@section('title','CRM Arsema')
     
 @section('content_header')
     <h1>Transaksi Receive</h1>
@@ -26,10 +26,10 @@
                               </div>
                             @endif
 
-                           
-                            <table  id="example" class="table table-responsive table-striped  table-bordered data-table">
+                            <table  id="example" class="table table-responsive table-striped  table-bordered" style="width:100%">
                                 <thead>
                                   <tr>
+                                  <th>No</th>
                                   <th>Nama Penerima</th>
                                   <th>Nama Pengirim</th>      
                                   <th>Negara Pengirim</th>
@@ -57,7 +57,7 @@
                                  
                                 </tbody>
                               </table>
-                              
+ 
                         </div><!--card-body-->
 
                     </div><!--card-->
@@ -71,11 +71,12 @@
 <script type="text/javascript">
   $(function () {
       
-    var table = $('.data-table').DataTable({
+    var table = $('.table-bordered').DataTable({
         processing: true,
         serverSide: true,
-        ajax: "{{ route('transaksi') }}",
+        ajax: "{{ route('transaksi_receive_pos') }}",
         columns: [
+            {data: 'DT_RowIndex', name: 'DT_RowIndex'},
             {data: 'nama_penerima', name: 'nama_penerima'},
             {data: 'nama_pengirim', name: 'nama_pengirim'},
             {data: 'negara_pengirim', name: 'negara_pengirim'},
@@ -96,11 +97,18 @@
             {data: 'kota_kelahiran', name: 'kota_kelahiran'},
             {data: 'id_pos', name: 'id_pos'},
             {data: 'tanggal', name: 'tanggal'},
-            //{data: 'action', name: 'action', orderable: false, searchable: false},
+           
         ]
     });
-      
-  });
+    t.on('order.dt search.dt', function () {
+        let i = 1;
+ 
+        t.cells(null, 0, { search: 'applied', order: 'applied' }).every(function (cell) {
+            this.data(i++);
+        });
+    }).draw();
+        });
+   
 </script>
 <script type="text/javascript">
   $(document).ready(function() {

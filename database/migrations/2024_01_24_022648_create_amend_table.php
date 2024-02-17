@@ -18,7 +18,11 @@ return new class extends Migration
             $table->string('middle_name')->nullable();
             $table->string('last_name')->nullable();
             $table->string('last_name2')->nullable();
+            $table->datetime('created_date')->nullable();
             $table->string('operator')->nullable();
+            $table->string('checker')->nullable();
+            $table->string('approval')->nullable();
+            $table->int('status')->nullable();
             $table->timestamps();
         });
     }

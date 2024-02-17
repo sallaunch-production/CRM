@@ -37,13 +37,16 @@ Route::post('logout',[App\Http\Controllers\AuthController::class,'logout'])->nam
 Route::group(['middleware' => ['auth','leveluser:admin']], function () {
     //HomeController
 Route::get('dashboard',[App\Http\Controllers\HomeController::class,'dashboard'])->name('dashboard');
-Route::get('transaksi',[App\Http\Controllers\TransactionalController::class,'transaksi'])->name('transaksi');
+Route::get('transaksi_receive_pos',[App\Http\Controllers\TransactionalController::class,'transaksi_receive_pos'])->name('transaksi_receive_pos');
 Route::get('transaksi_send_pos',[App\Http\Controllers\TransactionalController::class,'transaksi_send_pos'])->name('transaksi_send_pos');
 Route::get('nopend',[App\Http\Controllers\NopendController::class,'nopend'])->name('nopend');
 Route::get('agent_sort',[App\Http\Controllers\NopendController::class,'agent_sort'])->name('agent_sort');
 Route::post('cari_nopend',[App\Http\Controllers\NopendController::class,'cari_nopend'])->name('cari_nopend');
 Route::post('cari_agent',[App\Http\Controllers\NopendController::class,'cari_agent'])->name('cari_agent');
 Route::post('cari_agent_belumaktif',[App\Http\Controllers\NopendController::class,'cari_agent_belumaktif'])->name('cari_agent_belumaktif');
+Route::get('history_refund',[App\Http\Controllers\ReportingController::class,'history_refund'])->name('history_refund');
+Route::get('history_refund_pos',[App\Http\Controllers\ReportingController::class,'history_refund_pos'])->name('history_refund_pos');
+Route::get('history_amend_pos',[App\Http\Controllers\ReportingController::class,'history_amend_pos'])->name('history_amend_pos');
 
 
 

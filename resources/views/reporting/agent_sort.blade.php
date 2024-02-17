@@ -65,7 +65,7 @@
                                     </td></tr> 
                                     </table>
 
-                                    <table  id="example" class="table table-responsive table-striped  table-bordered">
+                                    <table  id="example" class="table table-responsive table-striped  table-bordered" style="width:100%;">
                                             <thead>
                                             <tr>
                                                 <th>No</th>

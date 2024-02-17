@@ -332,7 +332,7 @@ return [
         ],
         [
             'text' => 'Transaksi',
-            'url'  => 'transaksi',
+            'url'  => 'transaksi_receive_pos',
             'icon' => 'fa fa-book fa-fw',
         ],
         [
@@ -443,18 +443,18 @@ return [
             'icon' => 'fa fa-book fa-fw',
         ],
         [
-            'text' => 'Refund History Arsema',
-            'url'  => '#',
+            'text' => 'History Refund Arsema',
+            'url'  => 'history_refund',
             'icon' => 'fa fa-book fa-fw',
         ],
         [
-            'text' => 'Refund History PT POS',
-            'url'  => '#',
+            'text' => 'History Refund PT POS',
+            'url'  => 'history_refund_pos',
             'icon' => 'fa fa-book fa-fw',
         ],
         [
-            'text' => 'Amend History PT POS',
-            'url'  => '#',
+            'text' => 'History Amend PT POS',
+            'url'  => 'history_amend_pos',
             'icon' => 'fa fa-book fa-fw',
         ],
         [

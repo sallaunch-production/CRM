@@ -98,7 +98,7 @@ class NopendController extends Controller
             $tanggal_dari= $request->tanggal_dari;
             $tanggal_sampai= $request->tanggal_sampai;
             $quer=DB::table('agent_id_test')->whereNotIn('id_pos', function($q){
-                                $q->select('id_pos')->from('transaksi_valid')->where('tanggal','<=',$tanggal_dari)->whereNotNull('id_pos');
+                                $q->select('id_pos')->from('transaksi_valid')->whereNotNull('id_pos');
                             })->groupBy('id_pos','id')->orderBy('id')->get();
             
             return view('reporting.agent_sort',[
