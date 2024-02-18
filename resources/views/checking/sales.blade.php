@@ -3,7 +3,7 @@
 @section('title','Agent Connect')
     
 @section('content_header')
-    <h1>Request Setor</h1>
+<h3>Pencarian orang yang pernah transaksi namun tidak transaksi lagi pada periode tertentu</h3>
 @stop
 @section('content')
 <div class="container-fluid">
@@ -28,21 +28,29 @@
                             <br/>
                             <!-- COLOR PALETTE -->
                             <div class=row>
-                                <div class="col-md-4">
+                                <div class="col-md-8">
                                     <div class="box box-primary" style="height:100%;max-height:400px;">
                                        
                                         <div class="box-body" >
-                                            <form role="form" action=# method=post>
+                                            <form role="form" action=# method="POST">
                                             @csrf
-                                                <div class="box-body">
-                                                    <div class="form-group">
-                                                        <label for="exampleInputEmail1">Reference / TMT Number</label>
-                                                        <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Enter number here" name=no_referensi required style="width:250px;">
-                                                    </div>
+                                            <div class=form-group>
+                                                    <label>Tanggal Pernah Bertransaksi </label>   
+                                                    <table class="table table-border">
+                                                    <tr><td> <input type='text' class="form-control" id="daterange" name="reservation"/> </td></tr> 
+                                                    
+                                                    </table>
                                                 </div>
-                                                <!-- /.box-body -->
-                                                <div class="box-footer">
-                                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                                
+                                                <div class=form-group>
+                                                    <label>Tanggal Pencarian Transaksi</label>   
+                                                    <table class="table table-border">
+                                                    <tr><td> <input type='text' class="form-control" id="daterange2" name="reservation2"/> </td></tr> 
+                                                    
+                                                    </table>
+                                                </div>
+                                                <div class=form-group>
+                                                    <input type=submit class="btn btn-info" value=CARI>
                                                 </div>
                                             </form>
                                     <!-- /.col -->
@@ -64,6 +72,7 @@
 <script type="text/javascript">
   $(document).ready(function() {
     $('#example').DataTable();
+    $('#daterange').daterangepicker(); $('#daterange2').daterangepicker();
 } );
 </script>
 

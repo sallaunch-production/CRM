@@ -61,4 +61,7 @@ class TransactionalController extends Controller
         return redirect('login')->with('You dont have access');
       }
 
+
+
+
 }

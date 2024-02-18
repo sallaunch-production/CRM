@@ -47,8 +47,17 @@ Route::post('cari_agent_belumaktif',[App\Http\Controllers\NopendController::clas
 Route::get('history_refund',[App\Http\Controllers\ReportingController::class,'history_refund'])->name('history_refund');
 Route::get('history_refund_pos',[App\Http\Controllers\ReportingController::class,'history_refund_pos'])->name('history_refund_pos');
 Route::get('history_amend_pos',[App\Http\Controllers\ReportingController::class,'history_amend_pos'])->name('history_amend_pos');
-
-
+Route::get('popimage',[App\Http\Controllers\ReportingController::class,'popimage'])->name('popimage');
+Route::get('nama',[App\Http\Controllers\CheckingController::class,'nama'])->name('nama');
+Route::post('cari_nama',[App\Http\Controllers\CheckingController::class,'cari_nama'])->name('cari_nama');
+Route::get('profil',[App\Http\Controllers\CheckingController::class,'profil'])->name('profil');
+Route::post('search_profil',[App\Http\Controllers\CheckingController::class,'search_profil'])->name('search_profil');
+Route::get('sales',[App\Http\Controllers\CheckingController::class,'sales'])->name('sales');
+Route::get('newcustomer',[App\Http\Controllers\CheckingController::class,'newcustomer'])->name('newcustomer');
+Route::get('sanction',[App\Http\Controllers\ReportingController::class,'sanction'])->name('sanction');
+Route::get('filtering',[App\Http\Controllers\ReportingController::class,'filtering'])->name('filtering');
+Route::post('cari_filtering',[App\Http\Controllers\ReportingController::class,'cari_filtering'])->name('cari_filtering');
+Route::get('list_country',[App\Http\Controllers\ReportingController::class,'list_country'])->name('list_country');
 
 });
 

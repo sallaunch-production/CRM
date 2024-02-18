@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('nama_client')->nullable();
             $table->string('jenis')->nullable();
             $table->string('ltkl')->nullable();
-            $table->string('ltkm ')->nullable();
+            $table->string('ltkm')->nullable();
             $table->timestamps();
         });
     }

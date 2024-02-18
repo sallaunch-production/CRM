@@ -346,25 +346,25 @@ return [
             'submenu' => [
                 [
                     'text' => 'Customer',
-                    'url'  => '#',
+                    'url'  => 'nama',
                     'icon'    => 'fas fa-fw fa-clipboard',
                     
                 ],
                 [
                     'text' => 'Profile',
-                    'url'  => '#',
+                    'url'  => 'profil',
                     'icon'    => 'fas fa-fw fa-clipboard',
                     
                 ],
                 [
                     'text' => 'Sales',
-                    'url'  => '#',
+                    'url'  => 'sales',
                     'icon'    => 'fas fa-fw fa-clipboard',
                     
                 ],
                 [
                     'text' => 'New Customer',
-                    'url'  => '#',
+                    'url'  => 'newcustomer',
                     'icon'    => 'fas fa-fw fa-clipboard',
                     
                 ],
@@ -377,7 +377,7 @@ return [
             'submenu' => [
                 [
                     'text' => 'Sanction',
-                    'url'  => '#',
+                    'url'  => 'sanction',
                     'icon'    => 'fas fa-fw fa-clipboard',
                     
                 ],
@@ -407,7 +407,7 @@ return [
             'submenu' => [
                 [
                     'text' => 'High Risk Country Transaction',
-                    'url'  => '#',
+                    'url'  => 'filtering',
                     'icon'    => 'fas fa-fw fa-clipboard',
                     
                 ],
@@ -449,7 +449,7 @@ return [
         ],
         [
             'text' => 'Upload proof of payment',
-            'url'  => '#',
+            'url'  => 'popimage',
             'icon' => 'fa fa-book fa-fw',
         ],
         [
