@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title','Agent Connect')
+@section('title','CRM ARSEMA')
     
 @section('content_header')
     <h1>Viewing </h1>

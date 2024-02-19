@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use App\Models\TransaksiReceive;
+use Yajra\DataTables\Facades\Datatables;
 use App\Models\TransaksiSend;
 use App\Models\TransaksiSendPos;
 use App\Models\TransaksiValid;
@@ -46,7 +47,7 @@ class CheckingController extends Controller
             $tanggal_sampai =  $dari[4].'-'.$dari[2][7].$dari[2][8].'-'.$dari[3];
             $tahun_sampai =  $dari[4];
             $namafile = $dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3].$dari[0].$dari[1];
-            $query=DB::table('transaksi_valid')->where('tanggal','>=',$tanggal_dari.' 00:00:00')->where('tanggal','<=',$tanggal_sampai.' 23:59:59')->groupBy('nama_penerima','no')->get();
+            $query=DB::table('transaksi_valid')->where('tanggal','>=',$tanggal_dari.' 00:00:00')->where('tanggal','<=',$tanggal_sampai.' 23:59:59')->groupBy('nama_penerima','no')->orderBy('nama_penerima','asc')->get();
             
                 return view('checking.nama', [
                     'query' => $query,'cari'=>$cari,'periode_dari'=>$periode_dari,'periode_sampai'=>$periode_sampai
@@ -102,6 +103,46 @@ class CheckingController extends Controller
       }
 
 
+      public function search_sales(Request $request){ 
+        //  cek berhasil login 
+        if(Auth::check()){
+          $tanggal = $request->reservation;
+          $dari = explode('/',$tanggal);
+
+          $tanggal_2 = $request->reservation2;
+          $dari_2 = explode('/',$tanggal_2);
+
+          $tahunini = date('Y');
+          
+          $tahun_dari = $dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3];
+          $periode_dari = $dari[1].'-'.$dari[0].'-'.$dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3];
+          $periode_sampai = $dari[3].'-'.$dari[2][7].$dari[2][8].'-'.$dari[4];
+  
+          $tanggal_dari = $dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3].'-'.$dari[0].'-'.$dari[1];
+          $tanggal_sampai =  $dari[4].'-'.$dari[2][7].$dari[2][8].'-'.$dari[3];
+          $tahun_sampai =  $dari[4];
+          $namafile = $dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3].$dari[0].$dari[1];
+
+          $tahun_dari_2 = $dari_2[2][0].$dari_2[2][1].$dari_2[2][2].$dari_2[2][3];
+          $periode_dari_2 = $dari_2[1].'-'.$dari_2[0].'-'.$dari_2[2][0].$dari_2[2][1].$dari_2[2][2].$dari_2[2][3];
+          $periode_sampai_2 = $dari_2[3].'-'.$dari_2[2][7].$dari_2[2][8].'-'.$dari_2[4];
+  
+          $tanggal_dari_2 = $dari_2[2][0].$dari_2[2][1].$dari_2[2][2].$dari_2[2][3].'-'.$dari_2[0].'-'.$dari_2[1];
+          $tanggal_sampai_2 =  $dari_2[4].'-'.$dari_2[2][7].$dari_2[2][8].'-'.$dari_2[3];
+
+          $quer= DB::table('transaksi_valid')->where('tanggal','>=',$tanggal_dari.' 00:00:00')->where('tanggal','<=',$tanggal_sampai.' 23:59:59')->whereNotIn('nama_penerima', function($q) use($tanggal_dari_2,$tanggal_sampai_2) {
+                                              $q->select('nama_penerima')->from('transaksi_valid')->where('tanggal','>=',$tanggal_dari_2.' 00:00:00')->where('tanggal','<=',$tanggal_sampai_2.' 23:59:59')->whereNotNull('nama_penerima');
+                                          })->groupBy('nama_penerima','no')->orderBy('tanggal','desc')->get();
+
+                return view('checking.sales',[
+                    'tanggal_dari_2'=>$tanggal_dari_2,'data'=>$quer,'tanggal_dari'=>$tanggal_dari,'tanggal_sampai'=>$tanggal_sampai
+                ]);
+        }
+
+        return redirect('login')->with('You dont have access');
+      }
+
+
       public function newcustomer(){ 
         //  cek berhasil login 
         if(Auth::check()){
@@ -113,5 +154,154 @@ class CheckingController extends Controller
 
         return redirect('login')->with('You dont have access');
       }
+
+
+      public function search_newcustomer(Request $request){ 
+        //  cek berhasil login 
+        if(Auth::check()){
+          $tanggal = $request->reservation;
+          $dari = explode('/',$tanggal);
+          $tanggal_dari = $dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3].'-'.$dari[0].'-'.$dari[1];
+          $tanggal_sampai =  $dari[4].'-'.$dari[2][7].$dari[2][8].'-'.$dari[3];
+          $tahun_sampai =  $dari[4];
+          $quer=DB::table('transaksi_valid')->select('no','nama_penerima','no_referensi','tanggal','nomor_identitas','tanggal_lahir','alamat_penerima','telepon_penerima','id_pos')->where('tanggal','>=',$tanggal_dari.' 00:00:00')->where('tanggal','<=',$tanggal_sampai.' 23:59:59')->whereNotIn('nama_penerima', function($q) use($tanggal_dari,$tanggal_sampai) {
+                                                $q->select('nama_penerima')->from('transaksi_valid')->where('tanggal','>=',$tanggal_dari.' 00:00:00')->where('tanggal','<=',$tanggal_sampai.' 23:59:59')->whereNotNull('nama_penerima');
+                                            })->groupBy('nama_penerima','no')->UnionAll(DB::table('transaksi_sigue_cta')->select('no','nama_penerima','no_referensi','tanggal','nomor_identitas','tanggal_lahir','alamat_penerima','telepon_penerima','id_pos')->where('tanggal','>=',$tanggal_dari.' 00:00:00')->where('tanggal','<=',$tanggal_sampai.' 23:59:59')->whereNotIn('nama_penerima', function($q) use($tanggal_dari,$tanggal_sampai) {
+                                              $q->select('nama_penerima')->from('transaksi_valid')->where('tanggal','>=',$tanggal_dari.' 00:00:00')->where('tanggal','<=',$tanggal_sampai.' 23:59:59')->whereNotNull('nama_penerima');
+                                          }))->orderBy('tanggal','desc')->get();
+         
+
+          return view('checking.newcustomer',[
+            'tanggal_sampai'=>$tanggal_sampai,'tanggal_dari'=>$tanggal_dari,'data'=>$quer
+          ]);
+
+
+        }
+
+        return redirect('login')->with('You dont have access');
+      }
+
+
+      public function screening(Request $request){ 
+        //  cek berhasil login 
+        if(Auth::check()){
+          
+          return view('checking.screening',[
+            
+          ]);
+
+
+        }
+
+        return redirect('login')->with('You dont have access');
+      }
+
+      public function cari_screening(Request $request){ 
+        //  cek berhasil login 
+        if(Auth::check()){
+          $tanggal = $request->reservation;
+          $dari = explode('/',$tanggal);
+          $tanggal_dari = $dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3].'-'.$dari[0].'-'.$dari[1];
+          $tanggal_sampai =  $dari[4].'-'.$dari[2][7].$dari[2][8].'-'.$dari[3];
+          $tahun_sampai =  $dari[4];
+          $cari = "ya";
+          $quer=DB::table('transaksi_valid')->where('deltawork','=','ya')->where('tanggal','>=',$tanggal_dari.' 00:00:00')->where('tanggal','<=',$tanggal_sampai.' 23:59:59')->orderBy('tanggal','desc')->get();
+          $nama_penerima=array();
+          $nama_pengirim=array();
+          foreach($quer as $trx_valid) {
+                  $namapenerima_s = $trx_valid->nama_penerima;
+                  $namapengirim_s = $trx_valid->nama_pengirim;
+                  array_push($nama_penerima,$namapenerima_s);
+                  array_push($nama_pengirim,$namapengirim_s);
+              
+          }
+          $string1=implode(",",$nama_penerima);
+          $string2=implode(",",$nama_pengirim);
+
+          $query_sanction=DB::table('sanction_list')->whereIn('nama','LIKE','%'.$string2.'%')->whereIn('nama','LIKE','%'.$string1.'%')->get();
+          
+          return view('checking.screening',[
+            'tanggal_sampai'=>$tanggal_sampai,'tanggal_dari'=>$tanggal_dari,'data'=>$quer,'cari'=>$cari,'jum_sanction'=>$query_sanction
+          ]);
+
+
+        }
+
+        return redirect('login')->with('You dont have access');
+      }
+
+      public function sanction(Request $request)
+      { 
+          //  cek berhasil login 
+          if(Auth::check()){
+              if ($request->ajax()) {
+                  $data = DB::table('sanction_list')->orderBy('id','desc')->get();
+                  return Datatables::of($data)
+                  ->addIndexColumn()
+                  ->addColumn('action', function($row){
+                      //$actionBtn = '<a href="javascript:void(0)" class="edit btn btn-success btn-sm">Edit</a> <a href="javascript:void(0)" class="delete btn btn-danger btn-sm">Delete</a>';
+                      //return $actionBtn;
+                  })
+                  ->rawColumns(['action'])
+                  ->make(true);
+                }
+                return view('sanctions.sanction');
+              
+
+          }
+
+          return redirect('login')->with('You dont have access');
+        }
+      
+
+        
+    
+
+
+        public function filtering()
+        { 
+          //  cek berhasil login 
+          if(Auth::check()){
+  
+          return view('reporting.filtering', [
+                     
+               ]);
+  
+  
+          }
+  
+          return redirect('login')->with('You dont have access');
+        }
+
+
+      public function cari_filtering(Request $request){ 
+        //  cek berhasil login 
+        if(Auth::check()){
+          
+          $tanggal = $request->reservation;
+          $dari = explode('/',$tanggal);
+          $cari_filtering_s="ya";
+          $tahunini = date('Y');
+          
+          $tahun_dari = $dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3];
+          $periode_dari = $dari[1].'-'.$dari[0].'-'.$dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3];
+          $periode_sampai = $dari[3].'-'.$dari[2][7].$dari[2][8].'-'.$dari[4];
+  
+          $tanggal_dari = $dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3].'-'.$dari[0].'-'.$dari[1];
+          $tanggal_sampai =  $dari[4].'-'.$dari[2][7].$dari[2][8].'-'.$dari[3];
+          $tahun_sampai =  $dari[4];
+          $namafile = $dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3].$dari[0].$dari[1];
+
+          $query = DB::table('transaksi_valid')->join('high_risk_country','high_risk_country.nama','=','transaksi_valid.negara_pengirim')->where('id_transaksi','<>','')->where('transaksi_valid.tanggal','>=',$tanggal_dari.' 00:00:00')->where('transaksi_valid.tanggal','<=',$tanggal_sampai.' 23:59:59')->orderBy('transaksi_valid.negara_pengirim','desc')->get(); 
+                return view('reporting.filtering', [
+                    'data' => $query,'cari_s'=>$cari_filtering_s
+             ]);
+
+
+        }
+
+        return redirect('login')->with('You dont have access');
+      }
+
 }
 

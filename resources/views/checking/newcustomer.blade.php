@@ -27,19 +27,13 @@
                             @endif
 
                             <!-- COLOR PALETTE -->
-                            <div class=row>
-                                <div class="col-md-4">
-                                    <div class="box box-primary" >
-                                        <div class="box-header with-border">
-                                           
-                                        </div>
-                                        <div class="box-body" >
-                                          <form role="form" action=# method="POST">
+                           
+                                          <form role="form" action="{{ route('search_newcustomer') }}" method="POST">
                                             @csrf  
                                             <div class=form-group>
                                             <label>Tanggal Transaksi </label>   
                                             <table class="table table-border">
-                                            <tr><td> <input type='text' class="form-control" id="daterange" name="reservation2"/> </td></tr> 
+                                            <tr><td> <input type='text' class="form-control" id="daterange" name="reservation"/> </td></tr> 
                                             
                                             </table>
                                         </div>
@@ -48,8 +42,52 @@
                                             <input type=submit class="btn btn-info" value=CARI>
                                         </div>
                                     </form>
+
                                     <!-- /.col -->
-                                </div>
+                                @if(!empty($tanggal_sampai))
+
+                                <table class="table table-border">
+                                        <tr><td>Dari : {{date('d-m-Y', strtotime($tanggal_dari))}} | Sampai : {{date('d-m-Y', strtotime($tanggal_sampai))}}</td></tr>
+                                </table>
+                                <table  id="example" class="table table-responsive table-striped  table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>No</th>
+                                        <th>Ref Number </th>
+                                    <th>Nama </th>
+                                    <th>Alamat</th>      
+                                    <th>Nomor Telepon</th>      
+                                    <th>Tanggal Lahir</th>
+                                    <th>Nomor Identitas</th>       
+                                    <th>Id Pos </th>
+                                        <th>Tanggal </th>
+                                    <th> </th>
+                                </tr>
+                                </thead>
+                                
+                                <tbody>
+                                @foreach($data  as $key => $transactions)
+                                        <tr>
+                                            <th >{{$key+1 }}</th>
+                                            <td>{{ $transactions->no_referensi }}</td>
+                                            <td>{{ $transactions->nama_penerima }}</td>
+                                            <td>{{ $transactions->alamat_penerima }}</td>
+                                            <td>{{ $transactions->telepon_penerima }}</td>
+                                            <td>{{ $transactions->tanggal_lahir }}</td>
+                                            <td>{{ $transactions->nomor_identitas }}</td>
+                                            <td>{{ $transactions->id_pos }}</td>
+                                            <td>{{ $transactions->tanggal }}</td>
+                                            <td><button type=button class="btn btn-primary btn-lg" data-toggle=modal data-target="#myModal{{$transactions->no}}">
+                                                Detail
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+
+                                </table>
+                                @else
+                                @endif
                                 <!-- /.row --><br><br><br><br>
                                 </div>
                                 <!-- /.box-body -->

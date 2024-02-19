@@ -383,11 +383,11 @@ return [
                 ],
                 [
                     'text' => 'Screening',
-                    'url'  => '#',
+                    'url'  => 'screening',
                     'icon'    => 'fas fa-fw fa-clipboard',
                     
                 ],
-                [
+               /* [
                     'text' => 'Sales',
                     'url'  => '#',
                     'icon'    => 'fas fa-fw fa-clipboard',
@@ -398,7 +398,7 @@ return [
                     'url'  => '#',
                     'icon'    => 'fas fa-fw fa-clipboard',
                     
-                ],
+                ],*/
             ]
         ],
         [

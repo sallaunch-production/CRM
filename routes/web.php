@@ -54,10 +54,14 @@ Route::get('profil',[App\Http\Controllers\CheckingController::class,'profil'])->
 Route::post('search_profil',[App\Http\Controllers\CheckingController::class,'search_profil'])->name('search_profil');
 Route::get('sales',[App\Http\Controllers\CheckingController::class,'sales'])->name('sales');
 Route::get('newcustomer',[App\Http\Controllers\CheckingController::class,'newcustomer'])->name('newcustomer');
-Route::get('sanction',[App\Http\Controllers\ReportingController::class,'sanction'])->name('sanction');
-Route::get('filtering',[App\Http\Controllers\ReportingController::class,'filtering'])->name('filtering');
-Route::post('cari_filtering',[App\Http\Controllers\ReportingController::class,'cari_filtering'])->name('cari_filtering');
+Route::get('sanction',[App\Http\Controllers\CheckingController::class,'sanction'])->name('sanction');
+Route::get('filtering',[App\Http\Controllers\CheckingController::class,'filtering'])->name('filtering');
+Route::post('cari_filtering',[App\Http\Controllers\CheckingController::class,'cari_filtering'])->name('cari_filtering');
 Route::get('list_country',[App\Http\Controllers\ReportingController::class,'list_country'])->name('list_country');
+Route::post('search_sales',[App\Http\Controllers\CheckingController::class,'search_sales'])->name('search_sales');
+Route::post('search_newcustomer',[App\Http\Controllers\CheckingController::class,'search_newcustomer'])->name('search_newcustomer');
+Route::get('screening',[App\Http\Controllers\CheckingController::class,'screening'])->name('screening');
+Route::post('cari_screening',[App\Http\Controllers\CheckingController::class,'cari_screening'])->name('cari_screening');
 
 });
 
