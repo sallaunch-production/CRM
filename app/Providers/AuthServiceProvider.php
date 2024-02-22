@@ -27,14 +27,20 @@ class AuthServiceProvider extends ServiceProvider
         //
         $this->registerPolicies();
 
-        Gate::define('admin-only', function () {
-            if (Auth::user()->level == 'admin'){
+        Gate::define('reporting-only', function () {
+            if (Auth::user()->level == 'reporting'){
                 return true;
             }
             return false;
         });
-        Gate::define('operator-only', function () {
-            if (Auth::user()->level == 'operator'){
+        Gate::define('operasional-only', function () {
+            if (Auth::user()->level == 'operasional'){
+                return true;
+            }
+            return false;
+        });
+        Gate::define('finance-only', function () {
+            if (Auth::user()->level == 'finance'){
                 return true;
             }
             return false;

@@ -347,24 +347,28 @@ return [
                 [
                     'text' => 'Customer',
                     'url'  => 'nama',
+                    'shift'   => 'ml-3',
                     'icon'    => 'fas fa-fw fa-clipboard',
                     
                 ],
                 [
                     'text' => 'Profile',
                     'url'  => 'profil',
+                    'shift'   => 'ml-3',
                     'icon'    => 'fas fa-fw fa-clipboard',
                     
                 ],
                 [
                     'text' => 'Sales',
                     'url'  => 'sales',
+                    'shift'   => 'ml-3',
                     'icon'    => 'fas fa-fw fa-clipboard',
                     
                 ],
                 [
                     'text' => 'New Customer',
                     'url'  => 'newcustomer',
+                    'shift'   => 'ml-3',
                     'icon'    => 'fas fa-fw fa-clipboard',
                     
                 ],
@@ -378,12 +382,14 @@ return [
                 [
                     'text' => 'Sanction',
                     'url'  => 'sanction',
+                    'shift'   => 'ml-3',
                     'icon'    => 'fas fa-fw fa-clipboard',
                     
                 ],
                 [
                     'text' => 'Screening',
                     'url'  => 'screening',
+                    'shift'   => 'ml-3',
                     'icon'    => 'fas fa-fw fa-clipboard',
                     
                 ],
@@ -408,24 +414,28 @@ return [
                 [
                     'text' => 'High Risk Country Transaction',
                     'url'  => 'filtering',
+                    'shift'   => 'ml-3',
                     'icon'    => 'fas fa-fw fa-clipboard',
                     
                 ],
                 [
                     'text' => 'Filtering Transaction',
                     'url'  => '#',
+                    'shift'   => 'ml-3',
                     'icon'    => 'fas fa-fw fa-clipboard',
                     
                 ],
                 [
                     'text' => 'Kota',
                     'url'  => '#',
+                    'shift'   => 'ml-3',
                     'icon'    => 'fas fa-fw fa-clipboard',
                     
                 ],
                 [
                     'text' => 'Negara',
                     'url'  => '#',
+                    'shift'   => 'ml-3',
                     'icon'    => 'fas fa-fw fa-clipboard',
                     
                 ],

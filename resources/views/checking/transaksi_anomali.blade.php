@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title','Agent Connect')
+@section('title','CRM Arsema')
     
 @section('content_header')
     <h1>Transaksi Error </h1>

@@ -16,6 +16,7 @@ use App\Models\TransaksiValid;
 use App\Models\Saldo;
 use App\Models\TransaksiSendPos;
 use DB;
+use Carbon\Carbon;
 
 class ReportingController extends Controller
 {
@@ -39,7 +40,16 @@ class ReportingController extends Controller
       public function history_refund(){ 
         //  cek berhasil login 
         if(Auth::check()){
-
+          $qur = DB::table('audit_trail_crm')->insertGetId([
+            'username' => Auth::user()->email,
+            'url' => url()->current(),
+            'action' => "Menu History Refund Arsema",
+            'tanggal' => Carbon::now()->toDateTimeString(),
+            'ip_address' => $_SERVER['REMOTE_ADDR'],
+            'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+            'created_at' => Carbon::now()->toDateTimeString(),
+            'updated_at' =>Carbon::now()->toDateTimeString(),
+          ]);
           $data = DB::table('transaksi_cancel')->whereNull('id_pos')->get(); 
 
                 return view('reporting.history-refunds', [
@@ -56,7 +66,16 @@ class ReportingController extends Controller
       public function history_refund_pos(){ 
         //  cek berhasil login 
         if(Auth::check()){
-
+          $qur = DB::table('audit_trail_crm')->insertGetId([
+            'username' => Auth::user()->email,
+            'url' => url()->current(),
+            'action' => "Menu History Refund PT POS",
+            'tanggal' => Carbon::now()->toDateTimeString(),
+            'ip_address' => $_SERVER['REMOTE_ADDR'],
+            'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+            'created_at' => Carbon::now()->toDateTimeString(),
+            'updated_at' =>Carbon::now()->toDateTimeString(),
+          ]);
           $data = DB::table('transaksi_cancel')->whereNull('id_pos')->orderBy('no','desc')->get(); 
 
                 return view('reporting.history_refund_pos', [
@@ -74,7 +93,16 @@ class ReportingController extends Controller
       public function history_amend_pos(){ 
         //  cek berhasil login 
         if(Auth::check()){
-
+          $qur = DB::table('audit_trail_crm')->insertGetId([
+            'username' => Auth::user()->email,
+            'url' => url()->current(),
+            'action' => "Menu History Amend PT POS",
+            'tanggal' => Carbon::now()->toDateTimeString(),
+            'ip_address' => $_SERVER['REMOTE_ADDR'],
+            'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+            'created_at' => Carbon::now()->toDateTimeString(),
+            'updated_at' =>Carbon::now()->toDateTimeString(),
+          ]);
           $data = DB::table('amend')->join('transaksi_send_pos','transaksi_send_pos.no_referensi','=','amend.no_referensi')->orderBy('amend.id','desc')->get(); 
 
                 return view('reporting.history_amend_pos', [
@@ -90,7 +118,16 @@ class ReportingController extends Controller
       public function popimage(){ 
         //  cek berhasil login 
         if(Auth::check()){
-
+          $qur = DB::table('audit_trail_crm')->insertGetId([
+            'username' => Auth::user()->email,
+            'url' => url()->current(),
+            'action' => "Menu Upload Proof Of Payment",
+            'tanggal' => Carbon::now()->toDateTimeString(),
+            'ip_address' => $_SERVER['REMOTE_ADDR'],
+            'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+            'created_at' => Carbon::now()->toDateTimeString(),
+            'updated_at' =>Carbon::now()->toDateTimeString(),
+          ]);
           $data = DB::table('proof_of_payment')->orderBy('tanggal','desc')->get(); 
 
                 return view('reporting.popimages', [

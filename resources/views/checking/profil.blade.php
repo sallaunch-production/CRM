@@ -26,7 +26,7 @@
                               </div>
                             @endif
                             <br>
-                            <form class=form-group action="{{ route('search_profil')}}"  method="POST">
+                            <form class=form-group action="{{ route('search_profil')}}"  method="POST" style="width:50%;">
                              @csrf
                              <div class=form-group>
                                     <label>Cari Customer</label>    

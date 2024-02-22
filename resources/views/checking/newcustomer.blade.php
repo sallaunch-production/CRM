@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title','Agent Connect')
+@section('title','CRM Arsema')
     
 @section('content_header')
 <h3>Pencarian orang yang baru pertama kali transaksi</h3>
@@ -28,7 +28,7 @@
 
                             <!-- COLOR PALETTE -->
                            
-                                          <form role="form" action="{{ route('search_newcustomer') }}" method="POST">
+                                          <form role="form" action="{{ route('search_newcustomer') }}" method="POST" style="width:50%;">
                                             @csrf  
                                             <div class=form-group>
                                             <label>Tanggal Transaksi </label>   

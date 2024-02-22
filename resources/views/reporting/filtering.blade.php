@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title','Agent Connect')
+@section('title','CRM Arsema')
     
 @section('content_header')
 <h2>High Risk Country Filtering</h2>

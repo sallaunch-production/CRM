@@ -9,6 +9,11 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
+use DB;
+use Carbon\Carbon;
+use Create;
+use PragmaRX\Google2FAQRCode\Google2FA;
+
 
 class AuthController extends Controller
 {
@@ -26,39 +31,86 @@ class AuthController extends Controller
 
      public function proses_login(Request $request){
 
-        // isi credential hanya berupa username dan password
-        $credentials =  $request->only('email','password');
-        //validasi menggunakan Illuminate\Support\Facades\Validator
-        //isi field validasi dan rules nya yaitu wajib di isi
-        $validate = Validator::make($credentials,[
-            'email'=>'required|email',
-            'password'=>'required',
-            
-        ]);
+       
         $recaptcha_response = $request->input('g-recaptcha-response');
 
         if (is_null($recaptcha_response)) {
             return redirect()->back()->with('status', 'Please Complete the Recaptcha to proceed');
         }
 
-        if($validate->fails()){
-            //kembali ke halaman login & tampilkan error pada setiap inputnya
-            return back()->withErrors($validate)->withInput();
+        $user_email = $request->email;
+        $password = $request->password;
+        Session::put('user_email', $user_email);
+        Session::put('user_password', $password);
+        $cek_email = User::where('email','=',$user_email)->get();
+        if(count($cek_email)>0){
+            if (Hash::check($password, $cek_email[0]['password'])){
+                // Success
+                $cek_user =  DB::table('users')->where('email','=',$user_email)->get();
+                foreach($cek_user as $cek_users)
+                {
+                    $namanya=$cek_users->name;
+                    Session::put('user_name', $namanya);
+                }
+                $cek_google =  DB::table('auth_google')->where('username','=',$namanya)->get();
+                if(count($cek_google)>0){
+                    return redirect('validation')->with('success','Silahkan masukan code dari perangakat seluler anda.');
+                }else{
+                    return redirect('register_barcode')->with('success','Silahkan masukan code dari perangakat seluler anda.');
+                }
+                    
+            }
+        }else{
+            return redirect()->back()->with('status', 'Username or password are wrong!');
         }
-        
+      }
 
-        // verifikasi data user pada kolom email dan password sesuai atau belum
-        if(Auth::attempt($credentials)){
-            //jika sesuai maka jalankan fungsi dashboard
-            return redirect()->intended('dashboard')->with('success','Successfully Login');
-        }
-        //return back()->withErrors($validate)->withInput();
-        return redirect()->back()->with('status', 'Username or password are wrong!');
-        //return redirect('login')->withInput()->withErrors(['login_error'=>'Username or password are wrong!']);
-        // jika terdapat field yang kosong
       
-        // kembali ke halaman login dan tampilkan pesan error pada login_error
-       
+      
+      public function verify(Request $request){ 
+        //  cek berhasil login 
+            $email=Session::get('user_email'); 
+            $password=Session::get('user_password'); 
+           
+            $user = DB::table('users')->where('email','=',$email)->get();
+            foreach($user as $users){
+                $nama=$users->name;
+            }
+            $cek_code = DB::table('auth_google')->where('username','=',$nama)->get();
+            foreach($cek_code as $cek_codes){
+                $codenya=$cek_codes->code;
+            }
+            $google2fa = new Google2FA();
+            $otp_secret = $codenya;
+            $valid =$google2fa->verifyKey($otp_secret, $request->code);
+          
+            $credentials =  ['email'=>$email,'password'=>$password];
+           
+            //$valid = $google2fa->verifyKey($request->code,$secret);
+            if(Auth::attempt($credentials) && $valid){
+                session()->forget('user_password');
+                $qur = DB::table('audit_trail')->insertGetId([
+                    'username' => Auth::user()->email,
+                    'url' => url()->current(),
+                    'action' => "Login",
+                    'tanggal' => Carbon::now()->toDateTimeString(),
+                    'ip_address' => $_SERVER['REMOTE_ADDR'],
+                    'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+                    'created_at' => Carbon::now()->toDateTimeString(),
+                    'updated_at' =>Carbon::now()->toDateTimeString(),
+                ]);
+                // 2FA code is valid, proceed with login
+                return redirect()->intended('dashboard')->with('success','Successfully Login.');
+                
+            } else {
+                // Invalid 2FA code, redirect back with an error message
+                return redirect()->back()->with('login_error', 'Code is wrong!');
+            }
+      }
+
+      public function validation(){ 
+        //  cek berhasil login 
+           return view('auth.validation'); 
       }
 
       public function dashboard(){ 
@@ -104,10 +156,49 @@ class AuthController extends Controller
        }
 
        public function logout(){
+        $qur = DB::table('audit_trail')->insertGetId([
+            'username' => Auth::user()->email,
+            'url' => url()->current(),
+            'action' => "Logout",
+            'tanggal' => Carbon::now()->toDateTimeString(),
+            'ip_address' => $_SERVER['REMOTE_ADDR'],
+            'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+            'created_at' => Carbon::now()->toDateTimeString(),
+            'updated_at' =>Carbon::now()->toDateTimeString(),
+        ]);
         //  clear session dan memberitahu auth dengan status logout
             Session::flush();
             Auth::logout();
             return Redirect('login');
+        }
+
+
+        public function register_barcode(Request $request)
+        {
+           
+        $google2fa = new Google2FA();
+        $secret = $google2fa->generateSecretKey();
+        $emailUser = Session::get('user_email');
+        $passUser = Session::get('user_password');
+        $nameUser = Session::get('user_name');
+        $idmax = DB::table('auth_google')->orderBy('id','desc')->count();
+        $idnya=$idmax +1;
+        $barcode = DB::table('auth_google')->insertGetId([
+            'id'=>$idnya,
+            'username' => $nameUser,
+            'code' => $secret,
+            'created_at' => Carbon::now()->toDateTimeString(),
+            'updated_at' =>Carbon::now()->toDateTimeString(),
+        ]);
+
+        $QR_Image = $google2fa->getQRCodeInline(
+            "CRM Arsema",
+            $emailUser,
+            $secret
+        );
+        Session::put('2fa_secret', $secret);
+            // Passing the QR barcode image to view
+            return view('google2fa.register', ['QR_Image' => $QR_Image, 'secret' => $secret]);
         }
 
         public function erro_page()

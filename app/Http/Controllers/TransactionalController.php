@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Hash;
 use Yajra\DataTables\Facades\Datatables;
 use App\Models\TransaksiSendPos;
 use DB;
+use Carbon\Carbon;
 
 class TransactionalController extends Controller
 {
@@ -20,6 +21,16 @@ class TransactionalController extends Controller
     { 
         //  cek berhasil login 
         if(Auth::check()){
+          $qur = DB::table('audit_trail_crm')->insertGetId([
+            'username' => Auth::user()->email,
+            'url' => url()->current(),
+            'action' => "Transaksi Receive Pos",
+            'tanggal' => Carbon::now()->toDateTimeString(),
+            'ip_address' => $_SERVER['REMOTE_ADDR'],
+            'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+            'created_at' => Carbon::now()->toDateTimeString(),
+            'updated_at' =>Carbon::now()->toDateTimeString(),
+        ]);
           if ($request->ajax()) {
            $data = DB::table('transaksi_valid')->limit(100000)->orderBy('tanggal','desc')->get(); 
            return Datatables::of($data)
@@ -42,6 +53,16 @@ class TransactionalController extends Controller
       { 
         //  cek berhasil login 
         if(Auth::check()){
+          $qur = DB::table('audit_trail_crm')->insertGetId([
+            'username' => Auth::user()->email,
+            'url' => url()->current(),
+            'action' => "Transaksi Send Pos",
+            'tanggal' => Carbon::now()->toDateTimeString(),
+            'ip_address' => $_SERVER['REMOTE_ADDR'],
+            'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+            'created_at' => Carbon::now()->toDateTimeString(),
+            'updated_at' =>Carbon::now()->toDateTimeString(),
+        ]);
              if ($request->ajax()) {
                 $data = TransaksiSendPos::limit(100000)->orderBy('tanggal','desc')->get(); 
                 return Datatables::of($data)

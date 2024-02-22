@@ -15,12 +15,23 @@ use App\Models\NegaraException;
 use App\Models\TransaksiSend;
 use App\Models\TransaksiSendPos;
 use DB;
+use Carbon\Carbon;
 
 class NopendController extends Controller
 {
 
     public function nopend(){ 
         if(Auth::check()){
+            $qur = DB::table('audit_trail_crm')->insertGetId([
+                'username' => Auth::user()->email,
+                'url' => url()->current(),
+                'action' => "Menu Nopend/Id Pos",
+                'tanggal' => Carbon::now()->toDateTimeString(),
+                'ip_address' => $_SERVER['REMOTE_ADDR'],
+                'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+                'created_at' => Carbon::now()->toDateTimeString(),
+                'updated_at' =>Carbon::now()->toDateTimeString(),
+              ]);
             $jum="";$ques="";
             return view('reporting.nopend',['jum'=>$jum,'ques'=>$ques]);
         }
@@ -50,6 +61,16 @@ class NopendController extends Controller
 
       public function agent_sort(){ 
         if(Auth::check()){
+            $qur = DB::table('audit_trail_crm')->insertGetId([
+                'username' => Auth::user()->email,
+                'url' => url()->current(),
+                'action' => "Menu Agent Id",
+                'tanggal' => Carbon::now()->toDateTimeString(),
+                'ip_address' => $_SERVER['REMOTE_ADDR'],
+                'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+                'created_at' => Carbon::now()->toDateTimeString(),
+                'updated_at' =>Carbon::now()->toDateTimeString(),
+              ]);
             $tanggal_dari="";
             return view('reporting.agent_sort',['tanggal_dari'=>$tanggal_dari]);
         }

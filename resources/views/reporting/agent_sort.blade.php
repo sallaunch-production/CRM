@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title','Agent Connect')
+@section('title','CRM Arsema')
     
 @section('content_header')
     <h1>Report</h1>
@@ -27,7 +27,7 @@
                             @endif
                           
                             
-                                <h2> &nbsp;&nbsp; &nbsp;&nbsp;Agent id terdaftar</h2>
+                                <h2> Agent id terdaftar</h2>
                                 <hr></hr><br>
                                 <div class=col-md-6>
                         

@@ -28,13 +28,17 @@ Route::get('/', function () {
     return view('auth.login');
 });
 Route::get('login',[App\Http\Controllers\AuthController::class,'index'])->name('login');
+Route::get('validation',[App\Http\Controllers\AuthController::class,'validation'])->name('validation');
+Route::get('register_barcode',[App\Http\Controllers\AuthController::class,'register_barcode'])->name('register_barcode');
+
 Route::get('register',[App\Http\Controllers\AuthController::class,'register'])->name('register');
 Route::get('erro_page',[App\Http\Controllers\AuthController::class,'erro_page'])->name('erro_page');
 Route::post('proses_login',[App\Http\Controllers\AuthController::class,'proses_login'])->name('proses.login');
 Route::post('proses_register',[App\Http\Controllers\AuthController::class,'proses_register'])->name('proses.register');
 Route::post('logout',[App\Http\Controllers\AuthController::class,'logout'])->name('logout');
+Route::post('verify',[App\Http\Controllers\AuthController::class,'verify'])->name('proses.verify');
 
-Route::group(['middleware' => ['auth','leveluser:admin']], function () {
+Route::group(['middleware' => ['auth','leveluser:reporting']], function () {
     //HomeController
 Route::get('dashboard',[App\Http\Controllers\HomeController::class,'dashboard'])->name('dashboard');
 Route::get('transaksi_receive_pos',[App\Http\Controllers\TransactionalController::class,'transaksi_receive_pos'])->name('transaksi_receive_pos');
@@ -65,7 +69,7 @@ Route::post('cari_screening',[App\Http\Controllers\CheckingController::class,'ca
 
 });
 
-Route::group(['middleware' => ['auth','leveluser:operator,admin']], function () {
+Route::group(['middleware' => ['auth','leveluser:operasional,reporting']], function () {
     //ReportingController
 Route::get('transaksi_direct',[App\Http\Controllers\ReportingController::class,'transaksi_direct'])->name('transaksi_direct');
     //HomeController

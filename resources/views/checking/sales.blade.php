@@ -1,9 +1,9 @@
 @extends('adminlte::page')
 
-@section('title','Agent Connect')
+@section('title','CRM Arsema')
     
 @section('content_header')
-<h3>Pencarian orang yang pernah transaksi namun tidak transaksi lagi pada periode tertentu</h3>
+<h5>Pencarian orang yang pernah transaksi namun tidak transaksi lagi pada periode tertentu</h5>
 @stop
 @section('content')
 <div class="container-fluid">
@@ -28,9 +28,10 @@
                           
                             <!-- COLOR PALETTE -->
                          
-                                        <div class="box-body" >
+                                        <div class="box-body" style="width:50%;">
                                             <form role="form" action="{{route('search_sales')}}" method="POST">
                                             @csrf
+                                            
                                             <div class=form-group>
                                                     <label>Tanggal Pernah Bertransaksi </label>   
                                                     <table class="table table-border">

@@ -15,13 +15,23 @@ use App\Models\TransaksiSend;
 use App\Models\TransaksiSendPos;
 use App\Models\TransaksiValid;
 use DB;
+use Carbon\Carbon;
 
 class CheckingController extends Controller
 {
     public function nama(){ 
         //  cek berhasil login 
         if(Auth::check()){
-            
+          $saldo = DB::table('audit_trail')->insertGetId([
+            'username' => Auth::user()->email,
+            'url' => url()->current(),
+            'action' => "Menu Customer",
+            'tanggal' => Carbon::now()->toDateTimeString(),
+            'ip_address' => $_SERVER['REMOTE_ADDR'],
+            'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+            'created_at' => Carbon::now()->toDateTimeString(),
+            'updated_at' =>Carbon::now()->toDateTimeString(),
+        ]);
                 return view('checking.nama');
 
 
@@ -62,7 +72,16 @@ class CheckingController extends Controller
       public function profil(){ 
         //  cek berhasil login 
         if(Auth::check()){
-            
+          $qur = DB::table('audit_trail_crm')->insertGetId([
+            'username' => Auth::user()->email,
+            'url' => url()->current(),
+            'action' => "Menu Profile",
+            'tanggal' => Carbon::now()->toDateTimeString(),
+            'ip_address' => $_SERVER['REMOTE_ADDR'],
+            'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+            'created_at' => Carbon::now()->toDateTimeString(),
+            'updated_at' =>Carbon::now()->toDateTimeString(),
+        ]);
                 return view('checking.profil');
 
 
@@ -93,10 +112,17 @@ class CheckingController extends Controller
       public function sales(){ 
         //  cek berhasil login 
         if(Auth::check()){
-            
+          $qur = DB::table('audit_trail_crm')->insertGetId([
+            'username' => Auth::user()->email,
+            'url' => url()->current(),
+            'action' => "Menu Sales",
+            'tanggal' => Carbon::now()->toDateTimeString(),
+            'ip_address' => $_SERVER['REMOTE_ADDR'],
+            'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+            'created_at' => Carbon::now()->toDateTimeString(),
+            'updated_at' =>Carbon::now()->toDateTimeString(),
+        ]);
                 return view('checking.sales');
-
-
         }
 
         return redirect('login')->with('You dont have access');
@@ -146,10 +172,17 @@ class CheckingController extends Controller
       public function newcustomer(){ 
         //  cek berhasil login 
         if(Auth::check()){
-            
+          $qur = DB::table('audit_trail_crm')->insertGetId([
+            'username' => Auth::user()->email,
+            'url' => url()->current(),
+            'action' => "Menu New Customer",
+            'tanggal' => Carbon::now()->toDateTimeString(),
+            'ip_address' => $_SERVER['REMOTE_ADDR'],
+            'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+            'created_at' => Carbon::now()->toDateTimeString(),
+            'updated_at' =>Carbon::now()->toDateTimeString(),
+        ]);
                 return view('checking.newcustomer');
-
-
         }
 
         return redirect('login')->with('You dont have access');
@@ -185,7 +218,16 @@ class CheckingController extends Controller
       public function screening(Request $request){ 
         //  cek berhasil login 
         if(Auth::check()){
-          
+          $qur = DB::table('audit_trail_crm')->insertGetId([
+            'username' => Auth::user()->email,
+            'url' => url()->current(),
+            'action' => "Menu New Screening",
+            'tanggal' => Carbon::now()->toDateTimeString(),
+            'ip_address' => $_SERVER['REMOTE_ADDR'],
+            'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+            'created_at' => Carbon::now()->toDateTimeString(),
+            'updated_at' =>Carbon::now()->toDateTimeString(),
+        ]);
           return view('checking.screening',[
             
           ]);
@@ -234,6 +276,16 @@ class CheckingController extends Controller
       { 
           //  cek berhasil login 
           if(Auth::check()){
+              $qur = DB::table('audit_trail_crm')->insertGetId([
+                'username' => Auth::user()->email,
+                'url' => url()->current(),
+                'action' => "Menu Sanction List",
+                'tanggal' => Carbon::now()->toDateTimeString(),
+                'ip_address' => $_SERVER['REMOTE_ADDR'],
+                'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+                'created_at' => Carbon::now()->toDateTimeString(),
+                'updated_at' =>Carbon::now()->toDateTimeString(),
+            ]);
               if ($request->ajax()) {
                   $data = DB::table('sanction_list')->orderBy('id','desc')->get();
                   return Datatables::of($data)
@@ -262,10 +314,19 @@ class CheckingController extends Controller
         { 
           //  cek berhasil login 
           if(Auth::check()){
-  
-          return view('reporting.filtering', [
-                     
-               ]);
+            $qur = DB::table('audit_trail_crm')->insertGetId([
+              'username' => Auth::user()->email,
+              'url' => url()->current(),
+              'action' => "Menu High Risk Country Transaction",
+              'tanggal' => Carbon::now()->toDateTimeString(),
+              'ip_address' => $_SERVER['REMOTE_ADDR'],
+              'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+              'created_at' => Carbon::now()->toDateTimeString(),
+              'updated_at' =>Carbon::now()->toDateTimeString(),
+            ]);
+            return view('reporting.filtering', [
+                      
+                ]);
   
   
           }
