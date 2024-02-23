@@ -62,6 +62,14 @@ Route::get('sanction',[App\Http\Controllers\CheckingController::class,'sanction'
 Route::get('filtering',[App\Http\Controllers\CheckingController::class,'filtering'])->name('filtering');
 Route::post('cari_filtering',[App\Http\Controllers\CheckingController::class,'cari_filtering'])->name('cari_filtering');
 Route::get('list_country',[App\Http\Controllers\ReportingController::class,'list_country'])->name('list_country');
+Route::get('negara',[App\Http\Controllers\ReportingController::class,'negara'])->name('negara');
+Route::get('tambah_list_country',[App\Http\Controllers\ReportingController::class,'tambah_list_country'])->name('tambah_list_country');
+Route::post('add_list_country',[App\Http\Controllers\ReportingController::class,'add_list_country'])->name('add_list_country');
+Route::post('delete_list_country',[App\Http\Controllers\ReportingController::class,'delete_list_country'])->name('delete_list_country');
+Route::get('filtering_transaction',[App\Http\Controllers\ReportingController::class,'filtering_transaction'])->name('filtering_transaction');
+Route::post('search_filtering_transaction',[App\Http\Controllers\ReportingController::class,'search_filtering_transaction'])->name('search_filtering_transaction');
+
+Route::get('kota',[App\Http\Controllers\ReportingController::class,'kota'])->name('kota');
 Route::post('search_sales',[App\Http\Controllers\CheckingController::class,'search_sales'])->name('search_sales');
 Route::post('search_newcustomer',[App\Http\Controllers\CheckingController::class,'search_newcustomer'])->name('search_newcustomer');
 Route::get('screening',[App\Http\Controllers\CheckingController::class,'screening'])->name('screening');

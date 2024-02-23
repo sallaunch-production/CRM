@@ -45,7 +45,9 @@
 </div>
 </div>
                             @if(!empty($list_country))
-                            <table  id="example" class="table  table-striped  table-bordered" style="width:100%;">
+                            <h3>List Risk Country</h3>
+                            <a  href="{{ route('tambah_list_country') }}"><input type=button class="btn btn-danger" value="Tambah Data"></a><br><br>
+                            <table  id="example" class="table table-responsive table-striped  table-bordered">
                                     <thead>
                                     <tr>
                                         <th>No</th>
@@ -65,7 +67,15 @@
                                     <tr>
                                         <th >{{$key+1 }}</th>
                                         <td>{{ $transactions->nama }}</td>
-                                        <td><input type=button class="btn btn-warning" value=Hapus></td>
+                                        <td>
+                                            <form method="POST" action="{{ route('delete_list_country') }}">
+                                                @csrf
+                                                
+                                                <input name="id" type="hidden" value="{{$transactions->id}}">
+                                                <button type="submit" class="btn btn-xs btn-warning show_confirm" data-toggle="tooltip" title='Delete'>Delete</button>
+                                            </form>
+                                           
+                                        </td>
                                     @endforeach 
                                  </tbody>
                                 </table>
@@ -112,6 +122,27 @@
                                 </tbody>
                                 </table>
 
+                            @elseif(!empty($tambah_data))
+                            <h2>Tambah High Risk Country</h2>
+                            <div class=row>
+                                <div class=col-md-4>
+                            <form action="{{route('add_list_country')}}" method="POST">
+                                @csrf
+                                    <div style="form-group">
+                                        <label>Negara Pengirim</label>
+                                        <select name=negara_pengirim class=form-control>
+                                        @foreach($data as $datqu)
+                                            <option value="{{$datqu->countryName}}">{{$datqu->countryName}}</option>
+                                        @endforeach
+                                      
+                                        </select>
+                                    </div>
+                                    <br>
+                                <input type=submit value="Simpan" class="btn btn-info">
+                            </form>     
+                            </div>
+                                </div>
+                            
                             @endif
 
                         </div><!--card-body-->
@@ -137,4 +168,49 @@
         $("#success-alert").fadeOut(500);
         });
    </script>
+     
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
+
+<script type="text/javascript">
+
+ 
+
+     $('.show_confirm').click(function(event) {
+
+          var form =  $(this).closest("form");
+
+          var name = $(this).data("name");
+
+          event.preventDefault();
+
+          swal({
+
+              title: `Are you sure you want to delete this record?`,
+
+              text: "If you delete this, it will be gone forever.",
+
+              icon: "warning",
+
+              buttons: true,
+
+              dangerMode: true,
+
+          })
+
+          .then((willDelete) => {
+
+            if (willDelete) {
+
+              form.submit();
+
+            }
+
+          });
+
+      });
+
+  
+
+</script>
 @stop

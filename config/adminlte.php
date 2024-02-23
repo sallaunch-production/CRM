@@ -420,21 +420,21 @@ return [
                 ],
                 [
                     'text' => 'Filtering Transaction',
-                    'url'  => '#',
+                    'url'  => 'filtering_transaction',
                     'shift'   => 'ml-3',
                     'icon'    => 'fas fa-fw fa-clipboard',
                     
                 ],
                 [
                     'text' => 'Kota',
-                    'url'  => '#',
+                    'url'  => 'kota',
                     'shift'   => 'ml-3',
                     'icon'    => 'fas fa-fw fa-clipboard',
                     
                 ],
                 [
                     'text' => 'Negara',
-                    'url'  => '#',
+                    'url'  => 'negara',
                     'shift'   => 'ml-3',
                     'icon'    => 'fas fa-fw fa-clipboard',
                     

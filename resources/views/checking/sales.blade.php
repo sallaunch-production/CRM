@@ -28,8 +28,8 @@
                           
                             <!-- COLOR PALETTE -->
                          
-                                        <div class="box-body" style="width:50%;">
-                                            <form role="form" action="{{route('search_sales')}}" method="POST">
+                                        <div class="box-body" >
+                                            <form role="form" action="{{route('search_sales')}}" method="POST" style="width:50%;">
                                             @csrf
                                             
                                             <div class=form-group>

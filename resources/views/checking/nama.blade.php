@@ -29,7 +29,7 @@
                            
                             <div class="form-group">
                                 <label>Date range:</label>
-                                <form class=form-group action="{{ route('cari_nama')}}"  method="POST">
+                                <form class=form-group action="{{ route('cari_nama')}}"  method="POST" style="width:30%;">
                                   @csrf
                                 <div class='input-group date' id='datetimepicker'>
                                     <input type=hidden name=act >

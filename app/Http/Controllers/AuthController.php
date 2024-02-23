@@ -71,7 +71,13 @@ class AuthController extends Controller
         //  cek berhasil login 
             $email=Session::get('user_email'); 
             $password=Session::get('user_password'); 
-           
+            $satu=$request->satu;
+            $dua=$request->dua;
+            $tiga=$request->tiga;
+            $empat=$request->empat;
+            $lima=$request->lima;
+            $enam=$request->enam;
+            $request_code=$satu.$dua.$tiga.$empat.$lima.$enam;
             $user = DB::table('users')->where('email','=',$email)->get();
             foreach($user as $users){
                 $nama=$users->name;
@@ -82,7 +88,7 @@ class AuthController extends Controller
             }
             $google2fa = new Google2FA();
             $otp_secret = $codenya;
-            $valid =$google2fa->verifyKey($otp_secret, $request->code);
+            $valid =$google2fa->verifyKey($otp_secret, $request_code);
           
             $credentials =  ['email'=>$email,'password'=>$password];
            
