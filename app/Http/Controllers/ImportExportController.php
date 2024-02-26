@@ -4,7 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Exports\ReportTransaksi;
+use App\Exports\CetakLaporanBIg0001;
+use App\Exports\CetakLaporanBIg0002;
 use App\Exports\Rekons;
+use App\Exports\CetakLaporanBI;
+
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use DB;
@@ -63,4 +67,39 @@ class ImportExportController extends Controller
             return  Excel::download(new Rekons($tanggal_dari,$tanggal_sampai), $tgllengkap.'.csv');
         
     }
+
+    public function cetak_laporan_bi_baru(Request $request)
+    {
+
+        $tanggal_dari = $request->tanggal_dari;
+        $tanggal_sampai = $request->tanggal_sampai;
+
+       
+        return  Excel::download(new CetakLaporanBI($tanggal_dari,$tanggal_sampai), 'G0002.xls');
+    }
+
+    public function cetak_laporan_bi_g0001(Request $request)
+    {
+
+        $tanggal_dari = $request->tanggal_dari;
+        $tanggal_sampai = $request->tanggal_sampai;
+
+       
+        return  Excel::download(new CetakLaporanBIg0001($tanggal_dari,$tanggal_sampai), 'G0001.csv', \Maatwebsite\Excel\Excel::CSV, [
+            'Content-Type' => 'text/csv',
+      ]);
+    }
+
+    public function cetak_laporan_bi_baru_txt(Request $request)
+    {
+
+        $tanggal_dari = $request->tanggal_dari;
+        $tanggal_sampai = $request->tanggal_sampai;
+
+       
+        return  Excel::download(new CetakLaporanBIg0002($tanggal_dari,$tanggal_sampai), 'G0002.csv', \Maatwebsite\Excel\Excel::CSV, [
+            'Content-Type' => 'text/csv',
+      ]);
+    }
+    
 }

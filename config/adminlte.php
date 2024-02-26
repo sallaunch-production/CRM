@@ -454,7 +454,7 @@ return [
         ],
         [
             'text' => 'Laporan',
-            'url'  => '#',
+            'url'  => 'laporan',
             'icon' => 'fa fa-book fa-fw',
         ],
         [

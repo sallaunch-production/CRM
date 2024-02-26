@@ -43,24 +43,15 @@
                             <p class="login-box-msg">Sign in to start your session</p>
                             <form method="POST" action="{{ route('proses.login') }}">
                              @csrf  
-                             <div class="input-group mb-3">
+                             <div class="input-container">
                                 <input type="email" class="form-control @error('email') is-invalid @enderror" placeholder="Email"name="email" value="{{ old('email') }}" required autocomplete="email" autofocus>
-                            <div class="input-group-append">
-                        <div class="input-group-text">
-                        <span class="fas fa-envelope"></span>
-                    </div>
-                </div>
-                </div>
-                <div class="input-group mb-3">
-                <input type="password" class="form-control @error('password') is-invalid @enderror" placeholder="Password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="current-password">
-                <div class="input-group-append">
-                  <div class="input-group-text">
-                         <span class="fas fa-fw fa-clipboard"></span>
-                     </div>
-            </div>
-        </div>
-
-        <div class="row">
+                                <i class="fa fa-envelope icon"></i>
+                             </div><br>
+                             <div class="input-container">
+                                 <input type="password" class="form-control @error('password') is-invalid @enderror" placeholder="Password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="current-password">
+                                 <i class="fa fa-key icon"></i>
+                              </div><br>
+                              <div class="row">
                 <div class="col-12">
                 {!! app('captcha')->display() !!}
                             @if ($errors->has('g-recaptcha-response'))
@@ -77,6 +68,10 @@
             <button type="submit" class="btn btn-primary btn-block" style="float:left;">Sign In</button>
 
         </form>
+            </div>
+        </div>
+
+    
      </div>
 </div>
 </div>

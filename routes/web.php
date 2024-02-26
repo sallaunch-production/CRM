@@ -68,7 +68,13 @@ Route::post('add_list_country',[App\Http\Controllers\ReportingController::class,
 Route::post('delete_list_country',[App\Http\Controllers\ReportingController::class,'delete_list_country'])->name('delete_list_country');
 Route::get('filtering_transaction',[App\Http\Controllers\ReportingController::class,'filtering_transaction'])->name('filtering_transaction');
 Route::post('search_filtering_transaction',[App\Http\Controllers\ReportingController::class,'search_filtering_transaction'])->name('search_filtering_transaction');
+Route::post('cetak_laporan_bi_baru',[App\Http\Controllers\ImportExportController::class,'cetak_laporan_bi_baru'])->name('cetak_laporan_bi_baru');
+Route::post('cetak_laporan_bi_g0001',[App\Http\Controllers\ImportExportController::class,'cetak_laporan_bi_g0001'])->name('cetak_laporan_bi_g0001');
+Route::post('cetak_laporan_bi_g0002',[App\Http\Controllers\ImportExportController::class,'cetak_laporan_bi_g0002'])->name('cetak_laporan_bi_g0002');
+Route::post('cetak_laporan_bi_baru_txt',[App\Http\Controllers\ImportExportController::class,'cetak_laporan_bi_baru_txt'])->name('cetak_laporan_bi_baru_txt');
 
+Route::post('cari_laporan',[App\Http\Controllers\ReportingController::class,'cari_laporan'])->name('cari_laporan');
+Route::get('laporan',[App\Http\Controllers\ReportingController::class,'laporan'])->name('laporan');
 Route::get('kota',[App\Http\Controllers\ReportingController::class,'kota'])->name('kota');
 Route::post('search_sales',[App\Http\Controllers\CheckingController::class,'search_sales'])->name('search_sales');
 Route::post('search_newcustomer',[App\Http\Controllers\CheckingController::class,'search_newcustomer'])->name('search_newcustomer');

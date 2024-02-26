@@ -270,4 +270,37 @@ class ReportingController extends Controller
     return redirect('login')->with('You dont have access');
   }
 
+  public function laporan()
+  {
+    if(Auth::check()){
+         return view('reporting.laporan', [
+            
+          ]);
+    }
+    return redirect('login')->with('You dont have access');
+  }
+
+  public function cari_laporan(Request $request)
+  {
+    if(Auth::check()){
+      $tanggal = $request->reservation;
+      $dari = explode('/',$tanggal);
+
+      $tahunini = date('Y');
+      
+      $tahun_dari = $dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3];
+      $periode_dari = $dari[1].'-'.$dari[0].'-'.$dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3];
+      $periode_sampai = $dari[3].'-'.$dari[2][7].$dari[2][8].'-'.$dari[4];
+
+      $tanggal_dari = $dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3].'-'.$dari[0].'-'.$dari[1];
+      $tanggal_sampai =  $dari[4].'-'.$dari[2][7].$dari[2][8].'-'.$dari[3];
+     
+         return view('reporting.laporan', [
+          'tanggal_dari'=>$tanggal_dari,'tanggal_sampai'=>$tanggal_sampai
+          ]);
+    }
+    return redirect('login')->with('You dont have access');
+  }
+
+  
 }
