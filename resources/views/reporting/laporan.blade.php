@@ -72,15 +72,37 @@
                                     </form>
                                  </td>
                                 <td width=25%>
-                                <form action="{{route('cetak_laporan_bi_baru_txt')}}" method="POST">
+                                    <form action="{{route('cetak_laporan_bi_baru_txt')}}" method="POST">
                                     @csrf
                                         <input type=hidden  name="tanggal_dari" value="{{$tanggal_dari}}">
                                         <input type=hidden  name="tanggal_sampai" value="{{$tanggal_sampai}}">
                                     <input type=submit class="btn btn-info" value="Download G0002 Laporan BI">
                                     </form>
                                 </td>
-                                <td width=25%><input type=button class="btn btn-info" value="Download G0003 Laporan BI"></td>
-                                <td><input type=button class="btn btn-danger" value="Cetak Laporan PPATK"></a></td><td><input type=button class="btn btn-danger" value="Cetak Laporan PPATK C2A"></td>
+                                <td width=25%>
+                                    <form action="{{route('cetak_laporan_bi_g0003')}}" method="POST">
+                                    @csrf
+                                        <input type=hidden  name="tanggal_dari" value="{{$tanggal_dari}}">
+                                        <input type=hidden  name="tanggal_sampai" value="{{$tanggal_sampai}}">
+                                    <input type=submit class="btn btn-info" value="Download G0003 Laporan BI">
+                                    </form>
+                                </td>
+                                <td>
+                                <form action="{{route('cetak_laporan_ppatk_baru')}}" method="POST">
+                                    @csrf
+                                        <input type=hidden  name="tanggal_dari" value="{{$tanggal_dari}}">
+                                        <input type=hidden  name="tanggal_sampai" value="{{$tanggal_sampai}}">
+                                     <input type=submit class="btn btn-danger" value="Cetak Laporan PPATK">
+                                     </form>
+                                </td>
+                                <td>
+                                <form action="" method="POST">
+                                    @csrf
+                                        <input type=hidden  name="tanggal_dari" value="{{$tanggal_dari}}">
+                                        <input type=hidden  name="tanggal_sampai" value="{{$tanggal_sampai}}">
+                                  <input type=submit class="btn btn-danger" value="Cetak Laporan PPATK C2A">
+                                    </form>
+                                </td>
                             </tr>
                         </tbody>
                     </table>	

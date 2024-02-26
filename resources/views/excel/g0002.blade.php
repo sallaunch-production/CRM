@@ -18,13 +18,13 @@
                                             @php
                                                 $idpos= substr($datatrans->id_pos, 0, 5);
                                                 $kodepos=DB::table('kp_konverter')->where('kpc','LIKE',$idpos.'%')->join('nopend_lama','nopend_lama.kprk','=','kp_konverter.kprk')->first();
-                                                $kodeposasli_bi=$kodepos->bi;
+                                                $kodeposasli_bi=$kodepos->bi ?? '';
                                                 $kodenegara=DB::table('negara_konverter')->where('nama','LIKE','%'.$datatrans->negara_pengirim.'%')->first();
                                             @endphp
                                           {{ $kodenegara->bi ?? ''}}
                                         </td>
                                        
-                                        <td>{{ $kodeposasli_bi }}</td>
+                                        <td>{{ $kodeposasli_bi ?? '' }}</td>
                                         <td>{{ $datatrans->nama_pengirim }}</td>
                                         <td>{{ $datatrans->nama_penerima }}</td>
                                         <td>{{ number_format($datatrans->jumlah) }}</td>
