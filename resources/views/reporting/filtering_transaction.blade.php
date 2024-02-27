@@ -30,9 +30,9 @@
                              <div class="row">
                                 <div class="col-md-6">   
                                 <h3>Category : </h3>
-                                    <table class="table table-hover" style="width:400px;" valign=center><tr><td><img src="vendor/adminlte/dist/img//people.jpg" height=50> <br>All</td>
-                                    <td><img src="vendor/adminlte/dist/img/card.png" height=50> <br>Identity</td>
-                                    <td><img src="vendor/adminlte/dist/img//telepon_penerima.png" height=50> <br>Phone</td> <td><img src="vendor/adminlte/dist/img//passport.png" height=50> <br>Country</td><td><img src="vendor/adminlte/dist/img//sender.png" height=50> <br>Sender</td>
+                                <table class="table table-hover" style="width:400px;" valign=center><tr><td><a href="{{route('filtering_transaction')}}"><img src="vendor/adminlte/dist/img//people.jpg" height=50> <br>All</a></td>
+                                    <td><a href="{{route('filtering_identitas')}}"><img src="vendor/adminlte/dist/img/card.png" height=50> <br>Identity</a></td>
+                                    <td><a href="{{route('filter_telepon')}}"><img src="vendor/adminlte/dist/img//telepon_penerima.png" height=50> <br>Phone</a></td> <td><a href="{{route('filter_negara')}}"><img src="vendor/adminlte/dist/img//passport.png" height=50> <br>Country</a></td><td><a href="{{route('filter_sender')}}"><img src="vendor/adminlte/dist/img//sender.png" height=50> <br>Sender</a></td>
                                     </tr></table>
                                 <br><br><h2>Transaction Filtering</h2>
                                 <form action="{{route('search_filtering_transaction')}}" method="POST" style="width:50%;">

@@ -218,10 +218,83 @@ class ReportingController extends Controller
       public function kota()
       {
         if(Auth::check()){
+            $nopends="";
+            $cari="kosong";
             $query = DB::table('transaksi_valid')->select('id_pos',DB::raw("sum(cast(replace(bsubanyak, ',','') as float))"),DB::raw('COUNT(no_referensi) as perbuatan'))->where('deltawork','=','ya')->where('id_pos','<>','')->groupBy('id_pos')->orderBy('perbuatan','desc')->get();
             return view('reporting.kota', [
-              'data'=>$query,
+              'data'=>$query, 'nopends'=>$nopends,'cari'=>$cari
              ]);
+      }
+      return redirect('login')->with('You dont have access');
+    }
+
+    
+    public function detail_kota(Request $request)
+    {
+      if(Auth::check()){
+          $id=$request->id;
+          $cari="";
+          $query = DB::table('transaksi_valid')->where('deltawork','=','ya')->where('id_pos','=',$id)->orderBy('tanggal','desc')->get();
+          $nopends=substr($id,0,5);
+          $datakotas = DB::table('nopend_lama')->where('kpc','LIKE',$nopends.'%')->first();
+         
+          return view('reporting.kota', [
+            'data'=>$query,'cari'=>$cari,'datakotas'=>$datakotas,'nopends'=>$nopends
+           ]);
+      }
+      return redirect('login')->with('You dont have access');
+    }
+
+    
+    public function cari_kota(Request $request)
+    {
+      if(Auth::check()){
+        $cari="ya"; $nopends="";
+        $tanggal = $request->reservation;
+        $dari = explode('/',$tanggal);
+  
+        $tahunini = date('Y');
+        
+        $tahun_dari = $dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3];
+        $periode_dari = $dari[1].'-'.$dari[0].'-'.$dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3];
+        $periode_sampai = $dari[3].'-'.$dari[2][7].$dari[2][8].'-'.$dari[4];
+  
+        $tanggal_dari = $dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3].'-'.$dari[0].'-'.$dari[1];
+        $tanggal_sampai =  $dari[4].'-'.$dari[2][7].$dari[2][8].'-'.$dari[3];
+        $query= DB::table('transaksi_valid')->select('id_pos',DB::raw("sum(cast(replace(bsubanyak, ',','') as float))"),DB::raw('COUNT(transaksi_valid.no_referensi) as perbuatan'),'bsubanyak')->where('deltawork','=','ya')->where('id_pos','<>','')->where('tanggal','>=',$tanggal_dari.' 00:00:00')->where('tanggal','<=',$tanggal_sampai.' 23:59:59')->groupBy('id_pos','bsubanyak')->orderBy('perbuatan','desc')->get();
+        $databsu = DB::table('transaksi_valid')->select(DB::raw("sum(cast(replace(bsubanyak, ',','') as float))"),DB::raw('COUNT(no) as jumlah'))->where('deltawork','=','ya')->where('id_pos','<>','')->where('tanggal','>=',$tanggal_dari.' 00:00:00')->where('tanggal','<=',$tanggal_sampai.' 23:59:59')->first();
+        $totalbsu=number_format($databsu->sum);
+        $jumlah=number_format($databsu->jumlah);
+
+
+        return view('reporting.kota', [
+            'data'=>$query,'nopends'=>$nopends,'cari'=>$cari,'jumlah'=>$jumlah,'totalbsu'=>$totalbsu,'tanggal_dari'=>$tanggal_dari,'tanggal_sampai'=>$tanggal_sampai
+           ]);
+      }
+      return redirect('login')->with('You dont have access');
+    }
+
+
+    public function tanggal_valid(Request $request)
+    {
+      if(Auth::check()){
+        $tanggal_valid="ya";
+        $tanggal_dari=$request->dari;
+        $tanggal_sampai=$request->sampai;
+        $id=$request->id;
+        $query= DB::table('transaksi_valid')->where('deltawork','=','ya')->where('id_pos','=',$id)->where('tanggal','>=',$tanggal_dari.' 00:00:00')->where('tanggal','<=',$tanggal_sampai.' 23:59:59')->orderBy('tanggal','desc')->get();
+        //$databsu= DB::table('transaksi','transaksi_valid')->select(DB::raw("sum(transaksi.bsu) as float"),DB::raw('COUNT(transaksi_valid.no) as jumlah'))->where('transaksi_valid.deltawork','=','ya')->where('tanggal','>=',$tanggal_dari.' 00:00:00')->where('tanggal','<=',$tanggal_sampai.' 23:59:59')->where('transaksi_valid.id_pos','=',$id)->first();
+        $databsu= TransaksiValid::with('transaksi')->select(DB::raw('COUNT(transaksi_valid.no) as jumlah'))
+        ->whereHas('transaksi',function($q) use ($id){
+            $q->select(DB::raw("sum(transaksi.bsu) as float"))->where('id',$id);
+        })->where('transaksi_valid.deltawork','=','ya')->where('tanggal','>=',$tanggal_dari.' 00:00:00')->where('tanggal','<=',$tanggal_sampai.' 23:59:59')->where('transaksi_valid.id_pos','=',$id)->get();
+       
+        $totalbsu=number_format($databsu->totalbsu);
+        $jumlah=number_format($databsu->jumlah);
+        
+        return view('reporting.kota', [
+            'data'=>$query,'tanggal_valid'=>$tanggal_valid,'tanggal_dari'=>$tanggal_dari,'tanggal_sampai'=>$tanggal_sampai,'totalbsu'=>$totalbsu,'jumlah'=>$jumlah
+           ]);
       }
       return redirect('login')->with('You dont have access');
     }
@@ -302,5 +375,211 @@ class ReportingController extends Controller
     return redirect('login')->with('You dont have access');
   }
 
+    public function filtering_identitas()
+    {
+      if(Auth::check()){
+          $query = DB::table('transaksi')->select('transaksi_valid.negara_pengirim',DB::raw("sum(cast(replace(transaksi.bsu, ',','') as float))"),DB::raw('COUNT(transaksi.no) as perbuatan'))->join('transaksi_valid','transaksi_valid.no_referensi','=','transaksi.no_referensi')->where('deltawork','=','ya')->groupBy('transaksi_valid.negara_pengirim')->orderBy('perbuatan','desc')->get();
+          return view('reporting.filtering_identitas', [
+            'data'=>$query,
+          ]);
+    }
+      return redirect('login')->with('You dont have access');
+    }
+
+    public function filter_telepon()
+    {
+      if(Auth::check()){
+          $query = DB::table('transaksi')->select('transaksi_valid.negara_pengirim',DB::raw("sum(cast(replace(transaksi.bsu, ',','') as float))"),DB::raw('COUNT(transaksi.no) as perbuatan'))->join('transaksi_valid','transaksi_valid.no_referensi','=','transaksi.no_referensi')->where('deltawork','=','ya')->groupBy('transaksi_valid.negara_pengirim')->orderBy('perbuatan','desc')->get();
+          return view('reporting.filter_telepon', [
+            'data'=>$query,
+          ]);
+    }
+      return redirect('login')->with('You dont have access');
+    }
+
+
+    public function filter_negara()
+    {
+      if(Auth::check()){
+          $query = DB::table('transaksi')->select('transaksi_valid.negara_pengirim',DB::raw("sum(cast(replace(transaksi.bsu, ',','') as float))"),DB::raw('COUNT(transaksi.no) as perbuatan'))->join('transaksi_valid','transaksi_valid.no_referensi','=','transaksi.no_referensi')->where('deltawork','=','ya')->groupBy('transaksi_valid.negara_pengirim')->orderBy('perbuatan','desc')->get();
+          return view('reporting.filter_negara', [
+            'data'=>$query,
+          ]);
+    }
+      return redirect('login')->with('You dont have access');
+    }
+
+
+
+    public function filter_sender()
+    {
+      if(Auth::check()){
+          $query = DB::table('transaksi')->select('transaksi_valid.negara_pengirim',DB::raw("sum(cast(replace(transaksi.bsu, ',','') as float))"),DB::raw('COUNT(transaksi.no) as perbuatan'))->join('transaksi_valid','transaksi_valid.no_referensi','=','transaksi.no_referensi')->where('deltawork','=','ya')->groupBy('transaksi_valid.negara_pengirim')->orderBy('perbuatan','desc')->get();
+          return view('reporting.filter_sender', [
+            'data'=>$query,
+          ]);
+    }
+      return redirect('login')->with('You dont have access');
+    }
+ 
+    
+    public function search_filtering_identitas(Request $request)
+    {
+      if(Auth::check()){
+        $tanggal = $request->reservation;
+        $dari = explode('/',$tanggal);
   
+        $tahunini = date('Y');
+        
+        $tahun_dari = $dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3];
+        $periode_dari = $dari[1].'-'.$dari[0].'-'.$dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3];
+        $periode_sampai = $dari[3].'-'.$dari[2][7].$dari[2][8].'-'.$dari[4];
+  
+        $tanggal_dari = $dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3].'-'.$dari[0].'-'.$dari[1];
+        $tanggal_sampai =  $dari[4].'-'.$dari[2][7].$dari[2][8].'-'.$dari[3];
+        $query = DB::table('transaksi_valid')->select(DB::raw('COUNT(distinct nama_penerima) as perbuatan'),'identitas','nomor_identitas')->where('deltawork','=','ya')->where('id_transaksi','<>','')->where('tanggal','>=',$tanggal_dari.' 00:00:00')->where('tanggal','<=',$tanggal_sampai.' 23:59:59')->groupBy('nomor_identitas','identitas')->orderBy('perbuatan','desc')->get();
+       
+        return view('reporting.filtering_identitas', [
+          'data'=>$query,'tanggal_dari'=>$tanggal_dari,'tanggal_sampai'=>$tanggal_sampai
+        ]);
+
+      }
+      return redirect('login')->with('You dont have access');
+    }
+
+    public function detail_identitas(Request $request)
+    {
+      if(Auth::check()){
+        $tanggal_dari =$request->dari;
+        $tanggal_sampai = $request->sampai;
+        $telpon = $request->telpon;
+        $identitas = $request->identitas;
+
+        $query=DB::table('transaksi_valid')->where('deltawork','=','ya')->where('id_transaksi','<>','')->where('tanggal','>=',$tanggal_dari.' 00:00:00')->where('tanggal','<=',$tanggal_sampai.' 23:59:59')->where('nomor_identitas','=',$telpon)->where('identitas','=',$identitas)->orderBy('tanggal','desc')->get();
+        return view('reporting.filtering_identitas', [
+          'data'=>$query,'identitas'=>$identitas,'telpon'=>$telpon,'tanggal_dari_s'=>$tanggal_dari,'tanggal_sampai_s'=>$tanggal_sampai
+        ]);
+      }
+      return redirect('login')->with('You dont have access');
+    }
+
+    public function search_filtering_telepon(Request $request)
+    {
+      if(Auth::check()){
+        $tanggal = $request->reservation;
+        $dari = explode('/',$tanggal);
+  
+        $tahunini = date('Y');
+        
+        $tahun_dari = $dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3];
+        $periode_dari = $dari[1].'-'.$dari[0].'-'.$dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3];
+        $periode_sampai = $dari[3].'-'.$dari[2][7].$dari[2][8].'-'.$dari[4];
+  
+        $tanggal_dari = $dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3].'-'.$dari[0].'-'.$dari[1];
+        $tanggal_sampai =  $dari[4].'-'.$dari[2][7].$dari[2][8].'-'.$dari[3];
+        $query = DB::table('transaksi_valid')->select(DB::raw('COUNT(distinct nama_penerima) as perbuatan'),'telepon_penerima')->where('deltawork','=','ya')->where('id_transaksi','<>','')->where('tanggal','>=',$tanggal_dari.' 00:00:00')->where('tanggal','<=',$tanggal_sampai.' 23:59:59')->groupBy('telepon_penerima')->orderBy('perbuatan','desc')->get();
+       
+        return view('reporting.filter_telepon', [
+          'data'=>$query,'tanggal_dari'=>$tanggal_dari,'tanggal_sampai'=>$tanggal_sampai
+        ]);
+
+      }
+      return redirect('login')->with('You dont have access');
+    }
+
+    public function detail_telpon(Request $request)
+    {
+      if(Auth::check()){
+        $tanggal_dari =$request->dari;
+        $tanggal_sampai = $request->sampai;
+        $telpon = $request->telpon;
+
+        $query=DB::table('transaksi_valid')->where('deltawork','=','ya')->where('id_transaksi','<>','')->where('tanggal','>=',$tanggal_dari.' 00:00:00')->where('tanggal','<=',$tanggal_sampai.' 23:59:59')->where('telepon_penerima','=',$telpon)->orderBy('tanggal','desc')->get();
+        return view('reporting.filter_telepon', [
+          'data'=>$query,'telpon'=>$telpon,'tanggal_dari_s'=>$tanggal_dari,'tanggal_sampai_s'=>$tanggal_sampai
+        ]);
+      }
+      return redirect('login')->with('You dont have access');
+    }
+
+    
+    public function search_filtering_negara(Request $request)
+    {
+      if(Auth::check()){
+        $tanggal = $request->reservation;
+        $dari = explode('/',$tanggal);
+  
+        $tahunini = date('Y');
+        
+        $tahun_dari = $dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3];
+        $periode_dari = $dari[1].'-'.$dari[0].'-'.$dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3];
+        $periode_sampai = $dari[3].'-'.$dari[2][7].$dari[2][8].'-'.$dari[4];
+  
+        $tanggal_dari = $dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3].'-'.$dari[0].'-'.$dari[1];
+        $tanggal_sampai =  $dari[4].'-'.$dari[2][7].$dari[2][8].'-'.$dari[3];
+
+        $query = DB::table('transaksi_valid')->select(DB::raw("sum(cast(replace(bsubanyak, ',','') as float))"),'nama_penerima',DB::raw('COUNT(distinct negara_pengirim) as perbuatan'))->where('deltawork','=','ya')->where('id_transaksi','<>','')->where('tanggal','>=',$tanggal_dari.' 00:00:00')->where('tanggal','<=',$tanggal_sampai.' 23:59:59')->groupBy('nama_penerima','nomor_identitas')->get();
+       
+        return view('reporting.filter_negara', [
+          'data'=>$query,'tanggal_dari'=>$tanggal_dari,'tanggal_sampai'=>$tanggal_sampai
+        ]);
+      }
+      return redirect('login')->with('You dont have access');
+    }
+
+    public function detail_negara(Request $request)
+    {
+      if(Auth::check()){
+        $tanggal_dari =$request->dari;
+        $tanggal_sampai = $request->sampai;
+        $nama_penerima = $request->nama_penerima; 
+        $query = DB::table('transaksi_valid')->where('deltawork','=','ya')->where('id_transaksi','<>','')->where('tanggal','>=',$tanggal_dari.' 00:00:00')->where('tanggal','<=',$tanggal_sampai.' 23:59:59')->where('nama_penerima','=',$nama_penerima)->orderBy('tanggal','desc')->get();
+
+        return view('reporting.filter_negara', [
+          'data'=>$query,'nama_penerima'=>$nama_penerima,'dari'=>$tanggal_dari,'sampai'=>$tanggal_sampai
+        ]);
+      }
+      return redirect('login')->with('You dont have access');
+    }
+
+    public function search_filtering_sender(Request $request)
+    {
+      if(Auth::check()){
+        $tanggal = $request->reservation;
+        $dari = explode('/',$tanggal);
+  
+        $tahunini = date('Y');
+        
+        $tahun_dari = $dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3];
+        $periode_dari = $dari[1].'-'.$dari[0].'-'.$dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3];
+        $periode_sampai = $dari[3].'-'.$dari[2][7].$dari[2][8].'-'.$dari[4];
+  
+        $tanggal_dari = $dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3].'-'.$dari[0].'-'.$dari[1];
+        $tanggal_sampai =  $dari[4].'-'.$dari[2][7].$dari[2][8].'-'.$dari[3];
+
+        $query = DB::table('transaksi_valid')->select(DB::raw("sum(cast(replace(bsubanyak, ',','') as float))"),'nama_penerima',DB::raw('COUNT(distinct nama_pengirim) as perbuatan'),DB::raw('COUNT(distinct nomor_identitas) as noden'))->where('deltawork','=','ya')->where('id_transaksi','<>','')->where('tanggal','>=',$tanggal_dari.' 00:00:00')->where('tanggal','<=',$tanggal_sampai.' 23:59:59')->groupBy('nama_penerima','nomor_identitas')->orderBy('perbuatan','desc')->get();
+       
+        return view('reporting.filter_negara', [
+          'data'=>$query,'tanggal_dari'=>$tanggal_dari,'tanggal_sampai'=>$tanggal_sampai
+        ]);
+      }
+      return redirect('login')->with('You dont have access');
+    }
+
+    public function detail_sender(Request $request)
+    {
+      if(Auth::check()){
+        $tanggal_dari =$request->dari;
+        $tanggal_sampai = $request->sampai;
+        $nama_penerima = $request->nama_penerima; 
+        $query = DB::table('transaksi_valid')->where('deltawork','=','ya')->where('id_transaksi','<>','')->where('tanggal','>=',$tanggal_dari.' 00:00:00')->where('tanggal','<=',$tanggal_sampai.' 23:59:59')->where('nama_penerima','=',$nama_penerima)->orderBy('tanggal','desc')->get();
+
+        return view('reporting.filter_sender', [
+          'data'=>$query,'nama_penerima'=>$nama_penerima,'dari'=>$tanggal_dari,'sampai'=>$tanggal_sampai
+        ]);
+      }
+      return redirect('login')->with('You dont have access');
+   
+    }
+
 }
