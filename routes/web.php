@@ -83,6 +83,9 @@ Route::post('detail_sender',[App\Http\Controllers\ReportingController::class,'de
 Route::post('detail_kota',[App\Http\Controllers\ReportingController::class,'detail_kota'])->name('detail_kota');
 Route::post('cari_kota',[App\Http\Controllers\ReportingController::class,'cari_kota'])->name('cari_kota');
 Route::post('tanggal_valid',[App\Http\Controllers\ReportingController::class,'tanggal_valid'])->name('tanggal_valid');
+Route::post('proses_detail_negara',[App\Http\Controllers\ReportingController::class,'proses_detail_negara'])->name('proses_detail_negara');
+Route::post('cari_negara',[App\Http\Controllers\ReportingController::class,'cari_negara'])->name('cari_negara');
+Route::post('pencarian_detail_negara',[App\Http\Controllers\ReportingController::class,'pencarian_detail_negara'])->name('pencarian_detail_negara');
 
 Route::post('cetak_laporan_bi_baru',[App\Http\Controllers\ImportExportController::class,'cetak_laporan_bi_baru'])->name('cetak_laporan_bi_baru');
 Route::post('cetak_laporan_bi_g0001',[App\Http\Controllers\ImportExportController::class,'cetak_laporan_bi_g0001'])->name('cetak_laporan_bi_g0001');

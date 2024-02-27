@@ -248,22 +248,9 @@ class CheckingController extends Controller
           $tahun_sampai =  $dari[4];
           $cari = "ya";
           $quer=DB::table('transaksi_valid')->where('deltawork','=','ya')->where('tanggal','>=',$tanggal_dari.' 00:00:00')->where('tanggal','<=',$tanggal_sampai.' 23:59:59')->orderBy('tanggal','desc')->get();
-          $nama_penerima=array();
-          $nama_pengirim=array();
-          foreach($quer as $trx_valid) {
-                  $namapenerima_s = $trx_valid->nama_penerima;
-                  $namapengirim_s = $trx_valid->nama_pengirim;
-                  array_push($nama_penerima,$namapenerima_s);
-                  array_push($nama_pengirim,$namapengirim_s);
-              
-          }
-          $string1=implode(",",$nama_penerima);
-          $string2=implode(",",$nama_pengirim);
-
-          $query_sanction=DB::table('sanction_list')->whereIn('nama','LIKE','%'.$string2.'%')->whereIn('nama','LIKE','%'.$string1.'%')->get();
           
           return view('checking.screening',[
-            'tanggal_sampai'=>$tanggal_sampai,'tanggal_dari'=>$tanggal_dari,'data'=>$quer,'cari'=>$cari,'jum_sanction'=>$query_sanction
+            'tanggal_sampai'=>$tanggal_sampai,'tanggal_dari'=>$tanggal_dari,'data'=>$quer,'cari'=>$cari
           ]);
 
 

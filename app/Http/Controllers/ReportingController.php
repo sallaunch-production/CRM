@@ -302,9 +302,10 @@ class ReportingController extends Controller
     public function negara()
       {
         if(Auth::check()){
+            $negara_pengirim="";
             $query = DB::table('transaksi')->select('transaksi_valid.negara_pengirim',DB::raw("sum(cast(replace(transaksi.bsu, ',','') as float))"),DB::raw('COUNT(transaksi.no) as perbuatan'))->join('transaksi_valid','transaksi_valid.no_referensi','=','transaksi.no_referensi')->where('deltawork','=','ya')->groupBy('transaksi_valid.negara_pengirim')->orderBy('perbuatan','desc')->get();
             return view('reporting.negara', [
-              'data'=>$query,
+              'data'=>$query,'negara_pengirim'=>$negara_pengirim
              ]);
       }
       return redirect('login')->with('You dont have access');
@@ -582,4 +583,71 @@ class ReportingController extends Controller
    
     }
 
+    
+    public function proses_detail_negara(Request $request)
+    {
+      if(Auth::check()){
+          $tanggal_dari="";
+          $negara_pengirim = $request->negara_pengirim;
+          $query=DB::table('transaksi')->where('status','=','valid')->where('proses','=','sudah')->where('negara_pengirim','=',$negara_pengirim)->get();
+
+          return view('reporting.negara', [
+            'data'=>$query,'negara_pengirim'=>$negara_pengirim,'tanggal_dari'=>$tanggal_dari
+          ]);
+      }
+      return redirect('login')->with('You dont have access');
+    }
+
+    public function pencarian_detail_negara(Request $request)
+    {
+      if(Auth::check()){
+          $pencarian_detail_negara="ya";
+          $tanggal_dari=$request->dari;
+          $tanggal_sampai=$request->sampai;
+          $negara_pengirim = $request->negara_pengirim;
+          $id_pos = $request->id_pos;
+          $query=DB::table('transaksi_valid')->where('deltawork','=','ya')->where('negara_pengirim','=',$negara_pengirim)->where('tanggal','>=',$tanggal_dari.' 00:00:00')->where('tanggal','<=',$tanggal_sampai.' 23:59:59')->orderBy('tanggal','desc')->get();
+          $nopends=substr($id_pos,0,5);
+          $datakotas= DB::table('nopend')->where('kpc','like',$nopends.'%')->first();
+          $databsu=DB::table('transaksi_valid')->select(DB::raw("sum(cast(replace(bsubanyak, ',','') as float))"),DB::raw('COUNT(no) as jumlah'))->where('deltawork','=','ya')->where('tanggal','>=',$tanggal_dari.' 00:00:00')->where('tanggal','<=',$tanggal_sampai.' 23:59:59')->where('negara_pengirim','=',$negara_pengirim)->first();
+          $totalbsu=number_format($databsu->sum);
+          $jumlah=number_format($databsu->jumlah);
+
+          return view('reporting.negara', [
+            'data'=>$query,'jumlah'=>$jumlah,'totalbsu'=>$totalbsu,'datakotas'=>$datakotas,'negara_pengirim'=>$negara_pengirim,'tanggal_sampai'=>$tanggal_sampai,'tanggal_dari'=>$tanggal_dari,'pencarian_detail_negara'=>$pencarian_detail_negara
+          ]);
+      }
+      return redirect('login')->with('You dont have access');
+    }
+
+    
+
+    public function cari_negara(Request $request)
+    {
+      if(Auth::check()){
+        $tanggal = $request->reservation;
+        $dari = explode('/',$tanggal);
+  
+        $tahunini = date('Y');
+        
+        $tahun_dari = $dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3];
+        $periode_dari = $dari[1].'-'.$dari[0].'-'.$dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3];
+        $periode_sampai = $dari[3].'-'.$dari[2][7].$dari[2][8].'-'.$dari[4];
+  
+        $tanggal_dari = $dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3].'-'.$dari[0].'-'.$dari[1];
+        $tanggal_sampai =  $dari[4].'-'.$dari[2][7].$dari[2][8].'-'.$dari[3];
+       
+        $databsu= DB::table('transaksi_valid')->select(DB::raw("sum(cast(replace(bsubanyak, ',','') as float))"))->where('deltawork','=','ya')->where('id_transaksi','<>','')->where('tanggal','>=',$tanggal_dari.' 00:00:00')->where('tanggal','<=',$tanggal_sampai.' 23:59:59')->first();
+        $databsu2= DB::table('transaksi_valid')->select(DB::raw('COUNT(no) as jumlah'))->where('deltawork','=','ya')->where('id_pos','<>','')->where('tanggal','>=',$tanggal_dari.' 00:00:00')->where('tanggal','<=',$tanggal_sampai.' 23:59:59')->first();
+              
+        $totalbsu=number_format($databsu->sum);
+        $jumlah=number_format($databsu2->jumlah);
+        $query = DB::table('transaksi_valid')->select(DB::raw("sum(cast(replace(bsubanyak, ',','') as float))"),'negara_pengirim','id_pos',DB::raw('COUNT(no) as perbuatan'))->where('deltawork','=','ya')->where('id_transaksi','<>','')->where('tanggal','>=',$tanggal_dari.' 00:00:00')->where('tanggal','<=',$tanggal_sampai.' 23:59:59')->groupBy('negara_pengirim','id_pos')->orderBy('perbuatan','desc')->get();
+      
+        return view('reporting.negara', [
+          'data'=>$query,'jumlah'=>$jumlah,'totalbsu'=>$totalbsu,'tanggal_dari'=>$tanggal_dari,'tanggal_sampai'=>$tanggal_sampai
+          ]);
+    }
+    return redirect('login')->with('You dont have access');
+  }
 }

@@ -27,10 +27,7 @@
                             @endif
                             <br/>
                             <!-- COLOR PALETTE -->
-                            <div class=row>
-                                <div class="col-md-12">
-                                    <div class="box box-primary" style="height:100%;max-height:400px;">
-                                       
+                          
                                         <div class="box-body" >
                                         <form action="{{route('cari_screening')}}" method="POST" style="width:30%;">
                                         @csrf
@@ -43,10 +40,9 @@
                                             <br>* Data OFAC SDN List & UK Sanction List : update per 25-10-2016<br><br>
                                     
                                             <br>
-                                        @if($cari ?? '' <> "" )
-                                        
+                                        @if(!empty($tanggal_dari))
                                         <h3>Tanggal Dari : {{date('d-m-Y', strtotime($tanggal_dari))}} | Sampai : {{date('d-m-Y', strtotime($tanggal_sampai))}}</h3>
-                                        <table  id="example" class="table table-responsive table-striped  table-bordered">
+                                        <table  id="example" class="table table-responsive table-striped  table-bordered" style="width:100%;">
                                             <thead>
                                                 <tr>
                                                     <th>No</th>
@@ -60,31 +56,30 @@
                                             <tbody>
                                                 
                                                 @foreach ($data  as $key => $que_caris)
-                                                @if($jum_sanction > 0)
+                                                <?php
+                                                        $query_sanction=DB::table('sanction_list')->where('nama','like',$que_caris->nama_pengirim.'%')->where('nama','like',$que_caris->nama_penerima.'%')->first();
+                                                    ?>
+                                                    @if(is_array($query_sanction)>0)
                                                 <tr>
-                                                    <th >{{$key+1 }}  </th>
+                                                    
+                                                    <th >{{$key+1 }} </th>
                                                     <td>{{ $que_caris->no_referensi }}</td>
                                                     <td>{{ $que_caris->nama_pengirim }}</td>
                                                     <td>{{ $que_caris->nama_penerima }}</td>
                                                     <td>{{ $que_caris->tanggal_lahir }}</td>
                                                     <td>{{ $que_caris->negara_pengirim }}</td>
                                                     </tr>
-                                                  @endif
+                                                    @endif
                                                 @endforeach
                                             
-                                                
                                                 </tbody>
                                             </table>
-                                        @else
                                         @endif
 
                                     <!-- /.col -->
-                                </div>
-                                </div>
+                               
                                 <!-- /.row --><br><br><br><br>
-                                </div>
-                                <!-- /.box-body -->
-                            </div>
+                               
                               
                         </div><!--card-body-->
 
@@ -97,6 +92,7 @@
 @section('js')
 <script type="text/javascript">
   $(document).ready(function() {
+    $('#example').DataTable();
     $('#daterange').daterangepicker();
 } );
 </script>
