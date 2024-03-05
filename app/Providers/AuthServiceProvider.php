@@ -27,8 +27,8 @@ class AuthServiceProvider extends ServiceProvider
         //
         $this->registerPolicies();
 
-        Gate::define('reporting-only', function () {
-            if (Auth::user()->level == 'reporting'){
+        Gate::define('direktur-only', function () {
+            if (Auth::user()->level == 'direktur'){
                 return true;
             }
             return false;
@@ -41,6 +41,20 @@ class AuthServiceProvider extends ServiceProvider
         });
         Gate::define('finance-only', function () {
             if (Auth::user()->level == 'finance'){
+                return true;
+            }
+            return false;
+        });
+
+        Gate::define('compliance-only', function () {
+            if (Auth::user()->level == 'compliance'){
+                return true;
+            }
+            return false;
+        });
+
+        Gate::define('it-only', function () {
+            if (Auth::user()->level == 'it'){
                 return true;
             }
             return false;

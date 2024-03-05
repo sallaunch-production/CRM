@@ -56,7 +56,7 @@
                                         <td>{{ $refunds->tanggal }}</td>
                                         <td>{{ $refunds->nama_pengirim }}</td>
                                         <td>{{ $refunds->nama_penerima }}</td>
-                                        <td>{{ ($refunds->refund_face_amount) }}</td>
+                                        <td>{{ number_format((int)$refunds->refund_face_amount) }}</td>
                                         <td>{{ $refunds->negara_penerima }}</td>
                                         <td>{{ $refunds->id_pos }}</td>
                                         <td> 

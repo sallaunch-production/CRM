@@ -3,7 +3,7 @@
 @section('title','CRM Arsema')
     
 @section('content_header')
-<h2>High Risk Country Filtering</h2>
+<h2>Laporan</h2>
 @stop
 @section('content')
 <div class="container-fluid">
@@ -28,7 +28,7 @@
                           
                              <div class="row">
                                 <div class="col-md-6">   
-                            <label>Data Range : </label>
+                            <label>Tanggal: </label>
                             <form action="{{route('cari_laporan')}}" method="POST">
                             @csrf
                              <div class="form-group">

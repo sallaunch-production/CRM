@@ -15,8 +15,8 @@ return [
     */
 
     'title' => 'CRM Arsema',
-    'title_prefix' => '',
-    'title_postfix' => '',
+    'title_prefix' => 'CRM Arsema',
+    'title_postfix' => 'CRM Arsema',
 
     /*
     |--------------------------------------------------------------------------
@@ -331,7 +331,7 @@ return [
             //'label_color' => 'success',
         ],
         [
-            'text' => 'Transaksi',
+            'text' => 'Transaksi Receive Pos',
             'url'  => 'transaksi_receive_pos',
             'icon' => 'fa fa-book fa-fw',
         ],

@@ -3,7 +3,7 @@
 @section('title','CRM Arsema')
     
 @section('content_header')
-    <h1>Transaksi</h1>
+    <h1>Transaksi Send Pos</h1>
 @stop
 @section('content')
 <div class="container-fluid">
