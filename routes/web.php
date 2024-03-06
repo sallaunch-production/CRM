@@ -21,13 +21,12 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 */
 // Auth::routes();
 Route::get('/', function () {
     return view('auth.login');
 });
-Route::get('login',[App\Http\Controllers\AuthController::class,'index'])->name('login');
+Route::get('login',[App\Http\Controllers\AuthController::class,'index'])->name('login')->middleware('guest');
 Route::get('validation',[App\Http\Controllers\AuthController::class,'validation'])->name('validation');
 Route::get('register_barcode',[App\Http\Controllers\AuthController::class,'register_barcode'])->name('register_barcode');
 
@@ -39,7 +38,7 @@ Route::post('logout',[App\Http\Controllers\AuthController::class,'logout'])->nam
 
 Route::post('verify',[App\Http\Controllers\AuthController::class,'verify'])->name('proses.verify');
 
-Route::group(['middleware' => ['direktur']], function () {  //HomeController
+Route::group(['middleware' => ['compliance']], function () {  //HomeController
 Route::get('dashboard',[App\Http\Controllers\HomeController::class,'dashboard'])->name('dashboard')->middleware('auth');
 Route::get('transaksi_receive_pos',[App\Http\Controllers\TransactionalController::class,'transaksi_receive_pos'])->name('transaksi_receive_pos')->middleware('auth');
 Route::get('transaksi_send_pos',[App\Http\Controllers\TransactionalController::class,'transaksi_send_pos'])->name('transaksi_send_pos')->middleware('auth');
@@ -100,5 +99,38 @@ Route::post('search_sales',[App\Http\Controllers\CheckingController::class,'sear
 Route::post('search_newcustomer',[App\Http\Controllers\CheckingController::class,'search_newcustomer'])->name('search_newcustomer')->middleware('auth');
 Route::get('screening',[App\Http\Controllers\CheckingController::class,'screening'])->name('screening')->middleware('auth');
 Route::post('cari_screening',[App\Http\Controllers\CheckingController::class,'cari_screening'])->name('cari_screening')->middleware('auth');
+Route::post('ubah_password',[App\Http\Controllers\HomeController::class,'ubah_password'])->name('ubah_password')->middleware('auth');
+Route::get('settings_user',[App\Http\Controllers\HomeController::class,'settings_user'])->name('settings_user')->middleware('auth');
+Route::get('screening_transaksi',[App\Http\Controllers\ReportingController::class,'screening_transaksi'])->name('screening_transaksi')->middleware('auth');
+Route::post('cari_screening_transaksi',[App\Http\Controllers\ReportingController::class,'cari_screening_transaksi'])->name('cari_screening_transaksi')->middleware('auth');
+    
+});
 
+
+
+Route::group(['middleware' => ['operasional']], function () {
+    Route::get('dashboard_operasional',[App\Http\Controllers\HomeController::class,'dashboard'])->name('dashboard_operasional')->middleware('auth');
+
+    Route::get('kota-operasional',[App\Http\Controllers\ReportingController::class,'kota'])->name('kota')->middleware('auth');
+    Route::get('negara-operasional',[App\Http\Controllers\ReportingController::class,'negara'])->name('negara')->middleware('auth');
+
+    Route::get('filtering_transaction_operasional',[App\Http\Controllers\ReportingController::class,'filtering_transaction'])->name('filtering_transaction')->middleware('auth');
+    Route::get('filtering_identitas_operasional',[App\Http\Controllers\ReportingController::class,'filtering_identitas'])->name('filtering_identitas')->middleware('auth');
+    Route::get('filter_telepon_operasional',[App\Http\Controllers\ReportingController::class,'filter_telepon'])->name('filter_telepon')->middleware('auth');
+    Route::get('filter_negara_operasional',[App\Http\Controllers\ReportingController::class,'filter_negara'])->name('filter_negara')->middleware('auth');
+    Route::get('filter_sender_operasional',[App\Http\Controllers\ReportingController::class,'filter_sender'])->name('filter_sender')->middleware('auth');
+
+    Route::get('filtering-operasional',[App\Http\Controllers\CheckingController::class,'filtering'])->name('filtering')->middleware('auth');
+    Route::post('cari_filtering_operasional',[App\Http\Controllers\CheckingController::class,'cari_filtering'])->name('cari_filtering')->middleware('auth');
+    
+    Route::get('history_refund_operasional',[App\Http\Controllers\ReportingController::class,'history_refund'])->name('history_refund')->middleware('auth');
+    Route::get('history_refund_pos_operasional',[App\Http\Controllers\ReportingController::class,'history_refund_pos'])->name('history_refund_pos')->middleware('auth');
+    Route::get('history_amend_pos_operasional',[App\Http\Controllers\ReportingController::class,'history_amend_pos'])->name('history_amend_pos')->middleware('auth');
+    
+    Route::get('popimage-operasional',[App\Http\Controllers\ReportingController::class,'popimage'])->name('popimage')->middleware('auth');
+    Route::get('transaksi_send_pos_operasional',[App\Http\Controllers\TransactionalController::class,'transaksi_send_pos'])->name('transaksi_send_pos')->middleware('auth');
+    Route::get('transaksi_receive_pos_operasional',[App\Http\Controllers\TransactionalController::class,'transaksi_receive_pos'])->name('transaksi_receive_pos')->middleware('auth');
+    Route::get('screening_transaksi_operasional',[App\Http\Controllers\ReportingController::class,'screening_transaksi'])->name('screening_transaksi')->middleware('auth');
+    Route::post('cari_screening_transaksi_oprasional',[App\Http\Controllers\ReportingController::class,'cari_screening_transaksi'])->name('cari_screening_transaksi_oprasional')->middleware('auth');
+    
 });

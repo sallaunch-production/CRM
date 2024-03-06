@@ -650,4 +650,41 @@ class ReportingController extends Controller
     }
     return redirect('login')->with('You dont have access');
   }
+
+  
+  public function screening_transaksi()
+    {
+      if(Auth::check()){
+
+         return view('reporting.screening_transaksi', [
+          
+          ]);
+      }
+      return redirect('login')->with('You dont have access');
+    }
+
+    public function cari_screening_transaksi(Request $request)
+    {
+      if(Auth::check()){
+
+        $tanggal = $request->reservation;
+        $dari = explode('/',$tanggal);
+  
+        $tahunini = date('Y');
+        
+        $tahun_dari = $dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3];
+        $periode_dari = $dari[1].'-'.$dari[0].'-'.$dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3];
+        $periode_sampai = $dari[3].'-'.$dari[2][7].$dari[2][8].'-'.$dari[4];
+  
+        $tanggal_dari = $dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3].'-'.$dari[0].'-'.$dari[1];
+        $tanggal_sampai =  $dari[4].'-'.$dari[2][7].$dari[2][8].'-'.$dari[3];
+        $query= DB::table('transaksi_send_pos')->select(DB::raw("sum(cast(replace(amount, ',','') as float))"),'nama_penerima','nama_pengirim',DB::raw('COUNT(nama_pengirim) as perbuatan'),DB::raw('COUNT(nomor_identitas) as noden'))->where('mgisession','<>','')->where('id_transaksi','<>','')->where('tanggal','>=',$tanggal_dari." 00:00:00")->where('tanggal','<=',$tanggal_sampai." 23:59:59")->groupBy('nama_pengirim','nomor_identitas','nama_penerima')->orderBy('perbuatan','desc')->get();
+        
+        return view('reporting.screening_transaksi', [
+          'data'=>$query,'tanggal_dari'=>$tanggal_dari,'tanggal_sampai'=>$tanggal_sampai
+          ]);
+      }
+      return redirect('login')->with('You dont have access');
+    }
+
 }

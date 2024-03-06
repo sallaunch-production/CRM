@@ -28,7 +28,7 @@
                           
                              <div class="row">
                                 <div class="col-md-6">   
-                            <label>Tanggal: </label>
+                            <label>Tanggal Pencarian: </label>
                             <form action="{{route('cari_laporan')}}" method="POST">
                             @csrf
                              <div class="form-group">

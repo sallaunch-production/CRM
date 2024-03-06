@@ -28,7 +28,7 @@
                           
                              <div class="row">
                                 <div class="col-md-6">   
-                            <label>Data Range : </label>
+                            <label>Tanggal Dari: </label>
                             <form action="{{route('cari_negara')}}" method="POST">
                             @csrf
                              <div class="form-group">

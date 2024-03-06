@@ -29,7 +29,7 @@
                             <div class="row">
                             <div class="col-md-4">
                             <div class="form-group">
-                                <label>Date range:</label>
+                                <label>Tanggal Pencarian:</label>
                                 <form class=form-group action="{{ route('report_pos_search')}}"  method="POST">
                                   @csrf
                                 <div class='input-group date' id='datetimepicker'>

@@ -325,7 +325,16 @@ return [
             'text'        => 'Home',
             'url'         => 'dashboard',
             'icon'        => 'fas fa-fw fa-home', 
-            'can'  => ['operator-only','admin-only'],
+            'can'  => ['compliance-only'],
+           
+            //'label'       => 4,
+            //'label_color' => 'success',
+        ],
+        [
+            'text'        => 'Home',
+            'url'         => 'dashboard_operasional',
+            'icon'        => 'fas fa-fw fa-home', 
+            'can'  => ['operasional-only'],
            
             //'label'       => 4,
             //'label_color' => 'success',
@@ -333,16 +342,31 @@ return [
         [
             'text' => 'Transaksi Receive Pos',
             'url'  => 'transaksi_receive_pos',
+            'can'  => ['compliance-only'],
+            'icon' => 'fa fa-book fa-fw',
+        ],
+        [
+            'text' => 'Transaksi Receive Pos',
+            'can'  => ['operasional-only'],
+            'url'  => 'transaksi_receive_pos_operasional',
             'icon' => 'fa fa-book fa-fw',
         ],
         [
             'text' => 'Transaksi Send Pos',
             'url'  => 'transaksi_send_pos',
+            'can'  => ['compliance-only'],
+            'icon' => 'fa fa-book fa-fw',
+        ],
+        [
+            'text' => 'Transaksi Send Pos',
+            'can'  => ['operasional-only'],
+            'url'  => 'transaksi_send_pos_operasional',
             'icon' => 'fa fa-book fa-fw',
         ],
         [
             'text'    => 'Customer Profile',
             'icon'    => 'fas fa-fw fa-clipboard',
+            'can'  => ['compliance-only'],
             'submenu' => [
                 [
                     'text' => 'Customer',
@@ -378,6 +402,7 @@ return [
         [
             'text'    => 'Sanction List',
             'icon'    => 'fas fa-fw fa-clipboard',
+            'can'  => ['compliance-only'],
             'submenu' => [
                 [
                     'text' => 'Sanction',
@@ -415,6 +440,15 @@ return [
                     'text' => 'High Risk Country Transaction',
                     'url'  => 'filtering',
                     'shift'   => 'ml-3',
+                    'can'  => ['compliance-only'],
+                    'icon'    => 'fas fa-fw fa-clipboard',
+                    
+                ],
+                [
+                    'text' => 'High Risk Country Transaction',
+                    'url'  => 'filtering-operasional',
+                    'shift'   => 'ml-3', 
+                    'can'  => ['operasional-only'],
                     'icon'    => 'fas fa-fw fa-clipboard',
                     
                 ],
@@ -422,12 +456,30 @@ return [
                     'text' => 'Filtering Transaction',
                     'url'  => 'filtering_transaction',
                     'shift'   => 'ml-3',
+                    'can'  => ['compliance-only'],
+                    'icon'    => 'fas fa-fw fa-clipboard',
+                    
+                ],
+                [
+                    'text' => 'Filtering Transaction',
+                    'url'  => 'filtering_transaction_operasional',
+                    'shift'   => 'ml-3',
+                    'can'  => ['operasional-only'],
                     'icon'    => 'fas fa-fw fa-clipboard',
                     
                 ],
                 [
                     'text' => 'Kota',
                     'url'  => 'kota',
+                    'can'  => ['compliance-only'],
+                    'shift'   => 'ml-3',
+                    'icon'    => 'fas fa-fw fa-clipboard',
+                    
+                ],
+                [
+                    'text' => 'Kota',
+                    'url'  => 'kota-operasional',
+                    'can'  => ['operasional-only'],
                     'shift'   => 'ml-3',
                     'icon'    => 'fas fa-fw fa-clipboard',
                     
@@ -435,6 +487,15 @@ return [
                 [
                     'text' => 'Negara',
                     'url'  => 'negara',
+                    'can'  => ['compliance-only'],
+                    'shift'   => 'ml-3',
+                    'icon'    => 'fas fa-fw fa-clipboard',
+                    
+                ],
+                [
+                    'text' => 'Negara',
+                    'url'  => 'negara-operasional',
+                    'can'  => ['operasional-only'],
                     'shift'   => 'ml-3',
                     'icon'    => 'fas fa-fw fa-clipboard',
                     
@@ -444,42 +505,80 @@ return [
         [
             'text' => 'Nopend / Id Pos',
             'url'  => 'nopend',
+            'can'  => ['compliance-only'],
             'icon' => 'fa fa-book fa-fw',
         ],
 
         [
             'text' => 'Agent Id',
             'url'  => 'agent_sort',
+            'can'  => ['compliance-only'],
             'icon' => 'fa fa-book fa-fw',
         ],
         [
             'text' => 'Laporan',
             'url'  => 'laporan',
+            'can'  => ['compliance-only'],
             'icon' => 'fa fa-book fa-fw',
         ],
         [
             'text' => 'Upload proof of payment',
             'url'  => 'popimage',
+            'can'  => ['compliance-only'],
+            'icon' => 'fa fa-book fa-fw',
+        ],
+        [
+            'text' => 'Upload proof of payment',
+            'url'  => 'popimage-operasional',
+            'can'  => ['operasional-only'],
             'icon' => 'fa fa-book fa-fw',
         ],
         [
             'text' => 'History Refund Arsema',
             'url'  => 'history_refund',
+            'can'  => ['compliance-only'],
+            'icon' => 'fa fa-book fa-fw',
+        ],
+        [
+            'text' => 'History Refund Arsema',
+            'url'  => 'history_refund_operasional',
+            'can'  => ['operasional-only'],
             'icon' => 'fa fa-book fa-fw',
         ],
         [
             'text' => 'History Refund PT POS',
             'url'  => 'history_refund_pos',
+            'can'  => ['compliance-only'],
+            'icon' => 'fa fa-book fa-fw',
+        ],
+        [
+            'text' => 'History Refund PT POS',
+            'url'  => 'history_refund_pos_operasional',
+            'can'  => ['operasional-only'],
             'icon' => 'fa fa-book fa-fw',
         ],
         [
             'text' => 'History Amend PT POS',
             'url'  => 'history_amend_pos',
+            'can'  => ['compliance-only'],
+            'icon' => 'fa fa-book fa-fw',
+        ],
+        [
+            'text' => 'History Amend PT POS',
+            'url'  => 'history_amend_pos_operasional',
+            'can'  => ['operasional-only'],
             'icon' => 'fa fa-book fa-fw',
         ],
         [
             'text' => 'Screening Transaction ',
-            'url'  => '#',
+            'url'  => 'screening_transaksi_operasional',
+            'can'  => ['operasional-only'],
+            'icon' => 'fa fa-book fa-fw',
+        ],
+        [
+            'text' => 'Screening Transaction ',
+            'url'  => 'screening_transaksi',
+            'can'  => ['compliance-only'],
             'icon' => 'fa fa-book fa-fw',
         ],
        

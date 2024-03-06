@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use DB;
@@ -30,38 +31,69 @@ class AuthController extends Controller
      }
 
      public function proses_login(Request $request){
-
+        $user_email = $request->email;
+        $password = $request->password;
+        $stmt= DB::table('user_block')->where('username','=',$user_email)->get();
+        $key = "login.".$request->ip();
+        $max = 3; // attempt
+        $decay = 60; // seconds
        
-        $recaptcha_response = $request->input('g-recaptcha-response');
+        if(RateLimiter::tooManyAttempts($key,$max)){
+            if(count($stmt)==0) {
+              $cek = DB::table('user_block')->insertGetId([
+                 'username' => $request->email,
+                 'url' => url()->current(),
+                 'action' => "Login",
+                 'tanggal' => Carbon::now()->toDateTimeString(),
+                 'ip_address' => $_SERVER['REMOTE_ADDR'],
+                 'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+                 'created_at' => Carbon::now()->toDateTimeString(),
+                 'updated_at' =>Carbon::now()->toDateTimeString(),
+             ]);
+            }
+             
+            return redirect()->back()->with('status', 'Username was blocked!');
+         } else {
+             RateLimiter::hit($key,$decay);
+         }
+
+         $recaptcha_response = $request->input('g-recaptcha-response');
 
         if (is_null($recaptcha_response)) {
             return redirect()->back()->with('status', 'Please Complete the Recaptcha to proceed');
         }
 
-        $user_email = $request->email;
-        $password = $request->password;
+       
         Session::put('user_email', $user_email);
         Session::put('user_password', $password);
-        $cek_email = User::where('email','=',$user_email)->get();
-        if(count($cek_email)>0){
-            if (Hash::check($password, $cek_email[0]['password'])){
-                // Success
-                $cek_user =  DB::table('users')->where('email','=',$user_email)->get();
-                foreach($cek_user as $cek_users)
-                {
-                    $namanya=$cek_users->name;
-                    Session::put('user_name', $namanya);
-                }
-                $cek_google =  DB::table('auth_google')->where('username','=',$namanya)->get();
-                if(count($cek_google)>0){
-                    return redirect('validation')->with('success','Silahkan masukan code dari perangakat seluler anda.');
-                }else{
-                    return redirect('register_barcode')->with('success','Silahkan masukan code dari perangakat seluler anda.');
-                }
-                    
-            }
+
+        if(count($stmt)>0){
+            return redirect()->back()->with('status', 'Maaf, User anda terblokir.');
         }else{
-            return redirect()->back()->with('status', 'Username or password are wrong!');
+            $cek_email = User::where('email','=',$user_email)->get();
+            if(count($cek_email)>0){
+                if (Hash::check($password, $cek_email[0]['password'])){
+                    // Success
+                    $cek_user =  DB::table('users')->where('email','=',$user_email)->get();
+                    foreach($cek_user as $cek_users)
+                    {
+                        $namanya=$cek_users->name;
+                        Session::put('user_name', $namanya);
+                    }
+                    $cek_google =  DB::table('auth_google')->where('username','=',$namanya)->get();
+                    if(count($cek_google)>0){
+                        return redirect('validation')->with('success','Silahkan masukan code dari perangakat seluler anda.');
+                    }else{
+                        return redirect('register_barcode')->with('success','Silahkan masukan code dari perangakat seluler anda.');
+                    }
+                    
+               }else{
+                return redirect()->back()->with('status', 'Username or password are wrong!');
+               }
+            }else{
+                    
+                return redirect()->back()->with('status', 'Username or password are wrong!');
+            }
         }
       }
 
@@ -81,6 +113,7 @@ class AuthController extends Controller
             $user = DB::table('users')->where('email','=',$email)->get();
             foreach($user as $users){
                 $nama=$users->name;
+                $level=$users->level;
             }
             $cek_code = DB::table('auth_google')->where('username','=',$nama)->get();
             foreach($cek_code as $cek_codes){
@@ -106,8 +139,12 @@ class AuthController extends Controller
                     'updated_at' =>Carbon::now()->toDateTimeString(),
                 ]);
                 // 2FA code is valid, proceed with login
-                return redirect()->intended('dashboard')->with('success','Successfully Login.');
-                
+               if($level=="compliance"){
+                    return redirect()->intended('dashboard')->with('success','Successfully Login.');
+               }elseif($level=="operasional"){
+                    return redirect()->intended('dashboard_operasional')->with('success','Successfully Login.');
+               }
+                 
             } else {
                 // Invalid 2FA code, redirect back with an error message
                 return redirect()->back()->with('login_error', 'Code is wrong!');

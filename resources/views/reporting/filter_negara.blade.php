@@ -38,7 +38,7 @@
                                 <form action="{{route('search_filtering_negara')}}" method="POST" style="width:50%;">
                                @csrf
                                 <input type=hidden name=act value="">
-                                <label>Date Range:</label>
+                                <label>Tangga Pencarian:</label>
                                 <input type='text' class="form-control" id="daterange" name="reservation"/>&nbsp;
                                 <br><input type=submit value=Cari class="btn btn-info">
                                 </form> 

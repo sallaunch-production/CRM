@@ -59,7 +59,7 @@
                                         <input type="text" name="enam" class="otpInput" maxlength="1">
                                     <br/><br/>
                                     <button type="submit" class="btn btn-success">Submit</button>
-                                    <a href="{{route('login')}}"><button type="button" class="btn btn-primary ml-3">Cancel</button></a>
+                                    <a href="{{url('/')}}"><button type="button" class="btn btn-primary ml-3">Cancel</button></a>
                                 </form> 
                             </div>
                         </div>
