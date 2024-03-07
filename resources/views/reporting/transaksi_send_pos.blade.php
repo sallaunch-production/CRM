@@ -72,7 +72,7 @@
 @stop
 
 @section('js')
-
+@if($levelnya=="compliance")
 <script type="text/javascript">
   $(function () {
       
@@ -120,6 +120,56 @@
         });
    
 </script>
+@elseif($levelnya=="operasional")
+<script type="text/javascript">
+  $(function () {
+      
+    var table = $('.table-bordered').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: "{{ route('transaksi_send_pos_operasional') }}",
+        columns: [
+            {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+            {data: 'no_referensi', name: 'no_referensi'},
+            {data: 'negara_penerima', name: 'negara_penerima'},
+            {data: 'amount', name: 'amount', render: $.fn.dataTable.render.number(',', '.',  '')},
+            {data: 'sending_fee', name: 'sending_fee', render: $.fn.dataTable.render.number(',', '.', '')},
+            {data: 'total_collect_amount', name: 'total_collect_amount', render: $.fn.dataTable.render.number(',', '.', '')},
+            {data: 'nama_penerima', name: 'nama_penerima'},
+            {data: 'nama_pengirim', name: 'nama_pengirim'},
+            {data: 'identitas', name: 'identitas'},
+            {data: 'nomor_identitas', name: 'nomor_identitas'},
+            {data: 'tanggal_lahir', name: 'tanggal_lahir'},
+            {data: 'kota_lahir_pengirim', name: 'kota_lahir_pengirim'},
+            {data: 'alamat_penerima', name: 'alamat_penerima'},
+            {data: 'telepon_penerima', name: 'telepon_penerima'},
+            {data: 'telpon_pengirim', name: 'telpon_pengirim'},
+            {data: 'kota_penerima', name: 'kota_penerima'},
+            {data: 'pekerjaan', name: 'pekerjaan'},
+            {data: 'alamat_pengirim', name: 'alamat_pengirim'},
+            {data: 'alamat_domisili_pengirim', name: 'alamat_domisili_pengirim'},
+            {data: 'opt_display', name: 'opt_display'},
+            {data: 'hubungan_pengirim', name: 'hubungan_pengirim'},
+            {data: 'negara_domisili_pengirim', name: 'negara_domisili_pengirim'},
+            {data: 'tujuan_penggunaan_dana', name: 'tujuan_penggunaan_dana'},
+            {data: 'kota_lahir_pengirim', name: 'kota_lahir_pengirim'},
+            {data: 'jenis_kelamin', name: 'jenis_kelamin'},
+            {data: 'tanggal', name: 'tanggal'},
+           
+        ]
+    });
+    t.on('order.dt search.dt', function () {
+        let i = 1;
+ 
+        t.cells(null, 0, { search: 'applied', order: 'applied' }).every(function (cell) {
+            this.data(i++);
+        });
+    }).draw();
+        });
+   
+</script>
+@endif
+
 <script type="text/javascript">
   $(document).ready(function() {
     $('#example').DataTable();

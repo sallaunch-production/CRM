@@ -224,8 +224,8 @@ class AuthController extends Controller
         $emailUser = Session::get('user_email');
         $passUser = Session::get('user_password');
         $nameUser = Session::get('user_name');
-        $idmax = DB::table('auth_google')->orderBy('id','desc')->count();
-        $idnya=$idmax +1;
+        $idmax = DB::table('auth_google')->orderBy('id','desc')->first();
+        $idnya=$idmax->id +1;
         $barcode = DB::table('auth_google')->insertGetId([
             'id'=>$idnya,
             'username' => $nameUser,

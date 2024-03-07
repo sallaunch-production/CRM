@@ -67,7 +67,7 @@
 @stop
 
 @section('js')
-
+@if($levelnya=="compliance")
 <script type="text/javascript">
   $(function () {
       
@@ -110,6 +110,52 @@
         });
    
 </script>
+@elseif($levelnya=="operasional")
+<script type="text/javascript">
+  $(function () {
+      
+    var table = $('.table-bordered').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: "{{ route('transaksi_receive_pos_operasional') }}",
+        columns: [
+            {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+            {data: 'nama_penerima', name: 'nama_penerima'},
+            {data: 'nama_pengirim', name: 'nama_pengirim'},
+            {data: 'negara_pengirim', name: 'negara_pengirim'},
+            {data: 'bsubanyak', name: 'bsubanyak'},
+            {data: 'no_referensi', name: 'no_referensi'},
+            {data: 'identitas', name: 'identitas'},
+            {data: 'nomor_identitas', name: 'nomor_identitas'},
+            {data: 'tanggal_lahir', name: 'tanggal_lahir'},
+            {data: 'alamat_penerima', name: 'alamat_penerima'},
+            {data: 'alamat_domisili_penerima', name: 'alamat_domisili_penerima'},
+            {data: 'telepon_penerima', name: 'telepon_penerima'},
+            {data: 'kota_penerima', name: 'kota_penerima'},
+            {data: 'pekerjaan', name: 'pekerjaan'},
+            {data: 'tujuan_penggunaan_dana', name: 'tujuan_penggunaan_dana'},
+            {data: 'hubungan', name: 'hubungan'},
+            {data: 'kewarganegaraan', name: 'kewarganegaraan'},
+            {data: 'jenis_kelamin', name: 'jenis_kelamin'},
+            {data: 'kota_kelahiran', name: 'kota_kelahiran'},
+            {data: 'id_pos', name: 'id_pos'},
+            {data: 'tanggal', name: 'tanggal'},
+           
+        ]
+    });
+    t.on('order.dt search.dt', function () {
+        let i = 1;
+ 
+        t.cells(null, 0, { search: 'applied', order: 'applied' }).every(function (cell) {
+            this.data(i++);
+        });
+    }).draw();
+        });
+   
+</script>
+
+@endif
+
 <script type="text/javascript">
   $(document).ready(function() {
     $('#example').DataTable();

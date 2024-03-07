@@ -3,7 +3,7 @@
 @section('title','CRM Arsema')
     
 @section('content_header')
-<h2>High Risk Country Filtering</h2>
+<h2>Filter Negara Berisiko Tinggi</h2>
 @stop
 @section('content')
 <div class="container-fluid">
@@ -29,16 +29,20 @@
                           
                              <div class="row">
                                 <div class="col-md-6">   
-                                <h3>Category : </h3>
-                                <table class="table table-hover" style="width:400px;" valign=center><tr><td><a href="{{route('filtering_transaction')}}"><img src="vendor/adminlte/dist/img//people.jpg" height=50> <br>All</a></td>
-                                    <td><a href="{{route('filtering_identitas')}}"><img src="vendor/adminlte/dist/img/card.png" height=50> <br>Identity</a></td>
-                                    <td><a href="{{route('filter_telepon')}}"><img src="vendor/adminlte/dist/img//telepon_penerima.png" height=50> <br>Phone</a></td> <td><a href="{{route('filter_negara')}}"><img src="vendor/adminlte/dist/img//passport.png" height=50> <br>Country</a></td><td><a href="{{route('filter_sender')}}"><img src="vendor/adminlte/dist/img//sender.png" height=50> <br>Sender</a></td>
+                                <h3>Kategori : </h3>
+                                <table class="table table-hover" style="width:400px;" valign=center><tr><td><a href="{{route('filtering_transaction')}}"><img src="vendor/adminlte/dist/img//people.jpg" height=50> <br>Semua</a></td>
+                                    <td><a href="{{route('filtering_identitas')}}"><img src="vendor/adminlte/dist/img/card.png" height=50> <br>Indentitas</a></td>
+                                    <td><a href="{{route('filter_telepon')}}"><img src="vendor/adminlte/dist/img//telepon_penerima.png" height=50> <br>Telephone</a></td> <td><a href="{{route('filter_negara')}}"><img src="vendor/adminlte/dist/img//passport.png" height=50> <br>Negara</a></td><td><a href="{{route('filter_sender')}}"><img src="vendor/adminlte/dist/img//sender.png" height=50> <br>Pengirim</a></td>
                                     </tr></table>
-                                <br><br><h2>Transaction Filtering</h2>
-                                <form action="{{route('search_filtering_transaction')}}" method="POST" style="width:50%;">
-                               @csrf
+                                <br><br><h2>Filter Transaksi</h2>
+                                @if($levelnya=="compliance")
+                                    <form action="{{route('search_filtering_transaction')}}" method="POST" style="width:50%;">
+                                 @elseif($levelnya=="operasional")
+                                     <form action="{{route('search_filtering_transaction_operasional')}}" method="POST" style="width:50%;">
+                                @endif
+                                @csrf
                                 <input type=hidden name=act value="">
-                                <label>Date Range:</label>
+                                <label>Tanggal Pencarian: </label>
                                 <input type='text' class="form-control" id="daterange" name="reservation"/>&nbsp;
                                 <br><input type=submit value=Cari class="btn btn-info">
                                 </form> 
@@ -47,7 +51,7 @@
                         </div>
                             @if(!empty($tanggal_dari))
                                 <h2>Transaction Filtering</h2> *Transaksi lebih dari 5 per bulan atau lebih dari Rp. 100.000.000 per bulan
-		                        <h3>Periode :</h3>
+		                        <h3>Periode : {{$tanggal_dari}} s/d {{$tanggal_sampai}}</h3>
 
                                 <table  id="example" class="table table-responsive table-striped  table-bordered"> 
                                             <thead>

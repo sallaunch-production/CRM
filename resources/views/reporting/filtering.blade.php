@@ -3,7 +3,7 @@
 @section('title','CRM Arsema')
     
 @section('content_header')
-<h2>High Risk Country Filtering</h2>
+<h2>Transaksi Negara Beresiko Tinggi</h2>
 @stop
 @section('content')
 <div class="container-fluid">
@@ -39,15 +39,23 @@
                              </div>
                              </div><br>
                              <div class="form-group">
-                                <a  href="{{ route('list_country') }}">		 <input type=button class="btn btn-warning" value="Lihat Daftar"></a>
+                              @if($levelnya=="compliance")   
+                                <a  href="{{ route('list_country') }}"><input type=button class="btn btn-warning" value="Lihat Daftar"></a>
+                              @elseif($levelnya=="operasional")
+                              <a  href="{{ route('list_country_operasional') }}"><input type=button class="btn btn-warning" value="Lihat Daftar"></a>
+                              @endif
                             </div>
                             </form>
 </div>
 </div>
                             @if(!empty($list_country))
                             <h3>List Risk Country</h3>
-                            <a  href="{{ route('tambah_list_country') }}"><input type=button class="btn btn-danger" value="Tambah Data"></a><br><br>
-                            <table  id="example" class="table table-responsive table-striped  table-bordered">
+                            @if($levelnya=="compliance")
+                               <a  href="{{ route('tambah_list_country') }}"><input type=button class="btn btn-danger" value="Tambah Data"></a><br><br>
+                            @elseif($levelnya=="operasional")
+                               <input disabled type=button class="btn btn-danger" value="Tambah Data"></a><br><br>
+                            @endif
+                            <table  id="example" class="table table-striped  table-bordered">
                                     <thead>
                                     <tr>
                                         <th>No</th>
@@ -68,13 +76,21 @@
                                         <th >{{$key+1 }}</th>
                                         <td>{{ $transactions->nama }}</td>
                                         <td>
+                                           @if($levelnya=="compliance") 
                                             <form method="POST" action="{{ route('delete_list_country') }}">
                                                 @csrf
                                                 
                                                 <input name="id" type="hidden" value="{{$transactions->id}}">
                                                 <button type="submit" class="btn btn-xs btn-warning show_confirm" data-toggle="tooltip" title='Delete'>Delete</button>
                                             </form>
-                                           
+                                           @elseif($levelnya=="operasional")
+                                           <form method="POST" action="{{ route('delete_list_country') }}">
+                                                @csrf
+                                                
+                                                <input name="id" type="hidden" value="{{$transactions->id}}">
+                                                <button disabled type="submit" class="btn btn-xs btn-warning show_confirm" data-toggle="tooltip" title='Delete'>Delete</button>
+                                            </form>
+                                           @endif
                                         </td>
                                     @endforeach 
                                  </tbody>

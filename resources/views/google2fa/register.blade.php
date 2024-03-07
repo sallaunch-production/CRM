@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
     <div class="row">
-        <div class="col-md-8 col-md-offset-2">
+    <div class="col-md-12 col-md-offset-2" align="center" style="padding:5%;">
             <div class="panel panel-default">
                 <div class="panel-heading">Google Authenticator</div>
 
@@ -14,7 +14,7 @@
                     </div>
                     <p>Anda harus mengatur Google Authenticator app sebelum melanjutkan.</p>
                     <div>
-                        <a href="/validation"><button class="btn-primary">Selesaikan Pendaftaran</button></a>
+                        <a href="/validation"><button class="btn btn-success">Selesaikan Pendaftaran</button></a>
                     </div>
                 </div>
             </div>

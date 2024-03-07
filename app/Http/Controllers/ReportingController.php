@@ -338,7 +338,7 @@ class ReportingController extends Controller
         $tanggal_sampai =  $dari[4].'-'.$dari[2][7].$dari[2][8].'-'.$dari[3];
         $query = DB::table('transaksi_valid')->select(DB::raw("sum(cast(replace(bsubanyak, ',','') as float))"),DB::raw('COUNT(no) as perbuatan'),'negara_pengirim','id_transaksi','nama_penerima','nama_pengirim','negara_pengirim','no_referensi','identitas','nomor_identitas','tanggal_lahir','alamat_penerima','telepon_penerima','kota_penerima','pekerjaan','id_pos','tanggal')->where('deltawork','=','ya')->where('id_transaksi','<>','')->where('tanggal','>=',$tanggal_dari.' 00:00:00')->where('tanggal','<=',$tanggal_sampai.' 23:59:59')->groupBy('negara_pengirim','id_transaksi','nama_penerima','nama_pengirim','negara_pengirim','no_referensi','identitas','nomor_identitas','tanggal_lahir','alamat_penerima','telepon_penerima','kota_penerima','pekerjaan','id_pos','tanggal')->orderBy('nama_penerima','desc')->get();
           return view('reporting.filtering_transaction', [
-            'data'=>$query,'tanggal_dari'=> $tanggal_dari
+            'data'=>$query,'tanggal_dari'=> $tanggal_dari,'tanggal_sampai'=> $tanggal_sampai
           ]);
     }
     return redirect('login')->with('You dont have access');
@@ -686,5 +686,22 @@ class ReportingController extends Controller
       }
       return redirect('login')->with('You dont have access');
     }
+
+    public function page_history_refund(Request $request)
+    {
+      if(Auth::check()){
+        $id= $request->id;
+        $upload="ya";
+        $qur = DB::table('transaksi_cancel')->where('no','=',$id)->first();
+         $no_referensi = $qur->no_referensi;
+
+
+        return view('reporting.history-refunds', [
+          'data'=>$qur,'upload'=>$upload,'no_referensi'=>$no_referensi,'id'=>$id
+          ]);
+      }
+      return redirect('login')->with('You dont have access');
+    }
+
 
 }

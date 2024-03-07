@@ -3,7 +3,7 @@
 @section('title','CRM Arsema')
     
 @section('content_header')
-<h2>High Risk Country Filtering</h2>
+<h2>Filter Kota Berisiko Tinggi</h2>
 @stop
 @section('content')
 <div class="container-fluid">
@@ -62,8 +62,12 @@
                                         ?>
                                         <th >{{$key+1 }}</th>
                                         <td>
+                                           @if($levelnya=="compliance") 
                                              <form action="{{route('detail_kota')}}" method="POST" style="width:50%;">
-                                                @csrf
+                                            @elseif($levelnya=="operasional") 
+                                            <form action="{{route('detail_kota_operasional')}}" method="POST" style="width:50%;">
+                                            @endif
+                                             @csrf
                                                 <input type="hidden" name="id" value="{{$datas->id_pos}}">
                                                 <button type=submit class="badge badge-primary">
                                                     {{ $datas->id_pos }}({{$datakota->nama ?? ''}})

@@ -25,6 +25,7 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                               </div>
                             @endif
+                            @if(empty($upload))
                             <table  id="example" class="table table-responsive table-striped  table-bordered" style="width:100%">
                                 <thead>
                                   <tr>
@@ -47,7 +48,8 @@
                                     <tr>
                                         <?php
                                             $no = $refunds->no;
-                                            $dats=DB::table('history_refund')->where('id_refund','=',$no)->get();
+                                            $dat=DB::table('history_refund')->where('id_refund','=',$no)->orderBy('id','desc')->first();
+                                            $dats=DB::table('history_refund')->where('id_refund','=',$no)->orderBy('id','desc')->count();
                                         ?>
                                         <th >{{$key+1 }}</th>
                                         <td>{{ $refunds->no_referensi }}</td>
@@ -58,21 +60,76 @@
                                         <td>{{ number_format((int)$refunds->refund_face_amount)}}</td>
                                         <td>{{ $refunds->negara_penerima }}</td>
                                         <td>{{ $refunds->id_pos }}</td>
-                                        <td> @foreach ($dats as $object)
-                                            {{ $object->alasan }}
-                                            @endforeach
+                                        <td> 
+                                            {{ $dat->alasan ?? '-' }}
+                                           
                                         </td>
-                                        @if(count($dats)==0)
-                                        <td><a href=?act=history_refund&proses=upload&id=$data[no]>Upload</a></td>
+                                        @if($dats==0)
+                                        <td>
+                                          <form action="{{route('page_history_refund')}}" method="post">
+                                          @csrf
+                                                <input type="hidden" name="id" value="{{$refunds->no}}">
+                                           @if($levelnya=="operasional")
+                                              <button disabled type=submit class="badge badge-primary">
+                                                  Upload
+                                              </button> 
+                                            @else
+                                              <button type=submit class="badge badge-primary">
+                                                  Upload
+                                              </button> 
+                                            @endif
+                                          </form>
+                                        </td>
                                         <td></td>
                                         @else
-                                        <td><a href='' target=_blank>View Image</a></td>
-                                        <td><a href='' >Edit</a> | <a href= >Delete</a></td>
+                                        <td><a href=''> <button type=submit class="badge badge-success">View Image </button> </a></td>
+                                        <td>
+                                          @if($levelnya=="compliance")
+                                              <a href='' ><button type=submit class="badge badge-warning">Edit</button></a> <a href= ><button type=submit class="badge badge-danger">Delete</button></a>
+                                          @else
+                                              <button disabled type=submit class="badge badge-warning">Edit</button>  <button type=submit class="badge badge-danger" disabled>Delete</button>
+                                          @endif
+                                        </td>
                                         @endif
                                    </tr>
                                 @endforeach
                                 </tbody>
                               </table>
+
+                            @else
+
+                            <h3>No Referensi : {{$no_referensi}}</h3>
+                                <form action="{{route('upload_history_refund')}}" method=post enctype="multipart/form-data" style="max-width:350px;">
+                                @csrf  
+                                   <div class=form-group>
+                                      
+                                      <fieldset>
+                                        <legend>  Alasan dibatalkan:</legend>
+                                      <div>
+                                            <input type="radio" id="comp" name="alasan" value="Customer" checked>
+                                            <label for="dewey">Customer</label>
+                                          </div>
+                                          <div>
+                                            <input type="radio" id="cust" name="alasan" value="Compliance"
+                                                  >
+                                            <label for="huey">Compliance</label>
+                                          </div>
+                                      </fieldset>
+
+                                      </div>
+                                        <div class=form-group>
+                                            <label>Image</label>
+                                          <input type=hidden name=id value="{{$id}}">
+                                            <input type=file name=gambar required class=form-control  accept="image/*,.pdf">
+                                          </div>
+                                        
+                                      <div class=form-group>
+                                            
+                                            <input type=submit class="btn btn-danger" value=UPLOAD>
+                                          </div>
+                                      </form>
+
+                              @endif
                         </div><!--card-body-->
 
                     </div><!--card-->

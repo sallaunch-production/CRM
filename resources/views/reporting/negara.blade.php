@@ -58,8 +58,12 @@
                                       
                                         <th >{{$key+1 }}</th>
                                         <td>
+                                            @if($levelnya=="compliance")
                                              <form action="{{route('proses_detail_negara')}}" method="POST" style="width:50%;">
-                                            @csrf
+                                           @elseif($levelnya=="operasional")
+                                             <form action="{{route('proses_detail_negara_operasional')}}" method="POST" style="width:50%;">
+                                           @endif
+                                             @csrf
                                                 <input type="hidden" name="negara_pengirim" value="{{$datas->negara_pengirim}}">
                                                 <button type=submit class="badge badge-primary">
                                                     {{ $datas->negara_pengirim }}

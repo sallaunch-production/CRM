@@ -51,8 +51,12 @@
                                         <td>{{ $transactions->ltkl }}</td>
                                         <td>{{ $transactions->ltkm }}</td>
                                         <td>{{ $transactions->tanggal }}</td>
-                                        <td><a href="#" target=_blank>View Image</a></td>
-                                        <td><a href="#" >Edit</a> | <a href="#" >Delete</a></td>
+                                        <td><a href="#" >View Image</a></td>
+                                        <td>
+                                          @if($levelnya=="operasional")
+                                              <a href="#" onclick="return false;">Edit</a> | <a href="#"  onclick="return false;">Delete</a>
+                                          @endif    
+                                        </td>
                                       
                                       </tr>
                                     @endforeach

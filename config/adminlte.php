@@ -522,13 +522,13 @@ return [
             'icon' => 'fa fa-book fa-fw',
         ],
         [
-            'text' => 'Upload proof of payment',
+            'text' => 'Upload Proof Of Payment',
             'url'  => 'popimage',
             'can'  => ['compliance-only'],
             'icon' => 'fa fa-book fa-fw',
         ],
         [
-            'text' => 'Upload proof of payment',
+            'text' => 'Upload Proof Of Payment',
             'url'  => 'popimage-operasional',
             'can'  => ['operasional-only'],
             'icon' => 'fa fa-book fa-fw',
