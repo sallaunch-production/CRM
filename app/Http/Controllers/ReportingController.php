@@ -17,6 +17,8 @@ use App\Models\Saldo;
 use App\Models\TransaksiSendPos;
 use DB;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
+
 
 class ReportingController extends Controller
 {
@@ -51,9 +53,9 @@ class ReportingController extends Controller
             'updated_at' =>Carbon::now()->toDateTimeString(),
           ]);
           $data = DB::table('transaksi_cancel')->whereNull('id_pos')->get(); 
-
+          $upload="";
                 return view('reporting.history-refunds', [
-                    'data' => $data
+                    'data' => $data,'upload'=>$upload
              ]);
 
 
@@ -702,6 +704,34 @@ class ReportingController extends Controller
       }
       return redirect('login')->with('You dont have access');
     }
+
+    public function upload_history_refund(Request $request)
+    {
+      if(Auth::check()){
+        $id= $request->id;
+        $gambar= $request->gambar;
+        $alasan= $request->alasan;
+        $validatedData =  $request->validate(['gambar' => 'required|mimes:csv,txt,xlx,xls,pdf|max:4048']);
+        
+        $name = $request->file('gambar')->getClientOriginalName();
+        $filePath = 'pop/' . $name;
+
+        $path = Storage::disk('public')->put($filePath, file_get_contents($request->gambar));
+        $path = Storage::disk('public')->url($path);
+
+        $audit_trails = DB::table('history_refund')->insertGetId([
+          'pop_image' => $name,
+          'id_refund' =>$id,
+          'alasan' =>  $alasan,
+          'tanggal' => Carbon::now()->toDateTimeString()
+      ]);
+
+      return redirect('history_refund')->with('success','You have successfully uplaod pop');
+
+      }
+      return redirect('login')->with('You dont have access');
+    }
+
 
 
 }
