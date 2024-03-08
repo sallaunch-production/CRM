@@ -9,6 +9,7 @@ use App\Exports\CetakLaporanBIg0002;
 use App\Exports\CetakLaporanBIg0003;
 use App\Exports\CetakLaporanPpatk;
 use App\Exports\Rekons;
+use App\Exports\InvoicesExport;
 use App\Exports\CetakLaporanBI;
 
 use Illuminate\Support\Facades\Auth;
@@ -117,31 +118,10 @@ class ImportExportController extends Controller
     }
 
     
-    public function cetak_laporan_ppatk_baru(Request $request)
-    {
 
-        $tanggal_dari = $request->tanggal_dari;
-        $tanggal_sampai = $request->tanggal_sampai;
-        $filename = "example_excel_maatwebsite_from_colour_view";
-        $table = <<<TABLE
-  <h2>Maatwebsite Excel FromView</h2>
-  <table>
-      <thead>
-          <tr>
-              <th style='background-color: #007bff; color: #f8f9fa;'>Heading one blue</th>
-              <th style='background-color: #dc3545; color: #f8f9fa;'>Heading two red</th>
-          </tr>
-      </thead>
-      <tbody>
-          <tr>
-              <td style='background-color: #ffb759;'>18 Yellow</td>
-              <td>17 no colour</td>
-          </tr>
-      </tbody>
-  </table>
-  TABLE;
-       
-        return  Excel::download(new CetakLaporanPpatk($table), 'LTKL incoming.xls');
+    public function cetak_laporan_ppatk_baru() 
+    {
+        return Excel::download(new InvoicesExport, 'LTKL.xlsx');
     }
     
 }
