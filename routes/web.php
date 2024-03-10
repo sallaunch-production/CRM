@@ -62,6 +62,8 @@ Route::get('filtering',[App\Http\Controllers\CheckingController::class,'filterin
 Route::post('cari_filtering',[App\Http\Controllers\CheckingController::class,'cari_filtering'])->name('cari_filtering')->middleware('auth');
 Route::get('list_country',[App\Http\Controllers\ReportingController::class,'list_country'])->name('list_country')->middleware('auth');
 Route::get('negara',[App\Http\Controllers\ReportingController::class,'negara'])->name('negara')->middleware('auth');
+Route::get('negara_send',[App\Http\Controllers\ReportingController::class,'negara_send'])->name('negara_send')->middleware('auth');
+Route::get('negara_receive',[App\Http\Controllers\ReportingController::class,'negara_receive'])->name('negara_receive')->middleware('auth');
 Route::get('tambah_list_country',[App\Http\Controllers\ReportingController::class,'tambah_list_country'])->name('tambah_list_country')->middleware('auth');
 Route::post('add_list_country',[App\Http\Controllers\ReportingController::class,'add_list_country'])->name('add_list_country')->middleware('auth');
 Route::post('delete_list_country',[App\Http\Controllers\ReportingController::class,'delete_list_country'])->name('delete_list_country')->middleware('auth');
@@ -83,8 +85,11 @@ Route::post('detail_kota',[App\Http\Controllers\ReportingController::class,'deta
 Route::post('cari_kota',[App\Http\Controllers\ReportingController::class,'cari_kota'])->name('cari_kota')->middleware('auth');
 Route::post('tanggal_valid',[App\Http\Controllers\ReportingController::class,'tanggal_valid'])->name('tanggal_valid')->middleware('auth');
 Route::post('proses_detail_negara',[App\Http\Controllers\ReportingController::class,'proses_detail_negara'])->name('proses_detail_negara')->middleware('auth');
+Route::post('proses_detail_negara_send',[App\Http\Controllers\ReportingController::class,'proses_detail_negara_send'])->name('proses_detail_negara_send')->middleware('auth');
 Route::post('cari_negara',[App\Http\Controllers\ReportingController::class,'cari_negara'])->name('cari_negara')->middleware('auth');
+Route::post('cari_negara_send',[App\Http\Controllers\ReportingController::class,'cari_negara_send'])->name('cari_negara_send')->middleware('auth');
 Route::post('pencarian_detail_negara',[App\Http\Controllers\ReportingController::class,'pencarian_detail_negara'])->name('pencarian_detail_negara')->middleware('auth');
+Route::post('pencarian_detail_negara_send',[App\Http\Controllers\ReportingController::class,'pencarian_detail_negara_send'])->name('pencarian_detail_negara_send')->middleware('auth');
 
 Route::post('cetak_laporan_bi_baru',[App\Http\Controllers\ImportExportController::class,'cetak_laporan_bi_baru'])->name('cetak_laporan_bi_baru')->middleware('auth');
 Route::post('cetak_laporan_bi_g0001',[App\Http\Controllers\ImportExportController::class,'cetak_laporan_bi_g0001'])->name('cetak_laporan_bi_g0001')->middleware('auth');
@@ -117,6 +122,7 @@ Route::group(['middleware' => ['operasional']], function () {
     Route::post('search_filtering_sender_operasional',[App\Http\Controllers\ReportingController::class,'search_filtering_sender'])->name('search_filtering_sender_operasional')->middleware('auth');
     Route::post('search_filtering_negara_operasional',[App\Http\Controllers\ReportingController::class,'search_filtering_negara'])->name('search_filtering_negara_operasional')->middleware('auth');
     Route::post('proses_detail_negara_operasional',[App\Http\Controllers\ReportingController::class,'proses_detail_negara'])->name('proses_detail_negara_operasional')->middleware('auth');
+    Route::post('proses_detail_negara_operasional_send',[App\Http\Controllers\ReportingController::class,'proses_detail_negara'])->name('proses_detail_negara_operasional')->middleware('auth');
     Route::post('detail_kota_operasional',[App\Http\Controllers\ReportingController::class,'detail_kota'])->name('detail_kota_operasional')->middleware('auth');
 
     Route::get('kota-operasional',[App\Http\Controllers\ReportingController::class,'kota'])->name('kota-operasional')->middleware('auth');
