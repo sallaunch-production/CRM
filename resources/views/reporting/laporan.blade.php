@@ -96,7 +96,7 @@
                                      </form>
                                 </td>
                                 <td>
-                                <form action="" method="POST">
+                                <form action="{{route('cetak_laporan_ppatk_baru_c2a')}}" method="POST">
                                     @csrf
                                         <input type=hidden  name="tanggal_dari" value="{{$tanggal_dari}}">
                                         <input type=hidden  name="tanggal_sampai" value="{{$tanggal_sampai}}">

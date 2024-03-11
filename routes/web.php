@@ -96,6 +96,7 @@ Route::post('cetak_laporan_bi_g0001',[App\Http\Controllers\ImportExportControlle
 Route::post('cetak_laporan_bi_g0003',[App\Http\Controllers\ImportExportController::class,'cetak_laporan_bi_g0003'])->name('cetak_laporan_bi_g0003')->middleware('auth');
 Route::post('cetak_laporan_bi_baru_txt',[App\Http\Controllers\ImportExportController::class,'cetak_laporan_bi_baru_txt'])->name('cetak_laporan_bi_baru_txt')->middleware('auth');
 Route::post('cetak_laporan_ppatk_baru',[App\Http\Controllers\ImportExportController::class,'cetak_laporan_ppatk_baru'])->name('cetak_laporan_ppatk_baru')->middleware('auth');
+Route::post('cetak_laporan_ppatk_baru_c2a',[App\Http\Controllers\ImportExportController::class,'cetak_laporan_ppatk_baru_c2a'])->name('cetak_laporan_ppatk_baru_c2a')->middleware('auth');
 
 Route::post('cari_laporan',[App\Http\Controllers\ReportingController::class,'cari_laporan'])->name('cari_laporan')->middleware('auth');
 Route::get('laporan',[App\Http\Controllers\ReportingController::class,'laporan'])->name('laporan')->middleware('auth');

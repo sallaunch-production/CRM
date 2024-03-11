@@ -11,7 +11,6 @@ use App\Exports\CetakLaporanPpatk;
 use App\Exports\Rekons;
 use App\Exports\InvoicesExport;
 use App\Exports\CetakLaporanBI;
-
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use DB;
@@ -119,9 +118,18 @@ class ImportExportController extends Controller
 
     
 
-    public function cetak_laporan_ppatk_baru() 
+    public function cetak_laporan_ppatk_baru(Request $request) 
     {
-        return Excel::download(new InvoicesExport, 'LTKL.xlsx');
+        $tanggal_dari = $request->tanggal_dari;
+        $tanggal_sampai = $request->tanggal_sampai;
+        return Excel::download(new InvoicesExport($tanggal_dari,$tanggal_sampai), 'LTKL Incoming.xlsx');
+    }
+
+    public function cetak_laporan_ppatk_baru_c2a(Request $request) 
+    {
+        $tanggal_dari = $request->tanggal_dari;
+        $tanggal_sampai = $request->tanggal_sampai;
+        return Excel::download(new CetakLaporanPpatk($tanggal_dari,$tanggal_sampai), 'LTKL incoming C2A.xls');
     }
     
 }
