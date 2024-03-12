@@ -8,6 +8,8 @@ use Maatwebsite\Excel\Events\AfterSheet;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use \Maatwebsite\Excel\Sheet;
+use Illuminate\Contracts\Encryption\DecryptException;
+use \Crypt;
 use Illuminate\Support\Facades\DB;
 
 class CetakLaporanPpatk implements   WithHeadings, WithCustomStartCell, WithEvents
@@ -33,6 +35,8 @@ class CetakLaporanPpatk implements   WithHeadings, WithCustomStartCell, WithEven
             AfterSheet::class => function(AfterSheet $event) {
                 /** @var Sheet $sheet */
                 $sheet = $event->sheet;
+                // Create a page margins object.
+               
 
                 $sheet->mergeCells('A1:A4');
                 $sheet->setCellValue('A1', "Local ID*");
@@ -247,58 +251,69 @@ class CetakLaporanPpatk implements   WithHeadings, WithCustomStartCell, WithEven
                 $no=1;
                 $line=5;
                 $total_bsu=0;
-                $qur = DB::table('transaksi_valid')->where('deltawork','=','ya')->where('id_transaksi','<>','')->where('tanggal','>=',$this->tanggal_dari.' 00:00:00')->where('tanggal','<=',$this->tanggal_sampai.' 23:59:59')->orderBy('no','asc')->get(); 
-                foreach($qur as $datatrans){
-                    $idpos= substr($datatrans->id_pos, 0, 5);
-                    if($datatrans->identitas=="GOV"){
-                    $identitas=1;
+                $que = DB::table('transaksi_sigue_cta')->select('no_referensi','nama_pengirim','nama_penerima','bankaccount','bank','bsubanyak','tanggal','status')->where('status','=','paid')->where('tanggal','>=',$this->tanggal_sampai.' 00:00:00')->where('tanggal','<=',$this->tanggal_dari.' 23:59:59')
+                                                        ->UnionAll(DB::table('goldstar_c2a')->select('ref_number','sendername','nama_penerima','bankaccount','bankname',DB::raw('CAST(targetamount AS bigint)'),'tanggal','status')->where('status','=','Y')->where('tanggal','<=',$this->tanggal_dari.' 23:59:59')->where('tanggal','>=',$this->tanggal_sampai.' 00:00:00')->orderBy('tanggal','asc'))->get();
+                foreach($que as $datatrans){
+                    $noref=substr($datatrans->no_referensi,-9);
+                    if($datatrans->status=="Y"){
+                        try {
+                            $plaintext_nama = decrypt($datatrans->nama_penerima ?? '');
+                        } catch (DecryptException $e) {
+                            //
+                        }
+                        try {
+                            $decryptplaintext_bankaccounted = decrypt($datatrans->bankaccount ?? '');
+                        } catch (DecryptException $e) {
+                            //
+                        }
+                        //$plaintext_nama = \Crypt::decrypt($datatrans->nama_penerima ?? '');
+                        //$plaintext_bankaccount = \Crypt::decrypt($datatrans->bankaccount ?? '');
+                        $negara=16;
+                    }else{
+                        $plaintext_nama = $datatrans->nama_penerima;
+                        $plaintext_bankaccount = $datatrans->bankaccount;
+                        $negara=40;
                     }
-                    elseif($datatrans->identitas=="DRV"){
-                    $identitas=2;
-                    }
-                    elseif($datatrans->identitas=="PAS"){
-                    $identitas=3;
-                    }
-                    else{
-                    $identitas=1;
-                    }
-
-                    $kodepos=DB::table('kp_konverter')->join('nopend_lama','nopend_lama.kprk = kp_konverter.kprk')->where('kpc','like',$idpos.'%')->first();
-                    $kodenegara=DB::table('negara_konverter')->where('nama','like','%'.$datatrans->negara_pengirim.'%')->first();
-                    $kodeposasli_ppatk=$kodepos->ppatk;
+                   
                     $sheet->setCellValue('C'.$line, 1);
                     $sheet->setCellValue('D'.$line, 1);
-                    $sheet->setCellValue('D'.$line, 1);
                     $sheet->setCellValue('G'.$line, $datatrans->nama_pengirim);
-                    $sheet->setCellValue('J'.$line, $kodenegara['kodeppatk']);
+                    $sheet->setCellValue('J'.$line, $negara);
                     $sheet->setCellValue('L'.$line, 1);
-                    $sheet->setCellValue('T'.$line, 'moneygram');
-                    $sheet->setCellValue('U'.$line, $kodenegar->kodeppatk);
-                    $sheet->setCellValue('W'.$line, 2);
-                    $sheet->setCellValue('Z'.$line, $datatrans->no_referensi);
-                    $sheet->setCellValue('AC'.$line, $datatrans->nama_penerima);
-                    $sheet->setCellValue('AD'.$line, $datatrans->tanggal_lahir);
-                    $sheet->setCellValue('AE'.$line, $datatrans->alamat_penerima);
-                    $sheet->setCellValueExplicit('AF'.$line, $kodepos->propinsi);
-                    $sheet->setCellValueExplicit('AH'.$line, $kodeposasli_ppatk);
-                    $sheet->setCellValueExplicit('AK'.$line, $kodepos->propinsi);
-                    $sheet->setCellValueExplicit('AM'.$line, $kodeposasli_ppatk);
-                    $sheet->setCellValue('AJ'.$line, $datatrans->alamat_penerima);
-                    $sheet->setCellValue('AP'.$line, $identitas);
-                    $sheet->setCellValueExplicit('AR'.$line, $datatrans->nomor_identitas,PHPExcel_Cell_DataType::TYPE_STRING);
+                    $sheet->setCellValue('T'.$line, 'Sigue');
+                    $sheet->setCellValue('U'.$line, $negara);
+                    $sheet->setCellValue('W'.$line, 1);
+                    $sheet->setCellValue('Z'.$line, $noref);
+                    $sheet->setCellValue('AA'.$line, $plaintext_bankaccount);
+                    $sheet->setCellValue('AB'.$line, $datatrans->bank);
+                    $sheet->setCellValue('AC'.$line, $plaintext_nama);
+                    $sheet->setCellValue('AJ'.$line,  'Data nasabah ada pada '. $datatrans->bank);
+                    $sheet->setCellValue('AK'.$line, 31);
+                    $sheet->setCellValue('AM'.$line, 3173);
+                    $sheet->setCellValue('AP'.$line, 1);
+                    $sheet->setCellValue('AR'.$line, 12345678901122);
+                    $sheet->setCellValue('AT'.$line, $plaintext_bankaccount);
+                    $sheet->setCellValue('AU'.$line, $datatrans->bank);
                     $sheet->setCellValue('AV'.$line, 'ARSEMA');
-                    $sheet->setCellValue('AW'.$line, $datatrans->alamat_penerima);
-                    $sheet->setCellValueExplicit('AX'.$line, $kodepos->propinsi);
-                    $sheet->setCellValueExplicit('AZ'.$line, $kodeposasli_ppatk);
-                    $sheet->setCellValue('BC'.$line,  $datatrans->tanggal);
-                    $sheet->setCellValue('BD'.$line,  $datatrans->tanggal);
-                    $sheet->setCellValue('BE'.$line,  74);
-                    $sheet->setCellValue('BH'.$line,  74);
-                    $sheet->setCellValue('BI'.$line,  $datatrans->bsubanyak);
-                                	
+                    $sheet->setCellValue('AX'.$line, 31);
+                    $sheet->setCellValue('AZ'.$line, 3173);
+                    $sheet->setCellValue('BC'.$line, $datatrans->tanggal);
+                    $sheet->setCellValue('BD'.$line, $datatrans->tanggal);
+                    $sheet->setCellValue('BE'.$line, 151);
+                    $sheet->setCellValue('BH'.$line, 74);
+                    $sheet->setCellValue('BI'.$line, number_format($datatrans->bsubanyak));
+                   
 
+                    $no++;		
+                    $line++;
                 }
-               
+
+                $pageMargins = new \PhpOffice\PhpSpreadsheet\Worksheet\PageMargins();
+                $pageMargins->setTop(1);
+                $pageMargins->setRight(0.75);
+                $pageMargins->setBottom(1);
+                $pageMargins->setLeft(0.75);
+
 
 
                 $event->sheet->getStyle('A1:A4')->applyFromArray([

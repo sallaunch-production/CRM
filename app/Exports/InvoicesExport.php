@@ -33,6 +33,8 @@ class InvoicesExport implements  WithHeadings, WithCustomStartCell, WithEvents{
             AfterSheet::class => function(AfterSheet $event) {
                 /** @var Sheet $sheet */
                 $sheet = $event->sheet;
+                $dari =  $this->tanggal_dari;
+                $sampai = $this->tanggal_sampai;
 
                 $sheet->mergeCells('A1:A4');
                 $sheet->setCellValue('A1', "Local ID*");
@@ -247,7 +249,7 @@ class InvoicesExport implements  WithHeadings, WithCustomStartCell, WithEvents{
                 $no=1;
                 $line=5;
                 $total_bsu=0;
-                $qur = DB::table('transaksi_valid')->where('deltawork','=','ya')->where('id_transaksi','<>','')->where('tanggal','>=',$this->tanggal_dari.' 00:00:00')->where('tanggal','<=',$this->tanggal_sampai.' 23:59:59')->orderBy('no','asc')->get(); 
+                $qur = DB::table('transaksi_valid')->where('deltawork','=','ya')->where('id_transaksi','<>','')->where('tanggal','<=',$this->tanggal_dari.' 23:59:59')->where('tanggal','>=',$this->tanggal_sampai.' 00:00:00')->orderBy('no','asc')->get(); 
                 foreach($qur as $datatrans){
                     $idpos= substr($datatrans->id_pos, 0, 5);
                     if($datatrans->identitas=="GOV"){
@@ -263,40 +265,40 @@ class InvoicesExport implements  WithHeadings, WithCustomStartCell, WithEvents{
                     $identitas=1;
                     }
 
-                    $kodepos=DB::table('kp_konverter')->join('nopend_lama','nopend_lama.kprk = kp_konverter.kprk')->where('kpc','like',$idpos.'%')->first();
+                    $kodepos=DB::table('kp_konverter')->join('nopend_lama','nopend_lama.kprk','=','kp_konverter.kprk')->where('kpc','like',$idpos.'%')->first();
                     $kodenegara=DB::table('negara_konverter')->where('nama','like','%'.$datatrans->negara_pengirim.'%')->first();
-                    $kodeposasli_ppatk=$kodepos->ppatk;
+                    $kodeposasli_ppatk=$kodepos->ppatk ?? '';
                     $sheet->setCellValue('C'.$line, 1);
                     $sheet->setCellValue('D'.$line, 1);
-                    $sheet->setCellValue('D'.$line, 1);
                     $sheet->setCellValue('G'.$line, $datatrans->nama_pengirim);
-                    $sheet->setCellValue('J'.$line, $kodenegara['kodeppatk']);
+                    $sheet->setCellValue('J'.$line, $kodenegara->kodeppatk ?? '');
                     $sheet->setCellValue('L'.$line, 1);
                     $sheet->setCellValue('T'.$line, 'moneygram');
-                    $sheet->setCellValue('U'.$line, $kodenegar->kodeppatk);
+                    $sheet->setCellValue('U'.$line, $kodenegara->kodeppatk ?? '');
                     $sheet->setCellValue('W'.$line, 2);
                     $sheet->setCellValue('Z'.$line, $datatrans->no_referensi);
                     $sheet->setCellValue('AC'.$line, $datatrans->nama_penerima);
                     $sheet->setCellValue('AD'.$line, $datatrans->tanggal_lahir);
                     $sheet->setCellValue('AE'.$line, $datatrans->alamat_penerima);
-                    $sheet->setCellValueExplicit('AF'.$line, $kodepos->propinsi);
-                    $sheet->setCellValueExplicit('AH'.$line, $kodeposasli_ppatk);
-                    $sheet->setCellValueExplicit('AK'.$line, $kodepos->propinsi);
-                    $sheet->setCellValueExplicit('AM'.$line, $kodeposasli_ppatk);
+                    $sheet->setCellValue('AF'.$line, $kodepos->propinsi ?? '');
+                    $sheet->setCellValue('AH'.$line, $kodeposasli_ppatk);
+                    $sheet->setCellValue('AK'.$line, $kodepos->propinsi ?? '');
+                    $sheet->setCellValue('AM'.$line, $kodeposasli_ppatk);
                     $sheet->setCellValue('AJ'.$line, $datatrans->alamat_penerima);
                     $sheet->setCellValue('AP'.$line, $identitas);
-                    $sheet->setCellValueExplicit('AR'.$line, $datatrans->nomor_identitas,PHPExcel_Cell_DataType::TYPE_STRING);
+                    $sheet->setCellValue('AR'.$line, $datatrans->nomor_identitas);
                     $sheet->setCellValue('AV'.$line, 'ARSEMA');
                     $sheet->setCellValue('AW'.$line, $datatrans->alamat_penerima);
-                    $sheet->setCellValueExplicit('AX'.$line, $kodepos->propinsi);
-                    $sheet->setCellValueExplicit('AZ'.$line, $kodeposasli_ppatk);
+                    $sheet->setCellValue('AX'.$line, $kodepos->propinsi ?? '');
+                    $sheet->setCellValue('AZ'.$line, $kodeposasli_ppatk);
                     $sheet->setCellValue('BC'.$line,  $datatrans->tanggal);
                     $sheet->setCellValue('BD'.$line,  $datatrans->tanggal);
                     $sheet->setCellValue('BE'.$line,  74);
                     $sheet->setCellValue('BH'.$line,  74);
                     $sheet->setCellValue('BI'.$line,  $datatrans->bsubanyak);
                                 	
-
+                    $no++;		
+                    $line++;
                 }
                
 

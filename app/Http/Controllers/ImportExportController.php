@@ -122,6 +122,7 @@ class ImportExportController extends Controller
     {
         $tanggal_dari = $request->tanggal_dari;
         $tanggal_sampai = $request->tanggal_sampai;
+
         return Excel::download(new InvoicesExport($tanggal_dari,$tanggal_sampai), 'LTKL Incoming.xlsx');
     }
 
