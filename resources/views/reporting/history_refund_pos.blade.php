@@ -71,11 +71,15 @@
                                         </td>
                                        
                                         @if(count($dats)==0)
-                                        <td><a href=?act=history_refund&proses=upload&id=$data[no]>Upload</a></td>
+                                        <td>
+                                        <button type=submit class="badge badge-primary">
+                                                  Upload
+                                              </button> 
+                                        </td>
                                         <td></td>
                                         @else
-                                        <td><a href='' target=_blank>View Image</a></td>
-                                        <td><a href='' >Edit</a> | <a href= >Delete</a></td>
+                                        <td><button type=submit class="badge badge-success">View Image </button></td>
+                                        <td><button disabled type=submit class="badge badge-warning">Edit</button> |  <button type=submit class="badge badge-danger" disabled>Delete</button></td>
                                         @endif
                                    </tr>
                                 @endforeach

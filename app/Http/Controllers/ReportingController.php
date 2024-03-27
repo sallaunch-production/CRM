@@ -837,19 +837,24 @@ class ReportingController extends Controller
         $id= $request->id;
         $gambar= $request->gambar;
         $alasan= $request->alasan;
-        $validatedData =  $request->validate(['gambar' => 'required|mimes:csv,txt,xlx,xls,pdf|max:4048']);
+        $validatedData =  $request->validate(['gambar' => 'required|mimes:jpeg,png,jpg,pdf|max:4048']);
         
         $name = $request->file('gambar')->getClientOriginalName();
         $filePath = 'pop/' . $name;
 
         $path = Storage::disk('public')->put($filePath, file_get_contents($request->gambar));
         $path = Storage::disk('public')->url($path);
+        $maxId = DB::table('history_refund')->orderBy('id','desc')->first();
 
         $audit_trails = DB::table('history_refund')->insertGetId([
+          'id' =>  $maxId->id+1,
           'pop_image' => $name,
           'id_refund' =>$id,
           'alasan' =>  $alasan,
-          'tanggal' => Carbon::now()->toDateTimeString()
+          'ip' => $_SERVER['REMOTE_ADDR'],
+          'tanggal' => Carbon::now()->toDateTimeString(),
+          'created_at' => Carbon::now()->toDateTimeString(),
+          'updated_at' => Carbon::now()->toDateTimeString(),
       ]);
 
       return redirect('history_refund')->with('success','You have successfully uplaod pop');
@@ -858,6 +863,61 @@ class ReportingController extends Controller
       return redirect('login')->with('You dont have access');
     }
 
+    public function edit_history_refund(Request $request)
+     {
+      if(Auth::check()){
+        $edit_history = "ya";
+        $id_refund = $request->id_refund;
+        $que = DB::table('history_refund')->where('id_refund','=',$id_refund)->first();
+        $ques=DB::table('transaksi_cancel')->where('no','=',$id_refund)->first();
 
+        return view('reporting.history-refunds', [
+          'data'=>$que,'edit_history'=>$edit_history,'datas'=>$ques,'id_refund'=>$id_refund
+          ]);
+      }
+         return redirect('login')->with('You dont have access');
+    }
+    
+    public function edit_upload_history_refund(Request $request)
+     {
+      if(Auth::check()){
+        $id= $request->id;
+        $gambar= $request->gambar;
+        $alasan= $request->alasan;
+        
+       if($gambar<>""){
+        $validatedData =  $request->validate(['gambar' => 'required|mimes:jpeg,png,jpg,pdf|max:4048']);
+        
+        $name = $request->file('gambar')->getClientOriginalName();
+        $filePath = 'pop/' . $name;
+
+        $path = Storage::disk('public')->put($filePath, file_get_contents($request->gambar));
+        $path = Storage::disk('public')->url($path);
+          $edit = DB::table('history_refund')->where('id_refund','=',$id)->update([
+            'pop_image' => $name,'alasan'=>$alasan,'tanggal'=> Carbon::now()->toDateTimeString(),
+          ]);
+          
+       }else{
+          $edit = DB::table('history_refund')->where('id_refund','=',$id)->update([
+            'alasan'=>$alasan,'tanggal'=> Carbon::now()->toDateTimeString(),
+          ]);
+          
+       }
+        return redirect('history_refund')->with('success','You have successfully edit pop');
+      }
+      return redirect('login')->with('You dont have access');
+    }
+
+
+
+    public function delete_history_refund(Request $request)
+    {
+      if(Auth::check()){
+        $id_refund =  $request->id_refund;
+        $delete = DB::table('history_refund')->where('id_refund','=',$id_refund)->delete();
+        return redirect('history_refund')->with('success','You have successfully delete');
+      }
+      return redirect('login')->with('You dont have access');
+    }
 
 }

@@ -111,6 +111,10 @@ Route::get('screening_transaksi',[App\Http\Controllers\ReportingController::clas
 Route::post('cari_screening_transaksi',[App\Http\Controllers\ReportingController::class,'cari_screening_transaksi'])->name('cari_screening_transaksi')->middleware('auth');
 Route::post('page_history_refund',[App\Http\Controllers\ReportingController::class,'page_history_refund'])->name('page_history_refund')->middleware('auth');
 Route::post('upload_history_refund',[App\Http\Controllers\ReportingController::class,'upload_history_refund'])->name('upload_history_refund')->middleware('auth');
+Route::post('edit_history_refund',[App\Http\Controllers\ReportingController::class,'edit_history_refund'])->name('edit_history_refund')->middleware('auth');
+Route::post('delete_history_refund',[App\Http\Controllers\ReportingController::class,'delete_history_refund'])->name('delete_history_refund')->middleware('auth');
+Route::post('edit_upload_history_refund',[App\Http\Controllers\ReportingController::class,'edit_upload_history_refund'])->name('edit_upload_history_refund')->middleware('auth');
+
 });
 
 
