@@ -88,7 +88,7 @@
                                             <form action="{{route('edit_history_refund')}}" method="POST" enctype="multipart/form-data" style="max-width:350px;">
                                             @csrf
                                               <input type="hidden" name="id_refund" value="{{$no}}"/>
-                                              <button type=submit class="badge badge-warning">Edit</button> </form> | 
+                                              <button type=submit class="badge badge-warning">Edit</button> </form>  
                                             <form action="{{route('delete_history_refund')}}" method="POST" enctype="multipart/form-data" style="max-width:350px;">
                                               @csrf
                                               <input type="hidden" class="form-control @error('name') is-invalid @enderror" name="id_refund" value="{{$no}}"/>

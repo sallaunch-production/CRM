@@ -114,6 +114,16 @@ Route::post('upload_history_refund',[App\Http\Controllers\ReportingController::c
 Route::post('edit_history_refund',[App\Http\Controllers\ReportingController::class,'edit_history_refund'])->name('edit_history_refund')->middleware('auth');
 Route::post('delete_history_refund',[App\Http\Controllers\ReportingController::class,'delete_history_refund'])->name('delete_history_refund')->middleware('auth');
 Route::post('edit_upload_history_refund',[App\Http\Controllers\ReportingController::class,'edit_upload_history_refund'])->name('edit_upload_history_refund')->middleware('auth');
+Route::post('upload_refund_pos',[App\Http\Controllers\ReportingController::class,'upload_refund_pos'])->name('upload_refund_pos')->middleware('auth');
+Route::post('act_upload_refund_pos',[App\Http\Controllers\ReportingController::class,'act_upload_refund_pos'])->name('act_upload_refund_pos')->middleware('auth');
+Route::post('edit_refund_pos',[App\Http\Controllers\ReportingController::class,'edit_refund_pos'])->name('edit_refund_pos')->middleware('auth');
+Route::post('act_edit_refund_pos',[App\Http\Controllers\ReportingController::class,'act_edit_refund_pos'])->name('act_edit_refund_pos')->middleware('auth');
+Route::post('delete_refund_pos',[App\Http\Controllers\ReportingController::class,'delete_refund_pos'])->name('delete_refund_pos')->middleware('auth');
+Route::post('upload_pop',[App\Http\Controllers\ReportingController::class,'upload_pop'])->name('upload_pop')->middleware('auth');
+Route::post('act_upload_pop',[App\Http\Controllers\ReportingController::class,'act_upload_pop'])->name('act_upload_pop')->middleware('auth');
+Route::post('edit_popimages',[App\Http\Controllers\ReportingController::class,'edit_popimages'])->name('edit_popimages')->middleware('auth');
+Route::post('delete_popimages',[App\Http\Controllers\ReportingController::class,'delete_popimages'])->name('delete_popimages')->middleware('auth');
+Route::post('act_edit_popimage',[App\Http\Controllers\ReportingController::class,'act_edit_popimage'])->name('act_edit_popimage')->middleware('auth');
 
 });
 

@@ -846,7 +846,7 @@ class ReportingController extends Controller
         $path = Storage::disk('public')->url($path);
         $maxId = DB::table('history_refund')->orderBy('id','desc')->first();
 
-        $audit_trails = DB::table('history_refund')->insertGetId([
+        $upload_file = DB::table('history_refund')->insertGetId([
           'id' =>  $maxId->id+1,
           'pop_image' => $name,
           'id_refund' =>$id,
@@ -920,4 +920,236 @@ class ReportingController extends Controller
       return redirect('login')->with('You dont have access');
     }
 
+
+    public function upload_refund_pos(Request $request)
+    {
+      if(Auth::check()){
+        $no =  $request->no;
+        $upload= "ya";
+        $ques=DB::table('transaksi_cancel')->where('no','=',$no)->first();
+        return view('reporting.history_refund_pos', [
+          'data'=>$ques,'upload'=>$upload,'no'=>$no
+          ]);
+      }
+      return redirect('login')->with('You dont have access');
+    }
+
+
+
+    public function act_upload_refund_pos(Request $request)
+    {
+      if(Auth::check()){
+        $id= $request->id;
+        $gambar= $request->gambar;
+        $alasan= $request->alasan;
+        $ip= $request->ip;
+        
+        $validatedData =  $request->validate(['gambar' => 'required|mimes:jpeg,png,jpg,pdf|max:4048']);
+        
+        $name = $request->file('gambar')->getClientOriginalName();
+        $filePath = 'pop/' . $name;
+
+        $path = Storage::disk('public')->put($filePath, file_get_contents($request->gambar));
+        $path = Storage::disk('public')->url($path);
+        $maxId = DB::table('history_refund')->orderBy('id','desc')->first();
+
+        $upload_file = DB::table('history_refund')->insertGetId([
+          'id' =>  $maxId->id+1,
+          'pop_image' => $name,
+          'id_refund' =>$id,
+          'alasan' =>  $alasan,
+          'ip' => $ip,
+          'tanggal' => Carbon::now()->toDateTimeString(),
+          'created_at' => Carbon::now()->toDateTimeString(),
+          'updated_at' => Carbon::now()->toDateTimeString(),
+      ]);
+      return redirect('history_refund_pos')->with('success','You have successfully upload');
+       
+      }
+      return redirect('login')->with('You dont have access');
+    }
+    
+    
+    public function edit_refund_pos(Request $request)
+    {
+      if(Auth::check()){
+        $id =  $request->id;
+        $edit= "ya";
+        $que = DB::table('history_refund')->where('id_refund','=',$id)->first();
+        $ques =  DB::table('transaksi_cancel')->where('no','=',$id)->first();
+
+
+        return view('reporting.history_refund_pos', [
+          'data'=>$que,'datas'=>$ques,'edit'=>$edit,'id'=>$id
+          ]);
+      }
+      return redirect('login')->with('You dont have access');
+    }
+
+    
+    public function act_edit_refund_pos(Request $request)
+    {
+      if(Auth::check()){
+        $id= $request->id;
+        $gambar= $request->gambar;
+        $alasan= $request->alasan;
+        $ip= $request->ip;
+
+
+        if($gambar<>""){
+          $validatedData =  $request->validate(['gambar' => 'required|mimes:jpeg,png,jpg,pdf|max:4048']);
+          
+          $name = $request->file('gambar')->getClientOriginalName();
+          $filePath = 'pop/' . $name;
+  
+          $path = Storage::disk('public')->put($filePath, file_get_contents($request->gambar));
+          $path = Storage::disk('public')->url($path);
+            $edit = DB::table('history_refund')->where('id_refund','=',$id)->update([
+              'pop_image' => $name,'alasan'=>$alasan,'tanggal'=> Carbon::now()->toDateTimeString(),
+            ]);
+            
+         }else{
+            $edit = DB::table('history_refund')->where('id_refund','=',$id)->update([
+              'alasan'=>$alasan,'tanggal'=> Carbon::now()->toDateTimeString(),'ip'=>$ip
+            ]);
+            
+         }
+          return redirect('history_refund_pos')->with('success','You have successfully edit pop');
+        }
+      return redirect('login')->with('You dont have access');
+    }
+
+    
+    public function delete_refund_pos(Request $request)
+    {
+      if(Auth::check()){
+        $id_refund =  $request->id;
+        $delete = DB::table('history_refund')->where('id_refund','=',$id_refund)->delete();
+        return redirect('history_refund_pos')->with('success','You have successfully delete');
+
+      }
+      return redirect('login')->with('You dont have access');
+    }
+
+
+    
+    public function upload_pop(Request $request)
+    {
+      if(Auth::check()){  
+        $upload = "ya";
+
+
+         return view('reporting.popimages', [
+          'upload'=>$upload,
+          ]);
+      }
+      return redirect('login')->with('You dont have access');
+    }
+
+
+    public function act_upload_pop(Request $request)
+    {
+      if(Auth::check()){  
+        $gambar= $request->gambar;
+        $tgl= $request->tgl;
+        $noref= $request->noref;
+        $nama= $request->nama;
+        $jenis= $request->optradio;
+        $ltkl= $request->ltkl;
+        $ltkm= $request->ltkm;
+        
+        
+        $validatedData =  $request->validate(['gambar' => 'required|mimes:jpeg,png,jpg,pdf|max:4048']);
+        
+        $name = $request->file('gambar')->getClientOriginalName();
+        $filePath = 'pop/' . $name;
+
+        $path = Storage::disk('public')->put($filePath, file_get_contents($request->gambar));
+        $path = Storage::disk('public')->url($path);
+        $maxId = DB::table('proof_of_payment')->orderBy('id','desc')->first();
+
+        $upload_file = DB::table('proof_of_payment')->insertGetId([
+          'id' =>  $maxId->id+1,
+          'no_referensi' => $noref,
+          'pop_image' =>$name,
+          'tanggal_transaksi' =>  $tgl,
+          'nama_client' => $nama,
+          'jenis' => $jenis,
+          'ltkl' => $ltkl,
+          'ltkm' => $ltkm,
+          'tanggal' => Carbon::now()->toDateTimeString(),
+          'created_at' => Carbon::now()->toDateTimeString(),
+          'updated_at' => Carbon::now()->toDateTimeString(),
+      ]);
+      return redirect('popimage')->with('success','You have successfully upload');
+      }
+      return redirect('login')->with('You dont have access');
+    }
+
+    
+    public function edit_popimages(Request $request)
+    {
+      if(Auth::check()){  
+        $edit_s="ya";
+        $id = $request->id;
+        $que= DB::table('proof_of_payment')->where('id','=',$id)->first();
+
+        return view('reporting.popimages', [
+          'data'=>$que,'id'=>$id,'edit_s'=>$edit_s
+          ]);
+      }
+      return redirect('login')->with('You dont have access');
+    }
+
+
+    public function delete_popimages(Request $request)
+    {
+      if(Auth::check()){  
+        $id =  $request->id;
+        $delete = DB::table('proof_of_payment')->where('id','=',$id)->delete();
+       
+        return redirect('popimage')->with('success','You have successfully delete');
+
+      }
+      return redirect('login')->with('You dont have access');
+    }
+
+
+    
+    public function act_edit_popimage(Request $request)
+    {
+      if(Auth::check()){  
+        $id= $request->id;
+        $noref = $request->noref;
+        $gambar= $request->gambar;
+        $tgl= $request->tgl;
+        $nama= $request->nama;
+        $jenis= $request->optradio;
+        $ltkl= $request->ltkl;
+        $ltkm= $request->ltkm;
+
+
+        if($gambar<>""){
+          $validatedData =  $request->validate(['gambar' => 'required|mimes:jpeg,png,jpg,pdf|max:4048']);
+          
+          $name = $request->file('gambar')->getClientOriginalName();
+          $filePath = 'pop/' . $name;
+  
+          $path = Storage::disk('public')->put($filePath, file_get_contents($request->gambar));
+          $path = Storage::disk('public')->url($path);
+            $edit = DB::table('proof_of_payment')->where('id','=',$id)->update([
+              'pop_image' => $name,'no_referensi'=>$noref,'tanggal_transaksi'=>$tgl,'nama_client'=>$nama,'jenis'=>$jenis,'ltkl'=>$ltkl,'ltkm'=>$ltkm,'tanggal'=>Carbon::now()->toDateTimeString()
+            ]);
+            
+         }else{
+            $edit = DB::table('proof_of_payment')->where('id','=',$id)->update([
+              'no_referensi'=>$noref,'tanggal_transaksi'=>$tgl,'nama_client'=>$nama,'jenis'=>$jenis,'ltkl'=>$ltkl,'ltkm'=>$ltkm,'tanggal'=>Carbon::now()->toDateTimeString()
+            ]);
+            
+         }
+         return redirect('popimage')->with('success','You have successfully update');
+      }
+      return redirect('login')->with('You dont have access');
+    }
+    
 }

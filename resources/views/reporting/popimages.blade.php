@@ -25,6 +25,12 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                               </div>
                             @endif
+
+                            @if(empty($upload) && empty($edit_s))
+                            <form method="post" action="{{route('upload_pop')}}">
+                              @csrf
+                              <input type=submit class="btn btn-success" value="UPLOAD POP">
+                            </form><br><br>
                             <table  id="example" class="table table-responsive table-striped  table-bordered" style="width:100%">
                                 <thead>
                                   <tr>
@@ -51,11 +57,17 @@
                                         <td>{{ $transactions->ltkl }}</td>
                                         <td>{{ $transactions->ltkm }}</td>
                                         <td>{{ $transactions->tanggal }}</td>
-                                        <td><a href="#" >View Image</a></td>
+                                        <td><a target="_blank" href="{{url('storage/pop/' . $transactions->pop_image)}}"><button type=submit class="badge badge-success">View Image </button></a></td>
                                         <td>
-                                          @if($levelnya=="operasional")
-                                              <a href="#" onclick="return false;">Edit</a> | <a href="#"  onclick="return false;">Delete</a>
-                                          @endif    
+                                        <form action="{{route('edit_popimages')}}" method="POST">
+                                            @csrf
+                                              <input type="hidden" name="id" value="{{$transactions->id}}"/> 
+                                              <button  type=submit class="badge badge-warning">Edit</button>
+                                        </form> 
+                                        <form action="{{route('delete_popimages')}}" method="POST">
+                                            @csrf
+                                            <input type="hidden" class="form-control @error('name') is-invalid @enderror"  name="id" value="{{$transactions->id}}"/> <button type=submit class="badge badge-danger show_confirm" data-toggle="tooltip" title='Delete'>Delete</button></form>
+                                          
                                         </td>
                                       
                                       </tr>
@@ -63,6 +75,186 @@
                                  
                                 </tbody>
                               </table>
+                            @endif
+
+
+                          @if(!empty($upload))
+                          
+                          <form action="{{route('act_upload_pop')}}" method=post enctype="multipart/form-data" style="max-width:350px;">
+                             @csrf
+                             <div class=form-group>
+                                  <label>No Referensi</label>
+                                <input type=text name=noref required class=form-control>
+                                </div>
+                                <div class=form-group>
+                                  <label>Tanggal Transaksi</label>
+                                <input type=text name=tgl required class=form-control id=dari>
+                                </div>
+                                <div class=form-group>
+                                  <label>Nama Client</label>
+                                <input type=text name=nama required class=form-control>
+                                </div>
+                                <div class=form-group>
+                                  <label>Jenis Transaksi</label><br>
+                                <label class="radio-inline">
+                          <input type="radio" name="optradio" value=SEND>SEND
+                        </label>
+                        <label class="radio-inline">
+                          <input type="radio" name="optradio" value=RECEIVE>RECEIVE
+                        </label>
+                                <label class="radio-inline">
+                          <input type="radio" name="optradio" value=REFUND>REFUND
+                        </label>
+                                </div>
+                              <div class=form-group>
+                                  <label>Image</label>
+                                  <input type=file name=gambar required class=form-control>
+                                </div>
+                                <div class=form-group>
+                                  <label>Submitted LTKL</label><br>
+                              <label class="radio-inline">
+                          <input type="radio" name="ltkl" value=DONE>DONE
+                        </label>
+                        <label class="radio-inline">
+                          <input type="radio" name="ltkl" value=NOT>NOT
+                        </label>
+                                </div>
+                                <div class=form-group>
+                                  <label>Submitted LTKM</label><br>
+                              <label class="radio-inline">
+                          <input type="radio" name="ltkm" value=DONE>DONE
+                        </label>
+                        <label class="radio-inline">
+                          <input type="radio" name="ltkm" value=NOT>NOT
+                        </label>
+                                </div>
+                            <div class=form-group>
+                                  
+                                  <input type=submit class="btn btn-danger" value=UPLOAD>
+                                </div>
+                            </form>
+                            
+                          @endif
+                            
+                          @if(!empty($edit_s))
+                          <form action="{{route('act_edit_popimage')}}" method="post" enctype="multipart/form-data" style="max-width:350px;">
+                          @csrf  
+                          <input type=hidden name=id value="{{$id}}">
+                            <div class=form-group>
+                                <label>No Referensi</label>
+                              <input type=text name=noref required class=form-control value="{{$data->no_referensi}}">
+                              </div>
+                              <div class=form-group>
+                                <label>Tanggal Transaksi</label>
+                              <input type=text name=tgl required class=form-control id=dari value="{{$data->tanggal_transaksi}}">
+                              </div>
+                              <div class=form-group>
+                                <label>Nama Client</label>
+                              <input type=text name=nama required class=form-control value=" {{$data->nama_client}}">
+                              </div>
+                              <div class=form-group>
+                                <label>Jenis Transaksi</label><br>
+                              <?php if($data->jenis=="SEND"){?>
+                              <label class="radio-inline">
+                        <input type="radio" name="optradio" value=SEND checked>SEND
+                      </label>
+                      <label class="radio-inline">
+                        <input type="radio" name="optradio" value=RECEIVE>RECEIVE
+                      </label>
+                              <label class="radio-inline">
+                        <input type="radio" name="optradio" value=REFUND>REFUND
+                      </label>
+                              <?php }
+                              else if($data->jenis=="RECEIVE"){?>
+                              <label class="radio-inline">
+                        <input type="radio" name="optradio" value=SEND >SEND
+                      </label>
+                      <label class="radio-inline">
+                        <input type="radio" name="optradio" value=RECEIVE checked>RECEIVE
+                      </label>
+                              <label class="radio-inline">
+                        <input type="radio" name="optradio" value=REFUND>REFUND
+                      </label>
+                              <?php }
+                  else{?>
+                              <label class="radio-inline">
+                        <input type="radio" name="optradio" value=SEND >SEND
+                      </label>
+                      <label class="radio-inline">
+                        <input type="radio" name="optradio" value=RECEIVE >RECEIVE
+                      </label>
+                              <label class="radio-inline">
+                        <input type="radio" name="optradio" value=REFUND checked>REFUND
+                      </label>
+                              <?php } ?>
+                              </div>
+                            <div class=form-group>
+                                <label>Image</label>
+                                <input type=file name=gambar class=form-control>
+                              </div>
+                              <div class=form-group>
+                                <label>Submitted LTKL</label><br>
+                  <?php if($data->ltkl=="DONE"){?>
+                            <label class="radio-inline">
+                        <input type="radio" name="ltkl" value=DONE checked>DONE
+                      </label>
+                      <label class="radio-inline">
+                        <input type="radio" name="ltkl" value=NOT>NOT
+                      </label>
+                  <?php }
+                  else if($data->ltkl=="NOT"){?>
+                            <label class="radio-inline">
+                        <input type="radio" name="ltkl" value=DONE>DONE
+                      </label>
+                      <label class="radio-inline">
+                        <input type="radio" name="ltkl" value=NOT checked>NOT
+                      </label>
+                  <?php }
+                  else{?>
+                            <label class="radio-inline">
+                        <input type="radio" name="ltkl" value=DONE >DONE
+                      </label>
+                      <label class="radio-inline">
+                        <input type="radio" name="ltkl" value=NOT>NOT
+                      </label>
+                  <?php } ?>
+                              </div>
+                              <div class=form-group>
+                                <label>Submitted LTKM</label><br>
+                  <?php if($data->ltkl=="DONE"){?>
+                            <label class="radio-inline">
+                        <input type="radio" name="ltkm" value=DONE checked>DONE
+                      </label>
+                      <label class="radio-inline">
+                        <input type="radio" name="ltkm" value=NOT>NOT
+                      </label>
+                  <?php }
+                                                else if($data->ltkl=="NOT"){?>
+                            <label class="radio-inline">
+                        <input type="radio" name="ltkm" value=DONE >DONE
+                      </label>
+                      <label class="radio-inline">
+                        <input type="radio" name="ltkm" value=NOT checked>NOT
+                      </label>
+                  <?php }
+                                                else{?>
+                            <label class="radio-inline">
+                        <input type="radio" name="ltkm" value=DONE >DONE
+                      </label>
+                      <label class="radio-inline">
+                        <input type="radio" name="ltkm" value=NOT>NOT
+                      </label>
+                  <?php } ?>
+                                                
+                                                
+                              </div>
+                          <div class=form-group>
+                                
+                                <input type=submit class="btn btn-danger" value=UPLOAD>
+                              </div>
+                          </form>
+
+                          @endif
 
                         </div><!--card-body-->
 
@@ -86,4 +278,53 @@
         $("#success-alert").fadeOut(500);
         });
    </script>
+   
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
+
+<script>
+         
+     $("#success-alert").fadeTo(2000, 500).fadeOut(500, function(){
+     $("#success-alert").fadeOut(500);
+     });
+</script>
+ <script>
+         
+
+         $('.show_confirm').click(function(event) {
+    
+    var form =  $(this).closest("form");
+    
+    var name = $(this).data("name");
+    
+    event.preventDefault();
+    
+    swal({
+    
+        title: `Are you sure you want to delete this record?`,
+    
+        text: "If you delete this, it will be gone forever.",
+    
+        icon: "warning",
+    
+        buttons: true,
+    
+        dangerMode: true,
+    
+    })
+    
+    .then((willDelete) => {
+    
+      if (willDelete) {
+    
+        form.submit();
+    
+      }
+    
+    });
+    
+    });
+            $("#success-alert").fadeTo(2000, 500).fadeOut(500, function(){
+            $("#success-alert").fadeOut(500);
+            });
+       </script>
 @stop
