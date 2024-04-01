@@ -50,6 +50,17 @@ class AuthController extends Controller
                  'created_at' => Carbon::now()->toDateTimeString(),
                  'updated_at' =>Carbon::now()->toDateTimeString(),
              ]);
+
+             $audit = DB::table('audit_trail')->insertGetId([
+                'username' => Auth::user()->email,
+                'url' => url()->current(),
+                'action' => "User block",
+                'tanggal' => Carbon::now()->toDateTimeString(),
+                'ip_address' => $_SERVER['REMOTE_ADDR'],
+                'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+                'created_at' => Carbon::now()->toDateTimeString(),
+                'updated_at' =>Carbon::now()->toDateTimeString(),
+            ]);
             }
              
             return redirect()->back()->with('status', 'Username was blocked!');
@@ -80,7 +91,7 @@ class AuthController extends Controller
                         $namanya=$cek_users->name;
                         Session::put('user_name', $namanya);
                     }
-                    $cek_google =  DB::table('auth_google')->where('username','=',$namanya)->get();
+                    $cek_google =  DB::table('auth_google')->where('username','=',$cek_email[0]['email'] ?? '')->get();
                     if(count($cek_google)>0){
                         return redirect('validation')->with('success','Silahkan masukan code dari perangakat seluler anda.');
                     }else{
@@ -115,7 +126,7 @@ class AuthController extends Controller
                 $nama=$users->name;
                 $level=$users->level;
             }
-            $cek_code = DB::table('auth_google')->where('username','=',$nama)->get();
+            $cek_code = DB::table('auth_google')->where('username','=',$email)->get();
             foreach($cek_code as $cek_codes){
                 $codenya=$cek_codes->code;
             }
@@ -225,14 +236,28 @@ class AuthController extends Controller
         $passUser = Session::get('user_password');
         $nameUser = Session::get('user_name');
         $idmax = DB::table('auth_google')->orderBy('id','desc')->first();
-        $idnya=$idmax->id +1;
+        $idnya=(int)$idmax->id +1;
+        $cek_barcode= DB::table('auth_google')->where('username','=',$emailUser)->count();
+        if($cek_barcode<=0){
         $barcode = DB::table('auth_google')->insertGetId([
             'id'=>$idnya,
-            'username' => $nameUser,
+            'username' => $emailUser,
             'code' => $secret,
             'created_at' => Carbon::now()->toDateTimeString(),
             'updated_at' =>Carbon::now()->toDateTimeString(),
         ]);
+
+        $audit = DB::table('audit_trail')->insertGetId([
+            'username' => $emailUser,
+            'url' => url()->current(),
+            'action' => "Scan barcode login",
+            'tanggal' => Carbon::now()->toDateTimeString(),
+            'ip_address' => $_SERVER['REMOTE_ADDR'],
+            'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+            'created_at' => Carbon::now()->toDateTimeString(),
+            'updated_at' =>Carbon::now()->toDateTimeString(),
+        ]);
+    }
 
         $QR_Image = $google2fa->getQRCodeInline(
             "CRM Arsema",
