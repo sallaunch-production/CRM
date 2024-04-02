@@ -44,7 +44,7 @@
                                 </div>
                             @if(!empty($cari))
                             <h2>Nama Customer</h2>
-                            <h3>Tanggal Dari : {{$periode_dari}} dan Sampai {{$periode_sampai}} </h3>";
+                            <h3>Tanggal Dari : {{$periode_dari}} dan Sampai {{$periode_sampai}} </h3>
                             	
                          <table  id="example" class="table table-responsive table-striped  table-bordered">
                             <thead>
