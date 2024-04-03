@@ -321,13 +321,13 @@ class CheckingController extends Controller
           $qur = DB::table('sanction_list')->insertGetId([
             'nama' => $nama,
             'alias' => $alias,
-            'tgl_lahir' => $tgl_lahir,
+            'tanggal_lahir' => $tgl_lahir,
             'alamat' => $alamat,
-            'asalnegara' => $asalnegara,
-            'nomor_identitas' => $nomor_identitas,
-            'telepon_penerima' => $telepon_penerima,
+            'negara' => $asalnegara,
+            'no_ktp' => $nomor_identitas,
+            'nohp' => $telepon_penerima,
             'keterangan' => $keterangan,
-            'kategori' => $kategori,
+            'type' => $kategori,
             'created_at' => Carbon::now()->toDateTimeString(),
             'updated_at' =>Carbon::now()->toDateTimeString(),
         ]);
