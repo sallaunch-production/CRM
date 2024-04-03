@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use Yajra\DataTables\Facades\DataTables;
 use App\Models\TransaksiSendPos;
+use App\Models\TransaksiValid;
 use DB;
 use Carbon\Carbon;
 
@@ -34,7 +35,7 @@ class TransactionalController extends Controller
 
 
           if ($request->ajax()) {
-            $data = DB::table('transaksi_valid')->limit(10000)->orderBy('tanggal','desc')->get(); 
+            $data = TransaksiValid::orderBy('tanggal','desc'); 
             return Datatables::of($data)
             ->addIndexColumn()
             ->addColumn('action', function($row){
