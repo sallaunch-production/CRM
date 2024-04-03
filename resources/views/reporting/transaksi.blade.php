@@ -76,7 +76,7 @@
         serverSide: true,
         ajax: "{{ url('transaksi_receive_pos') }}",
         columns: [
-            {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+          
             {data: 'nama_penerima', name: 'nama_penerima'},
             {data: 'nama_pengirim', name: 'nama_pengirim'},
             {data: 'negara_pengirim', name: 'negara_pengirim'},
