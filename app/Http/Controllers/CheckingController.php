@@ -292,9 +292,53 @@ class CheckingController extends Controller
           return redirect('login')->with('You dont have access');
         }
       
-
         
+        public function tambah_sanction(Request $request)
+        { 
+          if(Auth::check()){
+            $tambah = "ya";
+            return view('sanctions.sanction', [
+                'tambah'=>$tambah,      
+            ]);
+        }
+
+        return redirect('login')->with('You dont have access');
+      }
     
+      public function act_tambah_sanction(Request $request)
+      { 
+        if(Auth::check()){
+          $nama = $request->nama;
+          $alias = $request->alias;
+          $tgl_lahir = $request->tgl_lahir;
+          $alamat = $request->alamat;
+          $asalnegara = $request->asalnegara;
+          $nomor_identitas = $request->nomor_identitas;
+          $telepon_penerima = $request->telepon_penerima;
+          $keterangan = $request->keterangan;
+          $kategori = $request->kategori;
+
+          $qur = DB::table('sanction_list')->insertGetId([
+            'nama' => $nama,
+            'alias' => $alias,
+            'tgl_lahir' => $tgl_lahir,
+            'alamat' => $alamat,
+            'asalnegara' => $asalnegara,
+            'nomor_identitas' => $nomor_identitas,
+            'telepon_penerima' => $telepon_penerima,
+            'keterangan' => $keterangan,
+            'kategori' => $kategori,
+            'created_at' => Carbon::now()->toDateTimeString(),
+            'updated_at' =>Carbon::now()->toDateTimeString(),
+        ]);
+
+
+          
+      }
+
+      return redirect('login')->with('You dont have access');
+    }
+      
 
 
         public function filtering()

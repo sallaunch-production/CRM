@@ -124,6 +124,8 @@ Route::post('act_upload_pop',[App\Http\Controllers\ReportingController::class,'a
 Route::post('edit_popimages',[App\Http\Controllers\ReportingController::class,'edit_popimages'])->name('edit_popimages')->middleware('auth');
 Route::post('delete_popimages',[App\Http\Controllers\ReportingController::class,'delete_popimages'])->name('delete_popimages')->middleware('auth');
 Route::post('act_edit_popimage',[App\Http\Controllers\ReportingController::class,'act_edit_popimage'])->name('act_edit_popimage')->middleware('auth');
+Route::post('tambah_sanction',[App\Http\Controllers\CheckingController::class,'tambah_sanction'])->name('tambah_sanction')->middleware('auth');
+Route::post('act_tambah_sanction',[App\Http\Controllers\CheckingController::class,'act_tambah_sanction'])->name('act_tambah_sanction')->middleware('auth');
 
 });
 

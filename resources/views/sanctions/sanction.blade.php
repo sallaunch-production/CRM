@@ -25,6 +25,8 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                               </div>
                             @endif
+                            @if(empty($tambah))
+                           <form action="{{route('tambah_sanction')}}" method="post">@csrf<input type=submit class="btn btn-info" value="Tambah Data"></form><br>
                             <table  id="example" class="table table-responsive table-striped  table-bordered" style="width:100%;">
                                     <thead>
                                     <tr>
@@ -45,6 +47,70 @@
                                     <tbody>
                                     </tbody>
                                     </table>   
+                                    @endif
+                                    @if(!empty($tambah))
+
+                                    <h2>TAMBAH SANCTION LIST</h2>
+                                        <form role="form" action="{{route('act_tambah_sanction')}}" method="POST" enctype="multipart/form-data">
+                                        @csrf
+                                        <div class="box-body" style=width:260px;>
+                                            
+                                            <div class="form-group">
+                                                <label for="">Nama </label>
+                                                <input type=text class="form-control" id="auto" name="nama" required>
+                                            </div>
+                                    <div class="form-group">
+                                                <label for=""> Alias</label>
+                                                <input type=text class="form-control" id="auto" name="alias">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="">Tanggal Lahir</label>
+                                                <input type='text' class="form-control" id="daterange" name="tgl_lahir"/>
+                                               <!-- <input type=text class="form-control" id="auto" placeholder="receive : mm/dd/yyyy | send : ddmmyyyy" name="tgl_lahir">-->
+                                            </div>
+                                                <div class="form-group">
+                                                <label for="">Alamat</label>
+                                                <input type=text class="form-control" id="auto" name="alamat">
+                                            </div>
+                                                <div class="form-group">
+                                                <label for="">Asal Negara</label>
+                                                <input type=text class="form-control" id="auto" name="asalnegara">
+                                            </div>
+                                            
+                                            <div class="form-group">
+                                                <label for="">Nomor Identitas</label>
+                                                <input type=text class="form-control" id="auto" name="nomor_identitas">
+                                            </div>
+                                    
+                                            <div class="form-group">
+                                                <label for="">Telepon</label>
+                                                <input type=text class="form-control" id="auto" name="telepon_penerima">
+                                            </div>
+                                        <div class="form-group">
+                                                <label for="">Kategori</label>
+                                            <select name=kategori class="form-control" id="auto">
+                                            <option value="">Pilih Kategori</option>
+                                                <option value="Individu">Individu</option>
+                                            <option value="Korporasi">Korporasi</option>
+                                                <option value="Organisasi">Organisasi</option>
+                                        </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail1">Keterangan</label>
+                                                <input type=text class="form-control" id="auto" name="keterangan">
+                                            </div>
+                                        
+                                            <div class="form-group">
+                                                <!--<label for="inputPassword" class="control-label ">Unggah Foto</label>
+                                                <input type="file" name="gambar" id="gambar">-->
+                                                <input type=hidden name=status value=valid>
+                                                
+                                                <br>
+                                                <p><button type="submit" class="btn btn-primary">Submit</button></p>
+                                            </div>
+                                        </div><!-- /.box-body -->  
+                                    </form>
+                                    @endif
                             <!-- COLOR PALETTE -->
                            
                                 </div>
@@ -83,10 +149,10 @@ f
            
         ]
     });
-    t.on('order.dt search.dt', function () {
+    table.on('order.dt search.dt', function () {
         let i = 1;
  
-        t.cells(null, 0, { search: 'applied', order: 'applied' }).every(function (cell) {
+        table.cells(null, 0, { search: 'applied', order: 'applied' }).every(function (cell) {
             this.data(i++);
         });
     }).draw();

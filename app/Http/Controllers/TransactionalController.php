@@ -63,7 +63,7 @@ class TransactionalController extends Controller
               'updated_at' =>Carbon::now()->toDateTimeString(),
           ]);
             if ($request->ajax()) {
-             $data = DB::table('transaksi_valid')->limit(100000)->orderBy('tanggal','desc')->get(); 
+             $data = DB::table('transaksi_valid')->limit(10000)->orderBy('tanggal','desc')->get(); 
              return Datatables::of($data)
              ->addIndexColumn()
              ->addColumn('action', function($row){
