@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
-use Yajra\DataTables\Facades\Datatables;
+use Yajra\DataTables\Facades\DataTables;
 use App\Models\TransaksiSendPos;
 use DB;
 use Carbon\Carbon;
