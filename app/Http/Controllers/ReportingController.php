@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use App\Models\TransaksiReceive;
 use App\Models\TransaksiSend;
-use Yajra\DataTables\Facades\Datatables;
+use Yajra\DataTables\Facades\DataTables;
 use App\Models\TransaksiValid;
 use App\Models\Saldo;
 use App\Models\TransaksiSendPos;
