@@ -79,7 +79,7 @@
     var table = $('.table-bordered').DataTable({
         processing: true,
         serverSide: true,
-        ajax: "{{ route('transaksi_send_pos') }}",
+        ajax: "{!! route('transaksi_send_pos') !!}",
         columns: [
             {data: 'DT_RowIndex', name: 'DT_RowIndex'},
             {data: 'no_referensi', name: 'no_referensi'},
@@ -129,7 +129,7 @@
         serverSide: true,
         ajax: "{{ route('transaksi_send_pos_operasional') }}",
         columns: [
-            {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+            {data: 'DT_RowIndex',name:'DT_RowIndex'}
             {data: 'no_referensi', name: 'no_referensi'},
             {data: 'negara_penerima', name: 'negara_penerima'},
             {data: 'amount', name: 'amount', render: $.fn.dataTable.render.number(',', '.',  '')},

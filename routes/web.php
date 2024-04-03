@@ -46,7 +46,7 @@ Route::get('nopend',[App\Http\Controllers\NopendController::class,'nopend'])->na
 Route::get('agent_sort',[App\Http\Controllers\NopendController::class,'agent_sort'])->name('agent_sort')->middleware('auth');
 Route::post('cari_nopend',[App\Http\Controllers\NopendController::class,'cari_nopend'])->name('cari_nopend')->middleware('auth');
 Route::post('cari_agent',[App\Http\Controllers\NopendController::class,'cari_agent'])->name('cari_agent')->middleware('auth');
-Route::post('cari_agent_belumaktif',[App\Http\Controllers\NopendController::class,'cari_agent_belumaktif'])->name('cari_agent_belumaktif')->middleware('auth');
+Route::post('liat_agent_belum_aktif',[App\Http\Controllers\NopendController::class,'liat_agent_belum_aktif'])->name('liat_agent_belum_aktif')->middleware('auth');
 Route::get('history_refund',[App\Http\Controllers\ReportingController::class,'history_refund'])->name('history_refund')->middleware('auth');
 Route::get('history_refund_pos',[App\Http\Controllers\ReportingController::class,'history_refund_pos'])->name('history_refund_pos')->middleware('auth');
 Route::get('history_amend_pos',[App\Http\Controllers\ReportingController::class,'history_amend_pos'])->name('history_amend_pos')->middleware('auth');

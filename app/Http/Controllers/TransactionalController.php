@@ -40,7 +40,7 @@ class TransactionalController extends Controller
            $count_total  = DB::table('transaksi_valid')->count();
            $count_filter = DB::table('transaksi_valid')
                               ->where('nama_penerima','LIKE', '%' . $search . '%')->where('nama_pengirim','LIKE', '%' . $search . '%')->where('negara_pengirim','LIKE', '%' . $search . '%')->where('bsubanyak','LIKE', '%' . $search . '%')->where('no_referensi','LIKE', '%' . $search . '%')->where('identitas','LIKE', '%' . $search . '%')->where('nomor_identitas','LIKE', '%' . $search . '%')->where('tanggal_lahir','LIKE', '%' . $search . '%')->where('alamat_penerima','LIKE', '%' . $search . '%')->where('alamat_domisili_penerima','LIKE', '%' . $search . '%')->where('telepon_penerima','LIKE', '%' . $search . '%')->where('kota_penerima','LIKE', '%' . $search . '%')->where('pekerjaan','LIKE', '%' . $search . '%')->where('tujuan_penggunaan_dana','LIKE', '%' . $search . '%')->where('hubungan','LIKE', '%' . $search . '%')->where('kewarganegaraan','LIKE', '%' . $search . '%')->where('jenis_kelamin','LIKE', '%' . $search . '%')->where('kota_kelahiran','LIKE', '%' . $search . '%')->where('id_pos','LIKE', '%' . $search . '%')->where('tanggal','LIKE', '%' . $search . '%')->count();
-           $data = DB::table('transaksi_valid')->orderBy('tanggal','desc')->get(); 
+           $data = DB::table('transaksi_valid')->limit(500)->orderBy('tanggal','desc')->get(); 
            foreach ($order as $o) {
             if(isset($columns[ $o[ 'column' ] ])) {
                 $data = $data->orderBy($columns[ $o[ 'column' ] ][ 'name' ], $o[ 'dir' ]);
@@ -51,9 +51,9 @@ class TransactionalController extends Controller
            ->with([
             "recordsTotal" => $count_total,
             "recordsFiltered" => $count_filter,
-            "data" => $data
+          
         ])
-           ->rawColumns(['action'])
+           ->rawColumns(['action','action'])
            ->make(true);
           }
           return view('reporting.transaksi');
@@ -116,7 +116,7 @@ class TransactionalController extends Controller
                     //$actionBtn = '<a href="javascript:void(0)" class="edit btn btn-success btn-sm">Edit</a> <a href="javascript:void(0)" class="delete btn btn-danger btn-sm">Delete</a>';
                     //return $actionBtn;
                 })
-                ->rawColumns(['action'])
+                ->rawColumns(['action','action'])
                 ->make(true);
                }
                return view('reporting.transaksi_send_pos');

@@ -56,7 +56,7 @@
                                     <tr><td>Total agent id aktif Dari : {{$tanggal_dari}} | Sampai : {{$tanggal_sampai}} : <b>{{$jum}}</b></td></tr> 
                                     <tr><td>Total agent id aktif seluruhnya: <b>{{$jumkah}}</b></td></tr> 
                                     <tr><td>Total agent id belum aktif: <b> {{$belumaktif}} </b>&nbsp;
-                                    <form action="{{ route('cari_agent_belumaktif')}}"  method="POST">
+                                    <form action="{{ route('liat_agent_belum_aktif')}}"  method="POST">
                                     @csrf  
                                       <input type="hidden" name="tanggal_dari" value="{{$tanggal_dari}}"/>
                                       <input type="hidden" name="tanggal_sampai" value="{{$tanggal_sampai}}"/>
@@ -101,7 +101,7 @@
                                         </table>
                                     @elseif(!empty($belumaktifnya))
                                     <h2>Data Agent Id belum aktif</h2>
-                                        <table id="example" class="display" cellspacing="0" width="100%">
+                                        <table id="example"  class="table table-border" cellspacing="0" width="100%">
                                         <thead>
                                         <tr>
                                             <th>No</th>
@@ -111,14 +111,7 @@
                                         
                                         </tr>
                                         </thead>
-                                        <tfoot>
-                                        <tr>
-                                            <th>No</th>
-                                            <th>Agent Id </th>
-                                            <th>Nopend</th>      
-                                            
-                                        </tr>
-                                        </tfoot>
+                                       
                                         <tbody>
                                         @foreach ($quernya  as $key => $dat)
                                         <tr>

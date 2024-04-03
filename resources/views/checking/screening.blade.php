@@ -42,7 +42,7 @@
                                             <br>
                                         @if(!empty($tanggal_dari))
                                         <h3>Tanggal Dari : {{date('d-m-Y', strtotime($tanggal_dari))}} | Sampai : {{date('d-m-Y', strtotime($tanggal_sampai))}}</h3>
-                                        <table  id="example" class="table table-responsive table-striped  table-bordered" style="width:100%;">
+                                        <table  id="example" class="table table-striped  table-bordered" style="width:100%;">
                                             <thead>
                                                 <tr>
                                                     <th>No</th>
