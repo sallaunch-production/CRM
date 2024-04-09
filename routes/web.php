@@ -141,6 +141,7 @@ Route::group(['middleware' => ['operasional']], function () {
     Route::post('proses_detail_negara_operasional',[App\Http\Controllers\ReportingController::class,'proses_detail_negara'])->name('proses_detail_negara_operasional')->middleware('auth');
     Route::post('proses_detail_negara_operasional_send',[App\Http\Controllers\ReportingController::class,'proses_detail_negara'])->name('proses_detail_negara_operasional')->middleware('auth');
     Route::post('detail_kota_operasional',[App\Http\Controllers\ReportingController::class,'detail_kota'])->name('detail_kota_operasional')->middleware('auth');
+    Route::post('detail_identitas_operasional',[App\Http\Controllers\ReportingController::class,'detail_identitas'])->name('detail_identitas_operasional')->middleware('auth');
 
     Route::get('kota-operasional',[App\Http\Controllers\ReportingController::class,'kota'])->name('kota-operasional')->middleware('auth');
     Route::get('negara-operasional',[App\Http\Controllers\ReportingController::class,'negara'])->name('negara-operasional')->middleware('auth');

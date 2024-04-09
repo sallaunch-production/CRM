@@ -92,11 +92,16 @@ class AuthController extends Controller
                         Session::put('user_name', $namanya);
                     }
                     $cek_google =  DB::table('auth_google')->where('username','=',$cek_email[0]['email'] ?? '')->get();
-                    if(count($cek_google)>0){
-                        return redirect('validation')->with('success','Silahkan masukan code dari perangakat seluler anda.');
-                    }else{
-                        return redirect('register_barcode')->with('success','Silahkan masukan code dari perangakat seluler anda.');
-                    }
+                   if($cek_email[0]['level']=="compliance" || $cek_email[0]['level']=="operasional"){
+                        if(count($cek_google)>0){
+                            return redirect('validation')->with('success','Silahkan masukan code dari perangakat seluler anda.');
+                        }else{
+                            return redirect('register_barcode')->with('success','Silahkan masukan code dari perangakat seluler anda.');
+                        }
+                   }else{
+                    return redirect()->back()->with('status', 'You don'."'".'t have access!');
+                   }
+                   
                     
                }else{
                 return redirect()->back()->with('status', 'Username or password are wrong!');
@@ -154,6 +159,10 @@ class AuthController extends Controller
                     return redirect()->intended('dashboard')->with('success','Successfully Login.');
                }elseif($level=="operasional"){
                     return redirect()->intended('dashboard_operasional')->with('success','Successfully Login.');
+               }else{
+                    Session::flush();
+                    Auth::logout();
+                    return redirect('login')->with('You dont have access');
                }
                  
             } else {

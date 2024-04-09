@@ -71,7 +71,11 @@
                                                     <th >{{$key+1 }}</th>
                                                     <td>{{ $transactions->identitas }}</td>
                                                     <td>
+                                                   @if($levelnya=="compliance")     
                                                     <form action="{{route('detail_identitas')}}" method="POST">
+                                                   @elseif($levelnya=="operasional")
+                                                   <form action="{{route('detail_identitas_operasional')}}" method="POST">
+                                                    @endif
                                                     @csrf
                                                         <input type="hidden" name="dari" value="{{$tanggal_dari}}">
                                                         <input type="hidden" name="sampai" value="{{$tanggal_sampai}}">

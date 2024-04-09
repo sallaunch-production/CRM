@@ -13,6 +13,26 @@
             text-align: center;
             margin: 0 5px;
         }
+        input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.responsive {
+  width: 30%;
+  max-width: 400px;
+  height: auto;
+}
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+@media only screen and (min-width: 810px) and (max-width: 1440px) {
+  .cards {
+    width: 50%;
+  }
+}
+
     </style>
 <div class="container">
     <div class="row">
@@ -40,9 +60,9 @@
                      @enderror
                       {{-- ganti action ke route name yaitu proses.login --}}
                         <br><br>
-                            <div class="card" style="width:50%;">
+                            <div class="card cards">
                                  <div class="card-body">
-                                <img src="vendor/adminlte/dist/img/logo-arsema.jpg">
+                                <img class="responsive" src="vendor/adminlte/dist/img/logo-arsema.jpg">
               
                                 <form method="POST" action="{{ route('proses.verify') }}">
                                   @csrf
@@ -51,15 +71,15 @@
                                     <!--<input type=number name="code" class="form-control" required>--->
                                    <br><br>
                                     <form id="otpForm">
-                                        <input type="text" name="satu" class="otpInput" maxlength="1">
-                                        <input type="text" name="dua" class="otpInput" maxlength="1">
-                                        <input type="text" name="tiga" class="otpInput" maxlength="1">
-                                        <input type="text" name="empat" class="otpInput" maxlength="1">
-                                        <input type="text" name="lima" class="otpInput" maxlength="1">
-                                        <input type="text" name="enam" class="otpInput" maxlength="1">
+                                        <input type="number" name="satu" class="otpInput" maxlength="1">
+                                        <input type="number" name="dua" class="otpInput" maxlength="1">
+                                        <input type="number" name="tiga" class="otpInput" maxlength="1">
+                                        <input type="number" name="empat" class="otpInput" maxlength="1">
+                                        <input type="number" name="lima" class="otpInput" maxlength="1">
+                                        <input type="number" name="enam" class="otpInput" maxlength="1">
                                     <br/><br/>
                                     <button type="submit" class="btn btn-success">Submit</button>
-                                    <a href="{{url('/')}}"><button type="button" class="btn btn-primary ml-3">Cancel</button></a>
+                                    <a href="{{url('login')}}"><button type="button" class="btn btn-primary ml-3">Cancel</button></a>
                                 </form> 
                             </div>
                         </div>
