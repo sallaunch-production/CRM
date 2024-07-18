@@ -74,7 +74,7 @@
     var table = $('.table-bordered').DataTable({
         processing: true,
         serverSide: true,
-        ajax: "{{ url('transaksi_receive_pos') }}",
+        ajax: "{{ url('transaksi_valid') }}",
         columns: [
           
             {data: 'nama_penerima', name: 'nama_penerima'},

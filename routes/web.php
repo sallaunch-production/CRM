@@ -142,11 +142,12 @@ Route::group(['middleware' => ['operasional']], function () {
     Route::post('proses_detail_negara_operasional_send',[App\Http\Controllers\ReportingController::class,'proses_detail_negara'])->name('proses_detail_negara_operasional')->middleware('auth');
     Route::post('detail_kota_operasional',[App\Http\Controllers\ReportingController::class,'detail_kota'])->name('detail_kota_operasional')->middleware('auth');
     Route::post('detail_identitas_operasional',[App\Http\Controllers\ReportingController::class,'detail_identitas'])->name('detail_identitas_operasional')->middleware('auth');
-
+    Route::get('settings',[App\Http\Controllers\HomeController::class,'settings_user'])->name('settings')->middleware('auth');
     Route::get('kota-operasional',[App\Http\Controllers\ReportingController::class,'kota'])->name('kota-operasional')->middleware('auth');
     Route::get('negara-operasional',[App\Http\Controllers\ReportingController::class,'negara'])->name('negara-operasional')->middleware('auth');
     Route::post('search_filtering_telepon_operasional',[App\Http\Controllers\ReportingController::class,'search_filtering_telepon'])->name('search_filtering_telepon_operasional')->middleware('auth');
 
+    Route::post('ubah_password_operasional',[App\Http\Controllers\HomeController::class,'ubah_password'])->name('ubah_password_operasional')->middleware('auth');
     Route::get('filtering_transaction_operasional',[App\Http\Controllers\ReportingController::class,'filtering_transaction'])->name('filtering_transaction')->middleware('auth');
     Route::get('filtering_identitas_operasional',[App\Http\Controllers\ReportingController::class,'filtering_identitas'])->name('filtering_identitas')->middleware('auth');
     Route::get('filter_telepon_operasional',[App\Http\Controllers\ReportingController::class,'filter_telepon'])->name('filter_telepon')->middleware('auth');

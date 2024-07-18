@@ -33,7 +33,7 @@ class Compliance
             return $next($request);
         }
 
-        if (Auth::user()->level == 'operasional' ) {
+        if (Auth::user()->level == 'operasional') {
             return redirect()->route('operasional');
         }
         
