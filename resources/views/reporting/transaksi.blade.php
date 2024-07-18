@@ -74,9 +74,19 @@
     var table = $('.table-bordered').DataTable({
         processing: true,
         serverSide: true,
+        ordering: true, // Set true agar bisa di sorting   
+        order: [[ 1, 'asc' ]], // Default sortingnya berdasarkan kolom / field ke 0 (paling pertama)
         ajax: "{{ url('transaksi_receive_pos') }}",
         columns: [
-            {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+            {
+                data: null,
+                class: 'align-top',           
+                orderable: false,            
+                searchable: false,            
+                render: function(data, type, row, meta){
+                        return meta.row + meta.settings._iDisplayStart + 1;        
+                  }       
+            },
             {data: 'nama_penerima', name: 'nama_penerima'},
             {data: 'nama_pengirim', name: 'nama_pengirim'},
             {data: 'negara_pengirim', name: 'negara_pengirim'},
