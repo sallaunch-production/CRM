@@ -29,7 +29,6 @@
                             <table  id="example" class="table table-responsive table-striped  table-bordered" style="width:100%">
                                 <thead>
                                   <tr>
-                                  <th>No</th>
                                   <th>Nama Penerima</th>
                                   <th>Nama Pengirim</th>      
                                   <th>Negara Pengirim</th>
@@ -74,7 +73,7 @@
     var table = $('.table-bordered').DataTable({
         processing: true,
         serverSide: true,
-        ajax: "{{ url('transaksi_valid') }}",
+        ajax: "{{ url('transaksi_receive_pos') }}",
         columns: [
           
             {data: 'nama_penerima', name: 'nama_penerima'},
