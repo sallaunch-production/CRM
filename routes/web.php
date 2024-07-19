@@ -139,13 +139,18 @@ Route::group(['middleware' => ['operasional']], function () {
     Route::post('search_filtering_sender_operasional',[App\Http\Controllers\ReportingController::class,'search_filtering_sender'])->name('search_filtering_sender_operasional')->middleware('auth');
     Route::post('search_filtering_negara_operasional',[App\Http\Controllers\ReportingController::class,'search_filtering_negara'])->name('search_filtering_negara_operasional')->middleware('auth');
     Route::post('proses_detail_negara_operasional',[App\Http\Controllers\ReportingController::class,'proses_detail_negara'])->name('proses_detail_negara_operasional')->middleware('auth');
-    Route::post('proses_detail_negara_operasional_send',[App\Http\Controllers\ReportingController::class,'proses_detail_negara'])->name('proses_detail_negara_operasional')->middleware('auth');
+    Route::post('proses_detail_negara_operasional_send',[App\Http\Controllers\ReportingController::class,'proses_detail_negara'])->name('proses_detail_negara_operasional_send')->middleware('auth');
     Route::post('detail_kota_operasional',[App\Http\Controllers\ReportingController::class,'detail_kota'])->name('detail_kota_operasional')->middleware('auth');
     Route::post('detail_identitas_operasional',[App\Http\Controllers\ReportingController::class,'detail_identitas'])->name('detail_identitas_operasional')->middleware('auth');
     Route::get('settings',[App\Http\Controllers\HomeController::class,'settings_user'])->name('settings')->middleware('auth');
     Route::get('kota-operasional',[App\Http\Controllers\ReportingController::class,'kota'])->name('kota-operasional')->middleware('auth');
     Route::get('negara-operasional',[App\Http\Controllers\ReportingController::class,'negara'])->name('negara-operasional')->middleware('auth');
     Route::post('search_filtering_telepon_operasional',[App\Http\Controllers\ReportingController::class,'search_filtering_telepon'])->name('search_filtering_telepon_operasional')->middleware('auth');
+    Route::get('negara_send_operasional',[App\Http\Controllers\ReportingController::class,'negara_send'])->name('negara_send_operasional')->middleware('auth');
+    Route::get('negara_receive_operasional',[App\Http\Controllers\ReportingController::class,'negara_receive'])->name('negara_receive_operasional')->middleware('auth');
+    Route::post('cari_negara_operasional',[App\Http\Controllers\ReportingController::class,'cari_negara'])->name('cari_negara_operasional')->middleware('auth');
+    Route::post('cari_negara_send_operasional',[App\Http\Controllers\ReportingController::class,'cari_negara_send'])->name('cari_negara_send_operasional')->middleware('auth');
+    Route::post('pencarian_detail_negara_send_operasional',[App\Http\Controllers\ReportingController::class,'pencarian_detail_negara_send'])->name('pencarian_detail_negara_send_operasional')->middleware('auth');
 
     Route::post('upload_pop_operasional',[App\Http\Controllers\ReportingController::class,'upload_pop'])->name('upload_pop_operasional')->middleware('auth');
     Route::post('act_upload_pop_operasional',[App\Http\Controllers\ReportingController::class,'act_upload_pop'])->name('act_upload_pop_operasional')->middleware('auth');

@@ -31,14 +31,20 @@
                               </div>
                             @endif
                             <br>
-                           
-                        <a href="{{url('negara_send')}}"><button type=button class="btn btn-info">Send</button></a>  &nbsp; <a href="{{url('negara_receive')}}"><button type=button class="btn btn-success">Receive</button></a><br>
-                               
+                        @if($levelnya=="operasional")   
+                            <a href="{{url('negara_send_operasional')}}"><button type=button class="btn btn-info">Send</button></a>  &nbsp; <a href="{{url('negara_receive_operasional')}}"><button type=button class="btn btn-success">Receive</button></a><br>
+                         @elseif($levelnya=="compliance")  
+                            <a href="{{url('negara_send')}}"><button type=button class="btn btn-info">Send</button></a>  &nbsp; <a href="{{url('negara_receive')}}"><button type=button class="btn btn-success">Receive</button></a><br>
+                         @endif
                         @if(!empty($receive))
                             <br>
                             <label>Tanggal Dari: </label>
-                            <form action="{{route('cari_negara')}}" method="POST" style="width:35%">
-                                @csrf
+                            @if($levelnya=="operasional") 
+                              <form action="{{route('cari_negara_operasional')}}" method="POST" style="width:35%">
+                            @elseif($levelnya=="compliance")  
+                              <form action="{{route('cari_negara')}}" method="POST" style="width:35%">    
+                            @endif
+                              @csrf
                                 <div class="form-group">
                                 <div class="input-group"> 
                                     <input type='text' class="form-control" id="daterange" name="reservation"/>&nbsp;
@@ -202,8 +208,12 @@
                         @elseif(!empty($send))
                         <br>
                             <label>Tanggal Dari: </label>
-                            <form action="{{route('cari_negara_send')}}" method="POST" style="width:35%">
-                                @csrf
+                           @if($levelnya=="compliance") 
+                              <form action="{{route('cari_negara_send')}}" method="POST" style="width:35%">
+                           @elseif($levelnya=="operasional") 
+                              <form action="{{route('cari_negara_send_operasional')}}" method="POST" style="width:35%">
+                           @endif 
+                            @csrf
                                 <div class="form-group">
                                 <div class="input-group"> 
                                     <input type='text' class="form-control" id="daterange" name="reservation"/>&nbsp;
@@ -300,7 +310,11 @@
                                                 <tr>
                                                     <th>{{$key+1 }}</th>
                                                     <th>
-                                                    <form action="{{route('pencarian_detail_negara_send')}}" method="POST" style="width:50%;">
+                                                    @if($levelnya=="compliance")    
+                                                        <form action="{{route('pencarian_detail_negara_send')}}" method="POST" style="width:50%;">
+                                                    @elseif($levelnya=="operasional")
+                                                        <form action="{{route('pencarian_detail_negara_send_operasional')}}" method="POST" style="width:50%;">
+                                                    @endif    
                                                     @csrf
                                                         <input type="hidden" name="negara_penerima" value="{{$datas->negara_penerima}}">
                                                         <input type="hidden" name="id_pos" value="{{$datas->id_pos}}">
