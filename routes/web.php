@@ -151,7 +151,8 @@ Route::group(['middleware' => ['operasional']], function () {
     Route::post('cari_negara_operasional',[App\Http\Controllers\ReportingController::class,'cari_negara'])->name('cari_negara_operasional')->middleware('auth');
     Route::post('cari_negara_send_operasional',[App\Http\Controllers\ReportingController::class,'cari_negara_send'])->name('cari_negara_send_operasional')->middleware('auth');
     Route::post('pencarian_detail_negara_send_operasional',[App\Http\Controllers\ReportingController::class,'pencarian_detail_negara_send'])->name('pencarian_detail_negara_send_operasional')->middleware('auth');
-
+    Route::post('pencarian_detail_negara_operasional',[App\Http\Controllers\ReportingController::class,'pencarian_detail_negara'])->name('pencarian_detail_negara_operasional')->middleware('auth');
+    
     Route::post('upload_pop_operasional',[App\Http\Controllers\ReportingController::class,'upload_pop'])->name('upload_pop_operasional')->middleware('auth');
     Route::post('act_upload_pop_operasional',[App\Http\Controllers\ReportingController::class,'act_upload_pop'])->name('act_upload_pop_operasional')->middleware('auth');
 

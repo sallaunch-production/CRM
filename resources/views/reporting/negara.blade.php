@@ -143,7 +143,11 @@
                                                 <tr>
                                                     <th>{{$key+1 }}</th>
                                                     <th>
+                                                   @if($levelnya=="compliance")     
                                                     <form action="{{route('pencarian_detail_negara')}}" method="POST" style="width:50%;">
+                                                   @elseif($levelnya=="operasional")
+                                                   <form action="{{route('pencarian_detail_negara_operasional')}}" method="POST" style="width:50%;">
+                                                   @endif 
                                                     @csrf
                                                         <input type="hidden" name="negara_pengirim" value="{{$datas->negara_pengirim}}">
                                                         <input type="hidden" name="id_pos" value="{{$datas->id_pos}}">
