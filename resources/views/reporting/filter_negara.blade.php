@@ -67,8 +67,12 @@
                                 <tr>
                                     <th >{{$key+1 }}</th>
                                     <td>
-                                    <form action="{{route('detail_negara')}}" method="POST" style="width:50%;">
-                                     @csrf      
+                                    @if($levelnya=="compliance")    
+                                        <form action="{{route('detail_negara')}}" method="POST" style="width:50%;">
+                                    @elseif($levelnya=="operasional")
+                                        <form action="{{route('detail_negara_operasional')}}" method="POST" style="width:50%;">
+                                    @endif        
+                                    @csrf      
                                     <input type="hidden" name="dari" value="{{$tanggal_dari}}">
                                     <input type="hidden" name="sampai" value="{{$tanggal_sampai}}">
                                     <input type="hidden" name="nama_penerima" value="{{$transactions->nama_penerima}}">
