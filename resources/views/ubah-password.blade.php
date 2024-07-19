@@ -102,9 +102,11 @@ meter[value="4"]::-moz-meter-bar { background: green; }
                 
                     <div class="card">
                         <div class="card-body">
-                          
+                           @if($levelnya=="compliance")
                             <form action="{{route('ubah_password')}}" method=POST style=width:50%;>
-                         
+                           @elseif($levelnya=="operasional")
+                           <form action="{{route('ubah_password_operasional')}}" method=POST style=width:50%;>
+                           @endif 
                           @csrf 
                                 <div class=form-group>
                                     <label>Old Password</label>

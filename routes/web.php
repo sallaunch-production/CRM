@@ -147,6 +147,10 @@ Route::group(['middleware' => ['operasional']], function () {
     Route::get('negara-operasional',[App\Http\Controllers\ReportingController::class,'negara'])->name('negara-operasional')->middleware('auth');
     Route::post('search_filtering_telepon_operasional',[App\Http\Controllers\ReportingController::class,'search_filtering_telepon'])->name('search_filtering_telepon_operasional')->middleware('auth');
 
+    Route::post('upload_pop_operasional',[App\Http\Controllers\ReportingController::class,'upload_pop'])->name('upload_pop_operasional')->middleware('auth');
+    Route::post('act_upload_pop_operasional',[App\Http\Controllers\ReportingController::class,'act_upload_pop'])->name('act_upload_pop_operasional')->middleware('auth');
+
+
     Route::post('ubah_password_operasional',[App\Http\Controllers\HomeController::class,'ubah_password'])->name('ubah_password_operasional')->middleware('auth');
     Route::get('filtering_transaction_operasional',[App\Http\Controllers\ReportingController::class,'filtering_transaction'])->name('filtering_transaction')->middleware('auth');
     Route::get('filtering_identitas_operasional',[App\Http\Controllers\ReportingController::class,'filtering_identitas'])->name('filtering_identitas')->middleware('auth');

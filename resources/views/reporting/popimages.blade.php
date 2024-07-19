@@ -27,8 +27,12 @@
                             @endif
 
                             @if(empty($upload) && empty($edit_s))
-                            <form method="post" action="{{route('upload_pop')}}">
-                              @csrf
+                            @if($levelnya=="compliance")
+                             <form method="post" action="{{route('upload_pop')}}">
+                            @elseif($levelnya=="operasional")
+                             <form method="post" action="{{route('upload_pop_operasional')}}">
+                            @endif  
+                             @csrf
                               <input type=submit class="btn btn-success" value="UPLOAD POP">
                             </form><br><br>
                             <table  id="example" class="table table-responsive table-striped  table-bordered" style="width:100%">
@@ -79,16 +83,19 @@
 
 
                           @if(!empty($upload))
-                          
-                          <form action="{{route('act_upload_pop')}}" method=post enctype="multipart/form-data" style="max-width:350px;">
-                             @csrf
+                          @if($levelnya=="compliance")
+                            <form action="{{route('act_upload_pop')}}" method=post enctype="multipart/form-data" style="max-width:350px;">
+                          @elseif($levelnya=="operasional")  
+                            <form action="{{route('act_upload_pop_operasional')}}" method=post enctype="multipart/form-data" style="max-width:350px;">
+                          @endif
+                          @csrf
                              <div class=form-group>
                                   <label>No Referensi</label>
                                 <input type=text name=noref required class=form-control>
                                 </div>
                                 <div class=form-group>
                                   <label>Tanggal Transaksi</label>
-                                <input type=text name=tgl required class=form-control id=dari>
+                                <input type=date name=tgl required class=form-control id=dari>
                                 </div>
                                 <div class=form-group>
                                   <label>Nama Client</label>

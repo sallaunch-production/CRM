@@ -100,7 +100,12 @@ class HomeController extends Controller
             }else{
                 $now = Carbon::now();
                 $qur=DB::table('users')->where('email','=',$username)->update(['password' =>  Hash::make($request->new_password),'last_update'=>$now]);
-                return redirect('settings_user')->with('success','Success update password');
+                if(Auth::user()->level=="compliance"){
+                    return redirect('settings_user')->with('success','Success update password');
+                }elseif(Auth::user()->level=="operasional"){
+                    return redirect('settings')->with('success','Success update password');
+                }
+                
             }
 
         }
