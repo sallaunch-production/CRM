@@ -65,7 +65,7 @@
                                             </div>
                                             <div class="form-group">
                                                 <label for="">Tanggal Lahir</label>
-                                                <input type='text' class="form-control" id="daterange" name="tgl_lahir"/>
+                                                <input type='date' class="form-control" id="date" name="tgl_lahir"/>
                                                <!-- <input type=text class="form-control" id="auto" placeholder="receive : mm/dd/yyyy | send : ddmmyyyy" name="tgl_lahir">-->
                                             </div>
                                                 <div class="form-group">

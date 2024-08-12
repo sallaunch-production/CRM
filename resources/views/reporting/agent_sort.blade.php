@@ -56,11 +56,11 @@
                                     <tr><td>Total agent id aktif Dari : {{$tanggal_dari}} | Sampai : {{$tanggal_sampai}} : <b>{{$jum}}</b></td></tr> 
                                     <tr><td>Total agent id aktif seluruhnya: <b>{{$jumkah}}</b></td></tr> 
                                     <tr><td>Total agent id belum aktif: <b> {{$belumaktif}} </b>&nbsp;
-                                    <form action="{{ route('liat_agent_belum_aktif')}}"  method="POST">
-                                    @csrf  
-                                      <input type="hidden" name="tanggal_dari" value="{{$tanggal_dari}}"/>
-                                      <input type="hidden" name="tanggal_sampai" value="{{$tanggal_sampai}}"/>
-                                      <button type=submit class="btn btn-info">Lihat Detail</button>
+                                    <form role="form" action="{{ route('liat_agent_belum_aktif') }}"  method="POST">
+                                    @csrf 
+                                      <input type='hidden' name="tanggal_dari" value="{{$tanggal_dari}}">
+                                      <input type='hidden' name="tanggal_sampai" value="{{$tanggal_sampai}}">
+                                      <input type=submit class="btn btn-info" value='Lihat Detail'>
                                     </form>
                                     </td></tr> 
                                     </table>

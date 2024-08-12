@@ -116,15 +116,15 @@ class NopendController extends Controller
       {
         if(Auth::check()){
             $belumaktifnya="ya";
-            $jum=""; $jumkah=""; $quer="";$belumaktif="";
+            $jum=""; $jumkah=""; $belumaktif="";
             $tanggal_dari = $request->tanggal_dari;
-            $tanggal_sampai =  $request->tanggal_sampai;
+            $tanggal_sampai = "2023-01-10";
             $quer=DB::table('agent_id_test')->whereNotIn('id_pos', function($q){
                                 $q->select('id_pos')->from('transaksi_valid')->where('tanggal','<=',$tanggal_sampai.' 23:59:59')->whereNotNull('id_pos');
                             })->groupBy('id_pos','id')->orderBy('id','desc')->get();
             
             return view('reporting.agent_sort',[
-               'quer'=>$quer,'tanggal_dari_s'=>$tanggal_dari,'belumaktifnya'=>$belumaktifnya,'belumaktif'=>$belumaktif,'tanggal_sampai'=>$tanggal_sampai,'jum'=>$jum,'jumkah'=>$jumkah,
+               'quer'=>$quer,'tanggal_dari_s'=>$tanggal_dari,'belumaktifnya'=>$belumaktifnya,'belumaktif'=>$belumaktif,'tanggal_sampai'=>$tanggal_sampai,'jum'=>$jum,'jumkah'=>$jumkah
             ]);
         }
 

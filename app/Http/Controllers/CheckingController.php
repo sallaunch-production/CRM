@@ -317,8 +317,14 @@ class CheckingController extends Controller
           $telepon_penerima = $request->telepon_penerima;
           $keterangan = $request->keterangan;
           $kategori = $request->kategori;
-
+          $cekId = DB::table('sanction_list')->orderBy('id','desc')->first();
+          if($cekId==null){
+            $idNya = 1;
+          }else{
+            $idNya = $cekId->id+1;
+          }
           $qur = DB::table('sanction_list')->insertGetId([
+            'id' =>  $idNya,
             'nama' => $nama,
             'alias' => $alias,
             'tanggal_lahir' => $tgl_lahir,
@@ -331,8 +337,10 @@ class CheckingController extends Controller
             'created_at' => Carbon::now()->toDateTimeString(),
             'updated_at' =>Carbon::now()->toDateTimeString(),
         ]);
-
-
+        if($qur){
+          return redirect('sanction')->with('success','You have successfully add data');
+        }
+        
           
       }
 
