@@ -74,7 +74,10 @@
     var table = $('.table-bordered').DataTable({
         processing: true,
         serverSide: true,
-        ajax: "{{ url('transaksi_receive_pos') }}",
+        ajax:{
+             url: '{{ route('transaksi_receive_pos') }}', // Menggunakan route Laravel untuk URL
+                    type: 'GET'
+        },
         columns: [
             {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
             {data: 'nama_penerima', name: 'nama_penerima'},
@@ -98,15 +101,10 @@
             {data: 'id_pos', name: 'id_pos'},
             {data: 'tanggal', name: 'tanggal'},
            
-        ]
+        ],
+      
     });
-    table.on('order.dt search.dt', function () {
-        let i = 1;
- 
-        table.cells(null, 0, { search: 'applied', order: 'applied' }).every(function (cell) {
-            this.data(i++);
-        });
-    }).draw();
+   
         });
    
 </script>
@@ -117,7 +115,11 @@
     var table = $('.table-bordered').DataTable({
         processing: true,
         serverSide: true,
-        ajax: "{{ route('transaksi_receive_pos_operasional') }}",
+        ajax:{
+             url: '{{ route('transaksi_receive_pos_operasional') }}', // Menggunakan route Laravel untuk URL
+                    type: 'GET'
+        },
+       
         columns: [
             {data: 'DT_RowIndex', name: 'DT_RowIndex'},
             {data: 'nama_penerima', name: 'nama_penerima'},
@@ -143,14 +145,8 @@
            
         ]
     });
-    table.on('order.dt search.dt', function () {
-        let i = 1;
- 
-        table.cells(null, 0, { search: 'applied', order: 'applied' }).every(function (cell) {
-            this.data(i++);
-        });
-    }).draw();
-        });
+   
+  });
    
 </script>
 
