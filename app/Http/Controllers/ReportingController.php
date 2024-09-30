@@ -52,7 +52,7 @@ class ReportingController extends Controller
             'created_at' => Carbon::now()->toDateTimeString(),
             'updated_at' =>Carbon::now()->toDateTimeString(),
           ]);
-          $data = DB::table('transaksi_cancel')->whereNotNull('id_pos')->get(); 
+          $data = DB::table('transaksi_cancel')->whereNull('id_pos')->get(); 
           $upload="";
                 return view('reporting.history-refunds', [
                     'data' => $data,'upload'=>$upload
@@ -78,7 +78,7 @@ class ReportingController extends Controller
             'created_at' => Carbon::now()->toDateTimeString(),
             'updated_at' =>Carbon::now()->toDateTimeString(),
           ]);
-          $data = DB::table('transaksi_cancel')->whereNull('id_pos')->orderBy('no','desc')->get(); 
+          $data = DB::table('transaksi_cancel')->whereNotNull('id_pos')->orderBy('no','desc')->get(); 
 
                 return view('reporting.history_refund_pos', [
                     'data' => $data
