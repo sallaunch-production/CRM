@@ -79,7 +79,10 @@
     var table = $('.table-bordered').DataTable({
         processing: true,
         serverSide: true,
-        ajax: "{!! route('transaksi_send_pos') !!}",
+        ajax: {
+                url: '{{ route('transaksi_send_pos_operasional')}}', // Menggunakan route Laravel untuk URL
+                 type: 'GET'
+            },
         columns: [
             {data: 'DT_RowIndex', name: 'DT_RowIndex'},
             {data: 'no_referensi', name: 'no_referensi'},
@@ -110,13 +113,7 @@
            
         ]
     });
-    table.on('order.dt search.dt', function () {
-        let i = 1;
- 
-        table.cells(null, 0, { search: 'applied', order: 'applied' }).every(function (cell) {
-            this.data(i++);
-        });
-    }).draw();
+   
         });
    
 </script>
@@ -127,7 +124,10 @@
     var table = $('.table-bordered').DataTable({
         processing: true,
         serverSide: true,
-        ajax: "{{ route('transaksi_send_pos_operasional') }}",
+        ajax: {
+                url: '{{ route('transaksi_send_pos_operasional')}}', // Menggunakan route Laravel untuk URL
+                 type: 'GET'
+            },
         columns: [
             {data: 'DT_RowIndex',name:'DT_RowIndex'}
             {data: 'no_referensi', name: 'no_referensi'},
@@ -158,14 +158,8 @@
            
         ]
     });
-    table.on('order.dt search.dt', function () {
-        let i = 1;
- 
-        table.cells(null, 0, { search: 'applied', order: 'applied' }).every(function (cell) {
-            this.data(i++);
-        });
-    }).draw();
-        });
+    
+     });
    
 </script>
 @endif
