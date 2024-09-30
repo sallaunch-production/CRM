@@ -80,7 +80,7 @@
         processing: true,
         serverSide: true,
         ajax: {
-                url: '{{ route('transaksi_receive_pos')}}', // Menggunakan route Laravel untuk URL
+                url: '{{ route('transaksi_send_pos')}}', // Menggunakan route Laravel untuk URL
                  type: 'GET'
             },
         columns: [
