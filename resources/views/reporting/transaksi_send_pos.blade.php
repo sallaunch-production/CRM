@@ -129,7 +129,7 @@
                  type: 'GET'
             },
         columns: [
-            {data: 'DT_RowIndex',name:'DT_RowIndex'}
+            {data: 'DT_RowIndex',name:'DT_RowIndex'},
             {data: 'no_referensi', name: 'no_referensi'},
             {data: 'negara_penerima', name: 'negara_penerima'},
             {data: 'amount', name: 'amount', render: $.fn.dataTable.render.number(',', '.',  '')},
