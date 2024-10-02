@@ -121,15 +121,22 @@
                                         </thead>
                                        
                                         <tbody>
+                                        @php
+                                        $nopends = array_map(function($item) {
+                                                return substr($item->id_pos, 0, 5);
+                                            }, $quer->toArray());
+
+                                            $slkotaData = DB::connection('mysql')->table('nopend_lama')
+                                                ->whereIn('kpc', $nopends)
+                                                ->get()
+                                                ->keyBy('kpc'); // Menggunakan keyBy untuk akses cepat
+                                            @endphp    
                                         @foreach ($quer  as $key => $datanya)
                                         <tr>
-                                            @php
-                                                $nopend=substr($datanya->id_pos,0,5);	
-                                                $slkota=DB::connection('mysql')->table('nopend_lama')->where('kpc','like', $nopend .'%')->first();
-                                            @endphp
+                                           
                                             <th>{{$key+1 }}</th>
                                             <td>{{$datanya->agent_id}} {{$datanya->nama}}</td>
-                                            <td>{{$datanya->id_pos}}  {{ $slkota ? $slkota->nama : 'N/A' }} </td>
+                                            <td>{{$datanya->id_pos}}  {{ isset($slkotaData[substr($datanya->id_pos, 0, 5)]) ? $slkotaData[substr($datanya->id_pos, 0, 5)]->nama : 'N/A' }} </td>
                                         </tr>
                                         @endforeach
 
