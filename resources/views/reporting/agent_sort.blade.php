@@ -124,8 +124,8 @@
                                         @foreach ($quer  as $key => $dat)
                                         <tr>
                                              <th >{{$key+1 }}</th>
-                                            <td>$dat->{{agent_id}} {{$dat->nama}}</td>
-                                            <td>$dat->{{id_pos}}</td>
+                                            <td>{{$dat->agent_id}} {{$dat->nama}}</td>
+                                            <td>{{$dat->id_pos}}</td>
                                         </tr>
                                         @endforeach
 
