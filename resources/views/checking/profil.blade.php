@@ -45,7 +45,7 @@
                                     <input type=submit class="btn btn-info" value=CARI>
                                 </div>
                                 </form>
-                                @if(!empty($nama))
+                                @if(!empty($nama) && empty($detail))
                            
                                 <table  id="example" class="table table-responsive table-striped  table-bordered" style="width:100%;">
                                     <thead>
