@@ -198,7 +198,7 @@
                            @foreach ($dat  as $key => $transactions)
                             <tr>
                                 <th>{{$key+1 }}</th>
-								<td>{{$transactions->no_referensi]}}</td>
+								<td>{{$transactions->no_referensi}}</td>
                                 <td>{{$transactions->nama_pengirim}}</td>
                                 <td>{{$transactions->negara_pengirim}}</td>
                                 <td>{{number_format($transactions->bsu)}}</td>
