@@ -98,13 +98,44 @@
                                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                             <span aria-hidden="true">&times;</span>
                                                         </button>
+                                                        <h4 class="modal-title" id="myModalLabel">Profil Identitas</h4>
                                                     </div>
                                                     <div class="modal-body">
-                                                        Ini adalah konten modal Anda.
+                                                        <div class=form-group>
+                                                            <label>Nama</label>
+                                                            {{ $transactions->nama }}
+                                                        </div>
+                                                        <div class=form-group>
+                                                            <label>Alamat</label>
+                                                            {{ $transactions->alamat_penerima }}
+                                                        </div>
+                                                        <div class=form-group>
+                                                            <label>Kota</label>
+                                                            {{ $transactions->kota_penerima }}
+                                                        </div>
+                                                        <div class=form-group>
+                                                            <label>No Handphone</label>
+                                                            {{ $transactions->telepon_penerima }}
+                                                        </div>
+                                                        <div class=form-group>
+                                                            <label>Tanggal Lahir</label>
+                                                            {{ $transactions->tanggal_lahir }}
+                                                        </div>
+                                                        <div class=form-group>
+                                                            <label>Nomor Identitas</label>
+                                                            {{ $transactions->identitas }} {{ $transactions->nomor_identitas }}
+                                                        </div>
+                                                        <div class=form-group>
+                                                            <label>Pekerjaan</label>
+                                                            {{ $transactions->pekerjaan }}
+                                                        </div>
+                                                            <div class=form-group>
+                                                            <label>Kewarganegaraan</label>
+                                                            {{ $transactions->negara }}
+                                                        </div>
                                                     </div>
                                                     <div class="modal-footer">
                                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
-                                                        <button type="button" class="btn btn-primary">Simpan perubahan</button>
                                                     </div>
                                                 </div>
                                             </div>
