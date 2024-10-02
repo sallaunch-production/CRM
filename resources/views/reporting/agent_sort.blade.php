@@ -129,7 +129,7 @@
                                             @endphp
                                             <th>{{$key+1 }}</th>
                                             <td>{{$datanya->agent_id}} {{$datanya->nama}}</td>
-                                            <td>{{$datanya->id_pos}}  {{($slkota->nama)}} </td>
+                                            <td>{{$datanya->id_pos}}  {{ $slkota ? $slkota->nama : 'N/A' }} </td>
                                         </tr>
                                         @endforeach
 
