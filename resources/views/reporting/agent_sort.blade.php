@@ -121,11 +121,11 @@
                                         </thead>
                                        
                                         <tbody>
-                                        @foreach ($quer  as $key => $dat)
+                                        @foreach ($quer  as $key => $datanya)
                                         <tr>
-                                             <th >{{$key+1 }}</th>
-                                            <td>{{$dat->agent_id}} {{$dat->nama}}</td>
-                                            <td>{{$dat->id_pos}}</td>
+                                            <th>{{$key+1 }}</th>
+                                            <td>{{$datanya->agent_id}} {{$datanya->nama}}</td>
+                                            <td>{{$datanya->id_pos}}</td>
                                         </tr>
                                         @endforeach
 

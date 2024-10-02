@@ -120,7 +120,7 @@ class NopendController extends Controller
             $tanggal_dari = $request->tanggal_dari;
             $tanggal_sampai = $request->tanggal_sampai;
             $quer = DB::connection('mysql')->table('agent_id_test')
-            ->select('id_pos', DB::raw('MAX(id) as max_id')) 
+            ->select('id_pos','agent_id','nama', DB::raw('MAX(id) as max_id')) 
             ->whereNotIn('id_pos', function($q) use ($tanggal_sampai) {
                 $q->select('id_pos')
                   ->from('transaksi_valid')
