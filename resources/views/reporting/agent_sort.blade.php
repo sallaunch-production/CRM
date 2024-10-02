@@ -92,16 +92,21 @@
                                             </tr>
                                             </tfoot>
                                             <tbody>
+                                            @php
+                                        $nopends = array_map(function($item) {
+                                                return substr($item->id_pos, 0, 5);
+                                            }, $quer->toArray());
+
+                                            $slkotaData = DB::connection('mysql')->table('nopend_lama')
+                                                ->whereIn('kpc', $nopends)
+                                                ->get()
+                                                ->keyBy('kpc'); // Menggunakan keyBy untuk akses cepat
+                                            @endphp 
                                                 @foreach ($quer  as $key => $dat)
                                                 <tr>
-                                                    <?php
-                                                    $nopend=substr($dat->id_pos,0,5);	
-                                                    $datakota=DB::table('nopend_lama')->where('kpc','LIKE',$nopend.'%')->get();
-                                                    
-                                                    ?>
                                                     <th >{{$key+1 }}</th>
                                                     <td>{{$dat->agent_id}} {{($dat->nama)}}</td>
-                                                    <td>{{$dat->id_pos}} </td>
+                                                    <td>{{$dat->id_pos}}  {{ isset($slkotaData[substr($datanya->id_pos, 0, 5)]) ? $slkotaData[substr($datanya->id_pos, 0, 5)]->nama : 'N/A' }}</td>
                                                     <td>{{$dat->totalid}}</td>
                                                 </tr>
                                                 @endforeach
