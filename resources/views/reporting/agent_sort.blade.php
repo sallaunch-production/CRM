@@ -121,7 +121,7 @@
                                         </thead>
                                        
                                         <tbody>
-                                        @foreach ($quernya  as $key => $dat)
+                                        @foreach ($quer  as $key => $dat)
                                         <tr>
                                              <th >{{$key+1 }}</th>
                                             <td>$dat->{{agent_id}} {{$dat->nama}}</td>
