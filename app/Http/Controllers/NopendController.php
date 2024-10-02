@@ -45,10 +45,10 @@ class NopendController extends Controller
         //  cek berhasil login 
         if(Auth::check()){
             $nopend = $request->nopend;
-            $jum=DB::table('agent_id')->where('id_pos','LIKE','%'.$nopend.'%')->count();
-            $ques=DB::table('nopend')->where('kpc','LIKE',$nopend.'%')->count();
-            $query = DB::table('agent_id')->where('id_pos','LIKE','%'.$nopend.'%')->get();
-            $query_nopend = DB::table('nopend')->join('agent_id','agent_id.id_pos','=','nopend.kprk')->where('nopend.kpc','LIKE','%'.$nopend.'%')->get();
+            $jum= DB::connection('mysql')->table('agent_id')->where('id_pos','LIKE','%'.$nopend.'%')->count();
+            $ques= DB::connection('mysql')->table('nopend')->where('kpc','LIKE',$nopend.'%')->count();
+            $query = DB::connection('mysql')->table('agent_id')->where('id_pos','LIKE','%'.$nopend.'%')->get();
+            $query_nopend = DB::connection('mysql')->table('nopend')->join('agent_id','agent_id.id_pos','=','nopend.kprk')->where('nopend.kpc','LIKE','%'.$nopend.'%')->get();
                 return view('reporting.nopend', [
                     'jum' => $jum,'query'=>$query,'nopend'=>$nopend,'ques'=>$ques,'query_nopend'=>$query_nopend
              ]);
