@@ -109,6 +109,31 @@ class CheckingController extends Controller
       }
 
 
+      public function detail_transaksi(Request $request){ 
+        //  cek berhasil login 
+        if(Auth::check()){
+              $detail="ya";
+              $nama=$request->nama;
+              $tanggal_lahir=$request->tanggal_lahir;
+              $query  = DB::connection('mysql')->table('transaksi_valid')
+              ->join('transaksi', 'transaksi.no_referensi', '=', 'transaksi_valid.no_referensi')
+              ->where('transaksi_valid.deltawork', 'ya')
+              ->where('transaksi_valid.nama_penerima', $nama)
+              ->where('transaksi_valid.tanggal_lahir', $tanggal_lahir)
+              ->whereNotNull('transaksi_valid.id_transaksi')
+              ->select('transaksi_valid.*', 'transaksi.*') // Pilih kolom yang diinginkan
+              ->get();
+            
+                return view('checking.profil',[
+                    'dat'=>$query,'nama'=>$nama,'detail'=>$detail
+                ]);
+
+
+        }
+
+        return redirect('login')->with('You dont have access');
+      }
+
       public function sales(){ 
         //  cek berhasil login 
         if(Auth::check()){

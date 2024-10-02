@@ -55,6 +55,7 @@ Route::get('nama',[App\Http\Controllers\CheckingController::class,'nama'])->name
 Route::post('cari_nama',[App\Http\Controllers\CheckingController::class,'cari_nama'])->name('cari_nama')->middleware('auth');
 Route::get('profil',[App\Http\Controllers\CheckingController::class,'profil'])->name('profil')->middleware('auth');
 Route::post('search_profil',[App\Http\Controllers\CheckingController::class,'search_profil'])->name('search_profil')->middleware('auth');
+Route::post('detail_transaksi',[App\Http\Controllers\CheckingController::class,'detail_transaksi'])->name('detail_transaksi')->middleware('auth');
 Route::get('sales',[App\Http\Controllers\CheckingController::class,'sales'])->name('sales')->middleware('auth');
 Route::get('newcustomer',[App\Http\Controllers\CheckingController::class,'newcustomer'])->name('newcustomer')->middleware('auth');
 Route::get('sanction',[App\Http\Controllers\CheckingController::class,'sanction'])->name('sanction')->middleware('auth');

@@ -86,7 +86,11 @@
                                         <button type=button class="btn btn-primary" data-toggle=modal data-target="#myModal{{$transactions->id}}">
                                             Detail
                                         </button>&nbsp;
-                                        <a href="#" target=_blank><button type=button class="btn btn-info" >Transaksi</button></a>&nbsp;
+                                        <form class=form-group action="{{ route('detail_transaksi')}}"  method="POST" target="_blank">
+                                        @csrf
+                                        <input type=hidden name=nama value="{{ $transactions->nama }}">
+                                        <input type=hidden name=tanggal_lahir value="{{ $transactions->tanggal_lahir }}">
+                                        <button type=submit class="btn btn-info" >Transaksi</button> </form>&nbsp;
                                         <a href="#"><button type=button class="btn btn-warning" >Edit</button></a>&nbsp;
                                         </td>
                                          <!-- Modal -->
@@ -94,11 +98,10 @@
                                             <div class="modal-dialog" role="document">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
-                                                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                                                        <h5 class="modal-title" id="exampleModalLabel">Profil Identitas</h5>
                                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                             <span aria-hidden="true">&times;</span>
                                                         </button>
-                                                        <h4 class="modal-title" id="myModalLabel">Profil Identitas</h4>
                                                     </div>
                                                     <div class="modal-body">
                                                         <div class=form-group>
@@ -147,7 +150,70 @@
                                 @else
 
                                 @endif
-                              
+
+                                @if(!empty($detail))
+                                <h2>Tabel Transaksi Penerima : <?php echo"$id";?></h2>
+			                <table id="example" class="display" cellspacing="0" width="100%">
+                                <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>No Referensi</th>
+                                    <th>Nama Pengirim</th>
+                                    <th>Negara Pengirim</th>
+                                    <th>BSU</th> 
+                                    <th>Identitas</th>
+                                    <th>Nomor Identitas</th>
+                                    <th>Tanggal lahir</th>
+                                    <th>Alamat penerima</th>
+                                    <th>Telepon Penerima</th>
+                                    <th>Pekerjaan</th>
+                                <th>Tujuan Penggunaan Dana</th>
+                                    <th>Hubungan</th>
+                                    <th>Kewarganegaraan</th>
+                                <th>Kode Pos</th>
+                                    <th>Tanggal</th> 			  
+                                    </tr> 
+                         </thead>
+                    <tfoot>
+                        <tr>
+                            <th>No</th>
+                            <th>No Referensi</th>
+                            <th>Nama Pengirim</th>
+                            <th>Negara Pengirim</th>
+                            <th>BSU</th>  
+                                <th>Identitas</th>
+                                <th>Nomor Identitas</th>
+                                <th>Tanggal lahir</th>
+                                <th>Alamat penerima</th>
+                                <th>Telepon Penerima</th>
+                                <th>Pekerjaan</th>
+                                <th>Tujuan Penggunaan Dana</th>
+                                <th>Hubungan</th>
+                                <th>Kewarganegaraan</th>
+                            <th>Kode Pos</th>
+                            <th>Tanggal</th> 			
+                        </tr> 
+                    </tfoot>
+                     <tbody>
+                           @foreach ($dat  as $key => $transactions)
+                            <tr>
+                                <th>{{$key+1 }}</th>
+								<td>{{$transactions->no_referensi]}}</td>
+                                <td>{{$transactions->nama_pengirim}}</td>
+                                <td>{{$transactions->negara_pengirim}}</td>
+                                <td>{{number_format($transactions->bsu)}}</td>
+                                <td>{{$transactions->identitas}}</td><td>$data[nomor_identitas]</td><td>$data[tanggal_lahir]</td><td>$data[alamat_penerima]</td><td>$data[telepon_penerima]</td><td>$data[pekerjaan]</td>
+                                <td>{{$transactions->tujuan_penggunaan_dana}}</td>
+                                <td>{{$transactions->hubungan}}</td>
+                                <td>{{$transactions->kewarganegaraan}}</td>
+                                <td>{{$transactions->id_pos}}</td>
+								<td>{{$transactions->tgl_valid}}</td>
+                            </tr>
+
+                            @endforeach   
+                       </tbody>
+                            @else
+                            @endif
                         </div><!--card-body-->
 
                     </div><!--card-->
