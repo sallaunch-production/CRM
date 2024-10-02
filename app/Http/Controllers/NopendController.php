@@ -120,6 +120,7 @@ class NopendController extends Controller
             $tanggal_dari = $request->tanggal_dari;
             $tanggal_sampai = $request->tanggal_sampai;
             $quer = DB::connection('mysql')->table('agent_id_test')
+            ->select('id_pos', DB::raw('MAX(id) as max_id')) 
             ->whereNotIn('id_pos', function($q) use ($tanggal_sampai) {
                 $q->select('id_pos')
                   ->from('transaksi_valid')
@@ -127,7 +128,7 @@ class NopendController extends Controller
                   ->whereNotNull('id_pos');
             })
             ->groupBy('id_pos') // Mengelompokkan hanya berdasarkan 'id_pos'
-            ->orderBy('id', 'desc')
+            ->orderBy('max_id', 'desc')
             ->get();
             return view('reporting.agent_sort',[
                'quer'=>$quer,'tanggal_dari_s'=>$tanggal_dari,'belumaktifnya'=>$belumaktifnya,'belumaktif'=>$belumaktif,'tanggal_sampai'=>$tanggal_sampai,'jum'=>$jum,'jumkah'=>$jumkah
