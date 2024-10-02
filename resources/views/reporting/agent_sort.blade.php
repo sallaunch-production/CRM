@@ -106,7 +106,7 @@
                                                 <tr>
                                                     <th >{{$key+1 }}</th>
                                                     <td>{{$dat->agent_id}} {{($dat->nama)}}</td>
-                                                    <td>{{$dat->id_pos}}  {{ isset($slkotaData[substr($datanya->id_pos, 0, 5)]) ? $slkotaData[substr($datanya->id_pos, 0, 5)]->nama : 'N/A' }}</td>
+                                                    <td>{{$dat->id_pos}}  {{ isset($slkotaData[substr($dat->id_pos, 0, 5)]) ? $slkotaData[substr($dat->id_pos, 0, 5)]->nama : 'N/A' }}</td>
                                                     <td>{{$dat->totalid}}</td>
                                                 </tr>
                                                 @endforeach
