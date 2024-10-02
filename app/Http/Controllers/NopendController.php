@@ -118,12 +118,12 @@ class NopendController extends Controller
             $belumaktifnya="ya";
             $jum=""; $jumkah=""; $belumaktif="";
             $tanggal_dari = $request->tanggal_dari;
-            $tanggal_sampai = "2023-01-10";
-            $quer = DB::table('agent_id_test')
+            $tanggal_sampai = $request->tanggal_sampai;
+            $quer = DB::connection('mysql')->table('agent_id_test')
             ->whereNotIn('id_pos', function($q) use ($tanggal_sampai) {
                 $q->select('id_pos')
                   ->from('transaksi_valid')
-                  ->where('tanggal', '<=', $tanggal_sampai . ' 23:59:59')
+                  ->where('tanggal', '<=', $tanggal_sampai. ' 23:59:59')
                   ->whereNotNull('id_pos');
             })
             ->groupBy('id_pos', 'id')
