@@ -89,6 +89,26 @@
                                         <a href="#" target=_blank><button type=button class="btn btn-info" >Transaksi</button></a>&nbsp;
                                         <a href="#"><button type=button class="btn btn-warning" >Edit</button></a>&nbsp;
                                         </td>
+                                         <!-- Modal -->
+                                        <div class="modal fade" id="myModal{{$transactions->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        Ini adalah konten modal Anda.
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                                                        <button type="button" class="btn btn-primary">Simpan perubahan</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </tr> 
                                     @endforeach   
                                     </tbody>
