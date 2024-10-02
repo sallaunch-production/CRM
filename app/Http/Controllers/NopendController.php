@@ -96,12 +96,12 @@ class NopendController extends Controller
             $tahun_sampai =  $dari[4];
             $hariini = date("Y-m-d H:i:s");
             
-            $jum=DB::table('transaksi_valid')->join('agent_id_test','agent_id_test.id_pos','=','transaksi_valid.id_pos')->where('tanggal','>',$tanggal_dari.' 00:00:00')->where('tanggal','<',$tanggal_sampai.' 23:59:59')->groupBy('agent_id_test.agent_id')->count();
-            $jumkah=DB::table('transaksi_valid')->join('agent_id_test','agent_id_test.id_pos','=','transaksi_valid.id_pos')->groupBy('agent_id_test.agent_id')->count();
-            $jumtv=DB::table('agent_id_test')->count();
+            $jum=DB::connection('mysql')->table('transaksi_valid')->join('agent_id_test','agent_id_test.id_pos','=','transaksi_valid.id_pos')->where('tanggal','>',$tanggal_dari.' 00:00:00')->where('tanggal','<',$tanggal_sampai.' 23:59:59')->groupBy('agent_id_test.agent_id')->count();
+            $jumkah=DB::connection('mysql')->table('transaksi_valid')->join('agent_id_test','agent_id_test.id_pos','=','transaksi_valid.id_pos')->groupBy('agent_id_test.agent_id')->count();
+            $jumtv=DB::connection('mysql')->table('agent_id_test')->count();
             $belumaktif =$jumtv-$jumkah; 
 
-            $quer=DB::table('transaksi_valid')->select('transaksi_valid.id_pos','agent_id_test.agent_id','agent_id_test.nama',DB::raw('count(agent_id_test.agent_id) as totalid'))->join('agent_id_test','agent_id_test.id_pos','=','transaksi_valid.id_pos')->where('tanggal','<=',$tanggal_sampai.' 23:59:59')->groupBy('agent_id_test.agent_id','transaksi_valid.id_pos','agent_id_test.agent_id','agent_id_test.nama')->orderBy('totalid','desc')->get();
+            $quer=DB::connection('mysql')->table('transaksi_valid')->select('transaksi_valid.id_pos','agent_id_test.agent_id','agent_id_test.nama',DB::raw('count(agent_id_test.agent_id) as totalid'))->join('agent_id_test','agent_id_test.id_pos','=','transaksi_valid.id_pos')->where('tanggal','<=',$tanggal_sampai.' 23:59:59')->groupBy('agent_id_test.agent_id','transaksi_valid.id_pos','agent_id_test.agent_id','agent_id_test.nama')->orderBy('totalid','desc')->get();
 
             return view('reporting.agent_sort',[
                 'tanggal_dari'=>$tanggal_dari,'jum'=>$jum,'jumkah'=>$jumkah,'jumtv'=>$jumtv,'tanggal_sampai'=>$tanggal_sampai,'belumaktif'=>$belumaktif,'quer'=>$quer
