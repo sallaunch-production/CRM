@@ -126,9 +126,9 @@ class NopendController extends Controller
                   ->where('tanggal', '<=', $tanggal_sampai. ' 23:59:59')
                   ->whereNotNull('id_pos');
             })
-            ->groupBy('id_pos')
+            ->groupBy('id_pos') // Mengelompokkan hanya berdasarkan 'id_pos'
             ->orderBy('id', 'desc')
-            ->paginate(10);
+            ->get();
             return view('reporting.agent_sort',[
                'quer'=>$quer,'tanggal_dari_s'=>$tanggal_dari,'belumaktifnya'=>$belumaktifnya,'belumaktif'=>$belumaktif,'tanggal_sampai'=>$tanggal_sampai,'jum'=>$jum,'jumkah'=>$jumkah
             ]);
