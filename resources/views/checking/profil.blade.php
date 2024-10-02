@@ -152,7 +152,7 @@
                                 @endif
 
                                 @if(!empty($detail))
-                                <h2>Tabel Transaksi Penerima : <?php echo"$id";?></h2>
+                                <h2>Tabel Transaksi Penerima : {{$nama}}</h2>
 			                <table id="example" class="display" cellspacing="0" width="100%">
                                 <thead>
                                 <tr>
