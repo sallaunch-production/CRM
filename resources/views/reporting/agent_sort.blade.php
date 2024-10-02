@@ -123,9 +123,13 @@
                                         <tbody>
                                         @foreach ($quer  as $key => $datanya)
                                         <tr>
+                                            @php
+                                                $nopend=substr($datanya->id_pos,0,5);	
+                                                $slkota=DB::connection('mysql')->table('nopend_lama')->where('kpc','like', $nopend .'%')->first();
+                                            @endphp
                                             <th>{{$key+1 }}</th>
                                             <td>{{$datanya->agent_id}} {{$datanya->nama}}</td>
-                                            <td>{{$datanya->id_pos}}</td>
+                                            <td>{{$datanya->id_pos}}  {{($slkota->nama)}} </td>
                                         </tr>
                                         @endforeach
 
