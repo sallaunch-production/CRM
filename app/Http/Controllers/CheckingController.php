@@ -95,7 +95,7 @@ class CheckingController extends Controller
         if(Auth::check()){
               $nama=$request->nama;
               $berdasarkan=$request->berdasarkan;
-              $query=DB::table('profil')->where($berdasarkan,'LIKE','%'.$nama.'%')->orderBy('nama','desc')->get();
+              $query=DB::connection('mysql')->table('profil')->where($berdasarkan,'LIKE','%'.$nama.'%')->orderBy('nama','desc')->get();
 
             
                 return view('checking.profil',[
