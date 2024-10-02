@@ -153,7 +153,7 @@
 
                                 @if(!empty($detail))
                                 <h2>Tabel Transaksi Penerima : {{$nama}}</h2>
-			                <table id="example" class="display" cellspacing="0" width="100%">
+                                <table  id="example" class="table table-responsive table-striped  table-bordered" style="width:100%;">
                                 <thead>
                                 <tr>
                                     <th>No</th>
@@ -202,7 +202,12 @@
                                 <td>{{$transactions->nama_pengirim}}</td>
                                 <td>{{$transactions->negara_pengirim}}</td>
                                 <td>{{number_format($transactions->bsu)}}</td>
-                                <td>{{$transactions->identitas}}</td><td>$data[nomor_identitas]</td><td>$data[tanggal_lahir]</td><td>$data[alamat_penerima]</td><td>$data[telepon_penerima]</td><td>$data[pekerjaan]</td>
+                                <td>{{$transactions->identitas}}</td>
+                                <td>{{$transactions->nomor_identitas}}</td>
+                                <td>{{$transactions->tanggal_lahir}}</td>
+                                <td>{{$transactions->alamat_penerima}}</td>
+                                <td>{{$transactions->telepon_penerima}}</td>
+                                <td>{{$transactions->pekerjaan}}</td>
                                 <td>{{$transactions->tujuan_penggunaan_dana}}</td>
                                 <td>{{$transactions->hubungan}}</td>
                                 <td>{{$transactions->kewarganegaraan}}</td>
