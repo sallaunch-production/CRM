@@ -133,6 +133,9 @@ Route::post('act_tambah_sanction',[App\Http\Controllers\CheckingController::clas
 
 Route::group(['middleware' => ['operasional']], function () {
     Route::get('dashboard_operasional',[App\Http\Controllers\HomeController::class,'dashboard'])->name('dashboard_operasional')->middleware('auth');
+    Route::get('agent_sort_operasional',[App\Http\Controllers\NopendController::class,'agent_sort'])->name('agent_sort_operasional')->middleware('auth');
+    Route::post('cari_agent_operasional',[App\Http\Controllers\NopendController::class,'cari_agent'])->name('cari_agent_operasional')->middleware('auth');
+    Route::post('liat_agent_belum_aktif_operasional',[App\Http\Controllers\NopendController::class,'liat_agent_belum_aktif'])->name('liat_agent_belum_aktif_operasional')->middleware('auth');
     Route::get('list_country_operasional',[App\Http\Controllers\ReportingController::class,'list_country'])->name('list_country_operasional')->middleware('auth');
     Route::post('search_filtering_transaction_operasional',[App\Http\Controllers\ReportingController::class,'search_filtering_transaction'])->name('search_filtering_transaction_operasional')->middleware('auth');
     Route::post('search_filtering_identitas_operasional',[App\Http\Controllers\ReportingController::class,'search_filtering_identitas'])->name('search_filtering_identitas_operasional')->middleware('auth');

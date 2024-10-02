@@ -516,6 +516,12 @@ return [
             'icon' => 'fa fa-book fa-fw',
         ],
         [
+            'text' => 'Agent Id',
+            'url'  => 'agent_sort_operasional',
+            'can'  => ['operasional-only'],
+            'icon' => 'fa fa-book fa-fw',
+        ],
+        [
             'text' => 'Laporan',
             'url'  => 'laporan',
             'can'  => ['compliance-only'],

@@ -31,9 +31,12 @@
                                 <hr></hr><br>
                                 <div class=col-md-6>
                         
-                                    <form action="{{ route('cari_agent')}}"  method="POST">
-                                    @csrf
-                                    
+                                    @if($levelnya=="compliance")
+                                        <form action="{{route('cari_agent')}}" method="POST">
+                                    @elseif($levelnya=="operasional")
+                                    <form action="{{route('cari_agent_operasional')}}" method="POST">
+                                    @endif 
+                                    @csrf 
                                         <div class=form-group>
                                             <label>Tanggal Transaksi </label>   
                                             <table class="table table-border">
@@ -56,8 +59,13 @@
                                     <tr><td>Total agent id aktif Dari : {{$tanggal_dari}} | Sampai : {{$tanggal_sampai}} : <b>{{$jum}}</b></td></tr> 
                                     <tr><td>Total agent id aktif seluruhnya: <b>{{$jumkah}}</b></td></tr> 
                                     <tr><td>Total agent id belum aktif: <b> {{$belumaktif}} </b>&nbsp;
-                                    <form role="form" action="{{ route('liat_agent_belum_aktif') }}"  method="POST">
-                                    @csrf 
+                                   
+                                    @if($levelnya=="compliance")
+                                        <form action="{{route('liat_agent_belum_aktif')}}" method="POST">
+                                    @elseif($levelnya=="operasional")
+                                    <form action="{{route('liat_agent_belum_aktif_operasional')}}" method="POST">
+                                    @endif 
+                                    @csrf  
                                       <input type='hidden' name="tanggal_dari" value="{{$tanggal_dari}}">
                                       <input type='hidden' name="tanggal_sampai" value="{{$tanggal_sampai}}">
                                       <input type=submit class="btn btn-info" value='Lihat Detail'>
