@@ -98,6 +98,7 @@
                                             <th>Nama Kantor Pos</th>	
                                             <th>Legacy</th>
                                             <th>Alamat</th>
+                                            <th>Tanggal</th>
                                         </tr> 
                                     </thead>
                                     <tfoot>
@@ -108,6 +109,7 @@
                                         <th>Nama Kantor Pos</th>	
                                         <th>Legacy</th>
                                         <th>Alamat</th>
+                                        <th>Tanggal</th>
                                     </tr> 
                                     </tfoot>
                                     <tbody>
@@ -119,6 +121,7 @@
                                         <td>{{$data->nama}}</td>
                                         <td>{{$data->legacy}}</td>
                                         <td>{{$data->alamat}}</td>
+                                        <td>{{$data->created_at}}</td>
 									</tr>
                                     @endforeach
                                     </tbody>
