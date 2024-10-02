@@ -508,6 +508,12 @@ return [
             'can'  => ['compliance-only'],
             'icon' => 'fa fa-book fa-fw',
         ],
+        [
+            'text' => 'Nopend / Id Pos',
+            'url'  => 'nopend_operasional',
+            'can'  => ['operasional-only'],
+            'icon' => 'fa fa-book fa-fw',
+        ],
 
         [
             'text' => 'Agent Id',

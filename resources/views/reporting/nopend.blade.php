@@ -27,8 +27,13 @@
                             @endif
                             <div class="row">
                             <br><br> 
-                                <form action="{{ route('cari_nopend')}}"  method="POST">
-                                    @csrf
+            
+                                    @if($levelnya=="compliance")
+                                        <form action="{{route('cari_nopend')}}" method="POST">
+                                    @elseif($levelnya=="operasional")
+                                        <form action="{{route('cari_nopend_operasional')}}" method="POST">
+                                    @endif 
+                                    @csrf  
                                         <h2></h2>
                                     
                                         <div class=form-group>

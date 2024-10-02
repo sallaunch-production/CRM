@@ -133,6 +133,8 @@ Route::post('act_tambah_sanction',[App\Http\Controllers\CheckingController::clas
 
 Route::group(['middleware' => ['operasional']], function () {
     Route::get('dashboard_operasional',[App\Http\Controllers\HomeController::class,'dashboard'])->name('dashboard_operasional')->middleware('auth');
+    Route::get('nopend_operasional',[App\Http\Controllers\NopendController::class,'nopend'])->name('nopend_operasional')->middleware('auth');
+    Route::post('cari_nopend_operasional',[App\Http\Controllers\NopendController::class,'cari_nopend'])->name('cari_nopend_operasional')->middleware('auth');
     Route::get('agent_sort_operasional',[App\Http\Controllers\NopendController::class,'agent_sort'])->name('agent_sort_operasional')->middleware('auth');
     Route::post('cari_agent_operasional',[App\Http\Controllers\NopendController::class,'cari_agent'])->name('cari_agent_operasional')->middleware('auth');
     Route::post('liat_agent_belum_aktif_operasional',[App\Http\Controllers\NopendController::class,'liat_agent_belum_aktif'])->name('liat_agent_belum_aktif_operasional')->middleware('auth');
