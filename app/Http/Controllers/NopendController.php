@@ -126,7 +126,7 @@ class NopendController extends Controller
                   ->where('tanggal', '<=', $tanggal_sampai. ' 23:59:59')
                   ->whereNotNull('id_pos');
             })
-            ->groupBy('id_pos', 'id')
+            ->groupBy('id_pos')
             ->orderBy('id', 'desc')
             ->paginate(10);
             return view('reporting.agent_sort',[
