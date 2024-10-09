@@ -52,15 +52,27 @@ class HomeController extends Controller
             if ($diff->format('%a') > 90){
                 $sisa=90-$diff->format('%a');
                 //return redirect()->back()->with('alert','hello');
-                return redirect('settings')->with('success','Your password has expired and must be changed'.$diff->format('%a'));
-                
+                if(Auth::user()->level=="compliance"){
+                     return redirect('settings_user')->with('success','Your password has expired and must be changed'.$diff->format('%a'));
+                }elseif(Auth::user()->level=="operasional"){
+                    return redirect('settings')->with('success','Your password has expired and must be changed'.$diff->format('%a'));
+                }
+
             } else if ($diff->format('%a') > 76){
                 $sisa=90-$diff->format('%a');
                 if($sisa > 1){
-                   return redirect('settings')->with('success','Your password will expired in '.$sisa.' days.');
+                    if(Auth::user()->level=="compliance"){
+                      return redirect('settings_user')->with('success','Your password will expired in '.$sisa.' days.');
+                    }elseif(Auth::user()->level=="operasional"){
+                      return redirect('settings')->with('success','Your password will expired in '.$sisa.' days.');
+                    }
                 }
                 else{
-                   return redirect('settings')->with('success','Your password has expired and must be changed');
+                    if(Auth::user()->level=="compliance"){
+                        return redirect('settings_user')->with('success','Your password has expired and must be changed');
+                    }elseif(Auth::user()->level=="operasional"){
+                        return redirect('settings')->with('success','Your password has expired and must be changed');
+                    }
                  }
             }
 

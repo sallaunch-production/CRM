@@ -27,67 +27,138 @@
                             @endif
 
                             <!-- COLOR PALETTE -->
-                           
+                                   
+                                <a href="{{ route('newcustomer') }}"> <button type="button" class="btn btn-success">Receive</button></a>&nbsp;&nbsp;
+                                <a href="{{ route('newcustomer_send') }}"> <button type="button" class="btn btn-danger">Send</button></a>
+                                <br><br>
+                                    @if(empty($send))
                                           <form role="form" action="{{ route('search_newcustomer') }}" method="POST" style="width:50%;">
                                             @csrf  
                                             <div class=form-group>
-                                            <label>Tanggal Transaksi </label>   
+                                            <label>Tanggal Transaksi Receive</label>   
                                             <table class="table table-border">
-                                            <tr><td> <input type='text' class="form-control" id="daterange" name="reservation"/> </td></tr> 
-                                            
-                                            </table>
-                                        </div>
-                                        
-                                        <div class=form-group>
-                                            <input type=submit class="btn btn-info" value=CARI>
-                                        </div>
-                                    </form>
+                                                    <tr><td> <input type='text' class="form-control" id="daterange" name="reservation"/> </td></tr> 
+                                                    
+                                                    </table>
+                                                </div>
+                                                
+                                                <div class=form-group>
+                                                    <input type=submit class="btn btn-info" value=CARI>
+                                                </div>
+                                            </form>
 
                                     <!-- /.col -->
-                                @if(!empty($tanggal_sampai))
+                                            @if(!empty($tanggal_sampai))
 
-                                <table class="table table-border">
-                                        <tr><td>Dari : {{date('d-m-Y', strtotime($tanggal_dari))}} | Sampai : {{date('d-m-Y', strtotime($tanggal_sampai))}}</td></tr>
-                                </table>
-                                <table  id="example" class="table table-responsive table-striped  table-bordered">
-                                <thead>
-                                <tr>
-                                    <th>No</th>
-                                        <th>Ref Number </th>
-                                    <th>Nama </th>
-                                    <th>Alamat</th>      
-                                    <th>Nomor Telepon</th>      
-                                    <th>Tanggal Lahir</th>
-                                    <th>Nomor Identitas</th>       
-                                    <th>Id Pos </th>
-                                        <th>Tanggal </th>
-                                    <th> </th>
-                                </tr>
-                                </thead>
-                                
-                                <tbody>
-                                @foreach($data  as $key => $transactions)
-                                        <tr>
-                                            <th >{{$key+1 }}</th>
-                                            <td>{{ $transactions->no_referensi }}</td>
-                                            <td>{{ $transactions->nama_penerima }}</td>
-                                            <td>{{ $transactions->alamat_penerima }}</td>
-                                            <td>{{ $transactions->telepon_penerima }}</td>
-                                            <td>{{ $transactions->tanggal_lahir }}</td>
-                                            <td>{{ $transactions->nomor_identitas }}</td>
-                                            <td>{{ $transactions->id_pos }}</td>
-                                            <td>{{ $transactions->tanggal }}</td>
-                                            <td><button type=button class="btn btn-primary btn-lg" data-toggle=modal data-target="#myModal{{$transactions->no}}">
-                                                Detail
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
+                                            <table class="table table-border">
+                                                    <tr><td>Dari : {{date('d-m-Y', strtotime($tanggal_dari))}} | Sampai : {{date('d-m-Y', strtotime($tanggal_sampai))}}</td></tr>
+                                            </table>
+                                            <table  id="example" class="table table-responsive table-striped  table-bordered">
+                                            <thead>
+                                            <tr>
+                                                <th>No</th>
+                                                    <th>Ref Number </th>
+                                                <th>Nama </th>
+                                                <th>Alamat</th>      
+                                                <th>Nomor Telepon</th>      
+                                                <th>Tanggal Lahir</th>      
+                                                <th>Tempat Lahir</th>
+                                                <th>Nomor Identitas</th>       
+                                                <th>Id Pos </th>
+                                                    <th>Tanggal </th>
+                                                <th> </th>
+                                            </tr>
+                                            </thead>
+                                            
+                                            <tbody>
+                                            @foreach($data  as $key => $transactions)
+                                                    <tr>
+                                                        <th >{{$key+1 }}</th>
+                                                        <td>{{ $transactions->no_referensi }}</td>
+                                                        <td>{{ $transactions->nama_penerima }}</td>
+                                                        <td>{{ $transactions->alamat_penerima }}</td>
+                                                        <td>{{ $transactions->telepon_penerima }}</td>
+                                                        <td>{{ $transactions->tanggal_lahir }}</td>
+                                                        <td>{{ $transactions->tempat_lahir }}</td>
+                                                        <td>{{ $transactions->nomor_identitas }}</td>
+                                                        <td>{{ $transactions->id_pos }}</td>
+                                                        <td>{{ $transactions->tanggal }}</td>
+                                                        <td><button type=button class="btn btn-primary btn-lg" data-toggle=modal data-target="#myModal{{$transactions->no}}">
+                                                            Detail
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
 
-                                </table>
-                                @else
-                                @endif
+                                            </table>
+                                            @else
+                                            @endif
+                               @else
+                                            <form role="form" action="{{ route('search_newcustomer_send') }}" method="POST" style="width:50%;">
+                                                    @csrf  
+                                                    <div class=form-group>
+                                                    <label>Tanggal Transaksi Send</label>   
+                                                    <table class="table table-border">
+                                                      <tr><td> <input type='text' class="form-control" id="daterange" name="reservation"/> </td></tr> 
+                                                    
+                                                    </table>
+                                                </div>
+                                                
+                                                <div class=form-group>
+                                                    <input type=submit class="btn btn-info" value=CARI>
+                                                </div>
+                                            </form>
+
+                                    <!-- /.col -->
+                                            @if(!empty($tanggal_sampai))
+
+                                            <table class="table table-border">
+                                                    <tr><td>Dari : {{date('d-m-Y', strtotime($tanggal_dari))}} | Sampai : {{date('d-m-Y', strtotime($tanggal_sampai))}}</td></tr>
+                                            </table>
+                                            <table  id="example" class="table table-responsive table-striped  table-bordered">
+                                            <thead>
+                                            <tr>
+                                                <th>No</th>
+                                                    <th>Ref Number </th>
+                                                <th>Nama Pengirim</th>
+                                                <th>Alamat Pengirim</th>      
+                                                <th>Nomor Telepon</th>      
+                                                <th>Tanggal Lahir</th>     
+                                                <th>Tempat Lahir</th>
+                                                <th>Nomor Identitas</th>       
+                                                <th>Id Pos </th>
+                                                    <th>Tanggal </th>
+                                                <th> </th>
+                                            </tr>
+                                            </thead>
+                                            
+                                            <tbody>
+                                            @foreach($data  as $key => $transactions)
+                                                    <tr>
+                                                        <th >{{$key+1 }}</th>
+                                                        <td>{{ $transactions->no_referensi }}</td>
+                                                        <td>{{ $transactions->nama_pengirim }}</td>
+                                                        <td>{{ $transactions->alamat_pengirim }}</td>
+                                                        <td>{{ $transactions->telpon_pengirim }}</td>
+                                                        <td>{{ $transactions->tanggal_lahir }}</td>
+                                                        <td>{{ $transactions->tempat_lahir }}</td>
+                                                        <td>{{ $transactions->nomor_identitas }}</td>
+                                                        <td>{{ $transactions->kode_pos_domisili_pengirim }}</td>
+                                                        <td>{{ $transactions->tanggal }}</td>
+                                                        <td><button type=button class="btn btn-primary btn-lg" data-toggle=modal data-target="#myModal{{$transactions->no}}">
+                                                            Detail
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+
+                                            </table>
+                                            @else
+                                            @endif
+                               
+                               @endif
                                 <!-- /.row --><br><br><br><br>
                                 </div>
                                 <!-- /.box-body -->

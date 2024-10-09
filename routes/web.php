@@ -58,6 +58,7 @@ Route::post('search_profil',[App\Http\Controllers\CheckingController::class,'sea
 Route::post('detail_transaksi',[App\Http\Controllers\CheckingController::class,'detail_transaksi'])->name('detail_transaksi')->middleware('auth');
 Route::get('sales',[App\Http\Controllers\CheckingController::class,'sales'])->name('sales')->middleware('auth');
 Route::get('newcustomer',[App\Http\Controllers\CheckingController::class,'newcustomer'])->name('newcustomer')->middleware('auth');
+Route::get('newcustomer-send',[App\Http\Controllers\CheckingController::class,'newcustomer_send'])->name('newcustomer_send')->middleware('auth');
 Route::get('sanction',[App\Http\Controllers\CheckingController::class,'sanction'])->name('sanction')->middleware('auth');
 Route::get('filtering',[App\Http\Controllers\CheckingController::class,'filtering'])->name('filtering')->middleware('auth');
 Route::post('cari_filtering',[App\Http\Controllers\CheckingController::class,'cari_filtering'])->name('cari_filtering')->middleware('auth');
@@ -104,6 +105,7 @@ Route::get('laporan',[App\Http\Controllers\ReportingController::class,'laporan']
 Route::get('kota',[App\Http\Controllers\ReportingController::class,'kota'])->name('kota')->middleware('auth');
 Route::post('search_sales',[App\Http\Controllers\CheckingController::class,'search_sales'])->name('search_sales')->middleware('auth');
 Route::post('search_newcustomer',[App\Http\Controllers\CheckingController::class,'search_newcustomer'])->name('search_newcustomer')->middleware('auth');
+Route::post('search_newcustomer_send',[App\Http\Controllers\CheckingController::class,'search_newcustomer_send'])->name('search_newcustomer_send')->middleware('auth');
 Route::get('screening',[App\Http\Controllers\CheckingController::class,'screening'])->name('screening')->middleware('auth');
 Route::post('cari_screening',[App\Http\Controllers\CheckingController::class,'cari_screening'])->name('cari_screening')->middleware('auth');
 Route::post('ubah_password',[App\Http\Controllers\HomeController::class,'ubah_password'])->name('ubah_password')->middleware('auth');
