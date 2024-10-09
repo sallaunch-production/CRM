@@ -102,15 +102,46 @@
 @stop
 
 @section('js')
+
+<!-- DataTables Buttons JS -->
+<script src="https://cdn.datatables.net/buttons/2.2.3/js/dataTables.buttons.min.js"></script>
+
+<!-- JSZip for Excel export -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+<!-- PDFMake for PDF export -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+
+<!-- Buttons HTML5 export -->
+<script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.print.min.js"></script>
 <script type="text/javascript">
   $(document).ready(function() {
-    $('#example').DataTable();
+    $('#example').DataTable({
+        dom: 'Bfrtip', // Mengatur layout untuk tombol
+        buttons: [
+            'copy', // Tombol copy
+            'csv', // Tombol CSV
+            {
+                extend: 'excel', // Tombol Excel
+                text: 'Download Excel',
+                title: 'Data Transaksi', // Judul file Excel
+                exportOptions: {
+                    // Opsi untuk memilih kolom mana yang diekspor
+                    columns: ':visible'
+                }
+            },
+            'pdf', // Tombol PDF
+            'print' // Tombol Print
+        ]
+    });
     $('#daterange').daterangepicker(); 
 } );
 </script>
 
    <script>
-            
+         
         $("#success-alert").fadeTo(2000, 500).fadeOut(500, function(){
         $("#success-alert").fadeOut(500);
         });
