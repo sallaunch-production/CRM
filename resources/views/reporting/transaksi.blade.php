@@ -87,7 +87,9 @@
             {data: 'no_referensi', name: 'no_referensi'},
             {data: 'identitas', name: 'identitas'},
             {data: 'nomor_identitas', name: 'nomor_identitas'},
-            {data: 'tanggal_lahir', name: 'tanggal_lahir'},
+            {data: 'tanggal_lahir', name: 'tanggal_lahir', render: function(data) {
+            return moment(data).format('DD/MM/YYYY');
+            }},
             {data: 'alamat_penerima', name: 'alamat_penerima'},
             {data: 'alamat_domisili_penerima', name: 'alamat_domisili_penerima'},
             {data: 'telepon_penerima', name: 'telepon_penerima'},
@@ -129,7 +131,9 @@
             {data: 'no_referensi', name: 'no_referensi'},
             {data: 'identitas', name: 'identitas'},
             {data: 'nomor_identitas', name: 'nomor_identitas'},
-            {data: 'tanggal_lahir', name: 'tanggal_lahir'},
+            {data: 'tanggal_lahir', name: 'tanggal_lahir', render: function(data) {
+            return moment(data).format('DD/MM/YYYY');
+            }},
             {data: 'alamat_penerima', name: 'alamat_penerima'},
             {data: 'alamat_domisili_penerima', name: 'alamat_domisili_penerima'},
             {data: 'telepon_penerima', name: 'telepon_penerima'},
