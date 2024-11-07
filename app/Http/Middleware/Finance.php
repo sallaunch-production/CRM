@@ -32,6 +32,7 @@ class Finance
         if (Auth::user()->level == 'finance') {
             return $next($request);
         }
+        abort(404);
 
         if (Auth::user()->level == 'operasional' ) {
             return redirect()->route('operasional');

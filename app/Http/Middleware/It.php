@@ -33,6 +33,8 @@ class It
             return $next($request);
         }
 
+        abort(404);
+
         if (Auth::user()->level == 'operasional' ) {
             return redirect()->route('operasional');
         }

@@ -227,9 +227,9 @@ class ImportExportController extends Controller
         fclose($myfile);
         header('Content-Type: application/octet-stream');
         header('Content-Disposition: attachment');
-         header("Content-Disposition: attachment; filename=G0001.txt");
-            header("Content-Type: application/txt");
-            header("Content-Transfer-Encoding: binary");
+        header("Content-Disposition: attachment; filename=G0001.txt");
+        header("Content-Type: application/txt");
+        header("Content-Transfer-Encoding: binary");
         readfile("G0001.txt");
         exit;
 

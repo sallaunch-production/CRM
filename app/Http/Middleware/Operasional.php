@@ -29,6 +29,10 @@ class Operasional
             return redirect()->route('login');
         }
 
+         // Jika tidak ada level yang sesuai, arahkan ke halaman 404
+       abort(404); 
+
+       
         if (Auth::user()->level == 'operasional') {
             return $next($request);
         }

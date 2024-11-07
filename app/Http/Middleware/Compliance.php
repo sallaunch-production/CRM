@@ -35,22 +35,26 @@ class Compliance
 
         if (Auth::user()->level == 'operasional') {
             return redirect()->route('operasional');
+          
         }
         
         if (Auth::user()->level == 'direktur') {
             return redirect()->route('direktur');
+            
         }
 
         if (Auth::user()->level == 'it') {
-            return redirect()->route('it');
+           return redirect()->route('it');
+           
         }
 
         if (Auth::user()->level == 'finance') {
             return redirect()->route('finance');
+            
         }
 
-
-       
+       // Jika tidak ada level yang sesuai, arahkan ke halaman 404
+       abort(404);  // Mengarahkan ke halaman 404 jika tidak ada kondisi yang cocok
     }
 
         
