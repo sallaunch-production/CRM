@@ -30,13 +30,16 @@ class Operasional
         }
 
          // Jika tidak ada level yang sesuai, arahkan ke halaman 404
-       abort(404); 
+     
 
-       
+
         if (Auth::user()->level == 'operasional') {
             return $next($request);
         }
 
+        abort(404); 
+
+        
         if (Auth::user()->level == 'finance' ) {
             return redirect()->route('finance');
         }
