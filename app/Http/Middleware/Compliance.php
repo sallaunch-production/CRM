@@ -32,6 +32,9 @@ class Compliance
         if (Auth::user()->level == 'compliance') {
             return $next($request);
         }
+        
+        abort(404); 
+
 
         if (Auth::user()->level == 'operasional') {
             return redirect()->route('operasional');
@@ -54,7 +57,7 @@ class Compliance
         }
 
        // Jika tidak ada level yang sesuai, arahkan ke halaman 404
-       abort(404);  // Mengarahkan ke halaman 404 jika tidak ada kondisi yang cocok
+       // Mengarahkan ke halaman 404 jika tidak ada kondisi yang cocok
     }
 
         
