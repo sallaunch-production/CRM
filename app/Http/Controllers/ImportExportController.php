@@ -117,7 +117,8 @@ class ImportExportController extends Controller
 
     public function cetak_laporan_bi_g0001(Request $request)
     {
-        $myfile = fopen("G0001.txt", "w") or die("Unable to open file!");
+        $myfile = fopen(storage_path("app/G0001.txt"), "w") or die("Unable to open file!");
+        // $myfile = fopen("G0001.txt", "w") or die("Unable to open file!");
         $tanggal_dari = $request->tanggal_dari;
         $tanggal_sampai = $request->tanggal_sampai;
         $sampai=explode("-",$tanggal_sampai);
