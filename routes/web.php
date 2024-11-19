@@ -188,6 +188,6 @@ Route::group(['middleware' => ['operasional']], function () {
     Route::get('screening_transaksi_operasional',[App\Http\Controllers\ReportingController::class,'screening_transaksi'])->name('screening_transaksi')->middleware('auth');
     Route::post('cari_screening_transaksi_oprasional',[App\Http\Controllers\ReportingController::class,'cari_screening_transaksi'])->name('cari_screening_transaksi_oprasional')->middleware('auth');
     Route::get('transaction_receive_adisena_operasional',[App\Http\Controllers\ReportingController::class,'transaction_receive_adisena'])->name('transaction_receive_adisena_operasional')->middleware('auth');
-    Route::get('transaction_send_adisena_operasional',[App\Http\Controllers\ReportingController::class,'transaction_send_adisena_compliance'])->name('transaction_send_adisena_operasional')->middleware('auth');
+    Route::get('transaction_send_adisena_operasional',[App\Http\Controllers\ReportingController::class,'transaction_send_adisena'])->name('transaction_send_adisena_operasional')->middleware('auth');
 
 });
