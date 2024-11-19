@@ -129,6 +129,8 @@ Route::post('delete_popimages',[App\Http\Controllers\ReportingController::class,
 Route::post('act_edit_popimage',[App\Http\Controllers\ReportingController::class,'act_edit_popimage'])->name('act_edit_popimage')->middleware('auth');
 Route::post('tambah_sanction',[App\Http\Controllers\CheckingController::class,'tambah_sanction'])->name('tambah_sanction')->middleware('auth');
 Route::post('act_tambah_sanction',[App\Http\Controllers\CheckingController::class,'act_tambah_sanction'])->name('act_tambah_sanction')->middleware('auth');
+Route::get('transaction_receive_adisena_compliance',[App\Http\Controllers\ReportingController::class,'transaction_receive_adisena'])->name('transaction_receive_adisena_compliance')->middleware('auth');
+Route::get('transaction_send_adisena_compliance',[App\Http\Controllers\ReportingController::class,'transaction_send_adisena'])->name('transaction_send_adisena_compliance')->middleware('auth');
 
 });
 
@@ -185,5 +187,7 @@ Route::group(['middleware' => ['operasional']], function () {
     Route::get('transaksi_receive_pos_operasional',[App\Http\Controllers\TransactionalController::class,'transaksi_receive_pos_operasional'])->name('transaksi_receive_pos_operasional')->middleware('auth');
     Route::get('screening_transaksi_operasional',[App\Http\Controllers\ReportingController::class,'screening_transaksi'])->name('screening_transaksi')->middleware('auth');
     Route::post('cari_screening_transaksi_oprasional',[App\Http\Controllers\ReportingController::class,'cari_screening_transaksi'])->name('cari_screening_transaksi_oprasional')->middleware('auth');
-    
+    Route::get('transaction_receive_adisena_operasional',[App\Http\Controllers\ReportingController::class,'transaction_receive_adisena'])->name('transaction_receive_adisena_operasional')->middleware('auth');
+    Route::get('transaction_send_adisena_operasional',[App\Http\Controllers\ReportingController::class,'transaction_send_adisena_compliance'])->name('transaction_send_adisena_operasional')->middleware('auth');
+
 });

@@ -15,6 +15,8 @@ use Yajra\DataTables\Facades\DataTables;
 use App\Models\TransaksiValid;
 use App\Models\Saldo;
 use App\Models\TransaksiSendPos;
+use App\Models\TransaksiReceiveAdisena;
+use App\Models\TransaksiSendAdisena;
 use DB;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
@@ -1156,5 +1158,307 @@ class ReportingController extends Controller
       }
       return redirect('login')->with('You dont have access');
     }
+
+    public function transaction_receive_adisena(Request $request)
+    { 
+        //  cek berhasil login 
+        if(Auth::check()){
+          $qur = DB::table('audit_trail_crm')->insertGetId([
+            'username' => Auth::user()->email,
+            'url' => url()->current(),
+            'action' => "Transaksi Receive Adisena",
+            'tanggal' => Carbon::now()->toDateTimeString(),
+            'ip_address' => $_SERVER['REMOTE_ADDR'],
+            'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+            'created_at' => Carbon::now()->toDateTimeString(),
+            'updated_at' =>Carbon::now()->toDateTimeString(),
+        ]);
+
+
+          if ($request->ajax()) {
+            $query  = TransaksiReceiveAdisena::orderBy('tanggal','desc'); 
+             // Apply search filter
+            if ($searchTerm = $request->input('search.value')) {
+              $searchTerm = trim($searchTerm);
+
+              $query->where(function ($q) use ($searchTerm) {
+                $q->where('nama_penerima', 'like', "%{$searchTerm}%")
+                  ->orWhere('nama_pengirim', 'like', "%{$searchTerm}%")
+                  ->orWhere('negara_pengirim', 'like', "%{$searchTerm}%")
+                  ->orWhere('bsubanyak', 'like', "%{$searchTerm}%")
+                  ->orWhere('no_referensi', 'like', "%{$searchTerm}%")
+                  ->orWhere('identitas', 'like', "%{$searchTerm}%")
+                  ->orWhere('nomor_identitas', 'like', "%{$searchTerm}%")
+                  ->orWhere('tanggal_lahir', 'like', "%{$searchTerm}%")
+                  ->orWhere('alamat_penerima', 'like', "%{$searchTerm}%")
+                  ->orWhere('telepon_penerima', 'like', "%{$searchTerm}%")
+                  ->orWhere('kota_penerima', 'like', "%{$searchTerm}%")
+                  ->orWhere('pekerjaan', 'like', "%{$searchTerm}%")
+                  ->orWhere('tujuan_penggunaan_dana', 'like', "%{$searchTerm}%")
+                  ->orWhere('id_pos', 'like', "%{$searchTerm}%")
+                  ->orWhere('tanggal', 'like', "%{$searchTerm}%")
+                  ->orWhere('deltawork', 'like', "%{$searchTerm}%")
+                  ->orWhere('deltawork708', 'like', "%{$searchTerm}%")
+                  ->orWhere('provinsi', 'like', "%{$searchTerm}%")
+                  ->orWhere('mgisession', 'like', "%{$searchTerm}%")
+                  ->orWhere('sumber_dana', 'like', "%{$searchTerm}%")
+                  ->orWhere('tempat_lahir', 'like', "%{$searchTerm}%")
+                  ->orWhere('kode_pos', 'like', "%{$searchTerm}%")
+                  ->orWhere('jenis_kelamin', 'like', "%{$searchTerm}%")
+                  ->orWhere('amount', 'like', "%{$searchTerm}%")
+                  ->orWhere('pesan', 'like', "%{$searchTerm}%")
+                  ->orWhere('timestamp', 'like', "%{$searchTerm}%")
+                  ->orWhere('negara_penerima', 'like', "%{$searchTerm}%")
+                  ->orWhere('photoidcountry', 'like', "%{$searchTerm}%")
+                  ->orWhere('photoidstate', 'like', "%{$searchTerm}%")
+                  ->orWhere('arsema_validation', 'like', "%{$searchTerm}%")
+                  ->orWhere('status_cta', 'like', "%{$searchTerm}%")
+                  ->orWhere('receive_amount', 'like', "%{$searchTerm}%")
+                  ->orWhere('currency', 'like', "%{$searchTerm}%")
+                  ->orWhere('foto_id', 'like', "%{$searchTerm}%")
+                  ->orWhere('telpon_pengirim', 'like', "%{$searchTerm}%")
+                  ->orWhere('tanggal_transaksi', 'like', "%{$searchTerm}%")
+                  ->orWhere('sigue', 'like', "%{$searchTerm}%")
+                  ->orWhere('alamat_pengirim', 'like', "%{$searchTerm}%")
+                  ->orWhere('kota_pengirim', 'like', "%{$searchTerm}%")
+                  ->orWhere('provinsi_pengirim', 'like', "%{$searchTerm}%")
+                  ->orWhere('kode_pos_pengirim', 'like', "%{$searchTerm}%")
+                  ->orWhere('opt_display', 'like', "%{$searchTerm}%")
+                  ->orWhere('payout_currency', 'like', "%{$searchTerm}%")
+                  ->orWhere('receive_agent_abb', 'like', "%{$searchTerm}%")
+                  ->orWhere('receive_fee', 'like', "%{$searchTerm}%")
+                  ->orWhere('receive_tax', 'like', "%{$searchTerm}%")
+                  ->orWhere('total_receive_amount', 'like', "%{$searchTerm}%")
+                  ->orWhere('exchange_rate', 'like', "%{$searchTerm}%")
+                  ->orWhere('sending_fee', 'like', "%{$searchTerm}%")
+                  ->orWhere('kode_promosi', 'like', "%{$searchTerm}%")
+                  ->orWhere('consumer_text', 'like', "%{$searchTerm}%")
+                  ->orWhere('expected_date', 'like', "%{$searchTerm}%")
+                  ->orWhere('disclosure_text', 'like', "%{$searchTerm}%")
+                  ->orWhere('dial', 'like', "%{$searchTerm}%")
+                  ->orWhere('pin', 'like', "%{$searchTerm}%")
+                  ->orWhere('receive_abb_name', 'like', "%{$searchTerm}%")
+                  ->orWhere('alamat_domisili_pengirim', 'like', "%{$searchTerm}%")
+                  ->orWhere('kota_domisili_pengirim', 'like', "%{$searchTerm}%")
+                  ->orWhere('kode_pos_domisili_pengirim', 'like', "%{$searchTerm}%")
+                  ->orWhere('provinsi_domisili_pengirim', 'like', "%{$searchTerm}%")
+                  ->orWhere('negara_domisili_pengirim', 'like', "%{$searchTerm}%")
+                  ->orWhere('account_id', 'like', "%{$searchTerm}%")
+                  ->orWhere('total_collect_amount', 'like', "%{$searchTerm}%")
+                  ->orWhere('kota_lahir_pengirim', 'like', "%{$searchTerm}%")
+                  ->orWhere('hubungan_pengirim', 'like', "%{$searchTerm}%")
+                  ->orWhere('created_at', 'like', "%{$searchTerm}%")
+                  ->orWhere('updated_at', 'like', "%{$searchTerm}%")
+                  ->orWhere('corporate', 'like', "%{$searchTerm}%")
+                  ->orWhere('field_values', 'like', "%{$searchTerm}%")
+                  ->orWhere('agent_id', 'like', "%{$searchTerm}%")
+                  ->orWhere('maker', 'like', "%{$searchTerm}%")
+                  ->orWhere('approver', 'like', "%{$searchTerm}%");
+             });
+            }
+
+            $recordsTotal = TransaksiReceiveAdisena::count();
+            $recordsFiltered = $query->count(); // Total records after filtering  
+            
+            // Apply pagination
+            $data = $query->offset($request->input('start'))
+                      ->limit($request->input('length'))
+                      ->get();
+                   
+                      
+             // Transform data to include DT_RowIndex
+              $data = $data->map(function($item, $index) {
+                $item->DT_RowIndex = $index + 1; // Add DT_RowIndex based on position
+                return $item;
+            });
+
+            return response()->json([
+                          'draw' => (int) $request->input('draw'),
+                          'recordsTotal' => $recordsTotal,
+                          'recordsFiltered' => $recordsFiltered,
+                          'data' => $data
+                      ]);
+            }
+          return view('reporting.transaksi-adisena');
+        }
+
+        return redirect('login')->with('You dont have access');
+      }
+
+
+      public function transaction_send_adisena(Request $request)
+      { 
+        //  cek berhasil login 
+        if(Auth::check()){
+          $qur = DB::table('audit_trail_crm')->insertGetId([
+            'username' => Auth::user()->email,
+            'url' => url()->current(),
+            'action' => "Transaksi Send Adisena",
+            'tanggal' => Carbon::now()->toDateTimeString(),
+            'ip_address' => $_SERVER['REMOTE_ADDR'],
+            'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+            'created_at' => Carbon::now()->toDateTimeString(),
+            'updated_at' =>Carbon::now()->toDateTimeString(),
+        ]);
+        if ($request->ajax()) {
+          $query = TransaksiSendAdisena::orderBy('tanggal','desc'); 
+          if ($searchTerm = $request->input('search.value')) {
+            $searchTerm = trim($searchTerm);
+            $query->where(function ($q) use ($searchTerm) {
+              $q->where('no_referensi', 'like', "%{$searchTerm}%")
+                ->orWhere('negara_penerima', 'like', "%{$searchTerm}%")
+                ->orWhere('amount', 'like', "%{$searchTerm}%")
+                ->orWhere('nama_penerima', 'like', "%{$searchTerm}%")
+                ->orWhere('nama_pengirim', 'like', "%{$searchTerm}%")
+                ->orWhere('identitas', 'like', "%{$searchTerm}%")
+                ->orWhere('nomor_identitas', 'like', "%{$searchTerm}%")
+                ->orWhere('tanggal_lahir', 'like', "%{$searchTerm}%")
+                ->orWhere('alamat_penerima', 'like', "%{$searchTerm}%")
+                ->orWhere('telepon_penerima', 'like', "%{$searchTerm}%")
+                ->orWhere('kota_penerima', 'like', "%{$searchTerm}%")
+                ->orWhere('pekerjaan', 'like', "%{$searchTerm}%")
+                ->orWhere('tujuan_penggunaan_dana', 'like', "%{$searchTerm}%")
+                ->orWhere('id_pos', 'like', "%{$searchTerm}%")
+                ->orWhere('tanggal', 'like', "%{$searchTerm}%")
+                ->orWhere('deltawork', 'like', "%{$searchTerm}%")
+                ->orWhere('provinsi', 'like', "%{$searchTerm}%")
+                ->orWhere('sumber_dana', 'like', "%{$searchTerm}%")
+                ->orWhere('tempat_lahir', 'like', "%{$searchTerm}%")
+                ->orWhere('kode_pos', 'like', "%{$searchTerm}%")
+                ->orWhere('jenis_kelamin', 'like', "%{$searchTerm}%")
+                ->orWhere('pesan', 'like', "%{$searchTerm}%")
+                ->orWhere('timestamp', 'like', "%{$searchTerm}%")
+                ->orWhere('negara_pengirim', 'like', "%{$searchTerm}%")
+                ->orWhere('photoidcountry', 'like', "%{$searchTerm}%")
+                ->orWhere('photoidstate', 'like', "%{$searchTerm}%")
+                ->orWhere('arsema_validation', 'like', "%{$searchTerm}%")
+                ->orWhere('status_cta', 'like', "%{$searchTerm}%")
+                ->orWhere('bank', 'like', "%{$searchTerm}%")
+                ->orWhere('bankaccount', 'like', "%{$searchTerm}%")
+                ->orWhere('tanggal_transaksi', 'like', "%{$searchTerm}%")
+                ->orWhere('kewarganegaraan', 'like', "%{$searchTerm}%")
+                ->orWhere('kota_kelahiran', 'like', "%{$searchTerm}%")
+                ->orWhere('kode_pos_penerima', 'like', "%{$searchTerm}%")
+                ->orWhere('hubungan', 'like', "%{$searchTerm}%")
+                ->orWhere('negara_lahir', 'like', "%{$searchTerm}%")
+                ->orWhere('receiverIntendedUseOfMGIServices', 'like', "%{$searchTerm}%")
+                ->orWhere('alamat_domisili_pengirim', 'like', "%{$searchTerm}%")
+                ->orWhere('kota_domisili_pengirim', 'like', "%{$searchTerm}%")
+                ->orWhere('kode_pos_domisili_pengirim', 'like', "%{$searchTerm}%")
+                ->orWhere('provinsi_domisili_pengirim', 'like', "%{$searchTerm}%")
+                ->orWhere('negara_domisili_pengirim', 'like', "%{$searchTerm}%")
+                ->orWhere('corporate', 'like', "%{$searchTerm}%")
+                ->orWhere('maker', 'like', "%{$searchTerm}%")
+                ->orWhere('approver', 'like', "%{$searchTerm}%")
+                ->orWhere('agent_id', 'like', "%{$searchTerm}%");
+              });
+        }
+        $recordsTotal = TransaksiSendAdisena::count();
+        $recordsFiltered = $query->count(); // Total records after filtering  
+        
+        // Apply pagination
+      $data = $query->offset($request->input('start'))
+                ->limit($request->input('length'))
+                ->get();
+
+         // Transform data to include DT_RowIndex
+      $data = $data->map(function($item, $index) {
+         $item->DT_RowIndex = $index + 1; // Add DT_RowIndex based on position
+          return $item;
+      });   
+
+        return response()->json([
+          'draw' => (int) $request->input('draw'),
+          'recordsTotal' => $recordsTotal,
+          'recordsFiltered' => $recordsFiltered,
+          'data' => $data
+      ]);
+       }
+    
+       if ($request->ajax()) {
+        $query  = TransaksiSendAdisena::orderBy('tanggal','desc'); 
+         // Apply search filter
+        if ($searchTerm = $request->input('search.value')) {
+          $searchTerm = trim($searchTerm);
+
+          $query->where(function ($q) use ($searchTerm) {
+            $q->where('no_referensi', 'like', "%{$searchTerm}%")
+            ->orWhere('negara_penerima', 'like', "%{$searchTerm}%")
+            ->orWhere('amount', 'like', "%{$searchTerm}%")
+            ->orWhere('nama_penerima', 'like', "%{$searchTerm}%")
+            ->orWhere('nama_pengirim', 'like', "%{$searchTerm}%")
+            ->orWhere('identitas', 'like', "%{$searchTerm}%")
+            ->orWhere('nomor_identitas', 'like', "%{$searchTerm}%")
+            ->orWhere('tanggal_lahir', 'like', "%{$searchTerm}%")
+            ->orWhere('alamat_penerima', 'like', "%{$searchTerm}%")
+            ->orWhere('telepon_penerima', 'like', "%{$searchTerm}%")
+            ->orWhere('kota_penerima', 'like', "%{$searchTerm}%")
+            ->orWhere('pekerjaan', 'like', "%{$searchTerm}%")
+            ->orWhere('tujuan_penggunaan_dana', 'like', "%{$searchTerm}%")
+            ->orWhere('id_pos', 'like', "%{$searchTerm}%")
+            ->orWhere('tanggal', 'like', "%{$searchTerm}%")
+            ->orWhere('deltawork', 'like', "%{$searchTerm}%")
+            ->orWhere('provinsi', 'like', "%{$searchTerm}%")
+            ->orWhere('sumber_dana', 'like', "%{$searchTerm}%")
+            ->orWhere('tempat_lahir', 'like', "%{$searchTerm}%")
+            ->orWhere('kode_pos', 'like', "%{$searchTerm}%")
+            ->orWhere('jenis_kelamin', 'like', "%{$searchTerm}%")
+            ->orWhere('pesan', 'like', "%{$searchTerm}%")
+            ->orWhere('timestamp', 'like', "%{$searchTerm}%")
+            ->orWhere('negara_pengirim', 'like', "%{$searchTerm}%")
+            ->orWhere('photoidcountry', 'like', "%{$searchTerm}%")
+            ->orWhere('photoidstate', 'like', "%{$searchTerm}%")
+            ->orWhere('arsema_validation', 'like', "%{$searchTerm}%")
+            ->orWhere('status_cta', 'like', "%{$searchTerm}%")
+            ->orWhere('bank', 'like', "%{$searchTerm}%")
+            ->orWhere('bankaccount', 'like', "%{$searchTerm}%")
+            ->orWhere('tanggal_transaksi', 'like', "%{$searchTerm}%")
+            ->orWhere('kewarganegaraan', 'like', "%{$searchTerm}%")
+            ->orWhere('kota_kelahiran', 'like', "%{$searchTerm}%")
+            ->orWhere('kode_pos_penerima', 'like', "%{$searchTerm}%")
+            ->orWhere('hubungan', 'like', "%{$searchTerm}%")
+            ->orWhere('negara_lahir', 'like', "%{$searchTerm}%")
+            ->orWhere('receiverIntendedUseOfMGIServices', 'like', "%{$searchTerm}%")
+            ->orWhere('alamat_domisili_pengirim', 'like', "%{$searchTerm}%")
+            ->orWhere('kota_domisili_pengirim', 'like', "%{$searchTerm}%")
+            ->orWhere('kode_pos_domisili_pengirim', 'like', "%{$searchTerm}%")
+            ->orWhere('provinsi_domisili_pengirim', 'like', "%{$searchTerm}%")
+            ->orWhere('negara_domisili_pengirim', 'like', "%{$searchTerm}%")
+            ->orWhere('corporate', 'like', "%{$searchTerm}%")
+            ->orWhere('maker', 'like', "%{$searchTerm}%")
+            ->orWhere('approver', 'like', "%{$searchTerm}%")
+            ->orWhere('agent_id', 'like', "%{$searchTerm}%");
+          });
+        }
+
+        $recordsTotal = TransaksiSendAdisena::count();
+        $recordsFiltered = $query->count(); // Total records after filtering  
+        
+        // Apply pagination
+        $data = $query->offset($request->input('start'))
+                  ->limit($request->input('length'))
+                  ->get();
+               
+                  
+         // Transform data to include DT_RowIndex
+          $data = $data->map(function($item, $index) {
+            $item->DT_RowIndex = $index + 1; // Add DT_RowIndex based on position
+            return $item;
+        });
+        
+        return response()->json([
+                      'draw' => (int) $request->input('draw'),
+                      'recordsTotal' => $recordsTotal,
+                      'recordsFiltered' => $recordsFiltered,
+                      'data' => $data
+                  ]);
+        }
+               return view('reporting.transaksi_send_adisena');
+            
+
+        }
+
+        return redirect('login')->with('You dont have access');
+      }
     
 }

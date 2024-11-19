@@ -364,6 +364,44 @@ return [
             'icon' => 'fa fa-book fa-fw',
         ],
         [
+            'text'    => 'Transaksi Adisena',
+            'icon'    => 'fas fa-fw fa-clipboard',
+            'submenu' => [
+                [
+                    'text' => 'Transaksi Receive',
+                    'url'  => 'transaction_receive_adisena_compliance',
+                    'shift'   => 'ml-3',
+                    'can'  => ['compliance-only'],
+                    'icon'    => 'fas fa-fw fa-clipboard',
+                    
+                ],
+                [
+                    'text' => 'Transaksi Receive',
+                    'url'  => 'transaction_receive_adisena_operasional',
+                    'shift'   => 'ml-3',
+                    'can'  => ['operasional-only'],
+                    'icon'    => 'fas fa-fw fa-clipboard',
+                    
+                ],
+                [
+                    'text' => 'Transaksi Send',
+                    'url'  => 'transaction_send_adisena_compliance',
+                    'shift'   => 'ml-3', 
+                    'can'  => ['compliance-only'],
+                    'icon'    => 'fas fa-fw fa-clipboard',
+                    
+                ],
+                [
+                    'text' => 'Transaksi Send',
+                    'url'  => 'transaction_send_adisena_operasional',
+                    'shift'   => 'ml-3', 
+                    'can'  => ['operasional-only'],
+                    'icon'    => 'fas fa-fw fa-clipboard',
+                    
+                ]
+                ]
+        ],
+        [
             'text'    => 'Customer Profile',
             'icon'    => 'fas fa-fw fa-clipboard',
             'can'  => ['compliance-only'],
