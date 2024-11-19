@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class TransaksiReceiveAdisena extends Model
 {
     use HasFactory;
-    protected $table = "transaksi_send_clients";
+    protected $table = "transaksi_receive_clients";
 
     protected $fillable = [
         'no', 'id_transaksi', 'bsubanyak', 'nama_pengirim', 'nama_penerima', 'negara_pengirim', 'no_referensi', 'identitas',
