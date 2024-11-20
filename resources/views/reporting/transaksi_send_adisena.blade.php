@@ -54,6 +54,9 @@
                                     <th>Tujuan Penggunaan Dana</th>
                                     <th>Kota Kelahiran</th>
                                     <th>Jenis Kelamin</th>
+                                    <th>Agent ID</th>
+                                    <th>Maker</th>
+                                    <th>Approver</th>
                                     <th>Tanggal</th>  
                                   </tr>
                                 </thead>
@@ -109,6 +112,9 @@
             {data: 'tujuan_penggunaan_dana', name: 'tujuan_penggunaan_dana'},
             {data: 'kota_lahir_pengirim', name: 'kota_lahir_pengirim'},
             {data: 'jenis_kelamin', name: 'jenis_kelamin'},
+            {data: 'agent_id', name: 'agent_id'},
+            {data: 'maker', name: 'maker'},
+            {data: 'approver', name: 'approver'},
             {data: 'tanggal', name: 'tanggal'},
            
         ]

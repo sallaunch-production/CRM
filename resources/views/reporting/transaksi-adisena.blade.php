@@ -49,6 +49,9 @@
                                   <th>Jenis Kelamin</th>
                                   <th>Kota Kelahiran</th>
                                   <th>Id Pos</th>
+                                  <th>Agent ID</th>
+                                  <th>Maker</th>
+                                  <th>Approver</th>
                                   <th>Tanggal</th>
                                   </tr>
                                 </thead>
@@ -101,6 +104,9 @@
             {data: 'jenis_kelamin', name: 'jenis_kelamin'},
             {data: 'kota_kelahiran', name: 'kota_kelahiran'},
             {data: 'id_pos', name: 'id_pos'},
+            {data: 'agent_id', name: 'agent_id'},
+            {data: 'maker', name: 'maker'},
+            {data: 'approver', name: 'approver'},
             {data: 'tanggal', name: 'tanggal'},
            
         ],

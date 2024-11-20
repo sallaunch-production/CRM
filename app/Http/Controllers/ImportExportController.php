@@ -241,7 +241,8 @@ class ImportExportController extends Controller
     {
         //$keyAscii = "def0000078382b6b8d734e1d5063147d1ed67005073467204ec578c67006b9c9c5ee7b4df0f44723c45880dff8108a8eb119109ad334723ecc260b2f6a4373b8e192b558";
         //$key = Key::loadFromAsciiSafeString($keyAscii);
-        $myfile = fopen("G0002.txt", "w") or die("Unable to open file!");
+        $myfile = fopen(storage_path("app/G0002.txt"), "w") or die("Unable to open file!");
+        //$myfile = fopen("G0002.txt", "w") or die("Unable to open file!");
         $tanggal_dari = $request->tanggal_dari;
         $tanggal_sampai = $request->tanggal_sampai;
         $sampai=explode("-",$tanggal_sampai);
@@ -419,8 +420,8 @@ class ImportExportController extends Controller
 
     public function cetak_laporan_bi_g0003(Request $request)
     {
-
-        $myfile = fopen("G0003.txt", "w") or die("Unable to open file!");
+        $myfile = fopen(storage_path("app/G0003.txt"), "w") or die("Unable to open file!");
+        //$myfile = fopen("G0003.txt", "w") or die("Unable to open file!");
         $tanggal_dari = $request->tanggal_dari;
         $tanggal_sampai = $request->tanggal_sampai;
         $sampai=explode("-",$tanggal_sampai);
