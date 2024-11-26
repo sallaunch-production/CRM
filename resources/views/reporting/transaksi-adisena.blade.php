@@ -204,7 +204,7 @@
           render: function(data, type, row) {
               // Ganti string "ARTHAPOS" dengan "branch"
               if (data) {
-                  return data.replace('ARTHAPOS', 'branch');
+                  return data.replace('ARTHAPOS', 'BRANCH');
               }
               return '-';  // Jika data kosong, tampilkan '-'
           }
@@ -355,7 +355,7 @@
           render: function(data, type, row) {
               // Ganti string "ARTHAPOS" dengan "branch"
               if (data) {
-                  return data.replace('ARTHAPOS', 'branch');
+                  return data.replace('ARTHAPOS', 'BRANCH');
               }
               return '-';  // Jika data kosong, tampilkan '-'
           }

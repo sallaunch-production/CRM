@@ -1265,7 +1265,14 @@ class ReportingController extends Controller
             'updated_at' =>Carbon::now()->toDateTimeString(),
         ]);
         if ($request->ajax()) {
-          $query = TransaksiSendAdisena::orderBy('tanggal','desc'); 
+          $query = DB::table('transaksi_send_clients')
+          // Gunakan JOIN berdasarkan agent_id yang ada di kedua tabel
+                        ->leftJoin('agent_id', 'transaksi_send_clients.agent_id', '=', 'agent_id.agent_id')
+                        ->select(
+                            'transaksi_send_clients.*',  // Ambil semua kolom dari transaksi_receive_clients
+                            'agent_id.nama as agent_nama'  // Ambil kolom 'nama' dari tabel agent_id dan beri alias 'agent_nama'
+                        )
+                        ->orderBy('transaksi_send_clients.tanggal', 'desc');
           if ($searchTerm = $request->input('search.value')) {
             $searchTerm = trim($searchTerm);
             $query->where(function ($q) use ($searchTerm) {
@@ -1296,7 +1303,8 @@ class ReportingController extends Controller
                 ->orWhere('maker', 'like', "%{$searchTerm}%")
                 ->orWhere('approver', 'like', "%{$searchTerm}%")
                 ->orWhere('agent_id', 'like', "%{$searchTerm}%");
-              });
+              })
+              ->orWhere('agent_id.nama', 'like', "%{$searchTerm}%");
         }
         $recordsTotal = TransaksiSendAdisena::count();
         $recordsFiltered = $query->count(); // Total records after filtering  
@@ -1321,7 +1329,14 @@ class ReportingController extends Controller
        }
     
        if ($request->ajax()) {
-        $query  = TransaksiSendAdisena::orderBy('tanggal','desc'); 
+        $query = DB::table('transaksi_send_clients')
+          // Gunakan JOIN berdasarkan agent_id yang ada di kedua tabel
+                        ->leftJoin('agent_id', 'transaksi_send_clients.agent_id', '=', 'agent_id.agent_id')
+                        ->select(
+                            'transaksi_send_clients.*',  // Ambil semua kolom dari transaksi_receive_clients
+                            'agent_id.nama as agent_nama'  // Ambil kolom 'nama' dari tabel agent_id dan beri alias 'agent_nama'
+                        )
+                        ->orderBy('transaksi_send_clients.tanggal', 'desc');
          // Apply search filter
         if ($searchTerm = $request->input('search.value')) {
           $searchTerm = trim($searchTerm);
@@ -1354,7 +1369,8 @@ class ReportingController extends Controller
             ->orWhere('maker', 'like', "%{$searchTerm}%")
             ->orWhere('approver', 'like', "%{$searchTerm}%")
             ->orWhere('agent_id', 'like', "%{$searchTerm}%");
-          });
+          })
+          ->orWhere('agent_id.nama', 'like', "%{$searchTerm}%");
         }
 
         $recordsTotal = TransaksiSendAdisena::count();

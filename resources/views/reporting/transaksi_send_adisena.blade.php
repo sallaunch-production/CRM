@@ -227,11 +227,15 @@
             }
         },
         {
-            data: 'agent_id', 
-            name: 'agent_id',
-            render: function(data, type, row) {
-                return data ? data : '-';
-            }
+          data: 'agent_nama',  // Pastikan ini sesuai dengan alias 'agent_nama' dari server
+          name: 'agent_nama',
+          render: function(data, type, row) {
+              // Ganti string "ARTHAPOS" dengan "branch"
+              if (data) {
+                  return data.replace('ARTHAPOS', 'BRANCH');
+              }
+              return '-';  // Jika data kosong, tampilkan '-'
+          }
         },
         {data: 'maker', name: 'maker'},
         {data: 'approver', name: 'approver'},
@@ -395,11 +399,15 @@
             }
         },
         {
-            data: 'agent_id', 
-            name: 'agent_id',
-            render: function(data, type, row) {
-                return data ? data : '-';
-            }
+          data: 'agent_nama',  // Pastikan ini sesuai dengan alias 'agent_nama' dari server
+          name: 'agent_nama',
+          render: function(data, type, row) {
+              // Ganti string "ARTHAPOS" dengan "branch"
+              if (data) {
+                  return data.replace('ARTHAPOS', 'BRANCH');
+              }
+              return '-';  // Jika data kosong, tampilkan '-'
+          }
         },
         {data: 'maker', name: 'maker'},
         {data: 'approver', name: 'approver'},
