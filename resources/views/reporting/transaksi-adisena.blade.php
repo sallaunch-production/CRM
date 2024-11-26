@@ -346,7 +346,7 @@
       
         // Kolom untuk data yang ada di relasi AgentID
         {
-            data: 'agent_nama',  // Akses data 'nama' dari relasi agent_id
+            data: 'agent_nama',  // Ini adalah alias yang kita pilih di query join
             name: 'agent_nama',
             render: function(data, type, row) {
                 return data ? data : '-';  // Jika data kosong, tampilkan '-'
