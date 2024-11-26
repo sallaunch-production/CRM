@@ -87,40 +87,155 @@
                  type: 'GET'
             },
         columns: [
-            {data: 'DT_RowIndex', name: 'DT_RowIndex'},
-            {data: 'no_referensi', name: 'no_referensi'},
-            {data: 'negara_penerima', name: 'negara_penerima'},
-            {data: 'amount', name: 'amount', render: $.fn.dataTable.render.number(',', '.',  '')},
-            {data: 'sending_fee', name: 'sending_fee', render: $.fn.dataTable.render.number(',', '.', '')},
-            {data: 'total_collect_amount', name: 'total_collect_amount', render: $.fn.dataTable.render.number(',', '.', '')},
-            {data: 'nama_penerima', name: 'nama_penerima'},
-            {data: 'nama_pengirim', name: 'nama_pengirim'},
-            {data: 'identitas', name: 'identitas'},
-            {data: 'nomor_identitas', name: 'nomor_identitas'},
-            {data: 'tanggal_lahir', name: 'tanggal_lahir'},
-            {data: 'kota_lahir_pengirim', name: 'kota_lahir_pengirim'},
-            {data: 'alamat_penerima', name: 'alamat_penerima'},
-            {data: 'telepon_penerima', name: 'telepon_penerima'},
-            {data: 'telpon_pengirim', name: 'telpon_pengirim'},
-            {data: 'kota_penerima', name: 'kota_penerima',
-              render: function(data, type, row) {
-                  // Jika data kosong, tampilkan tanda "-"
-                  return data ? data : '-';
-              }
+          {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+        {data: 'no_referensi', name: 'no_referensi'},
+        {data: 'negara_penerima', name: 'negara_penerima'},
+        {data: 'amount', name: 'amount', render: $.fn.dataTable.render.number(',', '.',  '')},
+        {data: 'sending_fee', name: 'sending_fee', render: $.fn.dataTable.render.number(',', '.', '')},
+        {data: 'total_collect_amount', name: 'total_collect_amount', render: $.fn.dataTable.render.number(',', '.', '')},
+        {
+            data: 'nama_penerima', 
+            name: 'nama_penerima',
+            render: function(data, type, row) {
+                return data ? data : '-';
             }
-            {data: 'pekerjaan', name: 'pekerjaan'},
-            {data: 'alamat_pengirim', name: 'alamat_pengirim'},
-            {data: 'alamat_domisili_pengirim', name: 'alamat_domisili_pengirim'},
-            {data: 'opt_display', name: 'opt_display'},
-            {data: 'hubungan_pengirim', name: 'hubungan_pengirim'},
-            {data: 'negara_domisili_pengirim', name: 'negara_domisili_pengirim'},
-            {data: 'tujuan_penggunaan_dana', name: 'tujuan_penggunaan_dana'},
-            {data: 'kota_lahir_pengirim', name: 'kota_lahir_pengirim'},
-            {data: 'jenis_kelamin', name: 'jenis_kelamin'},
-            {data: 'agent_id', name: 'agent_id'},
-            {data: 'maker', name: 'maker'},
-            {data: 'approver', name: 'approver'},
-            {data: 'tanggal', name: 'tanggal'},
+        },
+        {
+            data: 'nama_pengirim', 
+            name: 'nama_pengirim',
+            render: function(data, type, row) {
+                return data ? data : '-';
+            }
+        },
+        {
+            data: 'identitas', 
+            name: 'identitas',
+            render: function(data, type, row) {
+                return data ? data : '-';
+            }
+        },
+        {
+            data: 'nomor_identitas', 
+            name: 'nomor_identitas',
+            render: function(data, type, row) {
+                return data ? data : '-';
+            }
+        },
+        {
+            data: 'tanggal_lahir', 
+            name: 'tanggal_lahir',
+            render: function(data, type, row) {
+                return data ? data : '-';
+            }
+        },
+        {
+            data: 'kota_lahir_pengirim', 
+            name: 'kota_lahir_pengirim',
+            render: function(data, type, row) {
+                return data ? data : '-';
+            }
+        },
+        {
+            data: 'alamat_penerima', 
+            name: 'alamat_penerima',
+            render: function(data, type, row) {
+                return data ? data : '-';
+            }
+        },
+        {
+            data: 'telepon_penerima', 
+            name: 'telepon_penerima',
+            render: function(data, type, row) {
+                return data ? data : '-';
+            }
+        },
+        {
+            data: 'telpon_pengirim', 
+            name: 'telpon_pengirim',
+            render: function(data, type, row) {
+                return data ? data : '-';
+            }
+        },
+        {
+            data: 'kota_penerima', 
+            name: 'kota_penerima',
+            render: function(data, type, row) {
+                return data ? data : '-';
+            }
+        },
+        {
+            data: 'pekerjaan', 
+            name: 'pekerjaan',
+            render: function(data, type, row) {
+                return data ? data : '-';
+            }
+        },
+        {
+            data: 'alamat_pengirim', 
+            name: 'alamat_pengirim',
+            render: function(data, type, row) {
+                return data ? data : '-';
+            }
+        },
+        {
+            data: 'alamat_domisili_pengirim', 
+            name: 'alamat_domisili_pengirim',
+            render: function(data, type, row) {
+                return data ? data : '-';
+            }
+        },
+        {
+            data: 'opt_display', 
+            name: 'opt_display',
+            render: function(data, type, row) {
+                return data ? data : '-';
+            }
+        },
+        {
+            data: 'hubungan_pengirim', 
+            name: 'hubungan_pengirim',
+            render: function(data, type, row) {
+                return data ? data : '-';
+            }
+        },
+        {
+            data: 'negara_domisili_pengirim', 
+            name: 'negara_domisili_pengirim',
+            render: function(data, type, row) {
+                return data ? data : '-';
+            }
+        },
+        {
+            data: 'tujuan_penggunaan_dana', 
+            name: 'tujuan_penggunaan_dana',
+            render: function(data, type, row) {
+                return data ? data : '-';
+            }
+        },
+        {
+            data: 'kota_lahir_pengirim', 
+            name: 'kota_lahir_pengirim',
+            render: function(data, type, row) {
+                return data ? data : '-';
+            }
+        },
+        {
+            data: 'jenis_kelamin', 
+            name: 'jenis_kelamin',
+            render: function(data, type, row) {
+                return data ? data : '-';
+            }
+        },
+        {
+            data: 'agent_id', 
+            name: 'agent_id',
+            render: function(data, type, row) {
+                return data ? data : '-';
+            }
+        },
+        {data: 'maker', name: 'maker'},
+        {data: 'approver', name: 'approver'},
+        {data: 'tanggal', name: 'tanggal'}
            
         ]
     });
