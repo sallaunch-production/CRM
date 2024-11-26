@@ -48,7 +48,6 @@
                                   <th>Kewarganegaraan</th>
                                   <th>Jenis Kelamin</th>
                                   <th>Kota Kelahiran</th>
-                                  <th>Id Pos</th>
                                   <th>Agent ID</th>
                                   <th>Maker</th>
                                   <th>Approver</th>
@@ -197,13 +196,7 @@
                 return data ? data : '-';
             }
         },
-        {
-            data: 'id_pos', 
-            name: 'id_pos',
-            render: function(data, type, row) {
-                return data ? data : '-';
-            }
-        },
+       
         // Kolom untuk data yang ada di relasi AgentID
         {
             data: 'agent.nama', // Mengakses kolom 'nama' dari relasi AgentID
@@ -350,13 +343,7 @@
                 return data ? data : '-';
             }
         },
-        {
-            data: 'id_pos', 
-            name: 'id_pos',
-            render: function(data, type, row) {
-                return data ? data : '-';
-            }
-        },
+      
         // Kolom untuk data yang ada di relasi AgentID
         {
             data: 'agent.nama', // Mengakses kolom 'nama' dari relasi AgentID
