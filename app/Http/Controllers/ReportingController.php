@@ -1159,6 +1159,9 @@ class ReportingController extends Controller
       return redirect('login')->with('You dont have access');
     }
 
+
+
+
     public function transaction_receive_adisena(Request $request)
     { 
         //  cek berhasil login 
@@ -1176,7 +1179,7 @@ class ReportingController extends Controller
 
 
           if ($request->ajax()) {
-            $query  = TransaksiReceiveAdisena::orderBy('tanggal','desc'); 
+            $query  = TransaksiReceiveAdisena::with('agent')->orderBy('tanggal','desc'); 
              // Apply search filter
             if ($searchTerm = $request->input('search.value')) {
               $searchTerm = trim($searchTerm);
@@ -1235,6 +1238,8 @@ class ReportingController extends Controller
 
         return redirect('login')->with('You dont have access');
       }
+
+
 
 
       public function transaction_send_adisena(Request $request)

@@ -204,11 +204,12 @@
                 return data ? data : '-';
             }
         },
+        // Kolom untuk data yang ada di relasi AgentID
         {
-            data: 'agent_id', 
-            name: 'agent_id',
+            data: 'agent.nama', // Mengakses kolom 'nama' dari relasi AgentID
+            name: 'agent.nama',
             render: function(data, type, row) {
-                return data ? data : '-';
+                return data ? data : '-';  // Jika data kosong, tampilkan '-'
             }
         },
         {data: 'maker', name: 'maker'},
@@ -356,11 +357,12 @@
                 return data ? data : '-';
             }
         },
+        // Kolom untuk data yang ada di relasi AgentID
         {
-            data: 'agent_id', 
-            name: 'agent_id',
+            data: 'agent.nama', // Mengakses kolom 'nama' dari relasi AgentID
+            name: 'agent.nama',
             render: function(data, type, row) {
-                return data ? data : '-';
+                return data ? data : '-';  // Jika data kosong, tampilkan '-'
             }
         },
         {data: 'maker', name: 'maker'},

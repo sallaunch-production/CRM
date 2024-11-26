@@ -20,6 +20,9 @@ class TransaksiReceiveAdisena extends Model
         'provinsi_domisili_penerima', 'negara_domisili_penerima', 'corporate', 'created_at', 'updated_at', 'maker', 'approver', 'agent_id'
     ];
     
-    
+    public function agent()
+    {
+        return $this->belongsTo(AgentId::class, 'agent_id');
+    }
 
 }
