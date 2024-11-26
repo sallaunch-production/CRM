@@ -199,11 +199,15 @@
        
          // Kolom untuk data yang ada di relasi AgentID
          {
-            data: 'agent_nama',  // Ini adalah alias yang kita pilih di query join
-            name: 'agent_nama',
-            render: function(data, type, row) {
-                return data ? data : '-';  // Jika data kosong, tampilkan '-'
-            }
+          data: 'agent_nama',  // Pastikan ini sesuai dengan alias 'agent_nama' dari server
+          name: 'agent_nama',
+          render: function(data, type, row) {
+              // Ganti string "ARTHAPOS" dengan "branch"
+              if (data) {
+                  return data.replace('ARTHAPOS', 'branch');
+              }
+              return '-';  // Jika data kosong, tampilkan '-'
+          }
         },
         {data: 'maker', name: 'maker'},
         {data: 'approver', name: 'approver'},
@@ -346,11 +350,15 @@
       
         // Kolom untuk data yang ada di relasi AgentID
         {
-            data: 'agent_nama',  // Ini adalah alias yang kita pilih di query join
-            name: 'agent_nama',
-            render: function(data, type, row) {
-                return data ? data : '-';  // Jika data kosong, tampilkan '-'
-            }
+          data: 'agent_nama',  // Pastikan ini sesuai dengan alias 'agent_nama' dari server
+          name: 'agent_nama',
+          render: function(data, type, row) {
+              // Ganti string "ARTHAPOS" dengan "branch"
+              if (data) {
+                  return data.replace('ARTHAPOS', 'branch');
+              }
+              return '-';  // Jika data kosong, tampilkan '-'
+          }
         },
         {data: 'maker', name: 'maker'},
         {data: 'approver', name: 'approver'},
