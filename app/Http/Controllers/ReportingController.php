@@ -1180,11 +1180,11 @@ class ReportingController extends Controller
 
           if ($request->ajax()) {
             $query = DB::table('transaksi_receive_clients')
-                        ->leftJoin('agent_id', 'transaksi_receive_clients.agent_id', '=', 'agent_id.id')
-                        ->select(
-                            'transaksi_receive_clients.*',  // Ambil semua kolom dari transaksi_receive_clients
-                            'agent_id.nama as agent_nama'  // Ambil kolom 'nama' dari tabel agent_id dan beri alias 'agent_nama'
-                        )
+            ->leftJoin('agent_id', DB::raw('CAST(transaksi_receive_clients.agent_id AS INTEGER)'), '=', 'agent_id.id')
+            ->select(
+                'transaksi_receive_clients.*',  // Ambil semua kolom dari transaksi_receive_clients
+                'agent_id.nama as agent_nama'  // Ambil kolom 'nama' dari tabel agent_id dan beri alias 'agent_nama'
+            )
             ->orderBy('transaksi_receive_clients.tanggal', 'desc');
               // Apply search filter
             if ($searchTerm = $request->input('search.value')) {
