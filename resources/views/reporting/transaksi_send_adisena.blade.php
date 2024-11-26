@@ -102,7 +102,7 @@
             {data: 'alamat_penerima', name: 'alamat_penerima'},
             {data: 'telepon_penerima', name: 'telepon_penerima'},
             {data: 'telpon_pengirim', name: 'telpon_pengirim'},
-            {data: 'kota_penerima', ame: 'kota_penerima',
+            {data: 'kota_penerima', name: 'kota_penerima',
               render: function(data, type, row) {
                   // Jika data kosong, tampilkan tanda "-"
                   return data ? data : '-';
