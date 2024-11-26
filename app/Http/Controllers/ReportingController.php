@@ -1211,12 +1211,11 @@ class ReportingController extends Controller
                   ->orWhere('jenis_kelamin', 'like', "%{$searchTerm}%")
                   ->orWhere('kota_kelahiran', 'like', "%{$searchTerm}%")
                   ->orWhere('id_pos', 'like', "%{$searchTerm}%")
-                  ->orWhere('agent_id', 'like', "%{$searchTerm}%")
                   ->orWhere('maker', 'like', "%{$searchTerm}%")
                   ->orWhere('approver', 'like', "%{$searchTerm}%")
                   ->orWhere('tanggal', 'like', "%{$searchTerm}%");
                 })
-                  ->orWhere('agent_id.nama', 'like', "%{$searchTerm}%");
+                ->orWhere('agent_id.nama', 'like', "%{$searchTerm}%");
               
             }
 
