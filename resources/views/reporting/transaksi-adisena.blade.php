@@ -104,13 +104,7 @@
                 return data ? data : '-';
             }
         },
-        {
-            data: 'bsubanyak', 
-            name: 'bsubanyak',
-            render: function(data, type, row) {
-                return data ? data : '-';
-            }
-        },
+        {data: 'amount', name: 'amount', render: $.fn.dataTable.render.number(',', '.',  '')},
         {data: 'no_referensi', name: 'no_referensi'},
         {
             data: 'identitas', 
@@ -262,13 +256,7 @@
                 return data ? data : '-';
             }
         },
-        {
-            data: 'bsubanyak', 
-            name: 'bsubanyak',
-            render: function(data, type, row) {
-                return data ? data : '-';
-            }
-        },
+        {data: 'amount', name: 'amount', render: $.fn.dataTable.render.number(',', '.',  '')},
         {data: 'no_referensi', name: 'no_referensi'},
         {
             data: 'identitas', 
