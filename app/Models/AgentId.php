@@ -11,7 +11,7 @@ class AgentId extends Model
     protected $table = "agent_id";
 
     protected $fillable = [
-        'id', 'id_pos', 'agent_id', 'alamat', 'nama', 'legacy', 'pos', 'pos_password','created_at','updated_at','corporate'
+        'id','id_pos','agent_id','alamat','nama','legacy','pos','pos_password','created_at','updated_at','corporate'
     ];
     
     

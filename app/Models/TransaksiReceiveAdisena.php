@@ -22,7 +22,7 @@ class TransaksiReceiveAdisena extends Model
     
     public function agent()
     {
-        return $this->belongsTo(AgentId::class, 'agent_id');
+        return $this->belongsTo(AgentId::class, 'agent_id', 'id');
     }
 
 }
