@@ -1209,6 +1209,10 @@ class ReportingController extends Controller
                   ->orWhere('approver', 'like', "%{$searchTerm}%")
                   ->orWhere('tanggal', 'like', "%{$searchTerm}%");
              });
+              // Pencarian di relasi AgentID (kolom 'nama')
+              $query->orWhereHas('agent', function ($q) use ($searchTerm) {
+                  $q->where('nama', 'like', "%{$searchTerm}%");
+              });
             }
 
             $recordsTotal = TransaksiReceiveAdisena::count();
