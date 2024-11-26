@@ -1179,8 +1179,13 @@ class ReportingController extends Controller
 
 
           if ($request->ajax()) {
-            $query = TransaksiReceiveAdisena::with('agent') // Memuat data relasi 'agent'
-                                             ->orderBy('tanggal', 'desc');
+            $query = DB::table('transaksi_receive_clients')
+                        ->leftJoin('agent_id', 'transaksi_receive_clients.agent_id', '=', 'agent_id.id')
+                        ->select(
+                            'transaksi_receive_clients.*',  // Ambil semua kolom dari transaksi_receive_clients
+                            'agent_id.nama as agent_nama'  // Ambil kolom 'nama' dari tabel agent_id dan beri alias 'agent_nama'
+                        )
+            ->orderBy('transaksi_receive_clients.tanggal', 'desc');
               // Apply search filter
             if ($searchTerm = $request->input('search.value')) {
               $searchTerm = trim($searchTerm);
@@ -1209,11 +1214,9 @@ class ReportingController extends Controller
                   ->orWhere('maker', 'like', "%{$searchTerm}%")
                   ->orWhere('approver', 'like', "%{$searchTerm}%")
                   ->orWhere('tanggal', 'like', "%{$searchTerm}%");
-             });
-              // Pencarian di relasi AgentID (kolom 'nama')
-                $query->orWhereHas('agent', function ($q) use ($searchTerm) {
-                  $q->where('nama', 'like', "%{$searchTerm}%");
-              });
+                })
+                  ->orWhere('agent_id.nama', 'like', "%{$searchTerm}%");
+              
             }
 
             $recordsTotal = TransaksiReceiveAdisena::count();
