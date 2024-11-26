@@ -48,7 +48,7 @@
                                   <th>Kewarganegaraan</th>
                                   <th>Jenis Kelamin</th>
                                   <th>Kota Kelahiran</th>
-                                  <th>Agent ID</th>
+                                  <th>Branch</th>
                                   <th>Maker</th>
                                   <th>Approver</th>
                                   <th>Tanggal</th>
@@ -197,10 +197,10 @@
             }
         },
        
-        // Kolom untuk data yang ada di relasi AgentID
-        {
-            data: 'agent.nama', // Mengakses kolom 'nama' dari relasi AgentID
-            name: 'agent.nama',
+         // Kolom untuk data yang ada di relasi AgentID
+         {
+            data: 'agent_nama',  // Ini adalah alias yang kita pilih di query join
+            name: 'agent_nama',
             render: function(data, type, row) {
                 return data ? data : '-';  // Jika data kosong, tampilkan '-'
             }
