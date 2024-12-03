@@ -308,7 +308,7 @@ class ReportingController extends Controller
         if(Auth::check()){
             $negara_pengirim="";
            
-            $query = DB::table('transaksi')->select('transaksi_valid.negara_pengirim',DB::raw("sum(cast(replace(NULLIF(transaksi.bsu, ',','')) as float))"),DB::raw('COUNT(transaksi.no) as perbuatan'))->join('transaksi_valid','transaksi_valid.no_referensi','=','transaksi.no_referensi')->where('deltawork','=','ya')->groupBy('transaksi_valid.negara_pengirim')->orderBy('perbuatan','desc')->get();
+            $query = DB::table('transaksi')->select('transaksi_valid.negara_pengirim',  DB::raw("SUM(CAST(REPLACE(NULLIF(transaksi.bsu, ''), ',', '') AS FLOAT))"),DB::raw('COUNT(transaksi.no) as perbuatan'))->join('transaksi_valid','transaksi_valid.no_referensi','=','transaksi.no_referensi')->where('deltawork','=','ya')->groupBy('transaksi_valid.negara_pengirim')->orderBy('perbuatan','desc')->get();
             return view('reporting.negara', [
               'data'=>$query,'negara_pengirim'=>$negara_pengirim,
              ]);
@@ -346,7 +346,7 @@ class ReportingController extends Controller
       public function filtering_transaction()
       {
         if(Auth::check()){
-            $query = DB::table('transaksi')->select('transaksi_valid.negara_pengirim',DB::raw("sum(cast(replace(NULLIF(transaksi.bsu, ',','')) as float))"),DB::raw('COUNT(transaksi.no) as perbuatan'))->join('transaksi_valid','transaksi_valid.no_referensi','=','transaksi.no_referensi')->where('deltawork','=','ya')->groupBy('transaksi_valid.negara_pengirim')->orderBy('perbuatan','desc')->get();
+            $query = DB::table('transaksi')->select('transaksi_valid.negara_pengirim',DB::raw("SUM(CAST(REPLACE(NULLIF(transaksi.bsu, ''), ',', '') AS FLOAT))"),DB::raw('COUNT(transaksi.no) as perbuatan'))->join('transaksi_valid','transaksi_valid.no_referensi','=','transaksi.no_referensi')->where('deltawork','=','ya')->groupBy('transaksi_valid.negara_pengirim')->orderBy('perbuatan','desc')->get();
             return view('reporting.filtering_transaction', [
               'data'=>$query,
             ]);
