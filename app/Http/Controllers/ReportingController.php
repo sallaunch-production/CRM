@@ -411,7 +411,7 @@ class ReportingController extends Controller
     public function filtering_identitas()
     {
       if(Auth::check()){
-          $query = DB::table('transaksi')->select('transaksi_valid.negara_pengirim',DB::raw("sum(cast(replace(transaksi.bsu, ',','') as float))"),DB::raw('COUNT(transaksi.no) as perbuatan'))->join('transaksi_valid','transaksi_valid.no_referensi','=','transaksi.no_referensi')->where('deltawork','=','ya')->groupBy('transaksi_valid.negara_pengirim')->orderBy('perbuatan','desc')->get();
+          $query = DB::table('transaksi')->select('transaksi_valid.negara_pengirim',DB::raw("SUM(CAST(REPLACE(NULLIF(transaksi.bsu, ''), ',', '') AS FLOAT))"),DB::raw('COUNT(transaksi.no) as perbuatan'))->join('transaksi_valid','transaksi_valid.no_referensi','=','transaksi.no_referensi')->where('deltawork','=','ya')->groupBy('transaksi_valid.negara_pengirim')->orderBy('perbuatan','desc')->get();
           return view('reporting.filtering_identitas', [
             'data'=>$query,
           ]);
@@ -422,7 +422,7 @@ class ReportingController extends Controller
     public function filter_telepon()
     {
       if(Auth::check()){
-          $query = DB::table('transaksi')->select('transaksi_valid.negara_pengirim',DB::raw("sum(cast(replace(transaksi.bsu, ',','') as float))"),DB::raw('COUNT(transaksi.no) as perbuatan'))->join('transaksi_valid','transaksi_valid.no_referensi','=','transaksi.no_referensi')->where('deltawork','=','ya')->groupBy('transaksi_valid.negara_pengirim')->orderBy('perbuatan','desc')->get();
+          $query = DB::table('transaksi')->select('transaksi_valid.negara_pengirim',DB::raw("SUM(CAST(REPLACE(NULLIF(transaksi.bsu, ''), ',', '') AS FLOAT))"),DB::raw('COUNT(transaksi.no) as perbuatan'))->join('transaksi_valid','transaksi_valid.no_referensi','=','transaksi.no_referensi')->where('deltawork','=','ya')->groupBy('transaksi_valid.negara_pengirim')->orderBy('perbuatan','desc')->get();
           return view('reporting.filter_telepon', [
             'data'=>$query,
           ]);
@@ -434,7 +434,7 @@ class ReportingController extends Controller
     public function filter_negara()
     {
       if(Auth::check()){
-          $query = DB::table('transaksi')->select('transaksi_valid.negara_pengirim',DB::raw("sum(cast(replace(transaksi.bsu, ',','') as float))"),DB::raw('COUNT(transaksi.no) as perbuatan'))->join('transaksi_valid','transaksi_valid.no_referensi','=','transaksi.no_referensi')->where('deltawork','=','ya')->groupBy('transaksi_valid.negara_pengirim')->orderBy('perbuatan','desc')->get();
+          $query = DB::table('transaksi')->select('transaksi_valid.negara_pengirim',DB::raw("SUM(CAST(REPLACE(NULLIF(transaksi.bsu, ''), ',', '') AS FLOAT))"),DB::raw('COUNT(transaksi.no) as perbuatan'))->join('transaksi_valid','transaksi_valid.no_referensi','=','transaksi.no_referensi')->where('deltawork','=','ya')->groupBy('transaksi_valid.negara_pengirim')->orderBy('perbuatan','desc')->get();
           return view('reporting.filter_negara', [
             'data'=>$query,
           ]);
@@ -447,7 +447,7 @@ class ReportingController extends Controller
     public function filter_sender()
     {
       if(Auth::check()){
-          $query = DB::table('transaksi')->select('transaksi_valid.negara_pengirim',DB::raw("sum(cast(replace(transaksi.bsu, ',','') as float))"),DB::raw('COUNT(transaksi.no) as perbuatan'))->join('transaksi_valid','transaksi_valid.no_referensi','=','transaksi.no_referensi')->where('deltawork','=','ya')->groupBy('transaksi_valid.negara_pengirim')->orderBy('perbuatan','desc')->get();
+          $query = DB::table('transaksi')->select('transaksi_valid.negara_pengirim',DB::raw("SUM(CAST(REPLACE(NULLIF(transaksi.bsu, ''), ',', '') AS FLOAT))"),DB::raw('COUNT(transaksi.no) as perbuatan'))->join('transaksi_valid','transaksi_valid.no_referensi','=','transaksi.no_referensi')->where('deltawork','=','ya')->groupBy('transaksi_valid.negara_pengirim')->orderBy('perbuatan','desc')->get();
           return view('reporting.filter_sender', [
             'data'=>$query,
           ]);
