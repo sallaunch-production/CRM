@@ -30,7 +30,11 @@
                              <div class="row">
                                 <div class="col-md-6">   
                             <label>Data Range : </label>
-                            <form action="{{route('cari_filtering')}}" method="POST">
+                            @if($levelnya=="compliance")  
+                                 <form action="{{route('cari_filtering')}}" method="POST">
+                            @elseif($levelnya=="operasional")
+                                 <form action="{{route('cari_filtering_operasional')}}" method="POST">
+                            @endif
                             @csrf
                              <div class="form-group">
                              <div class="input-group"> 

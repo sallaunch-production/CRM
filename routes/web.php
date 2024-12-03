@@ -176,7 +176,7 @@ Route::group(['middleware' => ['operasional']], function () {
     Route::get('filter_sender_operasional',[App\Http\Controllers\ReportingController::class,'filter_sender'])->name('filter_sender')->middleware('auth');
 
     Route::get('filtering-operasional',[App\Http\Controllers\CheckingController::class,'filtering'])->name('filtering')->middleware('auth');
-    Route::post('cari_filtering_operasional',[App\Http\Controllers\CheckingController::class,'cari_filtering'])->name('cari_filtering')->middleware('auth');
+    Route::post('cari_filtering_operasional',[App\Http\Controllers\CheckingController::class,'cari_filtering'])->name('cari_filtering_operasional')->middleware('auth');
     
     Route::get('history_refund_operasional',[App\Http\Controllers\ReportingController::class,'history_refund'])->name('history_refund')->middleware('auth');
     Route::get('history_refund_pos_operasional',[App\Http\Controllers\ReportingController::class,'history_refund_pos'])->name('history_refund_pos')->middleware('auth');
