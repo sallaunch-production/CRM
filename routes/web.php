@@ -169,11 +169,11 @@ Route::group(['middleware' => ['operasional']], function () {
 
 
     Route::post('ubah_password_operasional',[App\Http\Controllers\HomeController::class,'ubah_password'])->name('ubah_password_operasional')->middleware('auth');
-    Route::get('filtering_transaction_operasional',[App\Http\Controllers\ReportingController::class,'filtering_transaction'])->name('filtering_transaction')->middleware('auth');
-    Route::get('filtering_identitas_operasional',[App\Http\Controllers\ReportingController::class,'filtering_identitas'])->name('filtering_identitas')->middleware('auth');
-    Route::get('filter_telepon_operasional',[App\Http\Controllers\ReportingController::class,'filter_telepon'])->name('filter_telepon')->middleware('auth');
-    Route::get('filter_negara_operasional',[App\Http\Controllers\ReportingController::class,'filter_negara'])->name('filter_negara')->middleware('auth');
-    Route::get('filter_sender_operasional',[App\Http\Controllers\ReportingController::class,'filter_sender'])->name('filter_sender')->middleware('auth');
+    Route::get('filtering_transaction_operasional',[App\Http\Controllers\ReportingController::class,'filtering_transaction'])->name('filtering_transaction_operasional')->middleware('auth');
+    Route::get('filtering_identitas_operasional',[App\Http\Controllers\ReportingController::class,'filtering_identitas'])->name('filtering_identitas_operasional')->middleware('auth');
+    Route::get('filter_telepon_operasional',[App\Http\Controllers\ReportingController::class,'filter_telepon'])->name('filter_telepon_operasional')->middleware('auth');
+    Route::get('filter_negara_operasional',[App\Http\Controllers\ReportingController::class,'filter_negara'])->name('filter_negara_operasional')->middleware('auth');
+    Route::get('filter_sender_operasional',[App\Http\Controllers\ReportingController::class,'filter_sender'])->name('filter_sender_operasional')->middleware('auth');
 
     Route::get('filtering-operasional',[App\Http\Controllers\CheckingController::class,'filtering'])->name('filtering')->middleware('auth');
     Route::post('cari_filtering_operasional',[App\Http\Controllers\CheckingController::class,'cari_filtering'])->name('cari_filtering_operasional')->middleware('auth');
