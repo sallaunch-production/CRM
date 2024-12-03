@@ -1179,15 +1179,17 @@ class ReportingController extends Controller
 
 
           if ($request->ajax()) {
-            $query = DB::table('transaksi_receive_clients')
-            // Gunakan JOIN berdasarkan agent_id yang ada di kedua tabel
-                          ->leftJoin('agent_id', 'transaksi_receive_clients.agent_id', '=', 'agent_id.agent_id')
-                          ->select(
-                              'transaksi_receive_clients.*',  // Ambil semua kolom dari transaksi_receive_clients
-                              'agent_id.nama as agent_nama'  // Ambil kolom 'nama' dari tabel agent_id dan beri alias 'agent_nama'
-                          )
-                          ->orderBy('transaksi_receive_clients.tanggal', 'desc');
-              // Apply search filter
+                $query = DB::table('transaksi_receive_clients')
+                // Gunakan JOIN berdasarkan agent_id yang ada di kedua tabel
+                              ->leftJoin('agent_id', 'transaksi_receive_clients.agent_id', '=', 'agent_id.agent_id')
+                              ->select(
+                      'transaksi_receive_clients.*',  // Ambil semua kolom dari transaksi_receive_clients
+                      'agent_id.nama as agent_nama'  // Ambil kolom 'nama' dari tabel agent_id dan beri alias 'agent_nama'
+                  )
+                  ->orderBy('transaksi_receive_clients.tanggal', 'desc');
+                  $query->addSelect('transaksi_receive_clients.id_pos as transaksi_id_pos');
+    
+                          // Apply search filter
             if ($searchTerm = $request->input('search.value')) {
               $searchTerm = trim($searchTerm);
 
@@ -1210,7 +1212,7 @@ class ReportingController extends Controller
                   ->orWhere('kewarganegaraan', 'like', "%{$searchTerm}%")
                   ->orWhere('jenis_kelamin', 'like', "%{$searchTerm}%")
                   ->orWhere('kota_kelahiran', 'like', "%{$searchTerm}%")
-                  ->orWhere('id_pos', 'like', "%{$searchTerm}%")
+                  ->orWhere('transaksi_receive_clients.id_pos', 'like', "%{$searchTerm}%")
                   ->orWhere('maker', 'like', "%{$searchTerm}%")
                   ->orWhere('approver', 'like', "%{$searchTerm}%")
                   ->orWhere('tanggal', 'like', "%{$searchTerm}%");
@@ -1219,9 +1221,11 @@ class ReportingController extends Controller
               
             }
 
-            $recordsTotal = TransaksiReceiveAdisena::count();
-            $recordsFiltered = $query->count(); // Total records after filtering  
-            
+            // Get total records without filtering
+            $recordsTotal = DB::table('transaksi_receive_clients')->count();
+            // Get total records after filtering
+            $recordsFiltered = $query->count();
+
             // Apply pagination
             $data = $query->offset($request->input('start'))
                       ->limit($request->input('length'))
@@ -1273,6 +1277,8 @@ class ReportingController extends Controller
                             'agent_id.nama as agent_nama'  // Ambil kolom 'nama' dari tabel agent_id dan beri alias 'agent_nama'
                         )
                         ->orderBy('transaksi_send_clients.tanggal', 'desc');
+                        $query->addSelect('transaksi_send_clients.id_pos as transaksi_id_pos');
+    
           if ($searchTerm = $request->input('search.value')) {
             $searchTerm = trim($searchTerm);
             $query->where(function ($q) use ($searchTerm) {
@@ -1302,7 +1308,7 @@ class ReportingController extends Controller
                 ->orWhere('jenis_kelamin', 'like', "%{$searchTerm}%")
                 ->orWhere('maker', 'like', "%{$searchTerm}%")
                 ->orWhere('approver', 'like', "%{$searchTerm}%")
-                ->orWhere('agent_id', 'like', "%{$searchTerm}%");
+                ->orWhere('agent_id.nama', 'like', "%{$searchTerm}%");
               })
               ->orWhere('agent_id.nama', 'like', "%{$searchTerm}%");
         }
@@ -1337,6 +1343,7 @@ class ReportingController extends Controller
                             'agent_id.nama as agent_nama'  // Ambil kolom 'nama' dari tabel agent_id dan beri alias 'agent_nama'
                         )
                         ->orderBy('transaksi_send_clients.tanggal', 'desc');
+                        $query->addSelect('transaksi_send_clients.id_pos as transaksi_id_pos');
          // Apply search filter
         if ($searchTerm = $request->input('search.value')) {
           $searchTerm = trim($searchTerm);
@@ -1368,7 +1375,7 @@ class ReportingController extends Controller
             ->orWhere('jenis_kelamin', 'like', "%{$searchTerm}%")
             ->orWhere('maker', 'like', "%{$searchTerm}%")
             ->orWhere('approver', 'like', "%{$searchTerm}%")
-            ->orWhere('agent_id', 'like', "%{$searchTerm}%");
+            ->orWhere('agent_id.nama', 'like', "%{$searchTerm}%");
           })
           ->orWhere('agent_id.nama', 'like', "%{$searchTerm}%");
         }

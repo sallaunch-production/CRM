@@ -71,9 +71,8 @@
 @section('js')
 @if($levelnya=="compliance")
 <script type="text/javascript">
-  $(function () {
-      
-    var table = $('.table-bordered').DataTable({
+  $(document).ready(function() {
+    var table = $('#example').DataTable({
         processing: true,
         serverSide: true,
         ajax:{
@@ -85,116 +84,84 @@
         {
             data: 'nama_penerima', 
             name: 'nama_penerima',
-            render: function(data, type, row) {
-                return data ? data : '-';
-            }
+            render: function(data) { return data ? data : '-'; }
         },
         {
             data: 'nama_pengirim', 
             name: 'nama_pengirim',
-            render: function(data, type, row) {
-                return data ? data : '-';
-            }
+            render: function(data) { return data ? data : '-'; }
         },
         {
             data: 'negara_pengirim', 
             name: 'negara_pengirim',
-            render: function(data, type, row) {
-                return data ? data : '-';
-            }
+            render: function(data) { return data ? data : '-'; }
         },
         {data: 'amount', name: 'amount', render: $.fn.dataTable.render.number(',', '.',  '')},
         {data: 'no_referensi', name: 'no_referensi'},
         {
             data: 'identitas', 
             name: 'identitas',
-            render: function(data, type, row) {
-                return data ? data : '-';
-            }
+            render: function(data) { return data ? data : '-'; }
         },
         {
             data: 'nomor_identitas', 
             name: 'nomor_identitas',
-            render: function(data, type, row) {
-                return data ? data : '-';
-            }
+            render: function(data) { return data ? data : '-'; }
         },
         {
             data: 'tanggal_lahir', 
             name: 'tanggal_lahir',
-            render: function(data) {
-                return data ? moment(data).format('DD/MM/YYYY') : '-';
-            }
+            render: function(data) { return data ? moment(data).format('DD/MM/YYYY') : '-'; }
         },
         {
             data: 'alamat_penerima', 
             name: 'alamat_penerima',
-            render: function(data, type, row) {
-                return data ? data : '-';
-            }
+            render: function(data) { return data ? data : '-'; }
         },
         {
             data: 'alamat_domisili_penerima', 
             name: 'alamat_domisili_penerima',
-            render: function(data, type, row) {
-                return data ? data : '-';
-            }
+            render: function(data) { return data ? data : '-'; }
         },
         {
             data: 'telepon_penerima', 
             name: 'telepon_penerima',
-            render: function(data, type, row) {
-                return data ? data : '-';
-            }
+            render: function(data) { return data ? data : '-'; }
         },
         {
             data: 'kota_penerima', 
             name: 'kota_penerima',
-            render: function(data, type, row) {
-                return data ? data : '-';
-            }
+            render: function(data) { return data ? data : '-'; }
         },
         {
             data: 'pekerjaan', 
             name: 'pekerjaan',
-            render: function(data, type, row) {
-                return data ? data : '-';
-            }
+            render: function(data) { return data ? data : '-'; }
         },
         {
             data: 'tujuan_penggunaan_dana', 
             name: 'tujuan_penggunaan_dana',
-            render: function(data, type, row) {
-                return data ? data : '-';
-            }
+            render: function(data) { return data ? data : '-'; }
         },
         {
             data: 'hubungan', 
             name: 'hubungan',
-            render: function(data, type, row) {
-                return data ? data : '-';
-            }
+            render: function(data) { return data ? data : '-'; }
         },
         {
             data: 'kewarganegaraan', 
             name: 'kewarganegaraan',
-            render: function(data, type, row) {
-                return data ? data : '-';
-            }
+            render: function(data) { return data ? data : '-'; }
         },
         {
             data: 'jenis_kelamin', 
             name: 'jenis_kelamin',
-            render: function(data, type, row) {
-                return data ? data : '-';
-            }
+            render: function(data) { return data ? data : '-'; }
         },
         {
             data: 'kota_kelahiran', 
             name: 'kota_kelahiran',
-            render: function(data, type, row) {
-                return data ? data : '-';
-            }
+            render: function(data) { return data ? data : '-'; }
         },
        
          // Kolom untuk data yang ada di relasi AgentID
