@@ -172,7 +172,10 @@ class ImportExportController extends Controller
             $namapengirim="";
             $namapenerima="";
             $banyakbsu="";
-            $kodenegara=DB::table('negara_konverter')->where('ppatk','LIKE','%'.$datatrans->negara_penerima.'%')->orWhere('nama','=',$datatrans->negara_penerima)->first();
+            $kodenegara = DB::table('negara_konverter')
+                                ->whereRaw('LOWER(ppatk) LIKE ?', ['%' . strtolower($datatrans->negara_penerima) . '%'])
+                                ->orWhereRaw('LOWER(nama) = ?', [strtolower($datatrans->negara_penerima)])
+                                ->first();
             $jumnp=strlen($datatrans->nama_pengirim);
             $jumnp50=50-$jumnp;
             $kodenegaraBi=$kodenegara->bi ?? '';
