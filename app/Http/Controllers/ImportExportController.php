@@ -173,13 +173,12 @@ class ImportExportController extends Controller
             $namapenerima="";
             $banyakbsu="";
             $kodenegara = DB::table('negara_konverter')
-            ->where('ppatk', 'ILIKE', '%' . $datatrans->negara_penerima . '%')
-            ->orWhere('nama', 'ILIKE', $datatrans->negara_penerima)
-            ->first();
+                                ->where('ppatk', 'LIKE', '%'.$datatrans->negara_penerima.'%')
+                                ->orWhere('nama', 'LIKE', '%'.$datatrans->negara_penerima.'%')
+                                ->first();
             $jumnp=strlen($datatrans->nama_pengirim);
             $jumnp50=50-$jumnp;
             $kodenegaraBi=$kodenegara->bi ?? '';
-            print_r($datatrans->negara_penerima);
             //echo "$jumnp | $jumnp50 | $i | ";
             while($i<$jumnp50){
             $namapengirim =$namapengirim." ";
