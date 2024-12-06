@@ -157,7 +157,7 @@ class ImportExportController extends Controller
         else{
         $jumlahtrans=$jumlahtrans;
         }
-        $txt = "777958119MWWW".$sampai[2].$sampai[1]."01G0001".$jumlahtrans."\n";
+        $txt = "777958119M".$sampai[2].$sampai[1]."01G0001".$jumlahtrans."\n";
         fwrite($myfile, $txt);
         $no=0;		
         $line=1; 
@@ -178,8 +178,8 @@ class ImportExportController extends Controller
             ->first();
             $jumnp=strlen($datatrans->nama_pengirim);
             $jumnp50=50-$jumnp;
-            //$kodenegaraBi=$kodenegara->bi ?? '';
-            $kodenegaraBi=$datatrans->negara_penerima ?? '';
+            $kodenegaraBi=$kodenegara->bi ?? '';
+            print_r($datatrans->negara_penerima);
             //echo "$jumnp | $jumnp50 | $i | ";
             while($i<$jumnp50){
             $namapengirim =$namapengirim." ";
