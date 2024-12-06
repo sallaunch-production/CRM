@@ -178,7 +178,8 @@ class ImportExportController extends Controller
             ->first();
             $jumnp=strlen($datatrans->nama_pengirim);
             $jumnp50=50-$jumnp;
-            $kodenegaraBi=$kodenegara->bi ?? '';
+            //$kodenegaraBi=$kodenegara->bi ?? '';
+            $kodenegaraBi=$datatrans->negara_penerima ?? '';
             //echo "$jumnp | $jumnp50 | $i | ";
             while($i<$jumnp50){
             $namapengirim =$namapengirim." ";
