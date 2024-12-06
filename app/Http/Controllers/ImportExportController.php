@@ -157,7 +157,7 @@ class ImportExportController extends Controller
         else{
         $jumlahtrans=$jumlahtrans;
         }
-        $txt = "777958119M".$sampai[2].$sampai[1]."01G0001".$jumlahtrans."\n";
+        $txt = "777958119MWWW".$sampai[2].$sampai[1]."01G0001".$jumlahtrans."\n";
         fwrite($myfile, $txt);
         $no=0;		
         $line=1; 
