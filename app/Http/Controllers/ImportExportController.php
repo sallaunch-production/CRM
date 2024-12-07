@@ -594,7 +594,7 @@ class ImportExportController extends Controller
             $jumlahtrans=$jumlahtrans;
             }
 
-            $txt = "777958119M".$sampai[2].$sampai[1]."01G0003".$jumlahtrans."\n";
+            $txt = "777958119M".$sampai[0].$sampai[1]."01G0003".$jumlahtrans."\n";
             fwrite($myfile, $txt);
             $no=0;		
             $line=1; 
