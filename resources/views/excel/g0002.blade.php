@@ -12,16 +12,23 @@
                                 </thead>
                                 <tbody>
                                 
-                                    @foreach ($que  as $key => $datatrans)
+                                    @foreach($que  as $key => $datatrans)
                                     <tr>
                                         <td>
                                             @php
                                                 $idpos= substr($datatrans->id_pos, 0, 5);
-                                                $kodepos=DB::table('kp_konverter')->where('kpc','LIKE',$idpos.'%')->join('nopend_lama','nopend_lama.kprk','=','kp_konverter.kprk')->first();
-                                                $kodeposasli_bi=$kodepos->bi ?? '';
-                                                $kodenegara=DB::table('negara_konverter')->where('nama','LIKE','%'.$datatrans->negara_pengirim.'%')->first();
+                                                $kodepos=DB::table('kp_konverter')->where('kpc','LIKE',$idpos.'%')->join('nopend_lama','nopend_lama.kprk','=','kp_konverter.kprk')->get();
+                                                $kodeposasli_bi = '';
+                                                // Loop through $kodepos and get 'bi'
+                                                foreach($kodepos as $datatrans_kodepos) {
+                                                    $kodeposasli_bi = $datatrans_kodepos->bi ?? '';
+                                                }
+                                                $kodenegara = DB::table('negara_konverter')
+                                                ->whereRaw('LOWER(nama) like ?', [strtolower($datatrans->negara_pengirim) . '%'])
+                                                ->first();
                                             @endphp
-                                          {{ $kodenegara->bi ?? ''}}
+
+                                            {{ $kodenegara->bi ?? '' }}
                                         </td>
                                        
                                         <td>{{ $kodeposasli_bi ?? '' }}</td>
