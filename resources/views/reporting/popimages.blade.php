@@ -68,11 +68,12 @@
                                               <input type="hidden" name="id" value="{{$transactions->id}}"/> 
                                               <button  type=submit class="badge badge-warning">Edit</button>
                                         </form> 
-                                        @if($levelnya=="compliance")
-                                          <form action="{{route('delete_popimages')}}" method="POST">
-                                        @elseif($levelnya=="operasional") 
-                                          <form action="{{route('delete_popimages_operasional')}}" method="POST">
-                                        @csrf
+                                          @if($levelnya=="compliance")
+                                            <form action="{{route('delete_popimages')}}" method="POST">
+                                          @elseif($levelnya=="operasional") 
+                                            <form action="{{route('delete_popimages_operasional')}}" method="POST">
+                                          @endforeach
+                                          @csrf
                                             <input type="hidden" class="form-control @error('name') is-invalid @enderror"  name="id" value="{{$transactions->id}}"/> <button type=submit class="badge badge-danger show_confirm" data-toggle="tooltip" title='Delete'>Delete</button></form>
                                           
                                         </td>
