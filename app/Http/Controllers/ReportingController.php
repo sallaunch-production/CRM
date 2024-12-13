@@ -1114,9 +1114,13 @@ class ReportingController extends Controller
       if(Auth::check()){  
         $id =  $request->id;
         $delete = DB::table('proof_of_payment')->where('id','=',$id)->delete();
-       
-        return redirect('popimage')->with('success','You have successfully delete');
-
+      
+         if(Auth::user()->level=="compliance"){
+          return redirect('popimage')->with('success','You have successfully delete');
+        }elseif(Auth::user()->level=="operasional"){
+          return redirect('popimage-operasional')->with('success','You have successfully delete');
+        }
+        
       }
       return redirect('login')->with('You dont have access');
     }
