@@ -27,13 +27,21 @@
                             @endif
 
                             <!-- COLOR PALETTE -->
-                                   
+                            @if($levelnya=="compliance")    
                                 <a href="{{ route('newcustomer') }}"> <button type="button" class="btn btn-success">Receive</button></a>&nbsp;&nbsp;
                                 <a href="{{ route('newcustomer_send') }}"> <button type="button" class="btn btn-danger">Send</button></a>
+                            @elseif($levelnya=="operasional")
+                                <a href="{{ route('newcustomer_operasional') }}"> <button type="button" class="btn btn-success">Receive</button></a>&nbsp;&nbsp;
+                                <a href="{{ route('newcustomer_send_operasional') }}"> <button type="button" class="btn btn-danger">Send</button></a>
+                            @endif
                                 <br><br>
                                     @if(empty($send))
-                                          <form role="form" action="{{ route('search_newcustomer') }}" method="POST" style="width:50%;">
-                                            @csrf  
+                                          @if($levelnya=="compliance") 
+                                            <form role="form" action="{{ route('search_newcustomer') }}" method="POST" style="width:50%;">
+                                          @elseif($levelnya=="operasional")
+                                            <form role="form" action="{{ route('search_newcustomer_operasional') }}" method="POST" style="width:50%;">
+                                          @endif
+                                          @csrf  
                                             <div class=form-group>
                                             <label>Tanggal Transaksi Receive</label>   
                                             <table class="table table-border">
@@ -95,8 +103,12 @@
                                             @else
                                             @endif
                                @else
-                                            <form role="form" action="{{ route('search_newcustomer_send') }}" method="POST" style="width:50%;">
-                                                    @csrf  
+                                             @if($levelnya=="compliance") 
+                                                <form role="form" action="{{ route('search_newcustomer_send') }}" method="POST" style="width:50%;">
+                                             @elseif($levelnya=="operasional") 
+                                                <form action="{{route('search_newcustomer_send_operasional')}}" method=POST style=width:50%;>
+                                             @endif   
+                                                @csrf  
                                                     <div class=form-group>
                                                     <label>Tanggal Transaksi Send</label>   
                                                     <table class="table table-border">

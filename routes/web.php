@@ -192,5 +192,8 @@ Route::group(['middleware' => ['operasional']], function () {
     Route::post('delete_popimages_operasional',[App\Http\Controllers\ReportingController::class,'delete_popimages'])->name('delete_popimages_operasional')->middleware('auth');
     Route::post('edit_popimages_operasional',[App\Http\Controllers\ReportingController::class,'edit_popimages'])->name('edit_popimages_operasional')->middleware('auth');
     Route::get('newcustomer_operasional',[App\Http\Controllers\CheckingController::class,'newcustomer'])->name('newcustomer_operasional')->middleware('auth');
+    Route::get('newcustomer-send-operasional',[App\Http\Controllers\CheckingController::class,'newcustomer_send'])->name('newcustomer_send_operasional')->middleware('auth');
+    Route::post('search_newcustomer_operasional',[App\Http\Controllers\CheckingController::class,'search_newcustomer'])->name('search_newcustomer_operasional')->middleware('auth');
+    Route::post('search_newcustomer_send_operasional',[App\Http\Controllers\CheckingController::class,'search_newcustomer_send'])->name('search_newcustomer_send_operasional')->middleware('auth');
 
 });
