@@ -438,7 +438,7 @@ return [
         ],
         [
             'text' => 'New Customer',
-            'url'  => 'newcustomer',
+            'url'  => 'newcustomer_operasional',
             'can'  => ['operasional-only'],
             'icon'    => 'fas fa-fw fa-clipboard',
         ],
