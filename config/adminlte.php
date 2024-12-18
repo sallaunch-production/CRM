@@ -436,7 +436,12 @@ return [
                 ],
             ]
         ],
-
+        [
+            'text' => 'New Customer',
+            'url'  => 'newcustomer',
+            'can'  => ['operasional-only'],
+            'icon'    => 'fas fa-fw fa-clipboard',
+        ],
         [
             'text'    => 'Sanction List',
             'icon'    => 'fas fa-fw fa-clipboard',
