@@ -71,7 +71,8 @@
                                                 <th>Nomor Telepon</th>      
                                                 <th>Tanggal Lahir</th>      
                                                 <th>Tempat Lahir</th>
-                                                <th>Nomor Identitas</th>       
+                                                <th>Nomor Identitas</th>  
+                                                <th>Negara Pengirim</th>       
                                                 <th>Id Pos </th>
                                                     <th>Tanggal </th>
                                                 <th> </th>
@@ -89,6 +90,7 @@
                                                         <td>{{ $transactions->tanggal_lahir }}</td>
                                                         <td>{{ $transactions->tempat_lahir }}</td>
                                                         <td>{{ $transactions->nomor_identitas }}</td>
+                                                        <td>{{ $transactions->negara_pengirim }}</td>
                                                         <td>{{ $transactions->id_pos }}</td>
                                                         <td>{{ $transactions->tanggal }}</td>
                                                         <td><button type=button class="btn btn-primary btn-lg" data-toggle=modal data-target="#myModal{{$transactions->no}}">
@@ -132,13 +134,14 @@
                                             <thead>
                                             <tr>
                                                 <th>No</th>
-                                                    <th>Ref Number </th>
+                                                <th>Ref Number </th>
                                                 <th>Nama Pengirim</th>
                                                 <th>Alamat Pengirim</th>      
                                                 <th>Nomor Telepon</th>      
                                                 <th>Tanggal Lahir</th>     
                                                 <th>Tempat Lahir</th>
-                                                <th>Nomor Identitas</th>       
+                                                <th>Nomor Identitas</th> 
+                                                <th>Negara Penerima</th>       
                                                 <th>Id Pos </th>
                                                     <th>Tanggal </th>
                                                 <th> </th>
@@ -156,6 +159,7 @@
                                                         <td>{{ $transactions->tanggal_lahir }}</td>
                                                         <td>{{ $transactions->tempat_lahir }}</td>
                                                         <td>{{ $transactions->nomor_identitas }}</td>
+                                                        <td>{{ $transactions->negara_penerima }}</td>
                                                         <td>{{ $transactions->kode_pos_domisili_pengirim }}</td>
                                                         <td>{{ $transactions->tanggal }}</td>
                                                         <td><button type=button class="btn btn-primary btn-lg" data-toggle=modal data-target="#myModal{{$transactions->no}}">

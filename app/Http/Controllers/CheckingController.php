@@ -269,6 +269,7 @@ class CheckingController extends Controller
               DB::raw('MIN(t1.tempat_lahir) AS tempat_lahir'),
               DB::raw('MIN(t1.alamat_penerima) AS alamat_penerima'),
               DB::raw('MIN(t1.telepon_penerima) AS telepon_penerima'),
+              DB::raw('MIN(t1.negara_pengirim) AS negara_pengirim'),
               DB::raw('MIN(t1.id_pos) AS id_pos')
           )
           ->leftJoin('transaksi_valid as t2', function($join) use ($tanggal_dari) {
@@ -316,6 +317,7 @@ class CheckingController extends Controller
               DB::raw('MIN(t1.tempat_lahir) AS tempat_lahir'),
               DB::raw('MIN(t1.alamat_pengirim) AS alamat_pengirim'),
               DB::raw('MIN(t1.telpon_pengirim) AS telpon_pengirim'),
+              DB::raw('MIN(t1.negara_penerima) AS negara_penerima'),
               DB::raw('MIN(t1.kode_pos_domisili_pengirim) AS kode_pos_domisili_pengirim')
           )
           ->leftJoin('transaksi_send_pos as t2', function($join) use ($tanggal_dari) {
