@@ -61,7 +61,10 @@
                                         <td>{{ $transactions->ltkl }}</td>
                                         <td>{{ $transactions->ltkm }}</td>
                                         <td>{{ $transactions->tanggal }}</td>
-                                        <td><a target="_blank" href="{{url('storage/pop/' . $transactions->pop_image)}}"><button type=submit class="badge badge-success">View Image </button></a></td>
+                                        <td><a target="_blank" href="{{ asset('storage/pop/' . $transactions->pop_image) }}">
+                                                <button type="submit" class="badge badge-success">View Image</button>
+                                            </a>
+                                        </td>
                                         <td>
                                         @if($levelnya=="compliance")
                                            <form action="{{route('edit_popimages')}}" method="POST">
