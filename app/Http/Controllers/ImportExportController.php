@@ -432,7 +432,7 @@ class ImportExportController extends Controller
            // Kondisi untuk pengecekan negara pengirim
            $kodenegara = DB::table('negara_konverter')
            ->whereRaw('LOWER(nama) like ?', [strtolower($datatrans->negara_pengirim) . '%'])
-           ->whereRaw('LOWER(ppatk) like ?', [strtolower($datatrans->negara_pengirim) . '%'])
+           ->orWhereRaw('LOWER(ppatk) like ?', [strtolower($datatrans->negara_pengirim) . '%'])
            ->get();
 
            foreach ($kodenegara as $negara) {
