@@ -430,13 +430,18 @@ class ImportExportController extends Controller
             //echo  $datatrans->negara_pengirim;
             //echo "<br>";
            // Kondisi untuk pengecekan negara pengirim
-           $kodenegara = DB::table('negara_konverter')
-           ->whereRaw('LOWER(nama) = ?', [strtolower($datatrans->negara_pengirim)]) // Pencocokan yang presisi untuk nama
-           ->orWhereRaw('LOWER(ppatk) = ?', [strtolower($datatrans->negara_pengirim)]) // Pencocokan yang presisi untuk ppatk
-           ->orWhereRaw('LOWER(nama) LIKE ?', [strtolower($datatrans->negara_pengirim) . '%'])
-           ->orWhereRaw('LOWER(ppatk) LIKE ?', [strtolower($datatrans->negara_pengirim) . '%'])
-           ->whereRaw('LENGTH(nama) = LENGTH(?)', [strlen($datatrans->negara_pengirim)]) // Kondisi panjang teks untuk meningkatkan presisi
-           ->get();
+           if($datatrans->negara_pengirim=="COTE D'IVOIRE" || $datatrans->negara_pengirim=="Lao People's Democratic Republic" || $datatrans->negara_pengirim=="United States Minor Outlying Islands" ){
+            $kodenegara = DB::table('negara_konverter')
+            ->whereRaw('LOWER(nama) LIKE ?', [strtolower($datatrans->negara_pengirim)]) // Pencocokan yang presisi untuk nama
+            ->orWhereRaw('LOWER(ppatk) LIKE ?', [strtolower($datatrans->negara_pengirim)]) // Pencocokan yang presisi untuk ppatk
+            ->get();
+           }else{
+            $kodenegara = DB::table('negara_konverter')
+            ->whereRaw('LOWER(nama) = ?', [strtolower($datatrans->negara_pengirim) . '%'])
+            ->orWhereRaw('LOWER(ppatk) = ?', [strtolower($datatrans->negara_pengirim) . '%'])
+            ->get();
+           }
+           
 
            foreach ($kodenegara as $negara) {
                 $kodenegaraBi = $negara->bi ?? ''; // Akses properti 'bi' untuk setiap item
