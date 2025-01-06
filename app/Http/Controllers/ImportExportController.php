@@ -258,7 +258,7 @@ class ImportExportController extends Controller
             DB::table('transaksi_receive')
                 ->select(
                     'negara_pengirim',
-                    'id_pos',
+                    DB::raw("'12000' AS id_pos"),
                     'nama_pengirim',
                     'nama_penerima',
                     DB::raw("sum(cast(replace(bsubanyak, ',', '') as float)) as sum_bsubanyak"),
@@ -275,7 +275,7 @@ class ImportExportController extends Controller
             DB::table('transaksi_receive_clients')
                 ->select(
                     'negara_pengirim',
-                    'id_pos',
+                    DB::raw("'12000' AS id_pos"),
                     'nama_pengirim',
                     'nama_penerima',
                     DB::raw("sum(cast(replace(amount, ',', '') as float)) as sum_bsubanyak"),
@@ -325,7 +325,7 @@ class ImportExportController extends Controller
             DB::table('transaksi_receive')
                 ->select(
                     'negara_pengirim',
-                    'id_pos',
+                    DB::raw("'12000' AS id_pos"),
                     'nama_pengirim',
                     'nama_penerima',
                     DB::raw("sum(cast(replace(bsubanyak, ',', '') as float)) as sum_bsubanyak"),
@@ -342,7 +342,7 @@ class ImportExportController extends Controller
             DB::table('transaksi_receive_clients')
                 ->select(
                     'negara_pengirim',
-                    'id_pos',
+                    DB::raw("'12000' AS id_pos"),
                     'nama_pengirim',
                     'nama_penerima',
                     DB::raw("sum(cast(replace(amount, ',', '') as float)) as sum_amount"),
