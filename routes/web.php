@@ -195,5 +195,8 @@ Route::group(['middleware' => ['operasional']], function () {
     Route::get('newcustomer-send-operasional',[App\Http\Controllers\CheckingController::class,'newcustomer_send'])->name('newcustomer_send_operasional')->middleware('auth');
     Route::post('search_newcustomer_operasional',[App\Http\Controllers\CheckingController::class,'search_newcustomer'])->name('search_newcustomer_operasional')->middleware('auth');
     Route::post('search_newcustomer_send_operasional',[App\Http\Controllers\CheckingController::class,'search_newcustomer_send'])->name('search_newcustomer_send_operasional')->middleware('auth');
+    Route::post('upload_refund_pos_operasional',[App\Http\Controllers\ReportingController::class,'upload_refund_pos'])->name('upload_refund_pos_operasional')->middleware('auth');
+    Route::post('act_upload_refund_pos_operasional',[App\Http\Controllers\ReportingController::class,'act_upload_refund_pos'])->name('act_upload_refund_pos_operasional')->middleware('auth');
+    Route::get('history_refund_pos_operasional',[App\Http\Controllers\ReportingController::class,'history_refund_pos'])->name('history_refund_pos_operasional')->middleware('auth');
 
 });

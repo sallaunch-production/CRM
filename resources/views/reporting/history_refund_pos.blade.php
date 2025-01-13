@@ -65,8 +65,12 @@
                                        
                                         @if(count($dats1)==0)
                                         <td>
-                                        <form action="{{route('upload_refund_pos')}}" method="POST">
-                                          @csrf
+                                        @if($levelnya=="compliance")
+                                          <form action="{{route('upload_refund_pos')}}" method="POST">
+                                        @elseif($levelnya=="operasional") 
+                                          <form action="{{route('upload_refund_pos_operasional')}}" method="POST">
+                                        @endif
+                                        @csrf
                                              <input type="hidden" name="no" value="{{$no}}"/>
                                              <button type=submit class="badge badge-primary">
                                                   Upload
@@ -97,8 +101,12 @@
 
                               @if(!empty($upload))
                               <h3>No Referensi : {{$data->no_referensi}}</h3>
-                              <form action="{{route('act_upload_refund_pos')}}" method="POST" enctype="multipart/form-data" style="max-width:350px;">
-                              @csrf     
+                              @if($levelnya=="compliance")
+                                <form action="{{route('act_upload_refund_pos')}}" method="POST" enctype="multipart/form-data" style="max-width:350px;">
+                              @elseif($levelnya=="operasional") 
+                              <form action="{{route('act_upload_refund_pos_operasional')}}" method="POST" enctype="multipart/form-data" style="max-width:350px;">
+                              @endif
+                              @csrf    
                               <div class=form-group>
                                     
                                     <fieldset>

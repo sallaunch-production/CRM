@@ -965,8 +965,11 @@ class ReportingController extends Controller
           'created_at' => Carbon::now()->toDateTimeString(),
           'updated_at' => Carbon::now()->toDateTimeString(),
       ]);
-      return redirect('history_refund_pos')->with('success','You have successfully upload');
-       
+        if(Auth::user()->level=="compliance"){
+           return redirect('history_refund_pos')->with('success','You have successfully upload');
+          }elseif(Auth::user()->level=="operasional"){
+           return redirect('history_refund_pos_operasional')->with('success','You have successfully upload');
+        } 
       }
       return redirect('login')->with('You dont have access');
     }
