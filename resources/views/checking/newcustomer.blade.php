@@ -208,19 +208,53 @@
     $('#example').DataTable({
         dom: 'Bfrtip', // Mengatur layout untuk tombol
         buttons: [
-            'copy', // Tombol copy
-            'csv', // Tombol CSV
+           
+            {
+                extend: 'copy', // Tombol Excel
+                text: 'COPY',
+                title: 'TRANSAKSI NEW CUSTOMER', // Judul file Excel
+                exportOptions: {
+                    // Opsi untuk memilih kolom mana yang diekspor
+                    columns: ':visible'
+                }
+            },  // Tombol copy
+            {
+                extend: 'csv', // Tombol Excel
+                text: 'CSV',
+                title: 'TRANSAKSI NEW CUSTOMER', // Judul file Excel
+                exportOptions: {
+                    // Opsi untuk memilih kolom mana yang diekspor
+                    columns: ':visible'
+                }
+            }, // Tombol CSV
             {
                 extend: 'excel', // Tombol Excel
-                text: 'Download Excel',
+                text: 'Excel',
                 title: 'TRANSAKSI NEW CUSTOMER', // Judul file Excel
                 exportOptions: {
                     // Opsi untuk memilih kolom mana yang diekspor
                     columns: ':visible'
                 }
             },
-            'pdf', // Tombol PDF
-            'print' // Tombol Print
+            {
+                extend: 'pdf', // Tombol Excel
+                text: 'PDF',
+                title: 'TRANSAKSI NEW CUSTOMER', // Judul file Excel
+                exportOptions: {
+                    // Opsi untuk memilih kolom mana yang diekspor
+                    columns: ':visible'
+                }
+            },
+            {
+                extend: 'print', // Tombol Excel
+                text: 'PDF',
+                title: 'TRANSAKSI NEW CUSTOMER', // Judul file Excel
+                exportOptions: {
+                    // Opsi untuk memilih kolom mana yang diekspor
+                    columns: ':visible'
+                }
+            },
+            
         ]
     });
     $('#daterange').daterangepicker(); 
