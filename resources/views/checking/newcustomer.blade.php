@@ -213,7 +213,7 @@
             {
                 extend: 'excel', // Tombol Excel
                 text: 'Download Excel',
-                title: 'Data Transaksi', // Judul file Excel
+                title: 'TRANSAKSI NEW CUSTOMER', // Judul file Excel
                 exportOptions: {
                     // Opsi untuk memilih kolom mana yang diekspor
                     columns: ':visible'
