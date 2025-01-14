@@ -247,7 +247,7 @@
             },
             {
                 extend: 'print', // Tombol Excel
-                text: 'PDF',
+                text: 'Print',
                 title: 'TRANSAKSI NEW CUSTOMER', // Judul file Excel
                 exportOptions: {
                     // Opsi untuk memilih kolom mana yang diekspor
