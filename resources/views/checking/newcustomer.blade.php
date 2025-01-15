@@ -236,14 +236,13 @@
                 }
             }, // Tombol CSV
             {
-                extend: 'excel', // Tombol Excel
+                extend: 'excel',
                 text: 'Excel',
-                title: 'TRANSAKSI NEW CUSTOMER', // Judul file Excel
+                title: 'TRANSAKSI NEW CUSTOMER',
                 exportOptions: {
                     columns: function (idx, data, node) {
-                        // Mengambil semua kolom yang terlihat, kecuali kolom terakhir
                         var columns = $(node).closest('table').DataTable().columns(':visible').indexes().toArray();
-                        columns.pop(); // Menghapus kolom terakhir
+                        columns.pop(); // Hapus kolom terakhir
                         return columns; // Mengembalikan kolom yang diekspor
                     }
                 }
