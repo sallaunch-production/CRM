@@ -283,8 +283,8 @@ class CheckingController extends Controller
           ->where('t1.tanggal', '<=', $tanggal_sampai . ' 23:59:59')
           ->whereNull('t2.nama_penerima') // Filter nama_penerima yang tidak ada di t2
           ->groupBy('t1.nama_penerima')
-          ->orderBy('t1.tanggal', 'desc') // Menambahkan ORDER BY tanggal DESC
-          ->get();                              
+          ->orderBy(DB::raw('MIN(t1.tanggal)'), 'desc') // Menambahkan agregat untuk tanggal di ORDER BY
+          ->get();                           
 
                
 
