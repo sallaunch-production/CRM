@@ -214,8 +214,12 @@
                 text: 'COPY',
                 title: 'TRANSAKSI NEW CUSTOMER', // Judul file Excel
                 exportOptions: {
-                    // Opsi untuk memilih kolom mana yang diekspor
-                    columns: ':visible'
+                    columns: function (idx, data, node) {
+                        // Mengambil semua kolom yang terlihat, kecuali kolom terakhir
+                        var columns = $(node).closest('table').DataTable().columns(':visible').indexes().toArray();
+                        columns.pop(); // Menghapus kolom terakhir
+                        return columns; // Mengembalikan kolom yang diekspor
+                    }
                 }
             },  // Tombol copy
             {
@@ -223,8 +227,12 @@
                 text: 'CSV',
                 title: 'TRANSAKSI NEW CUSTOMER', // Judul file Excel
                 exportOptions: {
-                    // Opsi untuk memilih kolom mana yang diekspor
-                    columns: ':visible'
+                    columns: function (idx, data, node) {
+                        // Mengambil semua kolom yang terlihat, kecuali kolom terakhir
+                        var columns = $(node).closest('table').DataTable().columns(':visible').indexes().toArray();
+                        columns.pop(); // Menghapus kolom terakhir
+                        return columns; // Mengembalikan kolom yang diekspor
+                    }
                 }
             }, // Tombol CSV
             {
@@ -245,8 +253,12 @@
                 text: 'PDF',
                 title: 'TRANSAKSI NEW CUSTOMER', // Judul file Excel
                 exportOptions: {
-                    // Opsi untuk memilih kolom mana yang diekspor
-                    columns: ':visible'
+                    columns: function (idx, data, node) {
+                        // Mengambil semua kolom yang terlihat, kecuali kolom terakhir
+                        var columns = $(node).closest('table').DataTable().columns(':visible').indexes().toArray();
+                        columns.pop(); // Menghapus kolom terakhir
+                        return columns; // Mengembalikan kolom yang diekspor
+                    }
                 }
             },
             {
