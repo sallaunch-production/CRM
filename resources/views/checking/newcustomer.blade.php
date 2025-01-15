@@ -65,16 +65,16 @@
                                             <thead>
                                             <tr>
                                                 <th>No</th>
-                                                    <th>Ref Number </th>
-                                                <th>Nama </th>
-                                                <th>Alamat</th>      
-                                                <th>Nomor Telepon</th>      
-                                                <th>Tanggal Lahir</th>      
-                                                <th>Tempat Lahir</th>
-                                                <th>Nomor Identitas</th>  
-                                                <th>Negara Pengirim</th>       
-                                                <th>Id Pos </th>
-                                                    <th>Tanggal </th>
+                                                <th>Nomor Referensi</th>
+                                                <th>Nama Penerima</th>
+                                                <th>Identitas</th>  
+                                                <th>No.dentitas</th>      
+                                                <th>Tanggal Lahir</th>
+                                                <th>Alamat Penerima</th>      
+                                                <th>Telepon Penerima</th>      
+                                                <th>Kota Penerima</th>      
+                                                <th>Pekerjaan</th> 
+                                                <th>Tanggal </th>
                                                 <th> </th>
                                             </tr>
                                             </thead>
@@ -85,13 +85,13 @@
                                                         <th >{{$key+1 }}</th>
                                                         <td>{{ $transactions->no_referensi }}</td>
                                                         <td>{{ $transactions->nama_penerima }}</td>
+                                                        <td>{{ $transactions->identitas }}</td>
+                                                        <td>{{ $transactions->nomor_identitas }}</td>
+                                                        <td>{{ $transactions->tanggal_lahir }}</td>
                                                         <td>{{ $transactions->alamat_penerima }}</td>
                                                         <td>{{ $transactions->telepon_penerima }}</td>
-                                                        <td>{{ $transactions->tanggal_lahir }}</td>
-                                                        <td>{{ $transactions->tempat_lahir }}</td>
-                                                        <td>{{ $transactions->nomor_identitas }}</td>
-                                                        <td>{{ $transactions->negara_pengirim }}</td>
-                                                        <td>{{ $transactions->id_pos }}</td>
+                                                        <td>{{ $transactions->kota_penerima }}</td>
+                                                        <td>{{ $transactions->pekerjaan }}</td>  
                                                         <td>{{ $transactions->tanggal }}</td>
                                                         <td><button type=button class="btn btn-primary btn-lg" data-toggle=modal data-target="#myModal{{$transactions->no}}">
                                                             Detail
@@ -232,8 +232,12 @@
                 text: 'Excel',
                 title: 'TRANSAKSI NEW CUSTOMER', // Judul file Excel
                 exportOptions: {
-                    // Opsi untuk memilih kolom mana yang diekspor
-                    columns: ':visible'
+                    columns: function (idx, data, node) {
+                        // Mengambil semua kolom yang terlihat, kecuali kolom terakhir
+                        var columns = $(node).closest('table').DataTable().columns(':visible').indexes().toArray();
+                        columns.pop(); // Menghapus kolom terakhir
+                        return columns; // Mengembalikan kolom yang diekspor
+                    }
                 }
             },
             {

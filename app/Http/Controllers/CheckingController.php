@@ -264,12 +264,15 @@ class CheckingController extends Controller
               't1.nama_penerima',
               DB::raw('MIN(t1.no_referensi) AS no_referensi'),
               DB::raw('MIN(t1.tanggal) AS tanggal'),
+              DB::raw('MIN(t1.identitas) AS identitas'),
               DB::raw('MIN(t1.nomor_identitas) AS nomor_identitas'),
               DB::raw('MIN(t1.tanggal_lahir) AS tanggal_lahir'),
               DB::raw('MIN(t1.tempat_lahir) AS tempat_lahir'),
               DB::raw('MIN(t1.alamat_penerima) AS alamat_penerima'),
               DB::raw('MIN(t1.telepon_penerima) AS telepon_penerima'),
               DB::raw('MIN(t1.negara_pengirim) AS negara_pengirim'),
+              DB::raw('MIN(t1.kota_penerima) AS kota_penerima'),
+              DB::raw('MIN(t1.pekerjaan) AS pekerjaan'),
               DB::raw('MIN(t1.id_pos) AS id_pos')
           )
           ->leftJoin('transaksi_valid as t2', function($join) use ($tanggal_dari) {
