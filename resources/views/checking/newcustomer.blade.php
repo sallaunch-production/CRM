@@ -164,7 +164,7 @@
                                                         <th >{{$key+1 }}</th>
                                                         <td>285</td>
                                                         <td>1</td>
-                                                        <td>{{ $transactions->nama_penerima }}</td>
+                                                        <td>{{ $transactions->nama_pengirim }}</td>
                                                         <td>{{ $transactions->tempat_lahir }}</td>
                                                         <td>{{ \Carbon\Carbon::createFromFormat('m/d/Y', $transactions->tanggal_lahir)->format('d-m-Y') }}</td>
                                                         <td>{{ $transactions->alamat_pengirim }}</td>
