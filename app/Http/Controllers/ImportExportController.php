@@ -8,6 +8,8 @@ use App\Exports\CetakLaporanBIg0001;
 use App\Exports\CetakLaporanBIg0002;
 use App\Exports\CetakLaporanBIg0003;
 use App\Exports\CetakLaporanPpatk;
+use App\Exports\CetakLaporanNewCustomer;
+
 use App\Exports\Rekons;
 use App\Exports\InvoicesExport;
 use App\Exports\CetakLaporanBI;
