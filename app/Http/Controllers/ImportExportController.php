@@ -689,5 +689,13 @@ class ImportExportController extends Controller
         $tanggal_sampai = $request->tanggal_sampai;
         return Excel::download(new CetakLaporanPpatk($tanggal_dari,$tanggal_sampai), 'LTKL incoming C2A.xls');
     }
+
+    public function cetak_new_customer_gabungan(Request $request) 
+    {
+        $tanggal_dari = $request->tanggal_dari;
+        $tanggal_sampai = $request->tanggal_sampai;
+
+        return Excel::download(new CetakLaporanNewCustomer($tanggal_dari,$tanggal_sampai), 'New Customer Gabungan.xlsx');
+    }
     
 }
