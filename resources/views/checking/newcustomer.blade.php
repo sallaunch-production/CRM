@@ -87,7 +87,7 @@
                                                         <td>{{ $transactions->nama_penerima }}</td>
                                                         <td>{{ $transactions->identitas }}</td>
                                                         <td>{{ $transactions->nomor_identitas }}</td>
-                                                        <td>{{ $transactions->tanggal_lahir }}</td>
+                                                        <td>{{ \Carbon\Carbon::createFromFormat('m/d/Y', $transactions->tanggal_lahir)->format('d/m/Y') }}</td>
                                                         <td>{{ $transactions->alamat_penerima }}</td>
                                                         <td>{{ $transactions->telepon_penerima }}</td>
                                                         <td>{{ $transactions->kota_penerima }}</td>
