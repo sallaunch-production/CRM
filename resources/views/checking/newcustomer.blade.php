@@ -65,17 +65,17 @@
                                             <thead>
                                             <tr>
                                                 <th>No</th>
-                                                <th>Nomor Referensi</th>
-                                                <th>Nama Penerima</th>
-                                                <th>Identitas</th>  
-                                                <th>No.dentitas</th>      
+                                                <th>IDPJK</th>
+                                                <th>Kode Nasabah</th>
+                                                <th>Nama Nasabah</th>
+                                                <th>Tempat Lahir</th>
                                                 <th>Tanggal Lahir</th>
-                                                <th>Alamat Penerima</th>      
-                                                <th>Telepon Penerima</th>      
-                                                <th>Kota Penerima</th>      
-                                                <th>Pekerjaan</th> 
-                                                <th>Tanggal </th>
-                                                <th> </th>
+                                                <th>Alamat</th>
+                                                <th>No KTP</th>
+                                                <th>Identitas Lain</th>
+                                                <th>CIF</th>
+                                                <th>NPWP</th>
+                                                <th>Local ID</th>
                                             </tr>
                                             </thead>
                                             
@@ -83,11 +83,21 @@
                                             @foreach($data  as $key => $transactions)
                                                     <tr>
                                                         <th >{{$key+1 }}</th>
-                                                        <td>{{ $transactions->no_referensi }}</td>
+                                                        <td>285</td>
+                                                        <td>1</td>
                                                         <td>{{ $transactions->nama_penerima }}</td>
+                                                        <td>{{ $transactions->tempat_lahir }}</td>
+                                                        <td>{{ \Carbon\Carbon::createFromFormat('m/d/Y', $transactions->tanggal_lahir)->format('dd-mm-yyyy') }}</td>
+                                                        <td>{{ $transactions->alamat_penerima }}</td>
+                                                        <td>{{ $transactions->nomor_identitas }}</td>
+                                                        <td></td>
+                                                        <td>{{ $transactions->no_referensi }}</td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <!--
+                                                        <td>{{ $transactions->no_referensi }}</td>
                                                         <td>{{ $transactions->identitas }}</td>
                                                         <td>{{ $transactions->nomor_identitas }}</td>
-                                                        <td>{{ \Carbon\Carbon::createFromFormat('m/d/Y', $transactions->tanggal_lahir)->format('d/m/Y') }}</td>
                                                         <td>{{ $transactions->alamat_penerima }}</td>
                                                         <td>{{ $transactions->telepon_penerima }}</td>
                                                         <td>{{ $transactions->kota_penerima }}</td>
@@ -96,7 +106,7 @@
                                                         <td><button type=button class="btn btn-primary btn-lg" data-toggle=modal data-target="#myModal{{$transactions->no}}">
                                                             Detail
                                                             </button>
-                                                        </td>
+                                                        </td>-->
                                                     </tr>
                                                 @endforeach
                                             </tbody>
@@ -134,23 +144,36 @@
                                             <thead>
                                             <tr>
                                                 <th>No</th>
-                                                <th>Ref Number </th>
-                                                <th>Nama Pengirim</th>
-                                                <th>Alamat Pengirim</th>      
-                                                <th>Nomor Telepon</th>      
-                                                <th>Tanggal Lahir</th>     
+                                                <th>IDPJK</th>
+                                                <th>Kode Nasabah</th>
+                                                <th>Nama Nasabah</th>
                                                 <th>Tempat Lahir</th>
-                                                <th>Nomor Identitas</th> 
-                                                <th>Negara Penerima</th>       
-                                                <th>Id Pos </th>
-                                                    <th>Tanggal </th>
-                                                <th> </th>
+                                                <th>Tanggal Lahir</th>
+                                                <th>Alamat</th>
+                                                <th>No KTP</th>
+                                                <th>Identitas Lain</th>
+                                                <th>CIF</th>
+                                                <th>NPWP</th>
+                                                <th>Local ID</th>
                                             </tr>
                                             </thead>
                                             
                                             <tbody>
                                             @foreach($data  as $key => $transactions)
                                                     <tr>
+                                                        <th >{{$key+1 }}</th>
+                                                        <td>285</td>
+                                                        <td>1</td>
+                                                        <td>{{ $transactions->nama_penerima }}</td>
+                                                        <td>{{ $transactions->tempat_lahir }}</td>
+                                                        <td>{{ \Carbon\Carbon::createFromFormat('m/d/Y', $transactions->tanggal_lahir)->format('dd-mm-yyyy') }}</td>
+                                                        <td>{{ $transactions->alamat_pengirim }}</td>
+                                                        <td>{{ $transactions->nomor_identitas }}</td>
+                                                        <td></td>
+                                                        <td>{{ $transactions->no_referensi }}</td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <!--
                                                         <th >{{$key+1 }}</th>
                                                         <td>{{ $transactions->no_referensi }}</td>
                                                         <td>{{ $transactions->nama_pengirim }}</td>
@@ -165,7 +188,7 @@
                                                         <td><button type=button class="btn btn-primary btn-lg" data-toggle=modal data-target="#myModal{{$transactions->no}}">
                                                             Detail
                                                             </button>
-                                                        </td>
+                                                        </td>-->
                                                     </tr>
                                                 @endforeach
                                             </tbody>
