@@ -19,7 +19,6 @@
                                 
                                     @foreach($querReceive  as $key => $datatrans)
                                     <tr>
-                                        <th >{{$key+1 }}</th>
                                         <td>285</td>
                                         <td>1</td>
                                         <td>{{ $datatrans->nama_penerima }}</td>
