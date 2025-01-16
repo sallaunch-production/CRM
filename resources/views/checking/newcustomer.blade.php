@@ -62,9 +62,9 @@
                                             @csrf
                                                 <input type=hidden  name="tanggal_dari" value="{{$tanggal_dari}}">
                                                 <input type=hidden  name="tanggal_sampai" value="{{$tanggal_sampai}}">
-                                            <input type=submit class="btn btn-danger" value="Cetak Laporan PPATK">
+                                            <input type=submit class="btn btn-danger" value="Cetak New Customer Gabungan">
                                             </form>
-                                            
+
                                             <table class="table table-border">
                                                     <tr><td>Dari : {{date('d-m-Y', strtotime($tanggal_dari))}} | Sampai : {{date('d-m-Y', strtotime($tanggal_sampai))}}</td></tr>
                                             </table>
