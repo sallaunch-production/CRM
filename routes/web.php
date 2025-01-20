@@ -180,7 +180,7 @@ Route::group(['middleware' => ['operasional']], function () {
     Route::post('cari_filtering_operasional',[App\Http\Controllers\CheckingController::class,'cari_filtering'])->name('cari_filtering_operasional')->middleware('auth');
     
     Route::get('history_refund_operasional',[App\Http\Controllers\ReportingController::class,'history_refund'])->name('history_refund')->middleware('auth');
-    Route::get('history_refund_pos_operasional',[App\Http\Controllers\ReportingController::class,'history_refund_pos'])->name('history_refund_pos')->middleware('auth');
+    Route::get('history_refund_pos_operasional',[App\Http\Controllers\ReportingController::class,'history_refund_pos'])->name('history_refund_pos_operasional')->middleware('auth');
     Route::get('history_amend_pos_operasional',[App\Http\Controllers\ReportingController::class,'history_amend_pos'])->name('history_amend_pos')->middleware('auth');
     
     Route::get('popimage-operasional',[App\Http\Controllers\ReportingController::class,'popimage'])->name('popimage')->middleware('auth');
@@ -198,6 +198,5 @@ Route::group(['middleware' => ['operasional']], function () {
     Route::post('search_newcustomer_send_operasional',[App\Http\Controllers\CheckingController::class,'search_newcustomer_send'])->name('search_newcustomer_send_operasional')->middleware('auth');
     Route::post('upload_refund_pos_operasional',[App\Http\Controllers\ReportingController::class,'upload_refund_pos'])->name('upload_refund_pos_operasional')->middleware('auth');
     Route::post('act_upload_refund_pos_operasional',[App\Http\Controllers\ReportingController::class,'act_upload_refund_pos'])->name('act_upload_refund_pos_operasional')->middleware('auth');
-    Route::get('history_refund_pos_operasional',[App\Http\Controllers\ReportingController::class,'history_refund_pos'])->name('history_refund_pos_operasional')->middleware('auth');
-
+   
 });
