@@ -136,9 +136,14 @@ class ImportExportController extends Controller
               ->count();
               
           // Format jumlahtrans menjadi format angka dengan leading zero
-          //$jumlahtrans = str_pad($jumlahtrans, 8, '0', STR_PAD_LEFT);
-          $jumlahtrans = str_pad($jumlahtrans, strlen($jumlahtrans) + 1, '0', STR_PAD_LEFT);
+          $partToPad = substr($jumlahtrans, -4);  // Mengambil 4 digit terakhir (460)
 
+          // Pastikan bahwa hanya angka ini yang diproses
+          $partToPad = str_pad($partToPad, 9, '0', STR_PAD_LEFT);  // Menambahkan leading 0 sampai total 9 digit
+          
+          // Gabungkan kembali bagian awal string dan angka yang telah diproses
+          $jumlahtrans = substr($jumlahtrans, 0, -4) . $partToPad;
+          
           // Path file yang akan dihasilkan
           $filePath = storage_path('app/G0001.txt');
           
