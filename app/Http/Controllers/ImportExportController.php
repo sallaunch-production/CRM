@@ -136,14 +136,8 @@ class ImportExportController extends Controller
               ->count();
               
           // Format jumlahtrans menjadi format angka dengan leading zero
-          $partToPad = substr($jumlahtrans, -4);  // Mengambil 4 digit terakhir (460)
-
-          // Pastikan bahwa hanya angka ini yang diproses
-          $partToPad = str_pad($partToPad, 9, '0', STR_PAD_LEFT);  // Menambahkan leading 0 sampai total 9 digit
-          
-          // Gabungkan kembali bagian awal string dan angka yang telah diproses
-          $jumlahtrans = substr($jumlahtrans, 0, -4) . $partToPad;
-          
+          $jumlahtrans = str_pad($jumlahtrans, 8, '0', STR_PAD_LEFT);
+         
           // Path file yang akan dihasilkan
           $filePath = storage_path('app/G0001.txt');
           
@@ -151,7 +145,7 @@ class ImportExportController extends Controller
           $myfile = fopen($filePath, "w");
        
           // Menulis header ke file
-          $txt = "777958119M".$sampai[0].$sampai[1]."01G0001".$jumlahtrans."\n";
+          $txt = "777958119M".$sampai[0].$sampai[1]."01G00010".$jumlahtrans."\n";
           fwrite($myfile, $txt);
   
           $no=0;		
