@@ -97,14 +97,14 @@ class ImportExportController extends Controller
               ->where('negara_penerima', '<>', 'INDONESIA')
               ->groupBy('nama_pengirim', 'nama_penerima', 'negara_penerima')
               ->unionAll(DB::table('transaksi_send_pos')
-                  ->select('nama_pengirim', 'nama_penerima', 'negara_penerima', DB::raw("sum(cast(replace(total_collect_amount, ',','') as float))"), DB::raw('COUNT(*) as jumlah'))
+                  ->select('nama_pengirim', 'nama_penerima', 'negara_penerima', DB::raw("sum(cast(replace(amount, ',','') as float))"), DB::raw('COUNT(*) as jumlah'))
                   ->where('tanggal', '>=', $tanggal_dari.' 00:00:00')
                   ->where('tanggal', '<=', $tanggal_sampai.' 23:59:59')
                   ->where('negara_penerima', '<>', 'INDONESIA')
                   ->groupBy('nama_pengirim', 'nama_penerima', 'negara_penerima')
               )
               ->unionAll(DB::table('transaksi_send_clients')
-                  ->select('nama_pengirim', 'nama_penerima', 'negara_penerima', DB::raw("sum(cast(replace(total_collect_amount, ',','') as float))"), DB::raw('COUNT(*) as jumlah'))
+                  ->select('nama_pengirim', 'nama_penerima', 'negara_penerima', DB::raw("sum(cast(replace(amount, ',','') as float))"), DB::raw('COUNT(*) as jumlah'))
                   ->where('tanggal', '>=', $tanggal_dari.' 00:00:00')
                   ->where('tanggal', '<=', $tanggal_sampai.' 23:59:59')
                   ->where('negara_penerima', '<>', 'INDONESIA')
@@ -136,8 +136,9 @@ class ImportExportController extends Controller
               ->count();
               
           // Format jumlahtrans menjadi format angka dengan leading zero
-          $jumlahtrans = str_pad($jumlahtrans, 8, '0', STR_PAD_LEFT);
-  
+          //$jumlahtrans = str_pad($jumlahtrans, 8, '0', STR_PAD_LEFT);
+          $jumlahtrans = str_pad($jumlahtrans, strlen($jumlahtrans) + 1, '0', STR_PAD_LEFT);
+
           // Path file yang akan dihasilkan
           $filePath = storage_path('app/G0001.txt');
           
