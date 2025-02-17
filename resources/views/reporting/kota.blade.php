@@ -57,7 +57,7 @@
                                     @foreach ($data  as $key => $datas)
                                     <tr>
                                         <?php
-                                            $nopend=substr($datas->id_pos,0,5);
+                                            $nopend=substr($datas->id_pos_sanitized,0,5);
                                             $datakota=DB::table('nopend_lama')->where('kpc','LIKE',$nopend.'%')->first();
                                         ?>
                                         <th >{{$key+1 }}</th>
@@ -68,7 +68,7 @@
                                             <form action="{{route('detail_kota_operasional')}}" method="POST" style="width:50%;">
                                             @endif
                                              @csrf
-                                                <input type="hidden" name="id" value="{{$datas->id_pos}}">
+                                                <input type="hidden" name="id" value="{{$datas->id_pos_sanitized}}">
                                                 <button type=submit class="badge badge-primary">
                                                     {{ $datas->id_pos }}({{$datakota->nama ?? ''}})
                                                 </button>
