@@ -252,7 +252,12 @@ class ReportingController extends Controller
       if(Auth::check()){
           $id=$request->id;
           $cari="";
-          $query = DB::table('transaksi_valid')->where('deltawork','=','ya')->where('id_pos','=',$id)->orderBy('tanggal','desc')->get();
+          //$query = DB::table('transaksi_valid')->where('deltawork','=','ya')->where('id_pos','=',$id)->orderBy('tanggal','desc')->get();
+          $query = DB::table('transaksi_valid')
+                      ->where('deltawork', '=', 'ya')
+                      ->where(DB::raw("REPLACE(id_pos, ' ', '')"), '=', str_replace(' ', '', $id))
+                      ->orderBy('tanggal', 'desc')
+                      ->get();
           $nopends=substr($id,0,5);
           $datakotas = DB::table('nopend_lama')->where('kpc','LIKE',$nopends.'%')->first();
          
