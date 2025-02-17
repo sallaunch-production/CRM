@@ -145,7 +145,7 @@ class ImportExportController extends Controller
           $myfile = fopen($filePath, "w");
        
           // Menulis header ke file
-          $txt = "777958119M".$sampai[0].$sampai[1]."01G00010".$jumlahtrans."\n";
+          $txt = "777958119M".$sampai[0].$sampai[1]."01G0001".$jumlahtrans."\n";
           fwrite($myfile, $txt);
   
           $no=0;		

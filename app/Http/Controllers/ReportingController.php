@@ -228,7 +228,17 @@ class ReportingController extends Controller
         if(Auth::check()){
             $nopends="";
             $cari="kosong";
-            $query = DB::table('transaksi_valid')->select('id_pos',DB::raw("sum(cast(replace(bsubanyak, ',','') as float))"),DB::raw('COUNT(no_referensi) as perbuatan'))->where('deltawork','=','ya')->where('id_pos','<>','')->groupBy('id_pos')->orderBy('perbuatan','desc')->get();
+            $query = DB::table('transaksi_valid')
+                      ->select(
+                          DB::raw("REPLACE(id_pos, ' ', '') as id_pos_sanitized"),
+                          DB::raw("sum(cast(replace(bsubanyak, ',','') as float))"),
+                          DB::raw("COUNT(no_referensi) as perbuatan")
+                      )
+                      ->where('deltawork', '=', 'ya')
+                      ->where('id_pos', '<>', '')
+                      ->groupBy(DB::raw("REPLACE(id_pos, ' ', '')"))
+                      ->orderBy('perbuatan', 'desc')
+                      ->get();
             return view('reporting.kota', [
               'data'=>$query, 'nopends'=>$nopends,'cari'=>$cari
              ]);
