@@ -70,7 +70,7 @@
                                              @csrf
                                                 <input type="hidden" name="id" value="{{$datas->id_pos_sanitized}}">
                                                 <button type=submit class="badge badge-primary">
-                                                    {{ $datas->id_pos }}({{$datakota->nama ?? ''}})
+                                                    {{ $datas->id_pos_sanitized }}({{$datakota->nama ?? ''}})
                                                 </button>
                                             </form> 
                                         </td>
