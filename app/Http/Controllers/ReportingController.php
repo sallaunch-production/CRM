@@ -111,9 +111,12 @@ class ReportingController extends Controller
             'created_at' => Carbon::now()->toDateTimeString(),
             'updated_at' =>Carbon::now()->toDateTimeString(),
           ]);
-          $data = DB::table('amend')->join('transaksi_send_pos','transaksi_send_pos.no_referensi','=','amend.no_referensi')->orderBy('amend.id','desc')->get(); 
-
-                return view('reporting.history_amend_pos', [
+          $data = DB::table('amend')
+                    ->join('transaksi_send_pos', 'transaksi_send_pos.no_referensi', '=', 'amend.no_referensi')
+                    ->select('amend.*', 'transaksi_send_pos.tanggal')  // Tambahkan kolom tanggal dari transaksi_send_pos
+                    ->orderBy('amend.id', 'desc')
+                    ->get();
+          return view('reporting.history_amend_pos', [
                     'data' => $data
              ]);
 

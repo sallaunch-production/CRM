@@ -60,7 +60,7 @@
                                         <td>
                                             @if($amends->status=="0")
                                                 Maker
-                                            @elseif($amends->status=="0")
+                                            @elseif($amends->status=="1")
                                                 Checker
                                             @else
                                                 Approval
