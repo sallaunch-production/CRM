@@ -113,7 +113,7 @@ class ReportingController extends Controller
           ]);
           $data = DB::table('amend')
                     ->join('transaksi_send_pos', 'transaksi_send_pos.no_referensi', '=', 'amend.no_referensi')
-                    ->select('amend.*', 'transaksi_send_pos.tanggal')  // Tambahkan kolom tanggal dari transaksi_send_pos
+                    ->select('amend.*', 'transaksi_send_pos.tanggal','transaksi_send_pos.nama_penerima')  // Tambahkan kolom tanggal dari transaksi_send_pos
                     ->orderBy('amend.id', 'desc')
                     ->get();
           return view('reporting.history_amend_pos', [
