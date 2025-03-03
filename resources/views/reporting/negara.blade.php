@@ -150,7 +150,7 @@
                                                    @endif 
                                                     @csrf
                                                         <input type="hidden" name="negara_pengirim" value="{{$datas->negara_pengirim}}">
-                                                        <input type="hidden" name="id_pos" value="{{$datas->id_pos}}">
+                                                       
                                                         <input type="hidden" name="dari" value="{{$tanggal_dari}}">
                                                         <input type="hidden" name="sampai" value="{{$tanggal_sampai}}">
                                                         <button type=submit class="badge badge-primary">
