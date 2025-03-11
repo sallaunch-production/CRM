@@ -36,7 +36,8 @@
                                     <th>Fee</th>
                                     <th>Total Collect</th>
                                     <th>Nama Penerima</th>
-                                    <th>Nama Pengirim</th>                                   
+                                    <th>Nama Pengirim</th> 
+                                    <th>Nopend</th>                                  
                                     <th>Identitas</th>
                                     <th>Nomor Identitas</th>
                                     <th>Tanggal Lahir</th> 
@@ -92,6 +93,7 @@
             {data: 'total_collect_amount', name: 'total_collect_amount', render: $.fn.dataTable.render.number(',', '.', '')},
             {data: 'nama_penerima', name: 'nama_penerima'},
             {data: 'nama_pengirim', name: 'nama_pengirim'},
+            {data: 'id_pos', name: 'id_pos'},
             {data: 'identitas', name: 'identitas'},
             {data: 'nomor_identitas', name: 'nomor_identitas'},
             {data: 'tanggal_lahir', name: 'tanggal_lahir'},
@@ -137,6 +139,7 @@
             {data: 'total_collect_amount', name: 'total_collect_amount', render: $.fn.dataTable.render.number(',', '.', '')},
             {data: 'nama_penerima', name: 'nama_penerima'},
             {data: 'nama_pengirim', name: 'nama_pengirim'},
+            {data: 'id_pos', name: 'id_pos'},
             {data: 'identitas', name: 'identitas'},
             {data: 'nomor_identitas', name: 'nomor_identitas'},
             {data: 'tanggal_lahir', name: 'tanggal_lahir'},
