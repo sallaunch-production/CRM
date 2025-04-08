@@ -1087,7 +1087,7 @@ class ReportingController extends Controller
         $ltkm= $request->ltkm;
         
         
-        $validatedData =  $request->validate(['gambar' => 'required|mimes:jpeg,png,jpg,pdf|max:4048']);
+        $validatedData =  $request->validate(['gambar' => 'required|mimes:jpeg,png,jpg,pdf|max:10240']);
         
         $name = $request->file('gambar')->getClientOriginalName();
         $filePath = 'pop/' . $name;
