@@ -39,7 +39,7 @@
                                         <td>1</td>
                                         <td>{{ $datatrans_s->nama_pengirim }}</td>
                                         <td>{{ $datatrans_s->kota_lahir_pengirim }}</td>
-                                        <td>{{ \Carbon\Carbon::createFromFormat('dmY', $datatrans_s->tanggal_lahir)->format('d-m-Y') }}</td>
+                                        <td>{{ \Carbon\Carbon::createFromFormat('m/d/Y', $datatrans_s->tanggal_lahir)->format('d-m-Y') }}</td>
                                         <td>{{ $datatrans_s->alamat_pengirim }}</td>
                                         <td>{{ $datatrans_s->nomor_identitas }}</td>
                                         <td></td>
