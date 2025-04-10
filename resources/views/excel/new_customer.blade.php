@@ -23,7 +23,7 @@
                                         <td>1</td>
                                         <td>{{ $datatrans->nama_penerima }}</td>
                                         <td>{{ $datatrans->kota_kelahiran }}</td>
-                                        <td>{{ $datatrans->tanggal_lahir }}</td>
+                                        <td>{{ \Carbon\Carbon::createFromFormat('n/j/Y', $datatrans->tanggal_lahir)->format('d-m-Y') }}</td>
                                         <td>{{ $datatrans->alamat_penerima }}</td>
                                         <td>{{ $datatrans->nomor_identitas }}</td>
                                         <td></td>
@@ -39,7 +39,32 @@
                                         <td>1</td>
                                         <td>{{ $datatrans_s->nama_pengirim }}</td>
                                         <td>{{ $datatrans_s->kota_lahir_pengirim }}</td>
-                                        <td>{{ $datatrans_s->tanggal_lahir }}</td>
+                                        
+                                        @php
+                                            if (!function_exists('formatTanggalLahir')) {
+                                                function formatTanggalLahir($tanggal) {
+                                                    try {
+                                                        // Format 1: 07031991 (dmY)
+                                                        if (preg_match('/^\d{8}$/', $tanggal)) {
+                                                            return \Carbon\Carbon::createFromFormat('dmY', $tanggal)->format('d-m-Y');
+                                                        }
+
+                                                        // Format 2: 8/23/1997 (n/j/Y)
+                                                        if (preg_match('/^\d{1,2}\/\d{1,2}\/\d{4}$/', $tanggal)) {
+                                                            return \Carbon\Carbon::createFromFormat('n/j/Y', $tanggal)->format('d-m-Y');
+                                                        }
+
+                                                        // Fallback: return as-is
+                                                        return $tanggal;
+                                                    } catch (\Exception $e) {
+                                                        return 'Format error';
+                                                    }
+                                                }
+                                            }
+                                        @endphp
+
+                                        <td>{{ formatTanggalLahir($datatrans_s->tanggal_lahir) }}</td>
+
                                         <td>{{ $datatrans_s->alamat_pengirim }}</td>
                                         <td>{{ $datatrans_s->nomor_identitas }}</td>
                                         <td></td>
