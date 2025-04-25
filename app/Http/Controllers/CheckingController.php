@@ -95,8 +95,8 @@ class CheckingController extends Controller
         if(Auth::check()){
               $nama=$request->nama;
               $berdasarkan=$request->berdasarkan;
-              //$query=DB::connection('mysql')->table('profil')->where($berdasarkan,'LIKE','%'.$nama.'%')->orderBy('nama','desc')->get();
-                $query=DB::table('profil')->where($berdasarkan,'LIKE','%'.$nama.'%')->orderBy('nama','desc')->get();
+                $query=DB::connection('mysql')->table('profil')->where($berdasarkan,'LIKE','%'.$nama.'%')->orderBy('nama','desc')->get();
+                //$query=DB::table('profil')->where($berdasarkan,'LIKE','%'.$nama.'%')->orderBy('nama','desc')->get();
             
                 return view('checking.profil',[
                     'dat'=>$query,'nama'=>$nama
@@ -115,8 +115,8 @@ class CheckingController extends Controller
               $detail="ya";
               $nama=$request->nama;
               $tanggal_lahir=$request->tanggal_lahir;
-              //$query  = DB::connection('mysql')->table('transaksi_valid')
-              $query  = DB::table('transaksi_valid')
+              $query  = DB::connection('mysql')->table('transaksi_valid')
+              //$query  = DB::table('transaksi_valid')
               ->join('transaksi', 'transaksi.no_referensi', '=', 'transaksi_valid.no_referensi')
               ->where('transaksi_valid.deltawork', 'ya')
               ->where('transaksi_valid.nama_penerima', $nama)
