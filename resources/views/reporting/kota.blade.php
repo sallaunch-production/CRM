@@ -81,7 +81,7 @@
                                 </table>
 
                                 @elseif(!empty($nopends))
-                                <h2>Nama Kota : {{$datakotas->nama}}</h2>
+                                <h2>Nama Kota : {{$datakotas->nama ?? '-'}}</h2>
                                 <table  id="example" class="table  table-striped  table-bordered" style="width:100%;">
                                     <thead>
                                     <tr>
