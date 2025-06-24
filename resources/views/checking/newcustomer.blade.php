@@ -90,7 +90,7 @@
                                             @foreach($data  as $key => $transactions)
                                                     <tr>
                                                         <th >{{$key+1 }}</th>
-                                                        <td>285</td>
+                                                        <td>1003780</td>
                                                         <td>1</td>
                                                         <td>{{ $transactions->nama_penerima }}</td>
                                                         <td>{{ $transactions->kota_kelahiran }}</td>
@@ -169,7 +169,7 @@
                                             @foreach($data  as $key => $transactions)
                                                     <tr>
                                                         <th >{{$key+1 }}</th>
-                                                        <td>285</td>
+                                                        <td>1003780</td>
                                                         <td>1</td>
                                                         <td>{{ $transactions->nama_pengirim }}</td>
                                                         <td>{{ $transactions->kota_lahir_pengirim }}</td>
