@@ -35,7 +35,7 @@
                                 <a href="{{ route('newcustomer_send_operasional') }}"> <button type="button" class="btn btn-danger">Send</button></a>
                             @endif
                                 <br><br>
-                                    @if(empty($send))
+                                    @if($send !="ya")
                                           @if($levelnya=="compliance") 
                                             <form role="form" action="{{ route('search_newcustomer') }}" method="POST" style="width:50%;">
                                           @elseif($levelnya=="operasional")

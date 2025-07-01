@@ -264,6 +264,7 @@ class CheckingController extends Controller
       public function search_newcustomer(Request $request){ 
         //  cek berhasil login 
         if(Auth::check()){
+           $send="";
           $tanggal = $request->reservation; // Misalnya "09/01/2024 - 09/30/2024"
           $dari = explode(' - ', $tanggal);
           $tanggal_dari = Carbon::createFromFormat('m/d/Y', trim($dari[0]))->format('Y-m-d');
@@ -316,7 +317,7 @@ class CheckingController extends Controller
                
 
           return view('checking.newcustomer',[
-            'tanggal_sampai'=>$tanggal_sampai,'tanggal_dari'=>$tanggal_dari,'data'=>$quer
+            'tanggal_sampai'=>$tanggal_sampai,'tanggal_dari'=>$tanggal_dari,'data'=>$quer,'send'=>$send
           ]);
 
 
