@@ -175,7 +175,7 @@
                                                         <td>{{ $transactions->kota_lahir_pengirim }}</td>
                                                         <td>
                                                             @if(!empty($send))
-                                                                {{ \Carbon\Carbon::createFromFormat('dmY', $tgl)->format('d-m-Y') }}
+                                                                {{ \Carbon\Carbon::createFromFormat('dmY', $transactions->tanggal_lahir)->format('d-m-Y') }}
                                                             @else
                                                                 {{ $transactions->tanggal_lahir ? \Carbon\Carbon::parse($transactions->tanggal_lahir)->format('d-m-Y') : '' }}
                                                             @endif
