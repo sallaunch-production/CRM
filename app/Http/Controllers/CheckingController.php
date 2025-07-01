@@ -254,7 +254,7 @@ class CheckingController extends Controller
             'created_at' => Carbon::now()->toDateTimeString(),
             'updated_at' =>Carbon::now()->toDateTimeString(),
         ]);
-                return view('checking.newcustomer',['send'=>$send]);
+                return view('checking.newcustomersend',['send'=>$send]);
         }
 
         return redirect('login')->with('You dont have access');
@@ -365,7 +365,7 @@ class CheckingController extends Controller
 
                
 
-          return view('checking.newcustomer',[
+          return view('checking.newcustomersend',[
             'tanggal_sampai'=>$tanggal_sampai,'tanggal_dari'=>$tanggal_dari,'data'=>$quer,'send'=>$send
           ]);
 

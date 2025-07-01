@@ -35,7 +35,7 @@
                                 <a href="{{ route('newcustomer_send_operasional') }}"> <button type="button" class="btn btn-danger">Send</button></a>
                             @endif
                                 <br><br>
-                                    @if(empty($send))
+                                   
                                           @if($levelnya=="compliance") 
                                             <form role="form" action="{{ route('search_newcustomer') }}" method="POST" style="width:50%;">
                                           @elseif($levelnya=="operasional")
@@ -121,96 +121,8 @@
                                             </table>
                                             @else
                                             @endif
-                               @elseif(!empty($send))
-                                             @if($levelnya=="compliance") 
-                                                <form role="form" action="{{ route('search_newcustomer_send') }}" method="POST" style="width:50%;">
-                                             @elseif($levelnya=="operasional") 
-                                                <form action="{{route('search_newcustomer_send_operasional')}}" method=POST style=width:50%;>
-                                             @endif   
-                                                @csrf  
-                                                    <div class=form-group>
-                                                    <label>Tanggal Transaksi Send</label>   
-                                                    <table class="table table-border">
-                                                      <tr><td> <input type='text' class="form-control" id="daterange" name="reservation"/> </td></tr> 
-                                                    
-                                                    </table>
-                                                </div>
-                                                
-                                                <div class=form-group>
-                                                    <input type=submit class="btn btn-info" value=CARI>
-                                                </div>
-                                            </form>
-
-                                    <!-- /.col -->
-                                            @if(!empty($tanggal_sampai))
-
-                                            <table class="table table-border">
-                                                    <tr><td>Dari : {{date('d-m-Y', strtotime($tanggal_dari))}} | Sampai : {{date('d-m-Y', strtotime($tanggal_sampai))}}</td></tr>
-                                            </table>
-                                            <table  id="example" class="table table-responsive table-striped  table-bordered">
-                                            <thead>
-                                            <tr>
-                                                <th>No</th>
-                                                <th>IDPJK</th>
-                                                <th>Kode Nasabah</th>
-                                                <th>Nama Nasabah</th>
-                                                <th>Tempat Lahir</th>
-                                                <th>Tanggal Lahir</th>
-                                                <th>Alamat</th>
-                                                <th>No KTP</th>
-                                                <th>Identitas Lain</th>
-                                                <th>CIF</th>
-                                                <th>NPWP</th>
-                                                <th>Local ID</th>
-                                            </tr>
-                                            </thead>
-                                            
-                                            <tbody>
-                                            @foreach($data  as $key => $transactions)
-                                                    <tr>
-                                                        <th >{{$key+1 }}</th>
-                                                        <td>1003780</td>
-                                                        <td>1</td>
-                                                        <td>{{ $transactions->nama_pengirim }}</td>
-                                                        <td>{{ $transactions->kota_lahir_pengirim }}</td>
-                                                        <td>
-                                                            @if(!empty($send))
-                                                                {{ \Carbon\Carbon::createFromFormat('dmY', $transactions->tanggal_lahir)->format('d-m-Y') }}
-                                                            @else
-                                                                {{ $transactions->tanggal_lahir ? \Carbon\Carbon::parse($transactions->tanggal_lahir)->format('d-m-Y') : '' }}
-                                                            @endif
-                                                        </td>
-                                                        <td>{{ $transactions->alamat_pengirim }}</td>
-                                                        <td>{{ $transactions->nomor_identitas }}</td>
-                                                        <td></td>
-                                                        <td>{{ $transactions->no_referensi }}</td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <!--
-                                                        <th >{{$key+1 }}</th>
-                                                        <td>{{ $transactions->no_referensi }}</td>
-                                                        <td>{{ $transactions->nama_pengirim }}</td>
-                                                        <td>{{ $transactions->alamat_pengirim }}</td>
-                                                        <td>{{ $transactions->telpon_pengirim }}</td>
-                                                        <td>{{ $transactions->tanggal_lahir }}</td>
-                                                        <td>{{ $transactions->tempat_lahir }}</td>
-                                                        <td>{{ $transactions->nomor_identitas }}</td>
-                                                        <td>{{ $transactions->negara_penerima }}</td>
-                                                        <td>{{ $transactions->kode_pos_domisili_pengirim }}</td>
-                                                        <td>{{ $transactions->tanggal }}</td>
-                                                        <td><button type=button class="btn btn-primary btn-lg" data-toggle=modal data-target="#myModal{{$transactions->no}}">
-                                                            Detail
-                                                            </button>
-                                                        </td>-->
-                                                    </tr>
-                                                @endforeach
-                                            </tbody>
-
-                                            </table>
-                                            @else
-                                            @endif
-                               
-                               @endif
+                              
+                             
                                 <!-- /.row --><br><br><br><br>
                                 </div>
                                 <!-- /.box-body -->
