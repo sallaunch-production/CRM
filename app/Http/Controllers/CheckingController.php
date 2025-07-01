@@ -223,7 +223,7 @@ class CheckingController extends Controller
       public function newcustomer(){ 
         //  cek berhasil login 
         if(Auth::check()){
-          $send="";
+          $send=" ";
           $qur = DB::table('audit_trail_crm')->insertGetId([
             'username' => Auth::user()->email,
             'url' => url()->current(),
@@ -264,7 +264,7 @@ class CheckingController extends Controller
       public function search_newcustomer(Request $request){ 
         //  cek berhasil login 
         if(Auth::check()){
-           $send="";
+          $send =" ";
           $tanggal = $request->reservation; // Misalnya "09/01/2024 - 09/30/2024"
           $dari = explode(' - ', $tanggal);
           $tanggal_dari = Carbon::createFromFormat('m/d/Y', trim($dari[0]))->format('Y-m-d');
