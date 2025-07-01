@@ -95,7 +95,7 @@
                                                         <td>{{ $transactions->nama_penerima }}</td>
                                                         <td>{{ $transactions->kota_kelahiran }}</td>
                                                         <td>
-                                                             {{ \Carbon\Carbon::hasFormat(trim($transactions->tanggal_lahir), 'm/d/Y') ? \Carbon\Carbon::createFromFormat('m/d/Y', trim($transactions->tanggal_lahir))->format('d-m-Y') : '-' }}
+                                                             {{$transactions->tanggal_lahir}}
                                                          </td>
                                                         <td>{{ $transactions->alamat_penerima }}</td>
                                                         <td>{{ $transactions->nomor_identitas }}</td>
