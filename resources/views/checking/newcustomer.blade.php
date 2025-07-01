@@ -173,7 +173,11 @@
                                                         <td>1</td>
                                                         <td>{{ $transactions->nama_pengirim }}</td>
                                                         <td>{{ $transactions->kota_lahir_pengirim }}</td>
+                                                        @if($send=="ya")
                                                         <td>{{ \Carbon\Carbon::createFromFormat('dmY', $transactions->tanggal_lahir)->format('d-m-Y') }}</td>
+                                                        @else
+                                                        <td>{{ \Carbon\Carbon::createFromFormat('m/d/Y', $transactions->tanggal_lahir)->format('d-m-Y') }}</td>
+                                                        @endif
                                                         <td>{{ $transactions->alamat_pengirim }}</td>
                                                         <td>{{ $transactions->nomor_identitas }}</td>
                                                         <td></td>
