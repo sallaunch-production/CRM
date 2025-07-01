@@ -94,15 +94,8 @@
                                                         <td>1</td>
                                                         <td>{{ $transactions->nama_penerima }}</td>
                                                         <td>{{ $transactions->kota_kelahiran }}</td>
-                                                        <td>@php
-                                                                 $tgl = $transactions->tanggal_lahir;
-                                                                @endphp
-
-                                                                @if($tgl)
-                                                                    {{ \Carbon\Carbon::createFromFormat('m/d/Y', $tgl)->format('d-m-Y') }}
-                                                                @else
-                                                                    -
-                                                                @endif
+                                                        <td>
+                                                             {{ \Carbon\Carbon::hasFormat(trim($transactions->tanggal_lahir), 'm/d/Y') ? \Carbon\Carbon::createFromFormat('m/d/Y', trim($transactions->tanggal_lahir))->format('d-m-Y') : '-' }}
                                                          </td>
                                                         <td>{{ $transactions->alamat_penerima }}</td>
                                                         <td>{{ $transactions->nomor_identitas }}</td>
