@@ -122,8 +122,7 @@
                                             @else
                                             @endif
                             
-                               
-                               @endif
+                             
                                 <!-- /.row --><br><br><br><br>
                                 </div>
                                 <!-- /.box-body -->
