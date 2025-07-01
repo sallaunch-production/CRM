@@ -71,7 +71,7 @@
                                             <table  id="example" class="table table-responsive table-striped  table-bordered">
                                             <thead>
                                             <tr>
-                                                <th>No</th>
+                                                <th>No{{$send}}</th>
                                                 <th>IDPJK</th>
                                                 <th>Kode Nasabah</th>
                                                 <th>Nama Nasabah</th>
@@ -94,9 +94,7 @@
                                                         <td>1</td>
                                                         <td>{{ $transactions->nama_penerima }}</td>
                                                         <td>{{ $transactions->kota_kelahiran }}</td>
-                                                        <td>
-                                                             {{$transactions->tanggal_lahir}}
-                                                         </td>
+                                                        <td>{{ \Carbon\Carbon::createFromFormat('m/d/Y', $transactions->tanggal_lahir)->format('d-m-Y') }}</td>
                                                         <td>{{ $transactions->alamat_penerima }}</td>
                                                         <td>{{ $transactions->nomor_identitas }}</td>
                                                         <td></td>
@@ -123,8 +121,9 @@
                                             </table>
                                             @else
                                             @endif
-                              
-                             
+                            
+                               
+                               @endif
                                 <!-- /.row --><br><br><br><br>
                                 </div>
                                 <!-- /.box-body -->
