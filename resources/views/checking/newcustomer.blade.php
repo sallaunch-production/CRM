@@ -174,14 +174,10 @@
                                                         <td>{{ $transactions->nama_pengirim }}</td>
                                                         <td>{{ $transactions->kota_lahir_pengirim }}</td>
                                                         <td>
-                                                            @php
-                                                                $tgl = $transactions->tanggal_lahir;
-                                                            @endphp
-
-                                                            @if(strlen($tgl) === 8 && is_numeric($tgl))
+                                                            @if(!empty($send))
                                                                 {{ \Carbon\Carbon::createFromFormat('dmY', $tgl)->format('d-m-Y') }}
                                                             @else
-                                                                {{ $tgl }} {{-- fallback raw value jika tidak sesuai format --}}
+                                                                {{ $transactions->tanggal_lahir ? \Carbon\Carbon::parse($transactions->tanggal_lahir)->format('d-m-Y') : '' }}
                                                             @endif
                                                         </td>
                                                         <td>{{ $transactions->alamat_pengirim }}</td>
