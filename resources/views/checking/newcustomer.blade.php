@@ -35,7 +35,7 @@
                                 <a href="{{ route('newcustomer_send_operasional') }}"> <button type="button" class="btn btn-danger">Send</button></a>
                             @endif
                                 <br><br>
-                                    @if($send ?? '' !="ya")
+                                    @if(empty($send))
                                           @if($levelnya=="compliance") 
                                             <form role="form" action="{{ route('search_newcustomer') }}" method="POST" style="width:50%;">
                                           @elseif($levelnya=="operasional")
@@ -173,11 +173,7 @@
                                                         <td>1</td>
                                                         <td>{{ $transactions->nama_pengirim }}</td>
                                                         <td>{{ $transactions->kota_lahir_pengirim }}</td>
-                                                        @if($send=="ya")
                                                         <td>{{ \Carbon\Carbon::createFromFormat('dmY', $transactions->tanggal_lahir)->format('d-m-Y') }}</td>
-                                                        @else
-                                                        <td>{{ \Carbon\Carbon::createFromFormat('m/d/Y', $transactions->tanggal_lahir)->format('d-m-Y') }}</td>
-                                                        @endif
                                                         <td>{{ $transactions->alamat_pengirim }}</td>
                                                         <td>{{ $transactions->nomor_identitas }}</td>
                                                         <td></td>
