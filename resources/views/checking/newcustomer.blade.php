@@ -121,7 +121,7 @@
                                             </table>
                                             @else
                                             @endif
-                               @else
+                               @elseif(!empty($send))
                                              @if($levelnya=="compliance") 
                                                 <form role="form" action="{{ route('search_newcustomer_send') }}" method="POST" style="width:50%;">
                                              @elseif($levelnya=="operasional") 
