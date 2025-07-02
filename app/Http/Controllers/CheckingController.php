@@ -312,9 +312,7 @@ class CheckingController extends Controller
           ->whereNull('t2.nama_penerima') // Filter nama_penerima yang tidak ada di t2
           ->groupBy('t1.nama_penerima')
           ->orderBy(DB::raw('MIN(t1.tanggal)'), 'desc') // Menambahkan agregat untuk tanggal di ORDER BY
-          ->get();                           
-
-               
+          ->get();  
 
           return view('checking.newcustomer',[
             'tanggal_sampai'=>$tanggal_sampai,'tanggal_dari'=>$tanggal_dari,'data'=>$quer,'send'=>$send

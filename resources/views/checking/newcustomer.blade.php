@@ -42,11 +42,8 @@
                     @endif
                     <br><br>
 
-                    @if($levelnya=="compliance") 
-                        <form role="form" action="{{ route('search_newcustomer') }}" method="POST" style="width:50%;">
-                    @elseif($levelnya=="operasional")
-                        <form role="form" action="{{ route('search_newcustomer_operasional') }}" method="POST" style="width:50%;">
-                    @endif
+                
+                        <form role="form" action="{{ $levelnya == 'compliance' ? route('search_newcustomer') : route('search_newcustomer_operasional') }}" method="POST" style="width:50%;">
                         @csrf  
                         <div class="form-group">
                             <label>Tanggal Transaksi Receive</label>   
@@ -78,7 +75,7 @@
                         <table id="example" class="table table-responsive table-striped table-bordered">
                             <thead>
                                 <tr>
-                                    <th>No{{ $send }}</th>
+                                    <th>No</th>
                                     <th>IDPJK</th>
                                     <th>Kode Nasabah</th>
                                     <th>Nama Nasabah</th>
