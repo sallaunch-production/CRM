@@ -132,6 +132,7 @@ Route::post('act_tambah_sanction',[App\Http\Controllers\CheckingController::clas
 Route::get('transaction_receive_adisena_compliance',[App\Http\Controllers\ReportingController::class,'transaction_receive_adisena'])->name('transaction_receive_adisena_compliance')->middleware('auth');
 Route::get('transaction_send_adisena_compliance',[App\Http\Controllers\ReportingController::class,'transaction_send_adisena'])->name('transaction_send_adisena_compliance')->middleware('auth');
 Route::post('cetak_new_customer_gabungan',[App\Http\Controllers\ImportExportController::class,'cetak_new_customer_gabungan'])->name('cetak_new_customer_gabungan')->middleware('auth');
+Route::post('get-all-newcustomer', [CheckingController::class, 'getAll'])->name('get_all_newcustomer')->middleware('auth');
 
 });
 

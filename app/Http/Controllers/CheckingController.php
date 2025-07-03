@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
@@ -261,65 +262,102 @@ class CheckingController extends Controller
       }
 
 
-      public function search_newcustomer(Request $request){ 
-        //  cek berhasil login 
-        if(Auth::check()){
-          $send =" ";
-          $tanggal = $request->reservation; // Misalnya "09/01/2024 - 09/30/2024"
-          $dari = explode(' - ', $tanggal);
-          $tanggal_dari = Carbon::createFromFormat('m/d/Y', trim($dari[0]))->format('Y-m-d');
-          $tanggal_sampai = Carbon::createFromFormat('m/d/Y', trim($dari[1]))->format('Y-m-d');
-          
-        // Ambil tahun dari tanggal_sampai
-        $tahun_sampai = Carbon::createFromFormat('Y-m-d', $tanggal_sampai)->year;
-        
-        /*$quer=DB::table('transaksi_valid')->select('nama_penerima', 'no_referensi', 'tanggal', 'nomor_identitas', 'tanggal_lahir', 'alamat_penerima', 'telepon_penerima', 'id_pos')
-                                          ->where('tanggal','>=',$tanggal_dari.' 00:00:00')
-                                          ->where('tanggal','<=',$tanggal_sampai.' 23:59:59')
-                                          ->whereNotIn('nama_penerima', function($q) use($tanggal_dari) {
-                                            $q->select('nama_penerima')
-                                            ->from('transaksi_valid')
-                                            ->where('tanggal', '<=', $tanggal_dari.' 23:59:59')
-                                            ->whereNotNull('nama_penerima');
-                                            }) 
-                                            ->groupBy('nama_penerima')
-                                            ->orderBy('tanggal', 'desc')
-                                            ->get();*/
-       $quer = DB::table('transaksi_valid as t1')
-          ->select(
-              DB::raw('MIN(t1.no) AS no'),
-              't1.nama_penerima',
-              DB::raw('MIN(t1.no_referensi) AS no_referensi'),
-              DB::raw('MIN(t1.tanggal) AS tanggal'),
-              DB::raw('MIN(t1.nomor_identitas) AS nomor_identitas'),
-              DB::raw('MIN(t1.tanggal_lahir) AS tanggal_lahir'),
-              DB::raw('MIN(t1.tempat_lahir) AS tempat_lahir'),
-              DB::raw('MIN(t1.kota_kelahiran) AS kota_kelahiran'),
-              DB::raw('MIN(t1.alamat_penerima) AS alamat_penerima'),
-              DB::raw('MIN(t1.telepon_penerima) AS telepon_penerima'),
-              DB::raw('MIN(t1.negara_pengirim) AS negara_pengirim'),
-              DB::raw('MIN(t1.kode_pos_penerima) AS kode_pos_penerima')
-          )
-          ->leftJoin('transaksi_send_pos as t2', function($join) use ($tanggal_dari) {
-              $join->on('t1.nama_penerima', '=', 't2.nama_penerima')
-                    ->where('t2.tanggal', '<=', $tanggal_dari . ' 23:59:59');
-          })
-          ->where('t1.tanggal', '>=', $tanggal_dari . ' 00:00:00')
-          ->where('t1.tanggal', '<=', $tanggal_sampai . ' 23:59:59')
-          ->whereNull('t2.nama_penerima') // Filter nama_pengirim yang tidak ada di t2
-          ->groupBy('t1.nama_penerima')
-          ->get();   
 
-
-          return view('checking.newcustomer',[
-            'tanggal_sampai'=>$tanggal_sampai,'tanggal_dari'=>$tanggal_dari,'data'=>$quer,'send'=>$send
-          ]);
-
-
-        }
-
+public function search_newcustomer(Request $request)
+{
+    if (!Auth::check()) {
         return redirect('login')->with('You dont have access');
-      }
+    }
+
+    if ($request->ajax()) {
+        $tanggal = $request->reservation;
+    $dari = explode(' - ', $tanggal);
+    $tanggal_dari = Carbon::createFromFormat('m/d/Y', trim($dari[0]))->format('Y-m-d');
+    $tanggal_sampai = Carbon::createFromFormat('m/d/Y', trim($dari[1]))->format('Y-m-d');
+
+    $query = DB::table('transaksi_valid as t1')
+        ->select(
+            DB::raw('MIN(t1.no) AS no'),
+            't1.nama_penerima',
+            DB::raw('MIN(t1.no_referensi) AS no_referensi'),
+            DB::raw('MIN(t1.tanggal) AS tanggal'),
+            DB::raw('MIN(t1.nomor_identitas) AS nomor_identitas'),
+            DB::raw('MIN(t1.tanggal_lahir) AS tanggal_lahir'),
+            DB::raw('MIN(t1.tempat_lahir) AS tempat_lahir'),
+            DB::raw('MIN(t1.kota_kelahiran) AS kota_kelahiran'),
+            DB::raw('MIN(t1.alamat_penerima) AS alamat_penerima'),
+            DB::raw('MIN(t1.telepon_penerima) AS telepon_penerima'),
+            DB::raw('MIN(t1.negara_pengirim) AS negara_pengirim'),
+            DB::raw('MIN(t1.kode_pos_penerima) AS kode_pos_penerima')
+        )
+        ->leftJoin('transaksi_send_pos as t2', function ($join) use ($tanggal_dari) {
+            $join->on('t1.nama_penerima', '=', 't2.nama_penerima')
+                 ->where('t2.tanggal', '<=', $tanggal_dari . ' 23:59:59');
+        })
+        ->whereBetween('t1.tanggal', [$tanggal_dari . ' 00:00:00', $tanggal_sampai . ' 23:59:59'])
+        ->whereNull('t2.nama_penerima')
+        ->groupBy('t1.nama_penerima');
+
+    // Gunakan of() tanpa subquery SQL
+    return DataTables::of($query)
+          ->addIndexColumn()
+          ->addColumn('idpjk', function () {
+              return '1003780';
+          })
+          ->addColumn('kode_nasabah', function () {
+              return '1';
+          })
+          ->addColumn('identitas_lain', function () {
+              return '-';
+          })
+          ->addColumn('npwp', function () {
+              return '-';
+          })
+          ->addColumn('local_id', function () {
+              return '-';
+          })
+          ->make(true);
+    }
+
+    return view('checking.newcustomer');
+}
+
+
+
+public function getAll(Request $request)
+{
+    $data = NewCustomer::query();
+
+    // Optional: filter tanggal
+    if ($request->reservation) {
+        [$from, $to] = explode(' - ', $request->reservation);
+        $data->whereBetween('tanggal_transaksi', [
+            date('Y-m-d', strtotime($from)),
+            date('Y-m-d', strtotime($to))
+        ]);
+    }
+
+    $results = $data->get()->map(function ($item, $index) {
+        return [
+            'DT_RowIndex' => $index + 1,
+            'idpjk' => $item->idpjk,
+            'kode_nasabah' => $item->kode_nasabah,
+            'nama_penerima' => $item->nama_penerima,
+            'kota_kelahiran' => $item->kota_kelahiran,
+            'tanggal_lahir' => $item->tanggal_lahir,
+            'alamat_penerima' => $item->alamat_penerima,
+            'nomor_identitas' => $item->nomor_identitas,
+            'identitas_lain' => $item->identitas_lain,
+            'no_referensi' => $item->no_referensi,
+            'npwp' => $item->npwp,
+            'local_id' => $item->local_id,
+        ];
+    });
+
+    return response()->json(['data' => $results]);
+}
+
+
 
       public function search_newcustomer_send(Request $request){ 
         //  cek berhasil login 
