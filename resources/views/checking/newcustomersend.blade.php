@@ -88,11 +88,21 @@
                                                         <td>{{ $transactions->nama_pengirim }}</td>
                                                         <td>{{ $transactions->kota_lahir_pengirim }}</td>
                                                         <td>
-                                                            @if(!empty($send))
-                                                                {{ \Carbon\Carbon::createFromFormat('dmY', $transactions->tanggal_lahir)->format('d-m-Y') }}
-                                                            @else
-                                                                {{ $transactions->tanggal_lahir ? \Carbon\Carbon::parse($transactions->tanggal_lahir)->format('d-m-Y') : '' }}
-                                                            @endif
+                                                         @php
+    $rawTgl = preg_replace('/[^0-9]/', '', $transactions->tanggal_lahir);
+
+    if (strlen($rawTgl) === 8) {
+        try {
+            $tanggal = \Carbon\Carbon::createFromFormat('dmY', $rawTgl)->format('d-m-Y');
+        } catch (\Exception $e) {
+            $tanggal = 'Format salah';
+        }
+    } else {
+        $tanggal = 'Tanggal tidak valid';
+    }
+@endphp
+
+{{ $tanggal }}
                                                         </td>
                                                         <td>{{ $transactions->alamat_pengirim }}</td>
                                                         <td>{{ $transactions->nomor_identitas }}</td>
