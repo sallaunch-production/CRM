@@ -324,40 +324,6 @@ public function search_newcustomer(Request $request)
 
 
 
-public function getAll(Request $request)
-{
-    $data = NewCustomer::query();
-
-    // Optional: filter tanggal
-    if ($request->reservation) {
-        [$from, $to] = explode(' - ', $request->reservation);
-        $data->whereBetween('tanggal_transaksi', [
-            date('Y-m-d', strtotime($from)),
-            date('Y-m-d', strtotime($to))
-        ]);
-    }
-
-    $results = $data->get()->map(function ($item, $index) {
-        return [
-            'DT_RowIndex' => $index + 1,
-            'idpjk' => $item->idpjk,
-            'kode_nasabah' => $item->kode_nasabah,
-            'nama_penerima' => $item->nama_penerima,
-            'kota_kelahiran' => $item->kota_kelahiran,
-            'tanggal_lahir' => $item->tanggal_lahir,
-            'alamat_penerima' => $item->alamat_penerima,
-            'nomor_identitas' => $item->nomor_identitas,
-            'identitas_lain' => $item->identitas_lain,
-            'no_referensi' => $item->no_referensi,
-            'npwp' => $item->npwp,
-            'local_id' => $item->local_id,
-        ];
-    });
-
-    return response()->json(['data' => $results]);
-}
-
-
 
       public function search_newcustomer_send(Request $request){ 
         //  cek berhasil login 
