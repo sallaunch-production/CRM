@@ -60,10 +60,10 @@
                         </div>
                     </form>
 
-                    <form action="{{ route('cetak_new_customer_gabungan') }}" method="POST">
+                    <form id="cetakForm" action="{{ route('cetak_new_customer_gabungan') }}" method="POST">
                         @csrf
-                        <input type="hidden" name="tanggal_dari" value="{{ $tanggal_dari ?? '' }}">
-                        <input type="hidden" name="tanggal_sampai" value="{{ $tanggal_sampai ?? '' }}">
+                        <input type="hidden" name="tanggal_dari" id="tanggal_dari">
+                        <input type="hidden" name="tanggal_sampai" id="tanggal_sampai">
                         <input type="submit" class="btn btn-danger" value="Cetak New Customer Gabungan">
                     </form>
 
@@ -198,6 +198,18 @@ $(document).ready(function () {
         table.ajax.reload();
     });
 
+
+     // Isi tanggal_dari & tanggal_sampai dari #daterange saat form cetak dikirim
+    $('form[action="{{ route('cetak_new_customer_gabungan') }}"]').submit(function (e) {
+        var range = $('#daterange').val();
+        if (range) {
+            var tanggal = range.split(' - ');
+            $('#tanggal_dari').val(tanggal[0]);
+            $('#tanggal_sampai').val(tanggal[1]);
+        }
+    });
+
+    
     $("#success-alert").fadeTo(2000, 500).fadeOut(500);
 });
 </script>
