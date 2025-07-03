@@ -285,33 +285,30 @@ class CheckingController extends Controller
                                             ->groupBy('nama_penerima')
                                             ->orderBy('tanggal', 'desc')
                                             ->get();*/
-        $quer = DB::table('transaksi_valid as t1')
-    ->leftJoin('transaksi_valid as t2', function ($join) use ($tanggal_dari) {
-        $join->on('t1.nama_penerima', '=', 't2.nama_penerima')
-             ->where('t2.tanggal', '<=', $tanggal_dari . ' 23:59:59');
-    })
-    ->whereNull('t2.nama_penerima')
-    ->whereBetween('t1.tanggal', [$tanggal_dari . ' 00:00:00', $tanggal_sampai . ' 23:59:59'])
-    ->groupBy('t1.nama_penerima')
-    ->selectRaw('
-        MIN(t1.no) AS no,
-        t1.nama_penerima,
-        MIN(t1.no_referensi) AS no_referensi,
-        MIN(t1.tanggal) AS tanggal,
-        MIN(t1.identitas) AS identitas,
-        MIN(t1.nomor_identitas) AS nomor_identitas,
-        MIN(t1.tanggal_lahir) AS tanggal_lahir,
-        MIN(t1.tempat_lahir) AS tempat_lahir,
-        MIN(t1.alamat_penerima) AS alamat_penerima,
-        MIN(t1.kota_kelahiran) AS kota_kelahiran,
-        MIN(t1.telepon_penerima) AS telepon_penerima,
-        MIN(t1.negara_pengirim) AS negara_pengirim,
-        MIN(t1.kota_penerima) AS kota_penerima,
-        MIN(t1.pekerjaan) AS pekerjaan,
-        MIN(t1.id_pos) AS id_pos
-    ')
-    ->orderBy(DB::raw('MIN(t1.tanggal)'), 'desc')
-    ->get();
+       $quer = DB::table('transaksi_valid as t1')
+          ->select(
+              DB::raw('MIN(t1.no) AS no'),
+              't1.nama_penerima',
+              DB::raw('MIN(t1.no_referensi) AS no_referensi'),
+              DB::raw('MIN(t1.tanggal) AS tanggal'),
+              DB::raw('MIN(t1.nomor_identitas) AS nomor_identitas'),
+              DB::raw('MIN(t1.tanggal_lahir) AS tanggal_lahir'),
+              DB::raw('MIN(t1.tempat_lahir) AS tempat_lahir'),
+              DB::raw('MIN(t1.kota_kelahiran) AS kota_kelahiran'),
+              DB::raw('MIN(t1.alamat_penerima) AS alamat_penerima'),
+              DB::raw('MIN(t1.telepon_penerima) AS telepon_penerima'),
+              DB::raw('MIN(t1.negara_pengirim) AS negara_pengirim'),
+              DB::raw('MIN(t1.kode_pos_penerima) AS kode_pos_penerima')
+          )
+          ->leftJoin('transaksi_send_pos as t2', function($join) use ($tanggal_dari) {
+              $join->on('t1.nama_penerima', '=', 't2.nama_penerima')
+                    ->where('t2.tanggal', '<=', $tanggal_dari . ' 23:59:59');
+          })
+          ->where('t1.tanggal', '>=', $tanggal_dari . ' 00:00:00')
+          ->where('t1.tanggal', '<=', $tanggal_sampai . ' 23:59:59')
+          ->whereNull('t2.nama_penerima') // Filter nama_pengirim yang tidak ada di t2
+          ->groupBy('t1.nama_penerima')
+          ->get();   
 
 
           return view('checking.newcustomer',[
