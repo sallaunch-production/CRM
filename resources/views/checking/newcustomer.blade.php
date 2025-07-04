@@ -133,66 +133,55 @@
 $(document).ready(function () {
     $('#daterange').daterangepicker();
 
-    var table = $('#example').DataTable({
-        processing: true,
-        serverSide: true,
-        ajax: {
-            url: '{{ $levelnya == "compliance" ? route("search_newcustomer") : route("search_newcustomer_operasional") }}',
-            type: 'POST',
-            data: function (d) {
-                d._token = '{{ csrf_token() }}';
-                d.reservation = $('#daterange').val();
+      var table = $('#example').DataTable({
+    processing: true,
+    serverSide: true,
+    ajax: {
+        url: '{{ $levelnya == "compliance" ? route("search_newcustomer") : route("search_newcustomer_operasional") }}',
+        type: 'POST',
+        data: function (d) {
+            d._token = '{{ csrf_token() }}';
+            d.reservation = $('#daterange').val();
+        }
+    },
+    columns: [
+        { data: 'DT_RowIndex', orderable: false, searchable: false },
+        { data: 'idpjk', name: 'idpjk' },
+        { data: 'kode_nasabah', name: 'kode_nasabah' },
+        { data: 'nama_penerima', name: 'nama_penerima' },
+        { data: 'kota_kelahiran', name: 'kota_kelahiran' },
+        {
+            data: 'tanggal_lahir',
+            name: 'tanggal_lahir',
+            render: function(data, type, row) {
+                if (!data) return '';
+                const d = new Date(data);
+                const day = String(d.getDate()).padStart(2, '0');
+                const month = String(d.getMonth() + 1).padStart(2, '0');
+                const year = d.getFullYear();
+                return `${day}-${month}-${year}`;
             }
         },
-        columns: [
-            { data: 'DT_RowIndex', orderable: false, searchable: false },
-            { data: 'idpjk', name: 'idpjk' },
-            { data: 'kode_nasabah', name: 'kode_nasabah' },
-            { data: 'nama_penerima', name: 'nama_penerima' },
-            { data: 'kota_kelahiran', name: 'kota_kelahiran' },
-            { data: 'tanggal_lahir', name: 'tanggal_lahir' },
-            { data: 'alamat_penerima', name: 'alamat_penerima' },
-            { data: 'nomor_identitas', name: 'nomor_identitas' },
-            { data: 'identitas_lain', name: 'identitas_lain' },
-            { data: 'no_referensi', name: 'no_referensi' },
-            { data: 'npwp', name: 'npwp' },
-            { data: 'local_id', name: 'local_id' },
-        ],
-        order: [[3, 'asc']],
-        dom: 'Bfrtip',
-        buttons: [
-            {
-                extend: 'copy',
-                text: 'COPY',
-                title: 'TRANSAKSI NEW CUSTOMER',
-                exportOptions: { columns: ':visible:not(:last-child)' }
-            },
-            {
-                extend: 'csv',
-                text: 'CSV',
-                title: 'TRANSAKSI NEW CUSTOMER',
-                exportOptions: { columns: ':visible:not(:last-child)' }
-            },
-            {
-                extend: 'excel',
-                text: 'Excel',
-                title: 'TRANSAKSI NEW CUSTOMER',
-                exportOptions: { columns: ':visible:not(:last-child)' }
-            },
-            {
-                extend: 'pdf',
-                text: 'PDF',
-                title: 'TRANSAKSI NEW CUSTOMER',
-                exportOptions: { columns: ':visible:not(:last-child)' }
-            },
-            {
-                extend: 'print',
-                text: 'Print',
-                title: 'TRANSAKSI NEW CUSTOMER',
-                exportOptions: { columns: ':visible' }
-            }
-        ]
-    });
+        { data: 'alamat_penerima', name: 'alamat_penerima' },
+        { data: 'nomor_identitas', name: 'nomor_identitas' },
+        { data: 'identitas_lain', name: 'identitas_lain' },
+        { data: 'no_referensi', name: 'no_referensi' },
+        { data: 'npwp', name: 'npwp' },
+        { data: 'local_id', name: 'local_id' },
+    ],
+    order: [[3, 'asc']],
+    dom: 'Blfrtip',
+    buttons: [
+        { extend: 'copy', text: 'COPY', title: 'TRANSAKSI NEW CUSTOMER', exportOptions: { columns: ':visible:not(:last-child)' }},
+        { extend: 'csv', text: 'CSV', title: 'TRANSAKSI NEW CUSTOMER', exportOptions: { columns: ':visible:not(:last-child)' }},
+        { extend: 'excel', text: 'Excel', title: 'TRANSAKSI NEW CUSTOMER', exportOptions: { columns: ':visible:not(:last-child)' }},
+        { extend: 'pdf', text: 'PDF', title: 'TRANSAKSI NEW CUSTOMER', exportOptions: { columns: ':visible:not(:last-child)' }},
+        { extend: 'print', text: 'Print', title: 'TRANSAKSI NEW CUSTOMER', exportOptions: { columns: ':visible' }}
+    ],
+    lengthMenu: [[10, 100, 500, 1000], [10, 100, 500,1000]],
+    pageLength: 10
+});
+
 
     $('#btn-cari').click(function () {
         table.ajax.reload();
