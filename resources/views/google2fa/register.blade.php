@@ -10,7 +10,9 @@
                 <div class="panel-body" style="text-align: center;">
                     <p>Anda dapat menggunakan two factor authentication dengan melakukan scan pada barcode dibawah. Alternatif lainnya, anda dapat menggunakan code berikut: {{ $secret }}</p>
                     <div>
-                       <pre>{{ strlen($QR_Image) }}</pre>
+                      {!! '<img src="data:image/png;base64,' . $QR_Image . ' />' !!}
+
+
                     </div>
                     <p>Anda harus mengatur Google Authenticator app sebelum melanjutkan.</p>
                     <div>
