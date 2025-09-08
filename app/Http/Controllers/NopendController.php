@@ -45,10 +45,14 @@ class NopendController extends Controller
         //  cek berhasil login 
         if(Auth::check()){
             $nopend = $request->nopend;
-            $jum= DB::connection('mysql')->table('agent_id')->where('id_pos','LIKE','%'.$nopend.'%')->count();
-            $ques= DB::connection('mysql')->table('nopend')->where('kpc','LIKE',$nopend.'%')->count();
-            $query = DB::connection('mysql')->table('agent_id')->where('id_pos','LIKE','%'.$nopend.'%')->get();
-            $query_nopend = DB::connection('mysql')->table('nopend')->join('agent_id','agent_id.id_pos','=','nopend.kprk')->where('nopend.kpc','LIKE','%'.$nopend.'%')->get();
+            //$jum= DB::connection('')->table('agent_id')->where('id_pos','LIKE','%'.$nopend.'%')->count();
+            $jum= DB::table('agent_id')->where('id_pos','LIKE','%'.$nopend.'%')->count();
+            //$ques= DB::connection('mysql')->table('nopend')->where('kpc','LIKE',$nopend.'%')->count();
+            $ques= DB::table('nopend')->where('kpc','LIKE',$nopend.'%')->count();
+            //$query = DB::connection('mysql')->table('agent_id')->where('id_pos','LIKE','%'.$nopend.'%')->get();
+            $query = DB::table('agent_id')->where('id_pos','LIKE','%'.$nopend.'%')->get();
+            //$query_nopend = DB::connection('mysql')->table('nopend')->join('agent_id','agent_id.id_pos','=','nopend.kprk')->where('nopend.kpc','LIKE','%'.$nopend.'%')->get();
+            $query_nopend = DB::table('nopend')->join('agent_id','agent_id.id_pos','=','nopend.kprk')->where('nopend.kpc','LIKE','%'.$nopend.'%')->get();
                 return view('reporting.nopend', [
                     'jum' => $jum,'query'=>$query,'nopend'=>$nopend,'ques'=>$ques,'query_nopend'=>$query_nopend
              ]);
@@ -96,12 +100,16 @@ class NopendController extends Controller
             $tahun_sampai =  $dari[4];
             $hariini = date("Y-m-d H:i:s");
             
-            $jum=DB::connection('mysql')->table('transaksi_valid')->join('agent_id_test','agent_id_test.id_pos','=','transaksi_valid.id_pos')->where('tanggal','>',$tanggal_dari.' 00:00:00')->where('tanggal','<',$tanggal_sampai.' 23:59:59')->groupBy('agent_id_test.agent_id')->count();
-            $jumkah=DB::connection('mysql')->table('transaksi_valid')->join('agent_id_test','agent_id_test.id_pos','=','transaksi_valid.id_pos')->groupBy('agent_id_test.agent_id')->count();
-            $jumtv=DB::connection('mysql')->table('agent_id_test')->count();
+            //$jum=DB::connection('mysql')->table('transaksi_valid')->join('agent_id_test','agent_id_test.id_pos','=','transaksi_valid.id_pos')->where('tanggal','>',$tanggal_dari.' 00:00:00')->where('tanggal','<',$tanggal_sampai.' 23:59:59')->groupBy('agent_id_test.agent_id')->count();
+            $jum=DB::table('transaksi_valid')->join('agent_id_test','agent_id_test.id_pos','=','transaksi_valid.id_pos')->where('tanggal','>',$tanggal_dari.' 00:00:00')->where('tanggal','<',$tanggal_sampai.' 23:59:59')->groupBy('agent_id_test.agent_id')->count();
+            //$jumkah=DB::connection('mysql')->table('transaksi_valid')->join('agent_id_test','agent_id_test.id_pos','=','transaksi_valid.id_pos')->groupBy('agent_id_test.agent_id')->count();
+            $jumkah=DB::table('transaksi_valid')->join('agent_id_test','agent_id_test.id_pos','=','transaksi_valid.id_pos')->groupBy('agent_id_test.agent_id')->count();
+            //$jumtv=DB::connection('mysql')->table('agent_id_test')->count();
+            $jumtv=DB::table('agent_id_test')->count();
             $belumaktif =$jumtv-$jumkah; 
 
-            $quer=DB::connection('mysql')->table('transaksi_valid')->select('transaksi_valid.id_pos','agent_id_test.agent_id','agent_id_test.nama',DB::raw('count(agent_id_test.agent_id) as totalid'))->join('agent_id_test','agent_id_test.id_pos','=','transaksi_valid.id_pos')->where('tanggal','<=',$tanggal_sampai.' 23:59:59')->groupBy('agent_id_test.agent_id','transaksi_valid.id_pos','agent_id_test.agent_id','agent_id_test.nama')->orderBy('totalid','desc')->get();
+            //$quer=DB::connection('mysql')->table('transaksi_valid')->select('transaksi_valid.id_pos','agent_id_test.agent_id','agent_id_test.nama',DB::raw('count(agent_id_test.agent_id) as totalid'))->join('agent_id_test','agent_id_test.id_pos','=','transaksi_valid.id_pos')->where('tanggal','<=',$tanggal_sampai.' 23:59:59')->groupBy('agent_id_test.agent_id','transaksi_valid.id_pos','agent_id_test.agent_id','agent_id_test.nama')->orderBy('totalid','desc')->get();  
+            $quer=DB::table('transaksi_valid')->select('transaksi_valid.id_pos','agent_id_test.agent_id','agent_id_test.nama',DB::raw('count(agent_id_test.agent_id) as totalid'))->join('agent_id_test','agent_id_test.id_pos','=','transaksi_valid.id_pos')->where('tanggal','<=',$tanggal_sampai.' 23:59:59')->groupBy('agent_id_test.agent_id','transaksi_valid.id_pos','agent_id_test.agent_id','agent_id_test.nama')->orderBy('totalid','desc')->get();
 
             return view('reporting.agent_sort',[
                 'tanggal_dari'=>$tanggal_dari,'jum'=>$jum,'jumkah'=>$jumkah,'jumtv'=>$jumtv,'tanggal_sampai'=>$tanggal_sampai,'belumaktif'=>$belumaktif,'quer'=>$quer
@@ -119,7 +127,8 @@ class NopendController extends Controller
             $jum=""; $jumkah=""; $belumaktif="";
             $tanggal_dari = $request->tanggal_dari;
             $tanggal_sampai = $request->tanggal_sampai;
-            $quer = DB::connection('mysql')->table('agent_id_test')
+            //$quer = DB::connection('mysql')->table('agent_id_test')
+            $quer = DB::table('agent_id_test')
             ->select('id_pos', DB::raw('MAX(agent_id) AS agent_id'), DB::raw('MAX(nama) AS nama'), DB::raw('MAX(id) AS max_id'))
             ->whereNotIn('id_pos', function($q) use ($tanggal_sampai) {
                 $q->select('id_pos')

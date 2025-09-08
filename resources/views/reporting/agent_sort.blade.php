@@ -96,8 +96,7 @@
                                         $nopends = array_map(function($item) {
                                                 return substr($item->id_pos, 0, 5);
                                             }, $quer->toArray());
-
-                                            $slkotaData = DB::connection('mysql')->table('nopend_lama')
+                                            $slkotaData = DB::table('nopend_lama')
                                                 ->whereIn('kpc', $nopends)
                                                 ->get()
                                                 ->keyBy('kpc'); // Menggunakan keyBy untuk akses cepat
@@ -131,7 +130,7 @@
                                                 return substr($item->id_pos, 0, 5);
                                             }, $quer->toArray());
 
-                                            $slkotaData = DB::connection('mysql')->table('nopend_lama')
+                                            $slkotaData = DB::table('nopend_lama')
                                                 ->whereIn('kpc', $nopends)
                                                 ->get()
                                                 ->keyBy('kpc'); // Menggunakan keyBy untuk akses cepat
