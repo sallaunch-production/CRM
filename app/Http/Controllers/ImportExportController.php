@@ -162,13 +162,14 @@ class ImportExportController extends Controller
               $namapengirim="";
               $namapenerima="";
               $banyakbsu="";
-              $kodenegara = DB::table('negara_konverter')
-              ->where('ppatk', 'LIKE', '%'.$datatrans->negara_penerima.'%')
-              ->orWhere('nama', 'LIKE', '%'.$datatrans->negara_penerima.'%')
-              ->get();
+             $kodenegara = DB::table('negara_konverter')
+                            ->where('ppatk', 'ILIKE', $datatrans->negara_penerima)
+                            ->orWhere('nama', 'ILIKE', $datatrans->negara_penerima)
+                            ->get();
+
               $jumnp=strlen($datatrans->nama_pengirim);
               $jumnp50=50-$jumnp;
-              
+
               // Inisialisasi default (kosong)
               $kodenegaraBi = '';
 
