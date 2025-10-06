@@ -40,8 +40,6 @@
                                         <th>Keterangan</th>                                       
                                         <th>Alamat</th>
                                         <th>Type</th>
-                                        <th> </th>
-                                        <th> </th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -126,7 +124,7 @@
 @stop
 
 @section('js')
-f
+
 <script type="text/javascript">
   $(function () {
       
@@ -145,7 +143,6 @@ f
             {data: 'keterangan', name: 'keterangan'},
             {data: 'alamat', name: 'alamat'},
             {data: 'type', name: 'type'},
-            {data: 'ubah', name: 'hapus'},
            
         ]
     });

@@ -493,7 +493,7 @@ public function search_newcustomer(Request $request)
                   ->rawColumns(['action'])
                   ->make(true);
                 }
-                return view('sanctions.sanction');
+               return view('sanctions.sanction', ['tambah' => null]);
               
 
           }
