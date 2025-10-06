@@ -168,6 +168,10 @@ class ImportExportController extends Controller
               ->get();
               $jumnp=strlen($datatrans->nama_pengirim);
               $jumnp50=50-$jumnp;
+              
+              // Inisialisasi default (kosong)
+              $kodenegaraBi = '';
+
              // Iterasi setiap item dalam koleksi
                 foreach ($kodenegara as $negara) {
                     $kodenegaraBi = $negara->bi ?? ''; // Akses properti 'bi' untuk setiap item
