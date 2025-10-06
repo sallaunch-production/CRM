@@ -483,7 +483,22 @@ public function search_newcustomer(Request $request)
                 'updated_at' =>Carbon::now()->toDateTimeString(),
             ]);
               if ($request->ajax()) {
-                  $data = DB::table('sanction_list')->orderBy('id','desc')->get();
+                 $data = DB::table('sanction_list')
+    ->select(
+        'id',
+        'nama',
+        'alias',
+        DB::raw('COALESCE(tanggal_lahir, \'\') as tanggal_lahir'),
+        'negara',
+        'no_ktp',
+        'nohp',
+        'keterangan',
+        'alamat',
+        'type'
+    )
+    ->orderBy('id', 'desc')
+    ->get();
+
                   return Datatables::of($data)
                   ->addIndexColumn()
                   ->addColumn('action', function($row){
