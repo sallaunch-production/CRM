@@ -292,7 +292,7 @@ public function search_newcustomer(Request $request)
             DB::raw('MIN(t1.negara_pengirim) AS negara_pengirim'),
             DB::raw('MIN(t1.kode_pos_penerima) AS kode_pos_penerima')
         )
-        ->leftJoin('transaksi_send_pos as t2', function ($join) use ($tanggal_dari) {
+        ->leftJoin('transaksi_valid as t2', function ($join) use ($tanggal_dari) {
             $join->on('t1.nama_penerima', '=', 't2.nama_penerima')
                  ->where('t2.tanggal', '<=', $tanggal_dari . ' 23:59:59');
         })
@@ -318,6 +318,7 @@ public function search_newcustomer(Request $request)
           ->addColumn('local_id', function () {
               return '-';
           })
+          ->skipPaging()
           ->make(true);
     }
 
