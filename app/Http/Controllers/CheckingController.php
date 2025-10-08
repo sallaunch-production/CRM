@@ -277,29 +277,30 @@ public function search_newcustomer(Request $request)
     $tanggal_dari = Carbon::createFromFormat('m/d/Y', trim($dari[0]))->format('Y-m-d');
     $tanggal_sampai = Carbon::createFromFormat('m/d/Y', trim($dari[1]))->format('Y-m-d');
 
-   $query = DB::table('transaksi_valid as t1')
-          ->select(
-              DB::raw('MIN(t1.no) AS no'),
-              't1.nama_penerima',
-              DB::raw('MIN(t1.no_referensi) AS no_referensi'),
-              DB::raw('MIN(t1.tanggal) AS tanggal'),
-              DB::raw('MIN(t1.nomor_identitas) AS nomor_identitas'),
-              DB::raw('MIN(t1.tanggal_lahir) AS tanggal_lahir'),
-              DB::raw('MIN(t1.tempat_lahir) AS tempat_lahir'),
-              DB::raw('MIN(t1.kota_kelahiran) AS kota_kelahiran'),
-              DB::raw('MIN(t1.alamat_penerima) AS alamat_penerima'),
-              DB::raw('MIN(t1.telepon_penerima) AS telepon_penerima'),
-              DB::raw('MIN(t1.negara_pengirim) AS negara_pengirim'),
-              DB::raw('MIN(t1.kode_pos_penerima) AS kode_pos_penerima')
-          )
-          ->whereBetween('t1.tanggal', [$tanggal_dari . ' 00:00:00', $tanggal_sampai . ' 23:59:59'])
-          ->whereNotExists(function ($sub) use ($tanggal_dari) {
-              $sub->select(DB::raw(1))
-                  ->from('transaksi_valid as t2')
-                  ->whereColumn('t2.nama_penerima', 't1.nama_penerima')
-                  ->where('t2.tanggal', '<=', $tanggal_dari . ' 23:59:59');
-          })
-          ->groupBy('t1.nama_penerima');
+  $query = DB::table('transaksi_valid')
+    ->select(
+        DB::raw('MIN(no) AS no'),
+        'nama_penerima',
+        DB::raw('MIN(no_referensi) AS no_referensi'),
+        DB::raw('MIN(tanggal) AS tanggal'),
+        DB::raw('MIN(nomor_identitas) AS nomor_identitas'),
+        DB::raw('MIN(tanggal_lahir) AS tanggal_lahir'),
+        DB::raw('MIN(alamat_penerima) AS alamat_penerima'),
+        DB::raw('MIN(telepon_penerima) AS telepon_penerima'),
+        DB::raw('MIN(id_pos) AS id_pos')
+    )
+    ->whereBetween('tanggal', [
+        $tanggal_dari . ' 00:00:00',
+        $tanggal_sampai . ' 23:59:59'
+    ])
+    ->whereNotIn('nama_penerima', function ($sub) use ($tanggal_dari) {
+        $sub->select('nama_penerima')
+            ->from('transaksi_valid')
+            ->where('tanggal', '<=', $tanggal_dari . ' 23:59:59')
+            ->whereNotNull('nama_penerima');
+    })
+    ->groupBy('nama_penerima')
+    ->orderByDesc('tanggal');
 
     // Gunakan of() tanpa subquery SQL
     return DataTables::of($query)
