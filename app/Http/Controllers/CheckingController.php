@@ -273,12 +273,15 @@ public function search_newcustomer(Request $request)
 
      if ($request->ajax()) {
         // Ambil range tanggal dari input daterangepicker
+      
+        // Ambil tanggal dari input
         $tanggal = $request->reservation;
         $dari = explode(' - ', $tanggal);
+
         $tanggal_dari = Carbon::createFromFormat('m/d/Y', trim($dari[0]))->format('Y-m-d');
         $tanggal_sampai = Carbon::createFromFormat('m/d/Y', trim($dari[1]))->format('Y-m-d');
 
-        // Gunakan DISTINCT ON (nama_penerima) untuk performa tinggi di PostgreSQL
+        // Query utama
         $query = DB::table(DB::raw("( 
             SELECT DISTINCT ON (t1.nama_penerima)
                 t1.no,
@@ -295,16 +298,16 @@ public function search_newcustomer(Request $request)
                 t1.kode_pos_penerima
             FROM transaksi_valid t1
             WHERE t1.tanggal BETWEEN '{$tanggal_dari} 00:00:00' AND '{$tanggal_sampai} 23:59:59'
-              AND t1.nama_penerima NOT IN (
-                  SELECT nama_penerima
+              AND NOT EXISTS (
+                  SELECT 1 
                   FROM transaksi_valid t2
-                  WHERE t2.tanggal <= '{$tanggal_dari} 23:59:59'
-                    AND t2.nama_penerima IS NOT NULL
+                  WHERE t2.nama_penerima = t1.nama_penerima
+                    AND t2.tanggal <= '{$tanggal_dari} 23:59:59'
               )
             ORDER BY t1.nama_penerima, t1.tanggal DESC
         ) AS t1"));
 
-        // DataTables builder
+        // DataTables
         return DataTables::of($query)
             ->addIndexColumn()
             ->addColumn('idpjk', fn() => '1003780')
