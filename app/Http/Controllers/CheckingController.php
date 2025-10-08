@@ -271,56 +271,48 @@ public function search_newcustomer(Request $request)
         return redirect('login')->with('You dont have access');
     }
 
-    if ($request->ajax()) {
+     if ($request->ajax()) {
+        // Ambil range tanggal dari input daterangepicker
         $tanggal = $request->reservation;
-    $dari = explode(' - ', $tanggal);
-    $tanggal_dari = Carbon::createFromFormat('m/d/Y', trim($dari[0]))->format('Y-m-d');
-    $tanggal_sampai = Carbon::createFromFormat('m/d/Y', trim($dari[1]))->format('Y-m-d');
+        $dari = explode(' - ', $tanggal);
+        $tanggal_dari = Carbon::createFromFormat('m/d/Y', trim($dari[0]))->format('Y-m-d');
+        $tanggal_sampai = Carbon::createFromFormat('m/d/Y', trim($dari[1]))->format('Y-m-d');
 
-  $query = DB::table('transaksi_valid')
-    ->select(
-        DB::raw('MIN(no) AS no'),
-        'nama_penerima',
-        DB::raw('MIN(no_referensi) AS no_referensi'),
-        DB::raw('MIN(tanggal) AS tanggal'),
-        DB::raw('MIN(nomor_identitas) AS nomor_identitas'),
-        DB::raw('MIN(tanggal_lahir) AS tanggal_lahir'),
-        DB::raw('MIN(alamat_penerima) AS alamat_penerima'),
-        DB::raw('MIN(telepon_penerima) AS telepon_penerima'),
-        DB::raw('MIN(id_pos) AS id_pos')
-    )
-    ->whereBetween('tanggal', [
-        $tanggal_dari . ' 00:00:00',
-        $tanggal_sampai . ' 23:59:59'
-    ])
-    ->whereNotIn('nama_penerima', function ($sub) use ($tanggal_dari) {
-        $sub->select('nama_penerima')
-            ->from('transaksi_valid')
-            ->where('tanggal', '<=', $tanggal_dari . ' 23:59:59')
-            ->whereNotNull('nama_penerima');
-    })
-    ->groupBy('nama_penerima')
-    ->orderByDesc('tanggal');
+        // Gunakan DISTINCT ON (nama_penerima) untuk performa tinggi di PostgreSQL
+        $query = DB::table(DB::raw("( 
+            SELECT DISTINCT ON (t1.nama_penerima)
+                t1.no,
+                t1.nama_penerima,
+                t1.no_referensi,
+                t1.tanggal,
+                t1.nomor_identitas,
+                t1.tanggal_lahir,
+                t1.tempat_lahir,
+                t1.kota_kelahiran,
+                t1.alamat_penerima,
+                t1.telepon_penerima,
+                t1.negara_pengirim,
+                t1.kode_pos_penerima
+            FROM transaksi_valid t1
+            WHERE t1.tanggal BETWEEN '{$tanggal_dari} 00:00:00' AND '{$tanggal_sampai} 23:59:59'
+              AND t1.nama_penerima NOT IN (
+                  SELECT nama_penerima
+                  FROM transaksi_valid t2
+                  WHERE t2.tanggal <= '{$tanggal_dari} 23:59:59'
+                    AND t2.nama_penerima IS NOT NULL
+              )
+            ORDER BY t1.nama_penerima, t1.tanggal DESC
+        ) AS t1"));
 
-    // Gunakan of() tanpa subquery SQL
-    return DataTables::of($query)
-          ->addIndexColumn()
-          ->addColumn('idpjk', function () {
-              return '1003780';
-          })
-          ->addColumn('kode_nasabah', function () {
-              return '1';
-          })
-          ->addColumn('identitas_lain', function () {
-              return '-';
-          })
-          ->addColumn('npwp', function () {
-              return '-';
-          })
-          ->addColumn('local_id', function () {
-              return '-';
-          })
-          ->make(true);
+        // DataTables builder
+        return DataTables::of($query)
+            ->addIndexColumn()
+            ->addColumn('idpjk', fn() => '1003780')
+            ->addColumn('kode_nasabah', fn() => '1')
+            ->addColumn('identitas_lain', fn() => '-')
+            ->addColumn('npwp', fn() => '-')
+            ->addColumn('local_id', fn() => '-')
+            ->make(true);
     }
 
     return view('checking.newcustomer');
