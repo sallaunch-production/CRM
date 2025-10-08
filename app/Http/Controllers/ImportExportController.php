@@ -704,5 +704,17 @@ class ImportExportController extends Controller
 
         return Excel::download(new CetakLaporanNewCustomer($tanggal_dari,$tanggal_sampai), 'New Customer Gabungan.xlsx');
     }
+
+    public function exportNewCustomer(Request $request)
+    {
+        // Ambil parameter tanggal dari form/filter
+        $tanggal = $request->reservation;
+        $dari = explode(' - ', $tanggal);
+        $tanggal_dari = Carbon::createFromFormat('m/d/Y', trim($dari[0]))->format('Y-m-d');
+        $tanggal_sampai = Carbon::createFromFormat('m/d/Y', trim($dari[1]))->format('Y-m-d');
+
+        // Kirim ke export class
+        return Excel::download(new NewCustomerExport($tanggal_dari, $tanggal_sampai), 'newcustomer.xlsx');
+    }
     
 }

@@ -318,7 +318,6 @@ public function search_newcustomer(Request $request)
           ->addColumn('local_id', function () {
               return '-';
           })
-          ->skipPaging()
           ->make(true);
     }
 
