@@ -59,14 +59,7 @@
                             <input type="button" class="btn btn-info" id="btn-cari" value="CARI">
                         </div>
                     </form>
-                    <div class="mb-3">
-                        <form action="{{ route('newcustomer_receive_export') }}" method="get" target="_blank">
-                            <input type="hidden" name="reservation" id="reservation-export">
-                            <button type="submit" class="btn btn-success">
-                                <i class="fa fa-file-excel"></i> Download Excel (Full Data)
-                            </button>
-                        </form>
-                    </div>
+                   
                     <form id="cetakForm" action="{{ route('cetak_new_customer_gabungan') }}" method="POST">
                         @csrf
                         <input type="hidden" name="tanggal_dari" id="tanggal_dari">
