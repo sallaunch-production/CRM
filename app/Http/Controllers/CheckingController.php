@@ -263,51 +263,43 @@ class CheckingController extends Controller
       }
 
 
-      
-
 public function search_newcustomer(Request $request)
 {
-    if (!Auth::check()) {
-        return redirect('login')->with('You dont have access');
-    }
-
      if ($request->ajax()) {
-        // Ambil range tanggal dari input daterangepicker
-      
-        // Ambil tanggal dari input
-        $tanggal = $request->reservation;
-        $dari = explode(' - ', $tanggal);
 
-        $tanggal_dari = Carbon::createFromFormat('m/d/Y', trim($dari[0]))->format('Y-m-d');
-        $tanggal_sampai = Carbon::createFromFormat('m/d/Y', trim($dari[1]))->format('Y-m-d');
+        $reservation = str_replace('+-+', ' - ', $request->reservation);
+        [$tanggal_dari, $tanggal_sampai] = explode(' - ', $reservation);
 
-        // Query utama
-        $query = DB::table(DB::raw("( 
-            SELECT DISTINCT ON (t1.nama_penerima)
-                t1.no,
-                t1.nama_penerima,
-                t1.no_referensi,
-                t1.tanggal,
-                t1.nomor_identitas,
-                t1.tanggal_lahir,
-                t1.tempat_lahir,
-                t1.kota_kelahiran,
-                t1.alamat_penerima,
-                t1.telepon_penerima,
-                t1.negara_pengirim,
-                t1.kode_pos_penerima
-            FROM transaksi_valid t1
-            WHERE t1.tanggal BETWEEN '{$tanggal_dari} 00:00:00' AND '{$tanggal_sampai} 23:59:59'
-              AND NOT EXISTS (
-                  SELECT 1 
-                  FROM transaksi_valid t2
-                  WHERE t2.nama_penerima = t1.nama_penerima
-                    AND t2.tanggal <= '{$tanggal_dari} 23:59:59'
-              )
-            ORDER BY t1.nama_penerima, t1.tanggal DESC
-        ) AS t1"));
+        $tanggal_dari = Carbon::createFromFormat('m/d/Y', trim($tanggal_dari))->format('Y-m-d');
+        $tanggal_sampai = Carbon::createFromFormat('m/d/Y', trim($tanggal_sampai))->format('Y-m-d');
 
-        // DataTables
+       // Gunakan DISTINCT ON (nama_penerima) untuk performa tinggi di PostgreSQL
+        $query  = DB::table('transaksi_valid as t1')
+          ->select(
+              DB::raw('MIN(t1.no) AS no'),
+              't1.nama_penerima',
+              DB::raw('MIN(t1.no_referensi) AS no_referensi'),
+              DB::raw('MIN(t1.tanggal) AS tanggal'),
+              DB::raw('MIN(t1.nomor_identitas) AS nomor_identitas'),
+              DB::raw('MIN(t1.tanggal_lahir) AS tanggal_lahir'),
+              DB::raw('MIN(t1.tempat_lahir) AS tempat_lahir'),
+              DB::raw('MIN(t1.kota_kelahiran) AS kota_kelahiran'),
+              DB::raw('MIN(t1.alamat_penerima) AS alamat_penerima'),
+              DB::raw('MIN(t1.telepon_penerima) AS telepon_penerima'),
+              DB::raw('MIN(t1.negara_pengirim) AS negara_pengirim'),
+              DB::raw('MIN(t1.kode_pos_penerima) AS kode_pos_penerima')
+          )
+          ->leftJoin('transaksi_valid as t2', function($join) use ($tanggal_dari) {
+              $join->on('t1.nama_penerima', '=', 't2.nama_penerima')
+                    ->where('t2.tanggal', '<=', $tanggal_dari . ' 23:59:59');
+          })
+          ->where('t1.tanggal', '>=', $tanggal_dari . ' 00:00:00')
+          ->where('t1.tanggal', '<=', $tanggal_sampai . ' 23:59:59')
+          ->whereNull('t2.nama_penerima') // Filter nama_pengirim yang tidak ada di t2
+          ->groupBy('t1.nama_penerima')
+          ->get();
+
+        // DataTables builder
         return DataTables::of($query)
             ->addIndexColumn()
             ->addColumn('idpjk', fn() => '1003780')
@@ -319,6 +311,8 @@ public function search_newcustomer(Request $request)
     }
 
     return view('checking.newcustomer');
+
+   
 }
 
 /*

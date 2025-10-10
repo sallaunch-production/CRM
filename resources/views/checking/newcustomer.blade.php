@@ -107,9 +107,10 @@
 
 @section('js')
 <!-- jQuery -->
+<!-- Moment & Date Range Picker -->
+ <!-- jQuery (HARUS paling pertama) -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<!-- Moment & Date Range Picker -->
 <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
@@ -131,75 +132,99 @@
 
 <script>
 $(document).ready(function () {
+  // Inisialisasi Date Range Picker
     $('#daterange').daterangepicker();
 
-      var table = $('#example').DataTable({
-    processing: true,
-    serverSide: true,
-    ajax: {
-        url: '{{ $levelnya == "compliance" ? route("search_newcustomer") : route("search_newcustomer_operasional") }}',
-        type: 'POST',
-        data: function (d) {
-            d._token = '{{ csrf_token() }}';
-            d.reservation = $('#daterange').val();
+    let table; // Deklarasi DataTable global
+
+    // Fungsi inisialisasi DataTable
+    function initDataTable() {
+        // Hapus DataTable lama jika ada
+        if ($.fn.DataTable.isDataTable('#example')) {
+            $('#example').DataTable().clear().destroy();
         }
-    },
-    columns: [
-        { data: 'DT_RowIndex', orderable: false, searchable: false },
-        { data: 'idpjk', name: 'idpjk' },
-        { data: 'kode_nasabah', name: 'kode_nasabah' },
-        { data: 'nama_penerima', name: 'nama_penerima' },
-        { data: 'kota_kelahiran', name: 'kota_kelahiran' },
-        {
-            data: 'tanggal_lahir',
-            name: 'tanggal_lahir',
-            render: function(data, type, row) {
-                if (!data) return '';
-                const d = new Date(data);
-                const day = String(d.getDate()).padStart(2, '0');
-                const month = String(d.getMonth() + 1).padStart(2, '0');
-                const year = d.getFullYear();
-                return `${day}-${month}-${year}`;
-            }
-        },
-        { data: 'alamat_penerima', name: 'alamat_penerima' },
-        { data: 'nomor_identitas', name: 'nomor_identitas' },
-        { data: 'identitas_lain', name: 'identitas_lain' },
-        { data: 'no_referensi', name: 'no_referensi' },
-        { data: 'npwp', name: 'npwp' },
-        { data: 'local_id', name: 'local_id' },
-    ],
-    order: [[3, 'asc']],
-    dom: 'Blfrtip',
-    buttons: [
-        { extend: 'copy', text: 'COPY', title: 'TRANSAKSI NEW CUSTOMER', exportOptions: { columns: ':visible:not(:last-child)' }},
-        { extend: 'csv', text: 'CSV', title: 'TRANSAKSI NEW CUSTOMER', exportOptions: { columns: ':visible:not(:last-child)' }},
-        { extend: 'excel', text: 'Excel', title: 'TRANSAKSI NEW CUSTOMER', exportOptions: { columns: ':visible:not(:last-child)' }},
-        { extend: 'pdf', text: 'PDF', title: 'TRANSAKSI NEW CUSTOMER', exportOptions: { columns: ':visible:not(:last-child)' }},
-        { extend: 'print', text: 'Print', title: 'TRANSAKSI NEW CUSTOMER', exportOptions: { columns: ':visible' }}
-    ],
-    lengthMenu: [[10, 100, 500, 1000], [10, 100, 500,1000]],
-    pageLength: 10
-});
+
+        table = $('#example').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: '{{ $levelnya == "compliance" ? route("search_newcustomer") : route("search_newcustomer_operasional") }}',
+                type: 'POST',
+                data: function (d) {
+                    d._token = '{{ csrf_token() }}';
+                    d.reservation = $('#daterange').val();
+                },
+                error: function (xhr, error, thrown) {
+                    console.error("Error DataTables AJAX:", error, xhr.responseText);
+                }
+            },
+            columns: [
+                { data: 'DT_RowIndex', orderable: false, searchable: false },
+                { data: 'idpjk', name: 'idpjk' },
+                { data: 'kode_nasabah', name: 'kode_nasabah' },
+                { data: 'nama_penerima', name: 'nama_penerima' },
+                { data: 'kota_kelahiran', name: 'kota_kelahiran' },
+                {
+                    data: 'tanggal_lahir',
+                    name: 'tanggal_lahir',
+                    render: function (data) {
+                        if (!data) return '';
+                        const d = new Date(data);
+                        if (isNaN(d)) return data;
+                        const day = String(d.getDate()).padStart(2, '0');
+                        const month = String(d.getMonth() + 1).padStart(2, '0');
+                        const year = d.getFullYear();
+                        return `${day}-${month}-${year}`;
+                    }
+                },
+                { data: 'alamat_penerima', name: 'alamat_penerima' },
+                { data: 'nomor_identitas', name: 'nomor_identitas' },
+                { data: 'identitas_lain', name: 'identitas_lain' },
+                { data: 'no_referensi', name: 'no_referensi' },
+                { data: 'npwp', name: 'npwp' },
+                { data: 'local_id', name: 'local_id' },
+            ],
+            order: [[3, 'asc']], // Default sort by nama_penerima
+            dom: 'Blfrtip',
+            buttons: [
+                { extend: 'copy', text: 'COPY' },
+                { extend: 'csv', text: 'CSV' },
+                { extend: 'excel', text: 'Excel' },
+                { extend: 'pdf', text: 'PDF' },
+                { extend: 'print', text: 'Print' }
+            ],
+            lengthMenu: [[10, 100, 500, 1000], [10, 100, 500, 1000]],
+            pageLength: 10
+        });
+    }
 
 
+    // Load DataTable pertama kali
+    initDataTable();
+
+    // Tombol CARI untuk reload DataTable
     $('#btn-cari').click(function () {
-        table.ajax.reload();
+        if (table) {
+            table.ajax.reload(null, false); // reload tanpa reset pagination
+        } else {
+            initDataTable();
+        }
     });
 
-
-     // Isi tanggal_dari & tanggal_sampai dari #daterange saat form cetak dikirim
+    // Form cetak
     $('form[action="{{ route('cetak_new_customer_gabungan') }}"]').submit(function (e) {
         var range = $('#daterange').val();
         if (range) {
             var tanggal = range.split(' - ');
-            $('#tanggal_dari').val(tanggal[0]);
-            $('#tanggal_sampai').val(tanggal[1]);
+            var tglDari = moment(tanggal[0], 'MM/DD/YYYY').format('YYYY-MM-DD');
+            var tglSampai = moment(tanggal[1], 'MM/DD/YYYY').format('YYYY-MM-DD');
+            $('#tanggal_dari').val(tglDari);
+            $('#tanggal_sampai').val(tglSampai);
         }
     });
 
-    
     $("#success-alert").fadeTo(2000, 500).fadeOut(500);
 });
 </script>
+
 @stop

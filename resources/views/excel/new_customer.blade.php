@@ -25,7 +25,11 @@
                                         <td>{{ $datatrans->kota_kelahiran }}</td>
                                         <td>{{ \Carbon\Carbon::createFromFormat('n/j/Y', $datatrans->tanggal_lahir)->format('d-m-Y') }}</td>
                                         <td>{{ $datatrans->alamat_penerima }}</td>
-                                        <td>{{ $datatrans->nomor_identitas }}</td>
+                                     <td>{{ "\u{200C}" . $datatrans->nomor_identitas }}</td>
+
+
+
+
                                         <td></td>
                                         <td>{{ $datatrans->no_referensi }}</td>
                                         <td></td>
@@ -66,7 +70,10 @@
                                         <td>{{ formatTanggalLahir($datatrans_s->tanggal_lahir) }}</td>
 
                                         <td>{{ $datatrans_s->alamat_pengirim }}</td>
-                                        <td>{{ $datatrans_s->nomor_identitas }}</td>
+                                      <td>{{ "\u{200C}" . $datatrans_s->nomor_identitas }}</td>
+
+
+
                                         <td></td>
                                         <td>{{ $datatrans_s->no_referensi }}</td>
                                         <td></td>
