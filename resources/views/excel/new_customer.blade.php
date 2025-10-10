@@ -23,7 +23,17 @@
                                         <td>1</td>
                                         <td>{{ $datatrans->nama_penerima }}</td>
                                         <td>{{ $datatrans->kota_kelahiran }}</td>
-                                        <td>{{ \Carbon\Carbon::createFromFormat('n/j/Y', $datatrans->tanggal_lahir)->format('d-m-Y') }}</td>
+                                        <td>
+    @php
+        try {
+            $tgl = \Carbon\Carbon::parse($datatrans->tanggal_lahir)->format('d-m-Y');
+        } catch (\Exception $e) {
+            $tgl = $datatrans->tanggal_lahir; // tampilkan apa adanya
+        }
+    @endphp
+    {{ $tgl }}
+</td>
+
                                         <td>{{ $datatrans->alamat_penerima }}</td>
                                      <td>{{ "\u{200C}" . $datatrans->nomor_identitas }}</td>
 
