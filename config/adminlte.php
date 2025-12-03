@@ -577,6 +577,12 @@ return [
             'icon' => 'fa fa-book fa-fw',
         ],
         [
+            'text' => 'Laporan',
+            'url'  => 'laporan_operasional',
+            'can'  => ['operasional-only'],
+            'icon' => 'fa fa-book fa-fw',
+        ],
+        [
             'text' => 'Upload Proof Of Payment',
             'url'  => 'popimage',
             'can'  => ['compliance-only'],
