@@ -100,8 +100,8 @@ Route::post('cetak_laporan_bi_baru_txt',[App\Http\Controllers\ImportExportContro
 Route::post('cetak_laporan_ppatk_baru',[App\Http\Controllers\ImportExportController::class,'cetak_laporan_ppatk_baru'])->name('cetak_laporan_ppatk_baru')->middleware('auth');
 Route::post('cetak_laporan_ppatk_baru_c2a',[App\Http\Controllers\ImportExportController::class,'cetak_laporan_ppatk_baru_c2a'])->name('cetak_laporan_ppatk_baru_c2a')->middleware('auth');
 
-Route::post('cari_laporan',[App\Http\Controllers\ReportingController::class,'cari_laporan'])->name('cari_laporan')->middleware('auth');
-Route::get('laporan',[App\Http\Controllers\ReportingController::class,'laporan'])->name('laporan')->middleware('auth');
+Route::post('cari_laporan',[App\Http\Controllers\ReportingController::class,'cari_laporan'])->name('cari_laporan_compliance')->middleware('auth');
+Route::get('laporan',[App\Http\Controllers\ReportingController::class,'laporan'])->name('laporan_compliance')->middleware('auth');
 Route::get('kota',[App\Http\Controllers\ReportingController::class,'kota'])->name('kota')->middleware('auth');
 Route::post('search_sales',[App\Http\Controllers\CheckingController::class,'search_sales'])->name('search_sales')->middleware('auth');
 Route::post('search_newcustomer',[App\Http\Controllers\CheckingController::class,'search_newcustomer'])->name('search_newcustomer')->middleware('auth');
@@ -139,6 +139,7 @@ Route::get('newcustomer_receive_export', [App\Http\Controllers\ImportExportContr
 
 
 Route::group(['middleware' => ['operasional']], function () {
+
     Route::get('dashboard_operasional',[App\Http\Controllers\HomeController::class,'dashboard'])->name('dashboard_operasional')->middleware('auth');
     Route::get('nopend_operasional',[App\Http\Controllers\NopendController::class,'nopend'])->name('nopend_operasional')->middleware('auth');
     Route::post('cari_nopend_operasional',[App\Http\Controllers\NopendController::class,'cari_nopend'])->name('cari_nopend_operasional')->middleware('auth');
@@ -199,5 +200,14 @@ Route::group(['middleware' => ['operasional']], function () {
     Route::post('search_newcustomer_send_operasional',[App\Http\Controllers\CheckingController::class,'search_newcustomer_send'])->name('search_newcustomer_send_operasional')->middleware('auth');
     Route::post('upload_refund_pos_operasional',[App\Http\Controllers\ReportingController::class,'upload_refund_pos'])->name('upload_refund_pos_operasional')->middleware('auth');
     Route::post('act_upload_refund_pos_operasional',[App\Http\Controllers\ReportingController::class,'act_upload_refund_pos'])->name('act_upload_refund_pos_operasional')->middleware('auth');
-   
+    Route::post('cetak_laporan_bi_baru_operasional',[App\Http\Controllers\ImportExportController::class,'cetak_laporan_bi_baru'])->name('cetak_laporan_bi_baru_operasional')->middleware('auth');
+    Route::post('cetak_laporan_bi_g0001_operasional',[App\Http\Controllers\ImportExportController::class,'cetak_laporan_bi_g0001'])->name('cetak_laporan_bi_g0001_operasional')->middleware('auth');
+    Route::post('cetak_laporan_bi_g0003_operasional',[App\Http\Controllers\ImportExportController::class,'cetak_laporan_bi_g0003'])->name('cetak_laporan_bi_g0003_operasional')->middleware('auth');
+    Route::post('cetak_laporan_bi_baru_txt_operasional',[App\Http\Controllers\ImportExportController::class,'cetak_laporan_bi_baru_txt'])->name('cetak_laporan_bi_baru_txt_operasional')->middleware('auth');
+    Route::post('cetak_laporan_ppatk_baru_operasional',[App\Http\Controllers\ImportExportController::class,'cetak_laporan_ppatk_baru'])->name('cetak_laporan_ppatk_baru_operasional')->middleware('auth');
+    Route::post('cetak_laporan_ppatk_baru_c2a_operasional',[App\Http\Controllers\ImportExportController::class,'cetak_laporan_ppatk_baru_c2a'])->name('cetak_laporan_ppatk_baru_c2a_operasional')->middleware('auth');
+
+    Route::post('cari_laporan_operasional',[App\Http\Controllers\ReportingController::class,'cari_laporan'])->name('cari_laporan_operasional')->middleware('auth');
+    Route::get('laporan_operasional',[App\Http\Controllers\ReportingController::class,'laporan'])->name('laporan_operasional')->middleware('auth');
+
 });

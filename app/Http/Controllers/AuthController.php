@@ -70,7 +70,8 @@ class AuthController extends Controller
 
          $recaptcha_response = $request->input('g-recaptcha-response');
 
-        if (is_null($recaptcha_response)) {
+        // Skip reCAPTCHA validation in local development environment
+        if (!app()->isLocal() && is_null($recaptcha_response)) {
             return redirect()->back()->with('status', 'Please Complete the Recaptcha to proceed');
         }
 

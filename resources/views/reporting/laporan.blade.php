@@ -29,7 +29,7 @@
                              <div class="row">
                                 <div class="col-md-6">   
                             <label>Tanggal Pencarian: </label>
-                            <form action="{{route('cari_laporan')}}" method="POST">
+                            <form action="{{ Auth::user()->level == 'operasional' ? route('cari_laporan_operasional') : route('cari_laporan_compliance') }}" method="POST">
                             @csrf
                              <div class="form-group">
                              <div class="input-group"> 
@@ -56,7 +56,7 @@
                         <tbody>
                             <tr>		
                                 <td width=25%>
-                                <form action="{{route('cetak_laporan_bi_baru')}}" method="POST">
+                                <form action="{{Auth::user()->level == 'compliance' ? route('cetak_laporan_bi_baru') : route('cetak_laporan_bi_baru_operasional')}}" method="POST">
                                   @csrf
                                     <input type=hidden  name="tanggal_dari" value="{{$tanggal_dari}}">
                                     <input type=hidden  name="tanggal_sampai" value="{{$tanggal_sampai}}">
@@ -64,7 +64,7 @@
                                 </form>
                                 </td>
                                 <td width=25%>
-                                    <form action="{{route('cetak_laporan_bi_g0001')}}" method="POST">
+                                    <form action="{{Auth::user()->level == 'operasional' ? route('cetak_laporan_bi_g0001_operasional') : route('cetak_laporan_bi_g0001') }}" method="POST">
                                     @csrf
                                         <input type=hidden  name="tanggal_dari" value="{{$tanggal_dari}}">
                                         <input type=hidden  name="tanggal_sampai" value="{{$tanggal_sampai}}">
@@ -72,7 +72,7 @@
                                     </form>
                                  </td>
                                 <td width=25%>
-                                    <form action="{{route('cetak_laporan_bi_baru_txt')}}" method="POST">
+                                    <form action="{{Auth::user()->level == 'operasional' ? route('cetak_laporan_bi_baru_txt_operasional') : route('cetak_laporan_bi_baru_txt')}}" method="POST">
                                     @csrf
                                         <input type=hidden  name="tanggal_dari" value="{{$tanggal_dari}}">
                                         <input type=hidden  name="tanggal_sampai" value="{{$tanggal_sampai}}">
@@ -80,7 +80,7 @@
                                     </form>
                                 </td>
                                 <td width=25%>
-                                    <form action="{{route('cetak_laporan_bi_g0003')}}" method="POST">
+                                    <form action="{{Auth::user()->level == 'compliance' ? route('cetak_laporan_bi_g0003') :route('cetak_laporan_bi_g0003_operasional')}}" method="POST">
                                     @csrf
                                         <input type=hidden  name="tanggal_dari" value="{{$tanggal_dari}}">
                                         <input type=hidden  name="tanggal_sampai" value="{{$tanggal_sampai}}">
@@ -88,7 +88,7 @@
                                     </form>
                                 </td>
                                 <td>
-                                <form action="{{route('cetak_laporan_ppatk_baru')}}" method="POST">
+                                <form action="{{Auth::user()->level == 'compliance' ? route('cetak_laporan_ppatk_baru'): route('cetak_laporan_ppatk_baru_operasional')}}" method="POST">
                                     @csrf
                                         <input type=hidden  name="tanggal_dari" value="{{$tanggal_dari}}">
                                         <input type=hidden  name="tanggal_sampai" value="{{$tanggal_sampai}}">
@@ -96,7 +96,7 @@
                                      </form>
                                 </td>
                                 <td>
-                                <form action="{{route('cetak_laporan_ppatk_baru_c2a')}}" method="POST">
+                                <form action="{{Auth::user()->level == 'compliance' ? route('cetak_laporan_ppatk_baru_c2a') : route('cetak_laporan_ppatk_baru_c2a_operasional')}}" method="POST">
                                     @csrf
                                         <input type=hidden  name="tanggal_dari" value="{{$tanggal_dari}}">
                                         <input type=hidden  name="tanggal_sampai" value="{{$tanggal_sampai}}">
