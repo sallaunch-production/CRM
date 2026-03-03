@@ -268,10 +268,10 @@ class ImportExportController extends Controller
                     DB::raw("'12000' AS id_pos"),
                     'nama_pengirim',
                     'nama_penerima',
-                    DB::raw("sum(cast(replace(bsubanyak, ',', '') as float)) as sum_bsubanyak"),
+                    DB::raw("sum(FLOOR(cast(amount as numeric))) as sum_bsubanyak"),
                     DB::raw('COUNT(*) as jumlah')
                 )
-                ->where('deltawork', '=', 'ya')
+          
                 ->where('id_transaksi', '<>', '')
                 ->where('tanggal', '>=', $tanggal_dari . ' 00:00:00')
                 ->where('tanggal', '<=', $tanggal_sampai . ' 23:59:59')
@@ -285,7 +285,7 @@ class ImportExportController extends Controller
                     DB::raw("'12000' AS id_pos"),
                     'nama_pengirim',
                     'nama_penerima',
-                    DB::raw("FLOOR(sum(cast(replace(amount, ',', '') as float))) as sum_bsubanyak"),
+                    DB::raw("sum(FLOOR(cast(amount as numeric))) as sum_bsubanyak"),
                     DB::raw('COUNT(*) as jumlah')
                 )
                 ->where('deltawork', '=', '')
