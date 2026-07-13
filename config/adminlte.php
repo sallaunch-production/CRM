@@ -445,6 +445,39 @@ return [
         [
             'text'    => 'Sanction List',
             'icon'    => 'fas fa-fw fa-clipboard',
+            'can'  => ['operasional-only'],
+            'submenu' => [
+                [
+                    'text' => 'Sanction',
+                    'url'  => 'sanction_operasional',
+                    'shift'   => 'ml-3',
+                    'icon'    => 'fas fa-fw fa-clipboard',
+                    
+                ],
+                [
+                    'text' => 'Screening',
+                    'url'  => 'screening_operasional',
+                    'shift'   => 'ml-3',
+                    'icon'    => 'fas fa-fw fa-clipboard',
+                    
+                ],
+               /* [
+                    'text' => 'Sales',
+                    'url'  => '#',
+                    'icon'    => 'fas fa-fw fa-clipboard',
+                    
+                ],
+                [
+                    'text' => 'New Customer',
+                    'url'  => '#',
+                    'icon'    => 'fas fa-fw fa-clipboard',
+                    
+                ],*/
+            ]
+        ],
+        [
+            'text'    => 'Sanction List',
+            'icon'    => 'fas fa-fw fa-clipboard',
             'can'  => ['compliance-only'],
             'submenu' => [
                 [

@@ -29,7 +29,8 @@
                             <!-- COLOR PALETTE -->
                           
                                         <div class="box-body" >
-                                        <form action="{{route('cari_screening')}}" method="POST" style="width:30%;">
+                                       
+                                        <form action="{{Auth::user()->level == 'compliance' ? route('cari_screening') : route('cari_screening_operasional')}}" method="POST" style="width:30%;">
                                         @csrf
                                         
                                         <input type=hidden name=proses value=cari>

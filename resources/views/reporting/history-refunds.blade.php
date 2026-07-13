@@ -3,7 +3,7 @@
 @section('title','CRM Arsema')
     
 @section('content_header')
-<h2>Refund History Arsema</h2>
+<h2>Refund History Arsema's</h2>
 @stop
 @section('content')
 <div class="container-fluid">
@@ -65,26 +65,26 @@
                                            
                                         </td>
                                         @if($dats==0)
-                                        <td>
+                                        <td>  
+                                          @if($levelnya=="compliance")
                                           <form action="{{route('page_history_refund')}}" method="post">
+                                          @endif
+                                           <form action="{{route('page_history_refund_operasional')}}" method="post">
                                           @csrf
                                                 <input type="hidden" name="id" value="{{$refunds->no}}">
-                                           @if($levelnya=="operasional")
-                                              <button disabled type=submit class="badge badge-primary">
-                                                  Upload
-                                              </button> 
-                                            @else
+                                         
                                               <button type=submit class="badge badge-primary">
                                                   Upload
                                               </button> 
-                                            @endif
+                                          
                                           </form>
                                         </td>
                                         <td></td>
                                         @else
                                         <td><a target="_blank" href="{{url('storage/pop/' . $dat->pop_image)}}"><button type=button class="badge badge-success">View Image </button> </a></td>
                                         <td>
-                                          @if($levelnya=="compliance")
+                                         
+                                          @if($levelnya=="compliance" || $levelnya=="operasional")
                                             <form action="{{route('edit_history_refund')}}" method="POST" enctype="multipart/form-data" style="max-width:350px;">
                                             @csrf
                                               <input type="hidden" name="id_refund" value="{{$no}}"/>
@@ -108,7 +108,11 @@
                             @elseif($upload ?? '' =="ya")
 
                             <h3>No Referensi : {{$no_referensi ?? ''}}</h3>
+                             @if($levelnya=="compliance")
                                 <form action="{{route('upload_history_refund')}}" method="POST" enctype="multipart/form-data" style="max-width:350px;">
+                            @else
+                            <form action="{{route('upload_history_refund_operasional')}}" method="POST" enctype="multipart/form-data" style="max-width:350px;">
+                            @endif
                                 @csrf  
                                    <div class=form-group>
                                       

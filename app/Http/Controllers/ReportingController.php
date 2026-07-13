@@ -881,8 +881,12 @@ class ReportingController extends Controller
           'created_at' => Carbon::now()->toDateTimeString(),
           'updated_at' => Carbon::now()->toDateTimeString(),
       ]);
-
+       if(Auth::user()->level=="compliance"){
       return redirect('history_refund')->with('success','You have successfully uplaod pop');
+       }
+       else{
+          return redirect('history_refund_operasional')->with('success','You have successfully uplaod pop');
+       }
 
       }
       return redirect('login')->with('You dont have access');

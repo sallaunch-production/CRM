@@ -59,6 +59,8 @@ Route::post('detail_transaksi',[App\Http\Controllers\CheckingController::class,'
 Route::get('sales',[App\Http\Controllers\CheckingController::class,'sales'])->name('sales')->middleware('auth');
 Route::get('newcustomer',[App\Http\Controllers\CheckingController::class,'newcustomer'])->name('newcustomer')->middleware('auth');
 Route::get('newcustomer-send',[App\Http\Controllers\CheckingController::class,'newcustomer_send'])->name('newcustomer_send')->middleware('auth');
+Route::get('newcustomer_all',[App\Http\Controllers\CheckingController::class,'newcustomer_all'])->name('newcustomer_all')->middleware('auth');
+Route::post('search_newcustomer_all',[App\Http\Controllers\CheckingController::class,'search_newcustomer_all'])->name('search_newcustomer_all')->middleware('auth');
 Route::get('sanction',[App\Http\Controllers\CheckingController::class,'sanction'])->name('sanction')->middleware('auth');
 Route::get('filtering',[App\Http\Controllers\CheckingController::class,'filtering'])->name('filtering')->middleware('auth');
 Route::post('cari_filtering',[App\Http\Controllers\CheckingController::class,'cari_filtering'])->name('cari_filtering')->middleware('auth');
@@ -166,11 +168,12 @@ Route::group(['middleware' => ['operasional']], function () {
     Route::post('pencarian_detail_negara_send_operasional',[App\Http\Controllers\ReportingController::class,'pencarian_detail_negara_send'])->name('pencarian_detail_negara_send_operasional')->middleware('auth');
     Route::post('pencarian_detail_negara_operasional',[App\Http\Controllers\ReportingController::class,'pencarian_detail_negara'])->name('pencarian_detail_negara_operasional')->middleware('auth');
     Route::post('detail_negara_operasional',[App\Http\Controllers\ReportingController::class,'detail_negara'])->name('detail_negara_operasional')->middleware('auth');
+    Route::post('page_history_refund_operasional',[App\Http\Controllers\ReportingController::class,'page_history_refund'])->name('page_history_refund_operasional')->middleware('auth');
 
     Route::post('upload_pop_operasional',[App\Http\Controllers\ReportingController::class,'upload_pop'])->name('upload_pop_operasional')->middleware('auth');
     Route::post('act_upload_pop_operasional',[App\Http\Controllers\ReportingController::class,'act_upload_pop'])->name('act_upload_pop_operasional')->middleware('auth');
 
-
+    Route::post('upload_history_refund_operasional',[App\Http\Controllers\ReportingController::class,'upload_history_refund'])->name('upload_history_refund_operasional')->middleware('auth');
     Route::post('ubah_password_operasional',[App\Http\Controllers\HomeController::class,'ubah_password'])->name('ubah_password_operasional')->middleware('auth');
     Route::get('filtering_transaction_operasional',[App\Http\Controllers\ReportingController::class,'filtering_transaction'])->name('filtering_transaction_operasional')->middleware('auth');
     Route::get('filtering_identitas_operasional',[App\Http\Controllers\ReportingController::class,'filtering_identitas'])->name('filtering_identitas_operasional')->middleware('auth');

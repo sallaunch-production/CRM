@@ -26,12 +26,9 @@
                     @endif
 
                     @if($levelnya=="compliance")    
-                        <a href="{{ route('newcustomer') }}">
-                            <button type="button" class="btn btn-success">Receive</button>
-                        </a>&nbsp;&nbsp;
-                        <a href="{{ route('newcustomer_send') }}">
-                            <button type="button" class="btn btn-danger">Send</button>
-                        </a>
+                        <a href="{{ route('newcustomer') }}"> <button type="button" class="btn btn-success">Receive</button></a>&nbsp;&nbsp;
+                                <a href="{{ route('newcustomer_send') }}"> <button type="button" class="btn btn-danger">Send</button></a>&nbsp;&nbsp;
+  <a href="{{ route('newcustomer_all') }}"> <button type="button" class="btn btn-info">All</button></a>
                     @elseif($levelnya=="operasional")
                         <a href="{{ route('newcustomer_operasional') }}">
                             <button type="button" class="btn btn-success">Receive</button>
