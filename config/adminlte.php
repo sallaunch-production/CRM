@@ -783,6 +783,16 @@ return [
                 ],
             ],
         ],
+        'ConnectionStatus' => [
+            'active' => true,
+            'files' => [
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => 'js/connection-status.js',
+                ],
+            ],
+        ],
         'DateRangePicker' => [
             'active' => true,
             'files' => [
