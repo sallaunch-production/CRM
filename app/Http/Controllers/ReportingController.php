@@ -730,7 +730,7 @@ class ReportingController extends Controller
           $query=DB::table('transaksi_send_pos')->where('negara_penerima','=',$negara_penerima)->where('tanggal','>=',$tanggal_dari.' 00:00:00')->where('tanggal','<=',$tanggal_sampai.' 23:59:59')->orderBy('tanggal','desc')->get();
           $nopends=substr($id_pos,0,5);
           $datakotas= DB::table('nopend')->where('kpc','like',$nopends.'%')->first();
-          $databsu=DB::table('transaksi_send_pos')->select(DB::raw("sum(cast(replace(bsubanyak, ',','') as float))"),DB::raw('COUNT(no) as jumlah'))->where('deltawork','=','ya')->where('tanggal','>=',$tanggal_dari.' 00:00:00')->where('tanggal','<=',$tanggal_sampai.' 23:59:59')->where('negara_penerima','=',$negara_penerima)->first();
+          $databsu=DB::table('transaksi_send_pos')->select(DB::raw("sum(cast(replace(amount, ',','') as float))"),DB::raw('COUNT(no) as jumlah'))->where('tanggal','>=',$tanggal_dari.' 00:00:00')->where('tanggal','<=',$tanggal_sampai.' 23:59:59')->where('negara_penerima','=',$negara_penerima)->first();
           $totalbsu=number_format($databsu->sum);
           $jumlah=number_format($databsu->jumlah);
 

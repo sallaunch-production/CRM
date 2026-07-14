@@ -370,13 +370,13 @@
                                                     <th>{{$datas->nama_pengirim}} </th>
                                                     <th>{{$datas->negara_pengirim}} </th>
                                                     <th>{{$datas->no_referensi}} </th>
-                                                    <th>{{$datas->bsubanyak}} </th>
+                                                    <th>{{number_format($datas->amount ?? 0)}} </th>
                                                     <th>{{$datas->tanggal}} </th>
                                                 </tr>
-                                                @endforeach 
+                                                @endforeach
                                             </tbody>
                                             </table>
-                                        @elseif(!empty($pencarian_detail_negara_send) && !empty($send))  
+                                        @elseif(!empty($pencarian_detail_negara_send) && !empty($send))
                                             <h3>Tanggal Dari : {{$tanggal_dari}} dan Sampai {{$tanggal_sampai}}</h3>
                                             <h4>Total BSU : {{$totalbsu}}</h4>
                                             <h4>Total perbuatansss : {{$jumlah}} <br></h4>
@@ -410,7 +410,7 @@
                                                     <th>{{$datas->nama_pengirim}} </th>
                                                     <th>{{$datas->negara_penerima}} </th>
                                                     <th>{{$datas->no_referensi}} </th>
-                                                    <th>{{$datas->bsubanyak}} </th>
+                                                    <th>{{number_format($datas->amount ?? 0)}} </th>
                                                     <th>{{$datas->tanggal}} </th>
                                                 </tr>
                                                 @endforeach 
