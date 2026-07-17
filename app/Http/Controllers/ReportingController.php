@@ -80,11 +80,22 @@ class ReportingController extends Controller
             'created_at' => Carbon::now()->toDateTimeString(),
             'updated_at' =>Carbon::now()->toDateTimeString(),
           ]);
-          $data = DB::table('transaksi_cancel')
-                      ->whereNotNull('id_pos')
-                      ->where('id_pos', '!=', '')
-                      ->orderBy('no','desc')
-                      ->get(); 
+          // fallback ke transaksi asli (transaksi_send_pos) karena service input cancel
+          // sering tidak mengisi tanggal_transaksi / refund_face_amount / negara
+          $data = DB::table('transaksi_cancel as tc')
+                      ->leftJoin(DB::raw('(select distinct on (no_referensi) no_referensi, tanggal, amount, negara_penerima from transaksi_send_pos order by no_referensi, tanggal desc) tsp'),
+                                 'tsp.no_referensi', '=', 'tc.no_referensi')
+                      ->whereNotNull('tc.id_pos')
+                      ->where('tc.id_pos', '!=', '')
+                      ->orderBy('tc.no','desc')
+                      ->select(
+                          'tc.*',
+                          DB::raw('COALESCE(tc.tanggal, tc.created_at::timestamp) as tanggal_view'),
+                          DB::raw("COALESCE(NULLIF(tc.tanggal_transaksi,''), tsp.tanggal::text) as tanggal_transaksi_view"),
+                          DB::raw("COALESCE(NULLIF(tc.refund_face_amount,''), tsp.amount::text) as bsu_view"),
+                          DB::raw('COALESCE(tsp.negara_penerima, tc.negara_penerima) as negara_view')
+                      )
+                      ->get();
 
                 return view('reporting.history_refund_pos', [
                     'data' => $data

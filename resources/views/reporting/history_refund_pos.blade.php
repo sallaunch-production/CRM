@@ -53,12 +53,12 @@
                                         ?>
                                         <th >{{$key+1 }}</th>
                                         <td>{{ $refunds->no_referensi }}</td>
-                                        <td>{{ $refunds->tanggal_transaksi }}</td>
-                                        <td>{{ $refunds->tanggal }}</td>
+                                        <td>{{ $refunds->tanggal_transaksi_view }}</td>
+                                        <td>{{ $refunds->tanggal_view }}</td>
                                         <td>{{ $refunds->nama_pengirim }}</td>
                                         <td>{{ $refunds->nama_penerima }}</td>
-                                        <td>{{ number_format((int)$refunds->refund_face_amount) }}</td>
-                                        <td>{{ $refunds->negara_penerima }}</td>
+                                        <td>{{ number_format((float)$refunds->bsu_view) }}</td>
+                                        <td>{{ $refunds->negara_view }}</td>
                                         <td>{{ $refunds->id_pos }}</td>
                                         <td>{{ $dats->alasan ?? '' }}</td>
                                         <td>{{ $dats->ip ?? ''}}</td>
