@@ -90,6 +90,7 @@
                                         @csrf
                                         <input type=hidden name=nama value="{{ $transactions->nama }}">
                                         <input type=hidden name=tanggal_lahir value="{{ $transactions->tanggal_lahir }}">
+                                        <input type=hidden name=nomor_identitas value="{{ $transactions->nomor_identitas }}">
                                         <button type=submit class="btn btn-info" >Transaksi</button> </form>&nbsp;
                                         <a href="#"><button type=button class="btn btn-warning" >Edit</button></a>&nbsp;
                                         </td>

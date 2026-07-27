@@ -116,40 +116,54 @@ class CheckingController extends Controller
               $detail="ya";
               $nama=$request->nama;
               $tanggal_lahir=$request->tanggal_lahir;
-              //$query  = DB::connection('mysql')->table('transaksi_valid')
+              $nomor_identitas = trim((string) $request->nomor_identitas);
+              // nama dinormalisasi: rapikan spasi ganda + trim (format nama antar tabel tidak konsisten)
+              $namaNorm = preg_replace('/\s+/', ' ', trim((string) $nama));
+
+              // Pencocokan orang lintas tabel: utamakan NIK (format konsisten & hampir selalu terisi),
+              // fallback ke nama yang dinormalisasi bila NIK kosong. tanggal_lahir TIDAK dipakai karena
+              // formatnya berbeda-beda antar tabel (MM/DD/YYYY vs YYYY-MM-DD vs DDMMYYYY) sehingga exact match gagal.
+              $applyMatch = function($query, $nikCol, $namaCol) use ($nomor_identitas, $namaNorm) {
+                  if ($nomor_identitas !== '') {
+                      $query->whereRaw("trim($nikCol) = ?", [$nomor_identitas]);
+                  } else {
+                      $query->whereRaw("regexp_replace(btrim($namaCol), '\\s+', ' ', 'g') = ?", [$namaNorm]);
+                  }
+                  return $query;
+              };
+
+              // Tanpa JOIN ke tabel 'transaksi': join lama (INNER) membuang baris karena banyak
+              // no_referensi tidak ada di 'transaksi' -> Receive Pos kosong. Tabel 'transaksi' juga
+              // tidak ber-index no_referensi (berat). Kolom bsu & tgl_valid diambil dari transaksi_valid.
               $query  = DB::table('transaksi_valid')
-              ->join('transaksi', 'transaksi.no_referensi', '=', 'transaksi_valid.no_referensi')
               ->where('transaksi_valid.deltawork', 'ya')
-              ->where('transaksi_valid.nama_penerima', $nama)
-              ->where('transaksi_valid.tanggal_lahir', $tanggal_lahir)
-              ->whereNotNull('transaksi_valid.id_transaksi')
-              ->select('transaksi_valid.*', 'transaksi.*') // Pilih kolom yang diinginkan
-              ->get();
+              ->whereNotNull('transaksi_valid.id_transaksi');
+              $applyMatch($query, 'transaksi_valid.nomor_identitas', 'transaksi_valid.nama_penerima');
+              $query = $query->select(
+                          'transaksi_valid.*',
+                          DB::raw("replace(transaksi_valid.bsubanyak, ',', '') as bsu"),
+                          DB::raw('transaksi_valid.tanggal as tgl_valid')
+                       )->get();
 
-              $querySendPos  = DB::table('transaksi_send_pos')
-              ->where('transaksi_send_pos.nama_pengirim', $nama)
-              ->where('transaksi_send_pos.tanggal_lahir', $tanggal_lahir)// Pilih kolom yang diinginkan
-              ->get();
+              $querySendPos  = DB::table('transaksi_send_pos');
+              $applyMatch($querySendPos, 'transaksi_send_pos.nomor_identitas', 'transaksi_send_pos.nama_pengirim');
+              $querySendPos = $querySendPos->get();
 
-              $querySend  = DB::table('transaksi_send')
-              ->where('transaksi_send.nama_pengirim', $nama)
-              ->where('transaksi_send.tanggal_lahir', $tanggal_lahir)// Pilih kolom yang diinginkan
-              ->get();
+              $querySend  = DB::table('transaksi_send');
+              $applyMatch($querySend, 'transaksi_send.nomor_identitas', 'transaksi_send.nama_pengirim');
+              $querySend = $querySend->get();
 
-              $queryReceive  = DB::table('transaksi_receive')
-              ->where('transaksi_receive.nama_penerima', $nama)
-              ->where('transaksi_receive.tanggal_lahir', $tanggal_lahir)// Pilih kolom yang diinginkan
-              ->get();
+              $queryReceive  = DB::table('transaksi_receive');
+              $applyMatch($queryReceive, 'transaksi_receive.nomor_identitas', 'transaksi_receive.nama_penerima');
+              $queryReceive = $queryReceive->get();
 
-              $queryReceiveClient  = DB::table('transaksi_receive_clients')
-              ->where('transaksi_receive_clients.nama_penerima', $nama)
-              ->where('transaksi_receive_clients.tanggal_lahir', $tanggal_lahir)// Pilih kolom yang diinginkan
-              ->get();
+              $queryReceiveClient  = DB::table('transaksi_receive_clients');
+              $applyMatch($queryReceiveClient, 'transaksi_receive_clients.nomor_identitas', 'transaksi_receive_clients.nama_penerima');
+              $queryReceiveClient = $queryReceiveClient->get();
 
-              $querySendClient  = DB::table('transaksi_send_clients')
-              ->where('transaksi_send_clients.nama_pengirim', $nama)
-              ->where('transaksi_send_clients.tanggal_lahir', $tanggal_lahir)// Pilih kolom yang diinginkan
-              ->get();
+              $querySendClient  = DB::table('transaksi_send_clients');
+              $applyMatch($querySendClient, 'transaksi_send_clients.nomor_identitas', 'transaksi_send_clients.nama_pengirim');
+              $querySendClient = $querySendClient->get();
             
                 return view('checking.profil',[
                     'dat'=>$query,'nama'=>$nama,'detail'=>$detail,'querySendPos'=>$querySendPos,'querySend'=>$querySend,'queryReceive'=>$queryReceive,'queryReceiveClient'=>$queryReceiveClient,'querySendClient'=>$querySendClient
