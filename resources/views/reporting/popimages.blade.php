@@ -61,9 +61,14 @@
                                         <td>{{ $transactions->ltkl }}</td>
                                         <td>{{ $transactions->ltkm }}</td>
                                         <td>{{ $transactions->tanggal }}</td>
-                                        <td><a target="_blank" href="{{ asset('storage/pop/' . $transactions->pop_image) }}">
+                                        <td>
+                                        @if($transactions->pop_image && file_exists(storage_path('app/public/pop/' . $transactions->pop_image)))
+                                            <a target="_blank" href="{{ asset('storage/pop/' . rawurlencode($transactions->pop_image)) }}">
                                                 <button type="submit" class="badge badge-success">View Image</button>
                                             </a>
+                                        @else
+                                            <button type="button" class="badge badge-secondary" disabled title="Dokumen tidak tersedia di server">File tidak tersedia</button>
+                                        @endif
                                         </td>
                                         <td>
                                         @if($levelnya=="compliance")

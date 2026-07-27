@@ -79,7 +79,13 @@
                                         </td>
                                         <td></td>
                                         @else
-                                        <td><a target="_blank" href="{{url('storage/pop/' . $dats->pop_image)}}"><button type=submit class="badge badge-success">View Image </button></a></td>
+                                        <td>
+                                        @if($dats->pop_image && file_exists(storage_path('app/public/pop/' . $dats->pop_image)))
+                                            <a target="_blank" href="{{url('storage/pop/' . rawurlencode($dats->pop_image))}}"><button type=submit class="badge badge-success">View Image </button></a>
+                                        @else
+                                            <button type="button" class="badge badge-secondary" disabled title="Dokumen tidak tersedia di server">File tidak tersedia</button>
+                                        @endif
+                                        </td>
                                         <td>
                                           <form action="{{route('edit_refund_pos')}}" method="POST">
                                             @csrf

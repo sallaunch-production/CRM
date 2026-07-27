@@ -81,7 +81,13 @@
                                         </td>
                                         <td></td>
                                         @else
-                                        <td><a target="_blank" href="{{url('storage/pop/' . $dat->pop_image)}}"><button type=button class="badge badge-success">View Image </button> </a></td>
+                                        <td>
+                                        @if($dat->pop_image && file_exists(storage_path('app/public/pop/' . $dat->pop_image)))
+                                            <a target="_blank" href="{{url('storage/pop/' . rawurlencode($dat->pop_image))}}"><button type=button class="badge badge-success">View Image </button> </a>
+                                        @else
+                                            <button type="button" class="badge badge-secondary" disabled title="Dokumen tidak tersedia di server">File tidak tersedia</button>
+                                        @endif
+                                        </td>
                                         <td>
                                          
                                           @if($levelnya=="compliance" || $levelnya=="operasional")
