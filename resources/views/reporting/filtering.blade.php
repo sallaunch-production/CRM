@@ -152,7 +152,7 @@
                                         <label>Negara Pengirim</label>
                                         <select name=negara_pengirim class=form-control>
                                         @foreach($data as $datqu)
-                                            <option value="{{$datqu->countryName}}">{{$datqu->countryName}}</option>
+                                            <option value="{{$datqu->countryname}}">{{$datqu->countryname}}</option>
                                         @endforeach
                                       
                                         </select>
