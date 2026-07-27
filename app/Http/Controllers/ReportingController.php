@@ -1448,11 +1448,155 @@ class ReportingController extends Controller
                   ]);
         }
                return view('reporting.transaksi_send_adisena');
-            
+
 
         }
 
         return redirect('login')->with('You dont have access');
       }
-    
+
+
+      // ============ Transaksi Direct Arsema (tabel transaksi_receive / transaksi_send) ============
+
+      public function transaction_receive_direct(Request $request)
+      {
+        if(Auth::check()){
+          DB::table('audit_trail_crm')->insertGetId([
+            'username' => Auth::user()->email,
+            'url' => url()->current(),
+            'action' => "Transaksi Direct Arsema Receive",
+            'tanggal' => Carbon::now()->toDateTimeString(),
+            'ip_address' => $_SERVER['REMOTE_ADDR'],
+            'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+            'created_at' => Carbon::now()->toDateTimeString(),
+            'updated_at' => Carbon::now()->toDateTimeString(),
+          ]);
+
+          if ($request->ajax()) {
+            // tabel direct tidak punya agent_id/maker/approver -> alias null agar kolom view tetap terisi '-'
+            $query = DB::table('transaksi_receive')
+                       ->selectRaw("transaksi_receive.*, null as agent_nama, null as maker, null as approver")
+                       ->orderBy('transaksi_receive.tanggal', 'desc');
+
+            if ($searchTerm = $request->input('search.value')) {
+              $searchTerm = trim($searchTerm);
+              $query->where(function ($q) use ($searchTerm) {
+                $q->where('nama_penerima', 'like', "%{$searchTerm}%")
+                  ->orWhere('nama_pengirim', 'like', "%{$searchTerm}%")
+                  ->orWhere('negara_pengirim', 'like', "%{$searchTerm}%")
+                  ->orWhere('amount', 'like', "%{$searchTerm}%")
+                  ->orWhere('no_referensi', 'like', "%{$searchTerm}%")
+                  ->orWhere('identitas', 'like', "%{$searchTerm}%")
+                  ->orWhere('nomor_identitas', 'like', "%{$searchTerm}%")
+                  ->orWhere('alamat_penerima', 'like', "%{$searchTerm}%")
+                  ->orWhere('telepon_penerima', 'like', "%{$searchTerm}%")
+                  ->orWhere('kota_penerima', 'like', "%{$searchTerm}%")
+                  ->orWhere('pekerjaan', 'like', "%{$searchTerm}%")
+                  ->orWhere('tujuan_penggunaan_dana', 'like', "%{$searchTerm}%")
+                  ->orWhere('hubungan', 'like', "%{$searchTerm}%")
+                  ->orWhere('kewarganegaraan', 'like', "%{$searchTerm}%")
+                  ->orWhere('kota_kelahiran', 'like', "%{$searchTerm}%")
+                  ->orWhere('tanggal', 'like', "%{$searchTerm}%");
+              });
+            }
+
+            $recordsTotal = DB::table('transaksi_receive')->count();
+            $recordsFiltered = $query->count();
+            $data = $query->offset($request->input('start'))
+                          ->limit($request->input('length'))
+                          ->get();
+            $data = $data->map(function($item, $index) {
+              $item->DT_RowIndex = $index + 1;
+              return $item;
+            });
+
+            return response()->json([
+              'draw' => (int) $request->input('draw'),
+              'recordsTotal' => $recordsTotal,
+              'recordsFiltered' => $recordsFiltered,
+              'data' => $data
+            ]);
+          }
+
+          return view('reporting.transaksi-adisena', [
+            'ajaxUrl' => url()->current(),
+            'pageTitle' => 'Transaksi Direct Arsema - Receive'
+          ]);
+        }
+
+        return redirect('login')->with('You dont have access');
+      }
+
+
+      public function transaction_send_direct(Request $request)
+      {
+        if(Auth::check()){
+          DB::table('audit_trail_crm')->insertGetId([
+            'username' => Auth::user()->email,
+            'url' => url()->current(),
+            'action' => "Transaksi Direct Arsema Send",
+            'tanggal' => Carbon::now()->toDateTimeString(),
+            'ip_address' => $_SERVER['REMOTE_ADDR'],
+            'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+            'created_at' => Carbon::now()->toDateTimeString(),
+            'updated_at' => Carbon::now()->toDateTimeString(),
+          ]);
+
+          if ($request->ajax()) {
+            $query = DB::table('transaksi_send')
+                       ->selectRaw("transaksi_send.*, null as agent_nama, null as maker, null as approver")
+                       ->orderBy('transaksi_send.tanggal', 'desc');
+
+            if ($searchTerm = $request->input('search.value')) {
+              $searchTerm = trim($searchTerm);
+              $query->where(function ($q) use ($searchTerm) {
+                $q->where('no_referensi', 'like', "%{$searchTerm}%")
+                  ->orWhere('negara_penerima', 'like', "%{$searchTerm}%")
+                  ->orWhere('amount', 'like', "%{$searchTerm}%")
+                  ->orWhere('sending_fee', 'like', "%{$searchTerm}%")
+                  ->orWhere('total_collect_amount', 'like', "%{$searchTerm}%")
+                  ->orWhere('nama_penerima', 'like', "%{$searchTerm}%")
+                  ->orWhere('nama_pengirim', 'like', "%{$searchTerm}%")
+                  ->orWhere('identitas', 'like', "%{$searchTerm}%")
+                  ->orWhere('nomor_identitas', 'like', "%{$searchTerm}%")
+                  ->orWhere('alamat_penerima', 'like', "%{$searchTerm}%")
+                  ->orWhere('telepon_penerima', 'like', "%{$searchTerm}%")
+                  ->orWhere('telpon_pengirim', 'like', "%{$searchTerm}%")
+                  ->orWhere('kota_penerima', 'like', "%{$searchTerm}%")
+                  ->orWhere('pekerjaan', 'like', "%{$searchTerm}%")
+                  ->orWhere('alamat_pengirim', 'like', "%{$searchTerm}%")
+                  ->orWhere('hubungan_pengirim', 'like', "%{$searchTerm}%")
+                  ->orWhere('tujuan_penggunaan_dana', 'like', "%{$searchTerm}%")
+                  ->orWhere('kota_lahir_pengirim', 'like', "%{$searchTerm}%")
+                  ->orWhere('tanggal', 'like', "%{$searchTerm}%");
+              });
+            }
+
+            $recordsTotal = DB::table('transaksi_send')->count();
+            $recordsFiltered = $query->count();
+            $data = $query->offset($request->input('start'))
+                          ->limit($request->input('length'))
+                          ->get();
+            $data = $data->map(function($item, $index) {
+              $item->DT_RowIndex = $index + 1;
+              return $item;
+            });
+
+            return response()->json([
+              'draw' => (int) $request->input('draw'),
+              'recordsTotal' => $recordsTotal,
+              'recordsFiltered' => $recordsFiltered,
+              'data' => $data
+            ]);
+          }
+
+          return view('reporting.transaksi_send_adisena', [
+            'ajaxUrl' => url()->current(),
+            'pageTitle' => 'Transaksi Direct Arsema - Send'
+          ]);
+        }
+
+        return redirect('login')->with('You dont have access');
+      }
+
 }

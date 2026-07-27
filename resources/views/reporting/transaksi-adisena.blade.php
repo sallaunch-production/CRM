@@ -3,7 +3,7 @@
 @section('title','CRM Arsema')
     
 @section('content_header')
-    <h1>Transaksi Receive Adisena</h1>
+    <h1>{{ $pageTitle ?? 'Transaksi Receive Adisena' }}</h1>
 @stop
 @section('content')
 <div class="container-fluid">
@@ -269,7 +269,7 @@
         processing: true,
         serverSide: true,
         ajax:{
-             url: '{{ route('transaction_receive_adisena_compliance') }}', // Menggunakan route Laravel untuk URL
+             url: '{{ $ajaxUrl ?? route('transaction_receive_adisena_compliance') }}', // Menggunakan route Laravel untuk URL
                     type: 'GET'
         },
         columns: [
@@ -582,7 +582,7 @@
         processing: true,
         serverSide: true,
         ajax:{
-             url: '{{ route('transaction_receive_adisena_operasional') }}', // Menggunakan route Laravel untuk URL
+             url: '{{ $ajaxUrl ?? route('transaction_receive_adisena_operasional') }}', // Menggunakan route Laravel untuk URL
                     type: 'GET'
         },
        

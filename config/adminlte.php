@@ -364,7 +364,7 @@ return [
             'icon' => 'fa fa-book fa-fw',
         ],
         [
-            'text'    => 'Transaksi Adisena',
+            'text'    => 'Transaksi Branch',
             'icon'    => 'fas fa-fw fa-clipboard',
             'submenu' => [
                 [
@@ -373,7 +373,7 @@ return [
                     'shift'   => 'ml-3',
                     'can'  => ['compliance-only'],
                     'icon'    => 'fas fa-fw fa-clipboard',
-                    
+
                 ],
                 [
                     'text' => 'Transaksi Receive',
@@ -381,23 +381,57 @@ return [
                     'shift'   => 'ml-3',
                     'can'  => ['operasional-only'],
                     'icon'    => 'fas fa-fw fa-clipboard',
-                    
+
                 ],
                 [
                     'text' => 'Transaksi Send',
                     'url'  => 'transaction_send_adisena_compliance',
-                    'shift'   => 'ml-3', 
+                    'shift'   => 'ml-3',
                     'can'  => ['compliance-only'],
                     'icon'    => 'fas fa-fw fa-clipboard',
-                    
+
                 ],
                 [
                     'text' => 'Transaksi Send',
                     'url'  => 'transaction_send_adisena_operasional',
-                    'shift'   => 'ml-3', 
+                    'shift'   => 'ml-3',
                     'can'  => ['operasional-only'],
                     'icon'    => 'fas fa-fw fa-clipboard',
-                    
+
+                ]
+                ]
+        ],
+        [
+            'text'    => 'Transaksi Direct Arsema',
+            'icon'    => 'fas fa-fw fa-clipboard',
+            'submenu' => [
+                [
+                    'text' => 'Transaksi Send',
+                    'url'  => 'transaction_send_direct_compliance',
+                    'shift'   => 'ml-3',
+                    'can'  => ['compliance-only'],
+                    'icon'    => 'fas fa-fw fa-clipboard',
+                ],
+                [
+                    'text' => 'Transaksi Send',
+                    'url'  => 'transaction_send_direct_operasional',
+                    'shift'   => 'ml-3',
+                    'can'  => ['operasional-only'],
+                    'icon'    => 'fas fa-fw fa-clipboard',
+                ],
+                [
+                    'text' => 'Transaksi Receive',
+                    'url'  => 'transaction_receive_direct_compliance',
+                    'shift'   => 'ml-3',
+                    'can'  => ['compliance-only'],
+                    'icon'    => 'fas fa-fw fa-clipboard',
+                ],
+                [
+                    'text' => 'Transaksi Receive',
+                    'url'  => 'transaction_receive_direct_operasional',
+                    'shift'   => 'ml-3',
+                    'can'  => ['operasional-only'],
+                    'icon'    => 'fas fa-fw fa-clipboard',
                 ]
                 ]
         ],
