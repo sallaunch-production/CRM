@@ -513,12 +513,28 @@ return [
             'icon'    => 'fas fa-fw fa-clipboard',
             'submenu' => [
                 [
+                    'text' => 'High Risk Country Transaction',
+                    'url'  => 'filtering',
+                    'shift'   => 'ml-3',
+                    'can'  => ['compliance-only'],
+                    'icon'    => 'fas fa-fw fa-clipboard',
+
+                ],
+                [
+                    'text' => 'High Risk Country Transaction',
+                    'url'  => 'filtering-operasional',
+                    'shift'   => 'ml-3',
+                    'can'  => ['operasional-only'],
+                    'icon'    => 'fas fa-fw fa-clipboard',
+
+                ],
+                [
                     'text' => 'Filtering Transaction',
                     'url'  => 'filtering_transaction',
                     'shift'   => 'ml-3',
                     'can'  => ['compliance-only'],
                     'icon'    => 'fas fa-fw fa-clipboard',
-                    
+
                 ],
                 [
                     'text' => 'Filtering Transaction',
