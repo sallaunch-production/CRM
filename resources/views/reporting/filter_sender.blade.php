@@ -2,7 +2,7 @@
 @section('title','CRM Arsema')
     
 @section('content_header')
-<h2>Filter Negara Berisiko Tinggi</h2>
+<h2>Flagging Transaction</h2>
 @stop
 @section('content')
 <div class="container-fluid">
