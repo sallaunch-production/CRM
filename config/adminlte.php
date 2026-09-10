@@ -499,12 +499,13 @@ return [
                     'shift' => 'ml-3',
                     'icon' => 'fas fa-fw fa-calculator',
                 ],
-                [
-                    'text' => 'Monthly New Customer',
-                    'url'  => 'newcustomer_monthly',
-                    'shift' => 'ml-3',
-                    'icon' => 'fas fa-fw fa-calendar-alt',
-                ],
+                // Disabled: Monthly New Customer
+                // [
+                //     'text' => 'Monthly New Customer',
+                //     'url'  => 'newcustomer_monthly',
+                //     'shift' => 'ml-3',
+                //     'icon' => 'fas fa-fw fa-calendar-alt',
+                // ],
             ],
         ],
         [
