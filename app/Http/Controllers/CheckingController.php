@@ -15,6 +15,7 @@ use Yajra\DataTables\Facades\DataTables;
 use App\Models\TransaksiSend;
 use App\Models\TransaksiSendPos;
 use App\Models\TransaksiValid;
+use App\Services\CustomerAnalyticsService;
 use DB;
 use Carbon\Carbon;
 
@@ -847,5 +848,222 @@ public function search_newcustomer(Request $request)
         return redirect('login')->with('You dont have access');
       }
 
+    public function newcustomer_receive_analytics(
+        Request $request,
+        CustomerAnalyticsService $analytics
+    ) {
+        $data = collect();
+        $hasFilter = false;
+        $hasAnyDate = $request->filled('start_date') || $request->filled('end_date');
+
+        if ($hasAnyDate) {
+            $validator = $this->customerAnalyticsDateValidator($request);
+
+            if ($validator->fails()) {
+                return view('checking.newcustomer_receive_analytics', compact(
+                    'data',
+                    'hasFilter'
+                ))->withErrors($validator);
+            }
+
+            [$startDate, $endDateExclusive] = $this->customerAnalyticsDateRange($request);
+
+            $data = $analytics
+                ->newReceiveCustomers($startDate, $endDateExclusive)
+                ->paginate(10)
+                ->withQueryString();
+
+            $hasFilter = true;
+        }
+
+        return view('checking.newcustomer_receive_analytics', compact(
+            'data',
+            'hasFilter'
+        ));
+    }
+
+    public function counting_customer_send(
+        Request $request,
+        CustomerAnalyticsService $analytics
+    ) {
+        $data = collect();
+        $hasFilter = false;
+        $hasAnyDate = $request->filled('start_date') || $request->filled('end_date');
+
+        if ($hasAnyDate) {
+            $validator = $this->customerAnalyticsDateValidator($request);
+
+            if ($validator->fails()) {
+                return view('checking.counting_customer_send', compact(
+                    'data',
+                    'hasFilter'
+                ))->withErrors($validator);
+            }
+
+            [$startDate, $endDateExclusive] = $this->customerAnalyticsDateRange($request);
+
+            $data = $analytics
+                ->customerTransactionSummary($startDate, $endDateExclusive)
+                ->paginate(10)
+                ->withQueryString();
+
+            $hasFilter = true;
+        }
+
+        return view('checking.counting_customer_send', compact(
+            'data',
+            'hasFilter'
+        ));
+    }
+
+    public function counting_customer_send_detail(
+        Request $request,
+        CustomerAnalyticsService $analytics
+    ) {
+        $validator = Validator::make(
+            $request->only(['nomor_identitas', 'start_date', 'end_date']),
+            [
+                'nomor_identitas' => ['required', 'string'],
+                'start_date' => ['required', 'date_format:Y-m-d'],
+                'end_date' => ['required', 'date_format:Y-m-d', 'after_or_equal:start_date'],
+            ]
+        );
+
+        if ($validator->fails()) {
+            abort(422, $validator->errors()->first());
+        }
+
+        $nomorIdentitas = trim($request->input('nomor_identitas'));
+        [$startDate, $endDateExclusive] = $this->customerAnalyticsDateRange($request);
+
+        $transactions = $analytics
+            ->customerTransactions($nomorIdentitas, $startDate, $endDateExclusive)
+            ->paginate(10)
+            ->withQueryString();
+
+        $customerName = $transactions->first()?->nama_pengirim ?? '-';
+
+        return view('checking.counting_customer_send_detail', compact(
+            'transactions',
+            'nomorIdentitas',
+            'customerName'
+        ));
+    }
+
+    public function newcustomer_daily(
+        Request $request,
+        CustomerAnalyticsService $analytics
+    ) {
+        $data = collect();
+        $hasFilter = false;
+        $hasAnyDate = $request->filled('start_date') || $request->filled('end_date');
+
+        if ($hasAnyDate) {
+            $validator = $this->customerAnalyticsDateValidator($request);
+
+            if ($validator->fails()) {
+                return view('checking.newcustomer_send_analytics', compact(
+                    'data',
+                    'hasFilter'
+                ))->withErrors($validator);
+            }
+
+            [$startDate, $endDateExclusive] = $this->customerAnalyticsDateRange($request);
+
+            $data = $analytics
+                ->newSendCustomers($startDate, $endDateExclusive)
+                ->paginate(10)
+                ->withQueryString();
+
+            $hasFilter = true;
+        }
+
+        return view('checking.newcustomer_send_analytics', compact(
+            'data',
+            'hasFilter'
+        ));
+    }
+
+    public function newcustomer_monthly(Request $request)
+    {
+        if ($request->filled('bulan')) {
+            $tanggalAwal = Carbon::createFromFormat('Y-m', $request->input('bulan'));
+        } else {
+            $offsetBulan = max(0, (int) $request->input('offset', 0));
+            $tanggalAwal = Carbon::today()->subMonths($offsetBulan);
+        }
+
+        $tanggalDari = $tanggalAwal->copy()->startOfMonth()->format('Y-m-d');
+        $tanggalSampai = $tanggalAwal->copy()->endOfMonth()->format('Y-m-d');
+        $tanggalBesok = Carbon::parse($tanggalSampai)->addDay()->format('Y-m-d');
+
+        $data = DB::table('transaksi_send_pos as t')
+            ->select(
+                't.id_transaksi',
+                't.nama_pengirim as nama_pengirim',
+                't.tanggal as tanggal_transaksi',
+                't.no_referensi as no_referensi',
+                't.id_pos as nopend',
+                't.negara_penerima as negara_tujuan',
+                't.amount as jumlah_transaksi',
+                't.telpon_pengirim as nomor_telepon',
+                't.nomor_identitas as nomor_identitas'
+            )
+            ->where('t.tanggal', '>=', $tanggalDari . ' 00:00:00')
+            ->where('t.tanggal', '<', $tanggalBesok . ' 00:00:00')
+            ->whereNotNull('t.nomor_identitas')
+            ->where('t.nomor_identitas', '<>', '')
+            ->whereNotExists(function ($query) {
+                $query->select(DB::raw(1))
+                    ->from('transaksi_send_pos as old')
+                    ->whereColumn('old.nomor_identitas', 't.nomor_identitas')
+                    ->where(function ($q) {
+                        $q->whereColumn('old.tanggal', '<', 't.tanggal')
+                            ->orWhere(function ($q2) {
+                                $q2->whereColumn('old.tanggal', 't.tanggal')
+                                    ->whereColumn('old.id_transaksi', '<', 't.id_transaksi');
+                            });
+                    });
+            })
+            ->orderBy('t.tanggal', 'asc')
+            ->orderBy('t.id_transaksi', 'asc')
+            ->get();
+
+        return view(
+            'checking.newcustomer_monthly',
+            compact('data', 'tanggalDari', 'tanggalSampai')
+        );
+    }
+
+    private function customerAnalyticsDateValidator(Request $request)
+    {
+        return Validator::make(
+            $request->only(['start_date', 'end_date']),
+            [
+                'start_date' => ['required', 'date_format:Y-m-d'],
+                'end_date' => ['required', 'date_format:Y-m-d', 'after_or_equal:start_date'],
+            ],
+            [
+                'start_date.required' => 'Start date wajib diisi.',
+                'start_date.date_format' => 'Format start date tidak valid.',
+                'end_date.required' => 'End date wajib diisi.',
+                'end_date.date_format' => 'Format end date tidak valid.',
+                'end_date.after_or_equal' => 'End date harus sama dengan atau setelah start date.',
+            ]
+        );
+    }
+
+    private function customerAnalyticsDateRange(Request $request): array
+    {
+        $startDate = Carbon::createFromFormat('Y-m-d', $request->input('start_date'))
+            ->startOfDay();
+        $endDateExclusive = Carbon::createFromFormat('Y-m-d', $request->input('end_date'))
+            ->addDay()
+            ->startOfDay();
+
+        return [$startDate, $endDateExclusive];
+    }
+
 }
+
 

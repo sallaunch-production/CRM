@@ -13,7 +13,14 @@ use Carbon\Carbon;
 use App\Exports\Rekons;
 use App\Exports\InvoicesExport;
 use App\Exports\CetakLaporanBI;
+use App\Exports\GenerateMonthlyCustomerReport;
+use App\Exports\GenerateMonthlyCustomerPdf;
+use App\Exports\NewCustomerAnalyticsExport;
+use App\Exports\NewCustomerExport;
+use App\Services\CustomerAnalyticsService;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 use Maatwebsite\Excel\Facades\Excel;
 use DB;
 use Illuminate\Http\Response;
@@ -716,5 +723,139 @@ class ImportExportController extends Controller
         // Kirim ke export class
         return Excel::download(new NewCustomerExport($tanggal_dari, $tanggal_sampai), 'newcustomer.xlsx');
     }
-    
+
+    public function excel_NewCustomer(
+        Request $request,
+        CustomerAnalyticsService $analytics
+    ) {
+        return $this->downloadNewCustomerAnalytics($request, $analytics, 'send', 'excel');
+    }
+
+    public function pdf_NewCustomer(
+        Request $request,
+        CustomerAnalyticsService $analytics
+    ) {
+        return $this->downloadNewCustomerAnalytics($request, $analytics, 'send', 'pdf');
+    }
+
+    public function excel_NewCustomerReceive(
+        Request $request,
+        CustomerAnalyticsService $analytics
+    ) {
+        return $this->downloadNewCustomerAnalytics($request, $analytics, 'receive', 'excel');
+    }
+
+    public function pdf_NewCustomerReceive(
+        Request $request,
+        CustomerAnalyticsService $analytics
+    ) {
+        return $this->downloadNewCustomerAnalytics($request, $analytics, 'receive', 'pdf');
+    }
+
+    public function excel_NewCustomerMonthly(Request $request)
+    {
+        if (!$request->filled('bulan')) {
+            return back()->with('error', 'Silakan pilih bulan terlebih dahulu.');
+        }
+
+        $bulanTerpilih = Carbon::createFromFormat('Y-m', $request->input('bulan'));
+        $tanggalDari = $bulanTerpilih->copy()->startOfMonth()->format('Y-m-d');
+        $tanggalSampai = $bulanTerpilih->copy()->endOfMonth()->format('Y-m-d');
+        $namaBulan = $bulanTerpilih->locale('id')->translatedFormat('F Y');
+
+        return Excel::download(
+            new GenerateMonthlyCustomerReport($tanggalDari, $tanggalSampai),
+            'Monthly New Customer ' . $namaBulan . '.xlsx'
+        );
+    }
+
+    public function pdf_NewCustomerMonthly(Request $request)
+    {
+        if (!$request->filled('bulan')) {
+            return back()->with('error', 'Silakan pilih bulan terlebih dahulu.');
+        }
+
+        $bulanTerpilih = Carbon::createFromFormat('Y-m', $request->input('bulan'));
+        $tanggalDari = $bulanTerpilih->copy()->startOfMonth()->format('Y-m-d');
+        $tanggalSampai = $bulanTerpilih->copy()->endOfMonth()->format('Y-m-d');
+
+        $export = new GenerateMonthlyCustomerPdf($tanggalDari, $tanggalSampai);
+
+        return $export->generate()->download($export->getFilename());
+    }
+
+    private function downloadNewCustomerAnalytics(
+        Request $request,
+        CustomerAnalyticsService $analytics,
+        string $type,
+        string $format
+    ) {
+        [$startDate, $endDateExclusive, $startDateText, $endDateText] =
+            $this->resolveNewCustomerDateRange($request);
+
+        $query = $type === 'send'
+            ? $analytics->newSendCustomers($startDate, $endDateExclusive)
+            : $analytics->newReceiveCustomers($startDate, $endDateExclusive);
+
+        $data = $query->get();
+        $label = $type === 'send' ? 'Send' : 'Receive';
+        $filename = "New-Customer-{$label}-{$startDateText}-sd-{$endDateText}";
+
+        if ($format === 'excel') {
+            return Excel::download(
+                new NewCustomerAnalyticsExport(
+                    $data,
+                    $type,
+                    $startDateText,
+                    $endDateText
+                ),
+                $filename . '.xlsx'
+            );
+        }
+
+        return Pdf::loadView('pdf.new_customer_analytics_pdf', [
+            'data' => $data,
+            'type' => $type,
+            'startDate' => $startDateText,
+            'endDate' => $endDateText,
+        ])->setPaper('a4', 'landscape')->download($filename . '.pdf');
+    }
+
+    private function resolveNewCustomerDateRange(Request $request): array
+    {
+        if ($request->filled('start_date') || $request->filled('end_date')) {
+            $validated = $request->validate([
+                'start_date' => ['required', 'date_format:Y-m-d'],
+                'end_date' => ['required', 'date_format:Y-m-d', 'after_or_equal:start_date'],
+            ]);
+
+            $startDateText = $validated['start_date'];
+            $endDateText = $validated['end_date'];
+        } elseif ($request->filled('reservation')) {
+            $parts = explode(' - ', $request->input('reservation'));
+
+            if (count($parts) !== 2) {
+                throw ValidationException::withMessages([
+                    'start_date' => 'Periode tanggal tidak valid.',
+                ]);
+            }
+
+            $startDateText = Carbon::createFromFormat('m/d/Y', trim($parts[0]))
+                ->format('Y-m-d');
+            $endDateText = Carbon::createFromFormat('m/d/Y', trim($parts[1]))
+                ->format('Y-m-d');
+        } else {
+            throw ValidationException::withMessages([
+                'start_date' => 'Start date dan end date wajib diisi.',
+            ]);
+        }
+
+        $startDate = Carbon::createFromFormat('Y-m-d', $startDateText)->startOfDay();
+        $endDateExclusive = Carbon::createFromFormat('Y-m-d', $endDateText)
+            ->addDay()
+            ->startOfDay();
+
+        return [$startDate, $endDateExclusive, $startDateText, $endDateText];
+    }
+
 }

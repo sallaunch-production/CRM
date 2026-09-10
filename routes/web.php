@@ -201,6 +201,20 @@ Route::group(['middleware' => ['operasional']], function () {
     Route::get('transaction_send_direct_operasional',[App\Http\Controllers\ReportingController::class,'transaction_send_direct'])->name('transaction_send_direct_operasional')->middleware('auth');
     Route::post('delete_popimages_operasional',[App\Http\Controllers\ReportingController::class,'delete_popimages'])->name('delete_popimages_operasional')->middleware('auth');
     Route::post('edit_popimages_operasional',[App\Http\Controllers\ReportingController::class,'edit_popimages'])->name('edit_popimages_operasional')->middleware('auth');
+
+    // Customer Analytics
+    Route::get('customer-analytics/new-customer-receive',[App\Http\Controllers\CheckingController::class,'newcustomer_receive_analytics'])->name('customer_analytics.new_customer_receive')->middleware('auth');
+    Route::get('customer-analytics/new-customer-receive/export/excel',[App\Http\Controllers\ImportExportController::class,'excel_NewCustomerReceive'])->name('customer_analytics.new_customer_receive.excel')->middleware('auth');
+    Route::get('customer-analytics/new-customer-receive/export/pdf',[App\Http\Controllers\ImportExportController::class,'pdf_NewCustomerReceive'])->name('customer_analytics.new_customer_receive.pdf')->middleware('auth');
+    Route::get('newcustomer_daily',[App\Http\Controllers\CheckingController::class,'newcustomer_daily'])->name('newcustomer_daily')->middleware('auth');
+    Route::get('newcustomer_daily/export/excel',[App\Http\Controllers\ImportExportController::class,'excel_NewCustomer'])->name('newcustomer_daily.excel')->middleware('auth');
+    Route::get('newcustomer_daily/export/pdf',[App\Http\Controllers\ImportExportController::class,'pdf_NewCustomer'])->name('newcustomer_daily.pdf')->middleware('auth');
+    Route::get('counting_customer_send',[App\Http\Controllers\CheckingController::class,'counting_customer_send'])->name('counting_customer_send')->middleware('auth');
+    Route::get('counting_customer_send/detail',[App\Http\Controllers\CheckingController::class,'counting_customer_send_detail'])->name('counting_customer_send.detail')->middleware('auth');
+    Route::get('newcustomer_monthly',[App\Http\Controllers\CheckingController::class,'newcustomer_monthly'])->name('newcustomer_monthly')->middleware('auth');
+    Route::get('newcustomer_monthly/export/excel',[App\Http\Controllers\ImportExportController::class,'excel_NewCustomerMonthly'])->name('newcustomer_monthly.excel')->middleware('auth');
+    Route::get('newcustomer_monthly/export/pdf',[App\Http\Controllers\ImportExportController::class,'pdf_NewCustomerMonthly'])->name('newcustomer_monthly.pdf')->middleware('auth');
+
     Route::get('newcustomer_operasional',[App\Http\Controllers\CheckingController::class,'newcustomer'])->name('newcustomer_operasional')->middleware('auth');
     Route::get('newcustomer-send-operasional',[App\Http\Controllers\CheckingController::class,'newcustomer_send'])->name('newcustomer_send_operasional')->middleware('auth');
     Route::post('search_newcustomer_operasional',[App\Http\Controllers\CheckingController::class,'search_newcustomer'])->name('search_newcustomer_operasional')->middleware('auth');

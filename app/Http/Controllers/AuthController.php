@@ -92,8 +92,14 @@ class AuthController extends Controller
                         $namanya=$cek_users->name;
                         Session::put('user_name', $namanya);
                     }
-                    $cek_google =  DB::table('auth_google')->where('username','=',$cek_email[0]['email'] ?? '')->get();
                    if($cek_email[0]['level']=="compliance" || $cek_email[0]['level']=="operasional"){
+                        // Local: tetap ke halaman authenticator (kode di-bypass di verify).
+                        // Non-local: register barcode dulu jika belum ada.
+                        if (app()->isLocal()) {
+                            return redirect('validation')->with('success','Silahkan masukan code dari perangakat seluler anda.');
+                        }
+
+                        $cek_google =  DB::table('auth_google')->where('username','=',$cek_email[0]['email'] ?? '')->get();
                         if(count($cek_google)>0){
                             return redirect('validation')->with('success','Silahkan masukan code dari perangakat seluler anda.');
                         }else{
@@ -132,17 +138,21 @@ class AuthController extends Controller
                 $nama=$users->name;
                 $level=$users->level;
             }
-            $cek_code = DB::table('auth_google')->where('username','=',$email)->get();
-            foreach($cek_code as $cek_codes){
-                $codenya=$cek_codes->code;
-            }
-            $google2fa = new Google2FA();
-            $otp_secret = $codenya;
-            $valid =$google2fa->verifyKey($otp_secret, $request_code);
-          
             $credentials =  ['email'=>$email,'password'=>$password];
-           
-            //$valid = $google2fa->verifyKey($request->code,$secret);
+
+            // Di local, kode Google Auth boleh diisi angka apa pun.
+            if (app()->isLocal()) {
+                $valid = true;
+            } else {
+                $cek_code = DB::table('auth_google')->where('username','=',$email)->get();
+                $codenya = null;
+                foreach($cek_code as $cek_codes){
+                    $codenya=$cek_codes->code;
+                }
+                $google2fa = new Google2FA();
+                $valid = $google2fa->verifyKey($codenya, $request_code);
+            }
+
             if(Auth::attempt($credentials) && $valid){
                 session()->forget('user_password');
                 $qur = DB::table('audit_trail')->insertGetId([
