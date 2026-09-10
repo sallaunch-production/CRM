@@ -477,6 +477,37 @@ return [
             'icon'    => 'fas fa-fw fa-clipboard',
         ],
         [
+            'text' => 'Customer Analytics',
+            'can'  => ['operasional-only'],
+            'icon' => 'fas fa-fw fa-chart-bar',
+            'submenu' => [
+                [
+                    'text' => 'New Customer Receive',
+                    'url'  => 'customer-analytics/new-customer-receive',
+                    'shift' => 'ml-3',
+                    'icon' => 'fas fa-fw fa-inbox',
+                ],
+                [
+                    'text' => 'New Customer Send',
+                    'url'  => 'newcustomer_daily',
+                    'shift' => 'ml-3',
+                    'icon' => 'fas fa-fw fa-paper-plane',
+                ],
+                [
+                    'text' => 'Customer Transactions',
+                    'url'  => 'counting_customer_send',
+                    'shift' => 'ml-3',
+                    'icon' => 'fas fa-fw fa-calculator',
+                ],
+                [
+                    'text' => 'Monthly New Customer',
+                    'url'  => 'newcustomer_monthly',
+                    'shift' => 'ml-3',
+                    'icon' => 'fas fa-fw fa-calendar-alt',
+                ],
+            ],
+        ],
+        [
             'text'    => 'Sanction List',
             'icon'    => 'fas fa-fw fa-clipboard',
             'can'  => ['operasional-only'],
