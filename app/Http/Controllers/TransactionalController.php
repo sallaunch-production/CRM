@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Hash;
 use Yajra\DataTables\Facades\DataTables;
 use App\Models\TransaksiSendPos;
 use App\Models\TransaksiValid;
+use App\Support\PosDatatableSearch;
 use DB;
 use Carbon\Carbon;
 
@@ -37,31 +38,8 @@ class TransactionalController extends Controller
           if ($request->ajax()) {
             $query  = TransaksiValid::orderBy('tanggal','desc'); 
              // Apply search filter
-            if ($searchTerm = $request->input('search.value')) {
-              $searchTerm = trim($searchTerm);
-
-              $query->where(function ($q) use ($searchTerm) {
-                  $q->where('nama_penerima', 'like', "%{$searchTerm}%")
-                    ->orWhere('nama_pengirim', 'like', "%{$searchTerm}%")
-                    ->orWhere('negara_pengirim', 'like', "%{$searchTerm}%")
-                    ->orWhere('bsubanyak', 'like', "%{$searchTerm}%")
-                    ->orWhere('no_referensi', 'like', "%{$searchTerm}%")
-                    ->orWhere('identitas', 'like', "%{$searchTerm}%")
-                    ->orWhere('nomor_identitas', 'like', "%{$searchTerm}%")
-                    ->orWhere('tanggal_lahir', 'like', "%{$searchTerm}%")
-                    ->orWhere('alamat_penerima', 'like', "%{$searchTerm}%")
-                    ->orWhere('alamat_domisili_penerima', 'like', "%{$searchTerm}%")
-                    ->orWhere('telepon_penerima', 'like', "%{$searchTerm}%")
-                    ->orWhere('kota_penerima', 'like', "%{$searchTerm}%")
-                    ->orWhere('pekerjaan', 'like', "%{$searchTerm}%")
-                    ->orWhere('tujuan_penggunaan_dana', 'like', "%{$searchTerm}%")
-                    ->orWhere('hubungan', 'like', "%{$searchTerm}%")
-                    ->orWhere('kewarganegaraan', 'like', "%{$searchTerm}%")
-                    ->orWhere('jenis_kelamin', 'like', "%{$searchTerm}%")
-                    ->orWhere('kota_kelahiran', 'like', "%{$searchTerm}%")
-                    ->orWhere('id_pos', 'like', "%{$searchTerm}%")
-                    ->orWhere('tanggal', 'like', "%{$searchTerm}%");
-              });
+            if ($request->filled('search.value')) {
+              PosDatatableSearch::apply($query, $request->input('search.value'), 'bsubanyak');
             }
 
             $recordsTotal = TransaksiValid::count();
@@ -109,31 +87,8 @@ class TransactionalController extends Controller
            if ($request->ajax()) {
             $query  = TransaksiValid::orderBy('tanggal','desc'); 
              // Apply search filter
-            if ($searchTerm = $request->input('search.value')) {
-              $searchTerm = trim($searchTerm);
-
-              $query->where(function ($q) use ($searchTerm) {
-                  $q->where('nama_penerima', 'like', "%{$searchTerm}%")
-                    ->orWhere('nama_pengirim', 'like', "%{$searchTerm}%")
-                    ->orWhere('negara_pengirim', 'like', "%{$searchTerm}%")
-                    ->orWhere('bsubanyak', 'like', "%{$searchTerm}%")
-                    ->orWhere('no_referensi', 'like', "%{$searchTerm}%")
-                    ->orWhere('identitas', 'like', "%{$searchTerm}%")
-                    ->orWhere('nomor_identitas', 'like', "%{$searchTerm}%")
-                    ->orWhere('tanggal_lahir', 'like', "%{$searchTerm}%")
-                    ->orWhere('alamat_penerima', 'like', "%{$searchTerm}%")
-                    ->orWhere('alamat_domisili_penerima', 'like', "%{$searchTerm}%")
-                    ->orWhere('telepon_penerima', 'like', "%{$searchTerm}%")
-                    ->orWhere('kota_penerima', 'like', "%{$searchTerm}%")
-                    ->orWhere('pekerjaan', 'like', "%{$searchTerm}%")
-                    ->orWhere('tujuan_penggunaan_dana', 'like', "%{$searchTerm}%")
-                    ->orWhere('hubungan', 'like', "%{$searchTerm}%")
-                    ->orWhere('kewarganegaraan', 'like', "%{$searchTerm}%")
-                    ->orWhere('jenis_kelamin', 'like', "%{$searchTerm}%")
-                    ->orWhere('kota_kelahiran', 'like', "%{$searchTerm}%")
-                    ->orWhere('id_pos', 'like', "%{$searchTerm}%")
-                    ->orWhere('tanggal', 'like', "%{$searchTerm}%");
-              });
+            if ($request->filled('search.value')) {
+              PosDatatableSearch::apply($query, $request->input('search.value'), 'bsubanyak');
             }
 
             $recordsTotal = TransaksiValid::count();
@@ -160,31 +115,8 @@ class TransactionalController extends Controller
             }if ($request->ajax()) {
             $query  = TransaksiValid::orderBy('tanggal','desc'); 
              // Apply search filter
-            if ($searchTerm = $request->input('search.value')) {
-              $searchTerm = trim($searchTerm);
-
-              $query->where(function ($q) use ($searchTerm) {
-                  $q->where('nama_penerima', 'like', "%{$searchTerm}%")
-                    ->orWhere('nama_pengirim', 'like', "%{$searchTerm}%")
-                    ->orWhere('negara_pengirim', 'like', "%{$searchTerm}%")
-                    ->orWhere('bsubanyak', 'like', "%{$searchTerm}%")
-                    ->orWhere('no_referensi', 'like', "%{$searchTerm}%")
-                    ->orWhere('identitas', 'like', "%{$searchTerm}%")
-                    ->orWhere('nomor_identitas', 'like', "%{$searchTerm}%")
-                    ->orWhere('tanggal_lahir', 'like', "%{$searchTerm}%")
-                    ->orWhere('alamat_penerima', 'like', "%{$searchTerm}%")
-                    ->orWhere('alamat_domisili_penerima', 'like', "%{$searchTerm}%")
-                    ->orWhere('telepon_penerima', 'like', "%{$searchTerm}%")
-                    ->orWhere('kota_penerima', 'like', "%{$searchTerm}%")
-                    ->orWhere('pekerjaan', 'like', "%{$searchTerm}%")
-                    ->orWhere('tujuan_penggunaan_dana', 'like', "%{$searchTerm}%")
-                    ->orWhere('hubungan', 'like', "%{$searchTerm}%")
-                    ->orWhere('kewarganegaraan', 'like', "%{$searchTerm}%")
-                    ->orWhere('jenis_kelamin', 'like', "%{$searchTerm}%")
-                    ->orWhere('kota_kelahiran', 'like', "%{$searchTerm}%")
-                    ->orWhere('id_pos', 'like', "%{$searchTerm}%")
-                    ->orWhere('tanggal', 'like', "%{$searchTerm}%");
-              });
+            if ($request->filled('search.value')) {
+              PosDatatableSearch::apply($query, $request->input('search.value'), 'bsubanyak');
             }
 
             $recordsTotal = TransaksiValid::count();
@@ -232,37 +164,9 @@ class TransactionalController extends Controller
         ]);
         if ($request->ajax()) {
           $query = TransaksiSendPos::orderBy('tanggal','desc'); 
-          if ($searchTerm = $request->input('search.value')) {
-            $searchTerm = trim($searchTerm);
-            $query->where(function ($q) use ($searchTerm) {
-              $q->where('no_referensi', 'like', "%{$searchTerm}%")
-                ->orWhere('negara_penerima', 'like', "%{$searchTerm}%")
-                ->orWhere('amount', 'like', "%{$searchTerm}%")
-                ->orWhere('sending_fee', 'like', "%{$searchTerm}%")
-                ->orWhere('total_collect_amount', 'like', "%{$searchTerm}%")
-                ->orWhere('nama_penerima', 'like', "%{$searchTerm}%")
-                ->orWhere('nama_pengirim', 'like', "%{$searchTerm}%")
-                ->orWhere('id_pos', 'like', "%{$searchTerm}%")
-                ->orWhere('identitas', 'like', "%{$searchTerm}%")
-                ->orWhere('nomor_identitas', 'like', "%{$searchTerm}%")
-                ->orWhere('tanggal_lahir', 'like', "%{$searchTerm}%")
-                ->orWhere('kota_lahir_pengirim', 'like', "%{$searchTerm}%")
-                ->orWhere('alamat_penerima', 'like', "%{$searchTerm}%")
-                ->orWhere('telepon_penerima', 'like', "%{$searchTerm}%")
-                ->orWhere('telpon_pengirim', 'like', "%{$searchTerm}%")
-                ->orWhere('kota_penerima', 'like', "%{$searchTerm}%")
-                ->orWhere('pekerjaan', 'like', "%{$searchTerm}%")
-                ->orWhere('alamat_pengirim', 'like', "%{$searchTerm}%")
-                ->orWhere('alamat_domisili_pengirim', 'like', "%{$searchTerm}%")
-                ->orWhere('opt_display', 'like', "%{$searchTerm}%")
-                ->orWhere('hubungan_pengirim', 'like', "%{$searchTerm}%")
-                ->orWhere('negara_domisili_pengirim', 'like', "%{$searchTerm}%")
-                ->orWhere('tujuan_penggunaan_dana', 'like', "%{$searchTerm}%")
-                ->orWhere('kota_lahir_pengirim', 'like', "%{$searchTerm}%")
-                ->orWhere('jenis_kelamin', 'like', "%{$searchTerm}%")
-                ->orWhere('tanggal', 'like', "%{$searchTerm}%");
-          });
-        }
+          if ($request->filled('search.value')) {
+                  PosDatatableSearch::apply($query, $request->input('search.value'), 'amount');
+                }
         $recordsTotal = TransaksiSendPos::count();
         $recordsFiltered = $query->count(); // Total records after filtering  
         
@@ -288,38 +192,9 @@ class TransactionalController extends Controller
        if ($request->ajax()) {
         $query  = TransaksiSendPos::orderBy('tanggal','desc'); 
          // Apply search filter
-        if ($searchTerm = $request->input('search.value')) {
-          $searchTerm = trim($searchTerm);
-
-          $query->where(function ($q) use ($searchTerm) {
-            $q->where('no_referensi', 'like', "%{$searchTerm}%")
-            ->orWhere('negara_penerima', 'like', "%{$searchTerm}%")
-            ->orWhere('amount', 'like', "%{$searchTerm}%")
-            ->orWhere('sending_fee', 'like', "%{$searchTerm}%")
-            ->orWhere('total_collect_amount', 'like', "%{$searchTerm}%")
-            ->orWhere('nama_penerima', 'like', "%{$searchTerm}%")
-            ->orWhere('nama_pengirim', 'like', "%{$searchTerm}%")
-            ->orWhere('id_pos', 'like', "%{$searchTerm}%")
-            ->orWhere('identitas', 'like', "%{$searchTerm}%")
-            ->orWhere('nomor_identitas', 'like', "%{$searchTerm}%")
-            ->orWhere('tanggal_lahir', 'like', "%{$searchTerm}%")
-            ->orWhere('kota_lahir_pengirim', 'like', "%{$searchTerm}%")
-            ->orWhere('alamat_penerima', 'like', "%{$searchTerm}%")
-            ->orWhere('telepon_penerima', 'like', "%{$searchTerm}%")
-            ->orWhere('telpon_pengirim', 'like', "%{$searchTerm}%")
-            ->orWhere('kota_penerima', 'like', "%{$searchTerm}%")
-            ->orWhere('pekerjaan', 'like', "%{$searchTerm}%")
-            ->orWhere('alamat_pengirim', 'like', "%{$searchTerm}%")
-            ->orWhere('alamat_domisili_pengirim', 'like', "%{$searchTerm}%")
-            ->orWhere('opt_display', 'like', "%{$searchTerm}%")
-            ->orWhere('hubungan_pengirim', 'like', "%{$searchTerm}%")
-            ->orWhere('negara_domisili_pengirim', 'like', "%{$searchTerm}%")
-            ->orWhere('tujuan_penggunaan_dana', 'like', "%{$searchTerm}%")
-            ->orWhere('kota_lahir_pengirim', 'like', "%{$searchTerm}%")
-            ->orWhere('jenis_kelamin', 'like', "%{$searchTerm}%")
-            ->orWhere('tanggal', 'like', "%{$searchTerm}%");
-          });
-        }
+        if ($request->filled('search.value')) {
+                  PosDatatableSearch::apply($query, $request->input('search.value'), 'amount');
+                }
 
         $recordsTotal = TransaksiSendPos::count();
         $recordsFiltered = $query->count(); // Total records after filtering  
@@ -367,37 +242,9 @@ class TransactionalController extends Controller
         ]);
              if ($request->ajax()) {
                 $query = TransaksiSendPos::orderBy('tanggal','desc'); 
-                if ($searchTerm = $request->input('search.value')) {
-                  $searchTerm = trim($searchTerm);
-                  $query->where(function ($q) use ($searchTerm) {
-                    $q->where('no_referensi', 'like', "%{$searchTerm}%")
-                      ->orWhere('negara_penerima', 'like', "%{$searchTerm}%")
-                      ->orWhere('amount', 'like', "%{$searchTerm}%")
-                      ->orWhere('sending_fee', 'like', "%{$searchTerm}%")
-                      ->orWhere('total_collect_amount', 'like', "%{$searchTerm}%")
-                      ->orWhere('nama_penerima', 'like', "%{$searchTerm}%")
-                      ->orWhere('nama_pengirim', 'like', "%{$searchTerm}%")
-                      ->orWhere('id_pos', 'like', "%{$searchTerm}%")
-                      ->orWhere('identitas', 'like', "%{$searchTerm}%")
-                      ->orWhere('nomor_identitas', 'like', "%{$searchTerm}%")
-                      ->orWhere('tanggal_lahir', 'like', "%{$searchTerm}%")
-                      ->orWhere('kota_lahir_pengirim', 'like', "%{$searchTerm}%")
-                      ->orWhere('alamat_penerima', 'like', "%{$searchTerm}%")
-                      ->orWhere('telepon_penerima', 'like', "%{$searchTerm}%")
-                      ->orWhere('telpon_pengirim', 'like', "%{$searchTerm}%")
-                      ->orWhere('kota_penerima', 'like', "%{$searchTerm}%")
-                      ->orWhere('pekerjaan', 'like', "%{$searchTerm}%")
-                      ->orWhere('alamat_pengirim', 'like', "%{$searchTerm}%")
-                      ->orWhere('alamat_domisili_pengirim', 'like', "%{$searchTerm}%")
-                      ->orWhere('opt_display', 'like', "%{$searchTerm}%")
-                      ->orWhere('hubungan_pengirim', 'like', "%{$searchTerm}%")
-                      ->orWhere('negara_domisili_pengirim', 'like', "%{$searchTerm}%")
-                      ->orWhere('tujuan_penggunaan_dana', 'like', "%{$searchTerm}%")
-                      ->orWhere('kota_lahir_pengirim', 'like', "%{$searchTerm}%")
-                      ->orWhere('jenis_kelamin', 'like', "%{$searchTerm}%")
-                      ->orWhere('tanggal', 'like', "%{$searchTerm}%");
-                });
-              }
+                if ($request->filled('search.value')) {
+                  PosDatatableSearch::apply($query, $request->input('search.value'), 'amount');
+                }
               $recordsTotal = TransaksiSendPos::count();
               $recordsFiltered = $query->count(); // Total records after filtering  
               
@@ -423,38 +270,9 @@ class TransactionalController extends Controller
              if ($request->ajax()) {
               $query  = TransaksiSendPos::orderBy('tanggal','desc'); 
                // Apply search filter
-              if ($searchTerm = $request->input('search.value')) {
-                $searchTerm = trim($searchTerm);
-  
-                $query->where(function ($q) use ($searchTerm) {
-                  $q->where('no_referensi', 'like', "%{$searchTerm}%")
-                  ->orWhere('negara_penerima', 'like', "%{$searchTerm}%")
-                  ->orWhere('amount', 'like', "%{$searchTerm}%")
-                  ->orWhere('sending_fee', 'like', "%{$searchTerm}%")
-                  ->orWhere('total_collect_amount', 'like', "%{$searchTerm}%")
-                  ->orWhere('nama_penerima', 'like', "%{$searchTerm}%")
-                  ->orWhere('nama_pengirim', 'like', "%{$searchTerm}%")
-                  ->orWhere('id_pos', 'like', "%{$searchTerm}%")
-                  ->orWhere('identitas', 'like', "%{$searchTerm}%")
-                  ->orWhere('nomor_identitas', 'like', "%{$searchTerm}%")
-                  ->orWhere('tanggal_lahir', 'like', "%{$searchTerm}%")
-                  ->orWhere('kota_lahir_pengirim', 'like', "%{$searchTerm}%")
-                  ->orWhere('alamat_penerima', 'like', "%{$searchTerm}%")
-                  ->orWhere('telepon_penerima', 'like', "%{$searchTerm}%")
-                  ->orWhere('telpon_pengirim', 'like', "%{$searchTerm}%")
-                  ->orWhere('kota_penerima', 'like', "%{$searchTerm}%")
-                  ->orWhere('pekerjaan', 'like', "%{$searchTerm}%")
-                  ->orWhere('alamat_pengirim', 'like', "%{$searchTerm}%")
-                  ->orWhere('alamat_domisili_pengirim', 'like', "%{$searchTerm}%")
-                  ->orWhere('opt_display', 'like', "%{$searchTerm}%")
-                  ->orWhere('hubungan_pengirim', 'like', "%{$searchTerm}%")
-                  ->orWhere('negara_domisili_pengirim', 'like', "%{$searchTerm}%")
-                  ->orWhere('tujuan_penggunaan_dana', 'like', "%{$searchTerm}%")
-                  ->orWhere('kota_lahir_pengirim', 'like', "%{$searchTerm}%")
-                  ->orWhere('jenis_kelamin', 'like', "%{$searchTerm}%")
-                  ->orWhere('tanggal', 'like', "%{$searchTerm}%");
-                });
-              }
+              if ($request->filled('search.value')) {
+                  PosDatatableSearch::apply($query, $request->input('search.value'), 'amount');
+                }
   
               $recordsTotal = TransaksiSendPos::count();
               $recordsFiltered = $query->count(); // Total records after filtering  
