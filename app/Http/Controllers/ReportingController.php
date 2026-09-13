@@ -17,9 +17,11 @@ use App\Models\Saldo;
 use App\Models\TransaksiSendPos;
 use App\Models\TransaksiReceiveAdisena;
 use App\Models\TransaksiSendAdisena;
+use App\Services\FlaggingRelationService;
 use DB;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
+use InvalidArgumentException;
 
 
 class ReportingController extends Controller
@@ -390,17 +392,17 @@ class ReportingController extends Controller
     public function search_filtering_transaction(Request $request)
     {
       if(Auth::check()){
-        $tanggal = $request->reservation;
-        $dari = explode('/',$tanggal);
+        try {
+          $range = app(FlaggingRelationService::class)->parseStartEndDates(
+            (string) $request->input('start_date'),
+            (string) $request->input('end_date')
+          );
+        } catch (InvalidArgumentException $e) {
+          return redirect()->back()->with('error', $e->getMessage())->withInput();
+        }
 
-        $tahunini = date('Y');
-        
-        $tahun_dari = $dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3];
-        $periode_dari = $dari[1].'-'.$dari[0].'-'.$dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3];
-        $periode_sampai = $dari[3].'-'.$dari[2][7].$dari[2][8].'-'.$dari[4];
-
-        $tanggal_dari = $dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3].'-'.$dari[0].'-'.$dari[1];
-        $tanggal_sampai =  $dari[4].'-'.$dari[2][7].$dari[2][8].'-'.$dari[3];
+        $tanggal_dari = $range['dari'];
+        $tanggal_sampai = $range['sampai'];
         $query = DB::table('transaksi_valid')->select(DB::raw("sum(cast(replace(bsubanyak, ',','') as float))"),DB::raw('COUNT(no) as perbuatan'),'negara_pengirim','id_transaksi','nama_penerima','nama_pengirim','negara_pengirim','no_referensi','identitas','nomor_identitas','tanggal_lahir','alamat_penerima','telepon_penerima','kota_penerima','pekerjaan','id_pos','tanggal')->where('deltawork','=','ya')->where('id_transaksi','<>','')->where('tanggal','>=',$tanggal_dari.' 00:00:00')->where('tanggal','<=',$tanggal_sampai.' 23:59:59')->groupBy('negara_pengirim','id_transaksi','nama_penerima','nama_pengirim','negara_pengirim','no_referensi','identitas','nomor_identitas','tanggal_lahir','alamat_penerima','telepon_penerima','kota_penerima','pekerjaan','id_pos','tanggal')->orderBy('nama_penerima','desc')->get();
           return view('reporting.filtering_transaction', [
             'data'=>$query,'tanggal_dari'=> $tanggal_dari,'tanggal_sampai'=> $tanggal_sampai
@@ -492,17 +494,17 @@ class ReportingController extends Controller
     public function search_filtering_identitas(Request $request)
     {
       if(Auth::check()){
-        $tanggal = $request->reservation;
-        $dari = explode('/',$tanggal);
-  
-        $tahunini = date('Y');
-        
-        $tahun_dari = $dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3];
-        $periode_dari = $dari[1].'-'.$dari[0].'-'.$dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3];
-        $periode_sampai = $dari[3].'-'.$dari[2][7].$dari[2][8].'-'.$dari[4];
-  
-        $tanggal_dari = $dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3].'-'.$dari[0].'-'.$dari[1];
-        $tanggal_sampai =  $dari[4].'-'.$dari[2][7].$dari[2][8].'-'.$dari[3];
+        try {
+          $range = app(FlaggingRelationService::class)->parseStartEndDates(
+            (string) $request->input('start_date'),
+            (string) $request->input('end_date')
+          );
+        } catch (InvalidArgumentException $e) {
+          return redirect()->back()->with('error', $e->getMessage())->withInput();
+        }
+
+        $tanggal_dari = $range['dari'];
+        $tanggal_sampai = $range['sampai'];
         $query = DB::table('transaksi_valid')->select(DB::raw('COUNT(distinct nama_penerima) as perbuatan'),'identitas','nomor_identitas')->where('deltawork','=','ya')->where('id_transaksi','<>','')->where('tanggal','>=',$tanggal_dari.' 00:00:00')->where('tanggal','<=',$tanggal_sampai.' 23:59:59')->groupBy('nomor_identitas','identitas')->orderBy('perbuatan','desc')->get();
        
         return view('reporting.filtering_identitas', [
@@ -532,17 +534,17 @@ class ReportingController extends Controller
     public function search_filtering_telepon(Request $request)
     {
       if(Auth::check()){
-        $tanggal = $request->reservation;
-        $dari = explode('/',$tanggal);
-  
-        $tahunini = date('Y');
-        
-        $tahun_dari = $dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3];
-        $periode_dari = $dari[1].'-'.$dari[0].'-'.$dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3];
-        $periode_sampai = $dari[3].'-'.$dari[2][7].$dari[2][8].'-'.$dari[4];
-  
-        $tanggal_dari = $dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3].'-'.$dari[0].'-'.$dari[1];
-        $tanggal_sampai =  $dari[4].'-'.$dari[2][7].$dari[2][8].'-'.$dari[3];
+        try {
+          $range = app(FlaggingRelationService::class)->parseStartEndDates(
+            (string) $request->input('start_date'),
+            (string) $request->input('end_date')
+          );
+        } catch (InvalidArgumentException $e) {
+          return redirect()->back()->with('error', $e->getMessage())->withInput();
+        }
+
+        $tanggal_dari = $range['dari'];
+        $tanggal_sampai = $range['sampai'];
         $query = DB::table('transaksi_valid')->select(DB::raw('COUNT(distinct nama_penerima) as perbuatan'),'telepon_penerima')->where('deltawork','=','ya')->where('id_transaksi','<>','')->where('tanggal','>=',$tanggal_dari.' 00:00:00')->where('tanggal','<=',$tanggal_sampai.' 23:59:59')->groupBy('telepon_penerima')->orderBy('perbuatan','desc')->get();
        
         return view('reporting.filter_telepon', [
@@ -572,17 +574,17 @@ class ReportingController extends Controller
     public function search_filtering_negara(Request $request)
     {
       if(Auth::check()){
-        $tanggal = $request->reservation;
-        $dari = explode('/',$tanggal);
-  
-        $tahunini = date('Y');
-        
-        $tahun_dari = $dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3];
-        $periode_dari = $dari[1].'-'.$dari[0].'-'.$dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3];
-        $periode_sampai = $dari[3].'-'.$dari[2][7].$dari[2][8].'-'.$dari[4];
-  
-        $tanggal_dari = $dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3].'-'.$dari[0].'-'.$dari[1];
-        $tanggal_sampai =  $dari[4].'-'.$dari[2][7].$dari[2][8].'-'.$dari[3];
+        try {
+          $range = app(FlaggingRelationService::class)->parseStartEndDates(
+            (string) $request->input('start_date'),
+            (string) $request->input('end_date')
+          );
+        } catch (InvalidArgumentException $e) {
+          return redirect()->back()->with('error', $e->getMessage())->withInput();
+        }
+
+        $tanggal_dari = $range['dari'];
+        $tanggal_sampai = $range['sampai'];
 
         $query = DB::table('transaksi_valid')->select(DB::raw("sum(cast(replace(bsubanyak, ',','') as float))"),'nama_penerima',DB::raw('COUNT(distinct negara_pengirim) as perbuatan'))->where('deltawork','=','ya')->where('id_transaksi','<>','')->where('tanggal','>=',$tanggal_dari.' 00:00:00')->where('tanggal','<=',$tanggal_sampai.' 23:59:59')->groupBy('nama_penerima','nomor_identitas')->get();
        
@@ -611,21 +613,21 @@ class ReportingController extends Controller
     public function search_filtering_sender(Request $request)
     {
       if(Auth::check()){
-        $tanggal = $request->reservation;
-        $dari = explode('/',$tanggal);
-  
-        $tahunini = date('Y');
-        
-        $tahun_dari = $dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3];
-        $periode_dari = $dari[1].'-'.$dari[0].'-'.$dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3];
-        $periode_sampai = $dari[3].'-'.$dari[2][7].$dari[2][8].'-'.$dari[4];
-  
-        $tanggal_dari = $dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3].'-'.$dari[0].'-'.$dari[1];
-        $tanggal_sampai =  $dari[4].'-'.$dari[2][7].$dari[2][8].'-'.$dari[3];
+        try {
+          $range = app(FlaggingRelationService::class)->parseStartEndDates(
+            (string) $request->input('start_date'),
+            (string) $request->input('end_date')
+          );
+        } catch (InvalidArgumentException $e) {
+          return redirect()->back()->with('error', $e->getMessage())->withInput();
+        }
+
+        $tanggal_dari = $range['dari'];
+        $tanggal_sampai = $range['sampai'];
 
         $query = DB::table('transaksi_valid')->select(DB::raw("sum(cast(replace(bsubanyak, ',','') as float))"),'nama_penerima',DB::raw('COUNT(distinct nama_pengirim) as perbuatan'),DB::raw('COUNT(distinct nomor_identitas) as noden'))->where('deltawork','=','ya')->where('id_transaksi','<>','')->where('tanggal','>=',$tanggal_dari.' 00:00:00')->where('tanggal','<=',$tanggal_sampai.' 23:59:59')->groupBy('nama_penerima','nomor_identitas')->orderBy('perbuatan','desc')->get();
        
-        return view('reporting.filter_negara', [
+        return view('reporting.filter_sender', [
           'data'=>$query,'tanggal_dari'=>$tanggal_dari,'tanggal_sampai'=>$tanggal_sampai
         ]);
       }
@@ -646,6 +648,110 @@ class ReportingController extends Controller
       }
       return redirect('login')->with('You dont have access');
    
+    }
+
+    public function filter_one_to_many()
+    {
+        if (! Auth::check()) {
+            return redirect('login')->with('You dont have access');
+        }
+
+        return view('reporting.filter_one_to_many', [
+            'data' => collect(),
+        ]);
+    }
+
+    public function search_filtering_one_to_many(Request $request, FlaggingRelationService $service)
+    {
+        if (! Auth::check()) {
+            return redirect('login')->with('You dont have access');
+        }
+
+        try {
+            $range = $service->parseStartEndDates(
+                (string) $request->input('start_date'),
+                (string) $request->input('end_date')
+            );
+        } catch (InvalidArgumentException $e) {
+            return redirect()->back()->with('error', $e->getMessage())->withInput();
+        }
+
+        return view('reporting.filter_one_to_many', [
+            'data' => $service->oneToManySummary($range['dari'], $range['sampai']),
+            'tanggal_dari' => $range['dari'],
+            'tanggal_sampai' => $range['sampai'],
+            'threshold' => FlaggingRelationService::THRESHOLD,
+        ]);
+    }
+
+    public function detail_one_to_many(Request $request, FlaggingRelationService $service)
+    {
+        if (! Auth::check()) {
+            return redirect('login')->with('You dont have access');
+        }
+
+        $dari = (string) $request->dari;
+        $sampai = (string) $request->sampai;
+        $namaPengirim = (string) $request->nama_pengirim;
+
+        return view('reporting.filter_one_to_many', [
+            'data' => $service->oneToManyDetail($dari, $sampai, $namaPengirim),
+            'nama_pengirim' => $namaPengirim,
+            'dari' => $dari,
+            'sampai' => $sampai,
+        ]);
+    }
+
+    public function filter_many_to_one()
+    {
+        if (! Auth::check()) {
+            return redirect('login')->with('You dont have access');
+        }
+
+        return view('reporting.filter_many_to_one', [
+            'data' => collect(),
+        ]);
+    }
+
+    public function search_filtering_many_to_one(Request $request, FlaggingRelationService $service)
+    {
+        if (! Auth::check()) {
+            return redirect('login')->with('You dont have access');
+        }
+
+        try {
+            $range = $service->parseStartEndDates(
+                (string) $request->input('start_date'),
+                (string) $request->input('end_date')
+            );
+        } catch (InvalidArgumentException $e) {
+            return redirect()->back()->with('error', $e->getMessage())->withInput();
+        }
+
+        return view('reporting.filter_many_to_one', [
+            'data' => $service->manyToOneSummary($range['dari'], $range['sampai']),
+            'tanggal_dari' => $range['dari'],
+            'tanggal_sampai' => $range['sampai'],
+            'threshold' => FlaggingRelationService::THRESHOLD,
+        ]);
+    }
+
+    public function detail_many_to_one(Request $request, FlaggingRelationService $service)
+    {
+        if (! Auth::check()) {
+            return redirect('login')->with('You dont have access');
+        }
+
+        $dari = (string) $request->dari;
+        $sampai = (string) $request->sampai;
+        $namaPenerima = (string) $request->nama_penerima;
+
+        return view('reporting.filter_many_to_one', [
+            'data' => $service->manyToOneDetail($dari, $sampai, $namaPenerima),
+            'nama_penerima' => $namaPenerima,
+            'dari' => $dari,
+            'sampai' => $sampai,
+        ]);
     }
 
     

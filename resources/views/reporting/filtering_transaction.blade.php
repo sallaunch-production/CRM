@@ -28,23 +28,18 @@
                             <br>
                           
                              <div class="row">
-                                <div class="col-md-6">   
-                                <h3>Kategori : </h3>
-                                <table class="table table-hover" style="width:400px;" valign=center><tr><td><a href="{{route('filtering_transaction')}}"><img src="vendor/adminlte/dist/img//people.jpg" height=50> <br>Semua</a></td>
-                                    <td><a href="{{route('filtering_identitas')}}"><img src="vendor/adminlte/dist/img/card.png" height=50> <br>Indentitas</a></td>
-                                    <td><a href="{{route('filter_telepon')}}"><img src="vendor/adminlte/dist/img//telepon_penerima.png" height=50> <br>Telephone</a></td> <td><a href="{{route('filter_negara')}}"><img src="vendor/adminlte/dist/img//passport.png" height=50> <br>Negara</a></td><td><a href="{{route('filter_sender')}}"><img src="vendor/adminlte/dist/img//sender.png" height=50> <br>Pengirim</a></td>
-                                    </tr></table>
-                                <br><br><h2>Filter Transaksi</h2>
+                                <div class="col-md-12">   
+                                @include('reporting.partials.flagging_categories')
+                                <h3 class="flag-section-title">Filter Transaksi</h3>
+                                <p class="flag-section-sub">Pilih periode, lalu cari transaksi yang terflag.</p>
                                 @if($levelnya=="compliance")
-                                    <form action="{{route('search_filtering_transaction')}}" method="POST" style="width:50%;">
+                                    <form action="{{route('search_filtering_transaction')}}" method="POST" class="flag-filter-bar">
                                  @elseif($levelnya=="operasional")
-                                     <form action="{{route('search_filtering_transaction_operasional')}}" method="POST" style="width:50%;">
+                                     <form action="{{route('search_filtering_transaction_operasional')}}" method="POST" class="flag-filter-bar">
                                 @endif
                                 @csrf
                                 <input type=hidden name=act value="">
-                                <label>Tanggal Pencarian: </label>
-                                <input type='text' class="form-control" id="daterange" name="reservation"/>&nbsp;
-                                <br><input type=submit value=Cari class="btn btn-info">
+                                @include('reporting.partials.flagging_date_filter')
                                 </form> 
 
                             </div>
@@ -114,10 +109,7 @@
 
 @section('js')
 <script type="text/javascript">
-  $(document).ready(function() {
-    $('#daterange').daterangepicker();
-    $('#daterange2').daterangepicker();
-    $('#example').DataTable();
+  $(document).ready(function() {    $('#example').DataTable();
 } );
 </script>
 

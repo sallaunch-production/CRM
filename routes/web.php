@@ -76,6 +76,8 @@ Route::get('filtering_identitas',[App\Http\Controllers\ReportingController::clas
 Route::get('filter_telepon',[App\Http\Controllers\ReportingController::class,'filter_telepon'])->name('filter_telepon')->middleware('auth');
 Route::get('filter_negara',[App\Http\Controllers\ReportingController::class,'filter_negara'])->name('filter_negara')->middleware('auth');
 Route::get('filter_sender',[App\Http\Controllers\ReportingController::class,'filter_sender'])->name('filter_sender')->middleware('auth');
+Route::get('filter_one_to_many',[App\Http\Controllers\ReportingController::class,'filter_one_to_many'])->name('filter_one_to_many')->middleware('auth');
+Route::get('filter_many_to_one',[App\Http\Controllers\ReportingController::class,'filter_many_to_one'])->name('filter_many_to_one')->middleware('auth');
 Route::post('search_filtering_transaction',[App\Http\Controllers\ReportingController::class,'search_filtering_transaction'])->name('search_filtering_transaction')->middleware('auth');
 Route::post('search_filtering_identitas',[App\Http\Controllers\ReportingController::class,'search_filtering_identitas'])->name('search_filtering_identitas')->middleware('auth');
 Route::post('detail_identitas',[App\Http\Controllers\ReportingController::class,'detail_identitas'])->name('detail_identitas')->middleware('auth');
@@ -85,6 +87,10 @@ Route::post('search_filtering_negara',[App\Http\Controllers\ReportingController:
 Route::post('detail_negara',[App\Http\Controllers\ReportingController::class,'detail_negara'])->name('detail_negara')->middleware('auth');
 Route::post('search_filtering_sender',[App\Http\Controllers\ReportingController::class,'search_filtering_sender'])->name('search_filtering_sender')->middleware('auth');
 Route::post('detail_sender',[App\Http\Controllers\ReportingController::class,'detail_sender'])->name('detail_sender')->middleware('auth');
+Route::post('search_filtering_one_to_many',[App\Http\Controllers\ReportingController::class,'search_filtering_one_to_many'])->name('search_filtering_one_to_many')->middleware('auth');
+Route::post('detail_one_to_many',[App\Http\Controllers\ReportingController::class,'detail_one_to_many'])->name('detail_one_to_many')->middleware('auth');
+Route::post('search_filtering_many_to_one',[App\Http\Controllers\ReportingController::class,'search_filtering_many_to_one'])->name('search_filtering_many_to_one')->middleware('auth');
+Route::post('detail_many_to_one',[App\Http\Controllers\ReportingController::class,'detail_many_to_one'])->name('detail_many_to_one')->middleware('auth');
 Route::post('detail_kota',[App\Http\Controllers\ReportingController::class,'detail_kota'])->name('detail_kota')->middleware('auth');
 Route::post('cari_kota',[App\Http\Controllers\ReportingController::class,'cari_kota'])->name('cari_kota')->middleware('auth');
 Route::post('tanggal_valid',[App\Http\Controllers\ReportingController::class,'tanggal_valid'])->name('tanggal_valid')->middleware('auth');
@@ -182,6 +188,12 @@ Route::group(['middleware' => ['operasional']], function () {
     Route::get('filter_telepon_operasional',[App\Http\Controllers\ReportingController::class,'filter_telepon'])->name('filter_telepon_operasional')->middleware('auth');
     Route::get('filter_negara_operasional',[App\Http\Controllers\ReportingController::class,'filter_negara'])->name('filter_negara_operasional')->middleware('auth');
     Route::get('filter_sender_operasional',[App\Http\Controllers\ReportingController::class,'filter_sender'])->name('filter_sender_operasional')->middleware('auth');
+    Route::get('filter_one_to_many_operasional',[App\Http\Controllers\ReportingController::class,'filter_one_to_many'])->name('filter_one_to_many_operasional')->middleware('auth');
+    Route::get('filter_many_to_one_operasional',[App\Http\Controllers\ReportingController::class,'filter_many_to_one'])->name('filter_many_to_one_operasional')->middleware('auth');
+    Route::post('search_filtering_one_to_many_operasional',[App\Http\Controllers\ReportingController::class,'search_filtering_one_to_many'])->name('search_filtering_one_to_many_operasional')->middleware('auth');
+    Route::post('detail_one_to_many_operasional',[App\Http\Controllers\ReportingController::class,'detail_one_to_many'])->name('detail_one_to_many_operasional')->middleware('auth');
+    Route::post('search_filtering_many_to_one_operasional',[App\Http\Controllers\ReportingController::class,'search_filtering_many_to_one'])->name('search_filtering_many_to_one_operasional')->middleware('auth');
+    Route::post('detail_many_to_one_operasional',[App\Http\Controllers\ReportingController::class,'detail_many_to_one'])->name('detail_many_to_one_operasional')->middleware('auth');
 
     Route::get('filtering-operasional',[App\Http\Controllers\CheckingController::class,'filtering'])->name('filtering')->middleware('auth');
     Route::post('cari_filtering_operasional',[App\Http\Controllers\CheckingController::class,'cari_filtering'])->name('cari_filtering_operasional')->middleware('auth');

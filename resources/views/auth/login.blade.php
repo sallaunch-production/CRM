@@ -1,187 +1,197 @@
 @extends('layouts.app')
 
-@section('title','CRM Arsema')
-@section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">{{ __('Login Arsema') }}</div>
+@section('title', 'CRM Arsema')
 
-                <div class="card-body">
-                    @if (session('status'))
-                    <div class="alert alert-success alert-dismissible fade show" id="success-alert" role="alert">
-                            {{ session('status') }}
-                        </div>
-                    @endif@extends('layouts.app')
-
-@section('title','CRM ARSEMA')
 @section('content')
-<link rel="stylesheet" href="../../dist/css/adminlte.min.css?v=3.2.0">
 {!! NoCaptcha::renderJs() !!}
-<body class="hold-transition login-page">
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="login-box">
-                    <div class="login-logo">
-                    <center><img src="vendor/adminlte/dist/img/logo-arsema.jpg" width="40%;"/></center>
-                    </div>
-                    <br>
-                    <div class="card">
-                    @if (session('status'))
-                    <div class="alert alert-success alert-dismissible fade show" id="success-alert" role="alert">
-                            {{ session('status') }}
-                        </div>
-                    @endif
-                    @if (session('login_error'))
-                    <div class="alert alert-danger alert-dismissible fade show" id="success-alert" role="alert">
-                            {{ session('login_error') }}
-                        </div>
-                    @endif
-                        <div class="card-body login-card-body">
-                            <p class="login-box-msg">Sign in to start your session</p>
-                            <form method="POST" action="{{ route('proses.login') }}">
-                             @csrf  
-                             <div class="input-container">
-                                <input type="email" class="form-control @error('email') is-invalid @enderror" placeholder="Email"name="email" value="{{ old('email') }}" required autocomplete="email" autofocus>
-                                <i class="fa fa-envelope icon"></i>
-                             </div><br>
-                             <div class="input-container">
-                                 <input type="password" class="form-control @error('password') is-invalid @enderror" placeholder="Password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="current-password">
-                                 <i class="fa fa-key icon"></i>
-                              </div><br>
-                              <div class="row">
-                <div class="col-12">
-                {!! app('captcha')->display() !!}
-                            @if ($errors->has('g-recaptcha-response'))
-                                <span class="help-block">
-                            <strong>{{ $errors->first('g-recaptcha-response') }}</strong>
+
+<style>
+    .login-page-wrap {
+        min-height: calc(100vh - 2rem);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1.5rem 1rem;
+        background:
+            radial-gradient(circle at top, rgba(14, 165, 233, 0.08), transparent 42%),
+            linear-gradient(180deg, #f8fafc 0%, #ffffff 55%, #f1f5f9 100%);
+    }
+    .login-shell {
+        width: 100%;
+        max-width: 420px;
+    }
+    .login-logo-wrap {
+        text-align: center;
+        margin-bottom: 1.1rem;
+    }
+    .login-logo-wrap img {
+        width: min(210px, 68%);
+        height: auto;
+        display: block;
+        margin: 0 auto;
+    }
+    .login-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+        padding: 1.85rem 1.6rem 1.5rem;
+    }
+    .login-title {
+        margin: 0 0 0.25rem;
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: #0f172a;
+        text-align: center;
+    }
+    .login-subtitle {
+        margin: 0 0 1.25rem;
+        font-size: 0.9rem;
+        color: #64748b;
+        text-align: center;
+    }
+    .login-alert {
+        border-radius: 10px;
+        margin-bottom: 1rem;
+    }
+    .login-field {
+        margin-bottom: 0.9rem;
+    }
+    .login-field label {
+        display: block;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #475569;
+        margin-bottom: 0.35rem;
+    }
+    .login-field .form-control {
+        height: 44px;
+        border-radius: 10px;
+        border: 1px solid #cbd5e1;
+        background: #fff;
+        box-shadow: none;
+        padding: 0.55rem 0.85rem;
+    }
+    .login-field .form-control:focus {
+        border-color: #0ea5e9;
+        box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.18);
+    }
+    .login-captcha {
+        margin: 0.35rem 0 1rem;
+        display: flex;
+        justify-content: center;
+    }
+    .login-captcha .help-block {
+        display: block;
+        width: 100%;
+        text-align: center;
+        color: #b91c1c;
+        font-size: 0.85rem;
+        margin-top: 0.4rem;
+    }
+    .login-actions .btn-signin {
+        width: 100%;
+        height: 44px;
+        border-radius: 10px;
+        font-weight: 600;
+        background: #e31c23;
+        border-color: #e31c23;
+        color: #fff;
+    }
+    .login-actions .btn-signin:hover {
+        background: #c4151c;
+        border-color: #c4151c;
+        color: #fff;
+    }
+</style>
+
+<div class="login-page-wrap">
+    <div class="login-shell">
+        <div class="login-card">
+            <div class="login-logo-wrap">
+                <img
+                    src="{{ asset('vendor/adminlte/dist/img/logo-arsema.jpg') }}"
+                    alt="Artha Semesta Utama"
+                >
+            </div>
+
+            @if (session('status'))
+                <div class="alert alert-success login-alert" id="success-alert" role="alert">
+                    {{ session('status') }}
+                </div>
+            @endif
+
+            @if (session('login_error'))
+                <div class="alert alert-danger login-alert" id="success-alert" role="alert">
+                    {{ session('login_error') }}
+                </div>
+            @endif
+
+            @error('login_error')
+                <div class="alert alert-warning login-alert" role="alert">
+                    <strong>{{ $message }}</strong>
+                </div>
+            @enderror
+
+            <h1 class="login-title">Sign in</h1>
+            <p class="login-subtitle">Masuk untuk memulai sesi CRM Arsema</p>
+
+            <form method="POST" action="{{ route('proses.login') }}">
+                @csrf
+
+                <div class="login-field">
+                    <label for="email">Email</label>
+                    <input
+                        id="email"
+                        type="email"
+                        class="form-control @error('email') is-invalid @enderror"
+                        name="email"
+                        value="{{ old('email') }}"
+                        placeholder="nama@arsema.co.id"
+                        required
+                        autocomplete="email"
+                        autofocus
+                    >
+                    @error('email')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
                         </span>
-                    @endif
+                    @enderror
                 </div>
 
-            </div>
-
-            <div class="social-auth-links text-center mb-3">
-            <p></p>
-            <button type="submit" class="btn btn-primary btn-block" style="float:left;">Sign In</button>
-
-        </form>
-            </div>
-        </div>
-
-    
-     </div>
-</div>
-</div>
-</div>
-</div>
-           
-        </div>
-    </div>
-</div>
-</body>
-@endsection
-                    {{-- jika ada error maka tampilkan pesan login_error --}}
-                    @error('login_error')
-                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                       <strong>{{  $message }}</strong>
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                          <span aria-hidden="true">&times;</span>
-                        </button>
-                      </div>
-                     @enderror
-                      {{-- ganti action ke route name yaitu proses.login --}}
-                    <form method="POST" action="{{ route('proses.login') }}">
-                        @csrf
-
-                        <div class="row mb-3">
-                            <label for="email" class="col-md-4 col-form-label text-md-end">{{ __('Email Address') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus>
-
-                                @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="row mb-3">
-                            <label for="password" class="col-md-4 col-form-label text-md-end">{{ __('Password') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="current-password">
-
-                                @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <!--<div class="row mb-3">
-                            <label for="password" class="col-md-4 col-form-label text-md-end">{{ __('Password Confirm') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="password_confirm" type="password" class="form-control @error('password_confirm') is-invalid @enderror" name="password_confirm" required autocomplete="current-password">
-
-                                @error('password_confirm')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>-->
-                        <div class="row mb-3">
-                            <label for="captcha" class="col-md-4 col-form-label text-md-end">{{ __('Captcha') }}</label>
-
-                            <div class="col-md-6">
-                                  
-                                            {!! app('captcha')->display() !!}
-                                            @if ($errors->has('g-recaptcha-response'))
-                                                <span class="help-block">
-                                                    <strong>{{ $errors->first('g-recaptcha-response') }}</strong>
-                                                </span>
-                                            @endif
-                                      
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col-md-6 offset-md-4">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
-
-                                    <label class="form-check-label" for="remember">
-                                        {{ __('Remember Me') }}
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row mb-0">
-                            <div class="col-md-8 offset-md-4">
-                                <button type="submit" class="btn btn-success">
-                                    {{ __('Login') }}
-                                </button>
-                                <a class="btn btn-link" href="{{ route('register') }}">
-                                    {{ __('Register') }}
-                                </a>
-
-                                @if (Route::has('password.request'))
-                                    <a class="btn btn-link" href="{{ route('password.request') }}">
-                                        {{ __('Forgot Your Password?') }}
-                                    </a>
-                                @endif
-                            </div>
-                        </div>
-                    </form>
+                <div class="login-field">
+                    <label for="password">Password</label>
+                    <input
+                        id="password"
+                        type="password"
+                        class="form-control @error('password') is-invalid @enderror"
+                        name="password"
+                        placeholder="Password"
+                        required
+                        autocomplete="current-password"
+                    >
+                    @error('password')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
                 </div>
-            </div>
+
+                <div class="login-captcha">
+                    <div>
+                        {!! app('captcha')->display() !!}
+                        @if ($errors->has('g-recaptcha-response'))
+                            <span class="help-block">
+                                <strong>{{ $errors->first('g-recaptcha-response') }}</strong>
+                            </span>
+                        @endif
+                    </div>
+                </div>
+
+                <div class="login-actions">
+                    <button type="submit" class="btn btn-signin">Sign In</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>

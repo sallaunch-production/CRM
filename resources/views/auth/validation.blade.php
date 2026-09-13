@@ -1,142 +1,237 @@
 @extends('layouts.app')
 
-@section('title','CRM Arsema')
+@section('title', 'CRM Arsema')
+
 @section('content')
 <style>
-#otpForm {
-            display: flex;
+    .otp-page {
+        min-height: calc(100vh - 2rem);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1.5rem 1rem;
+        background:
+            radial-gradient(circle at top, rgba(14, 165, 233, 0.08), transparent 42%),
+            linear-gradient(180deg, #f8fafc 0%, #ffffff 55%, #f1f5f9 100%);
+    }
+    .otp-card {
+        width: 100%;
+        max-width: 420px;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+        padding: 2rem 1.75rem 1.75rem;
+        text-align: center;
+    }
+    .otp-logo {
+        width: min(220px, 70%);
+        height: auto;
+        margin: 0 auto 1.25rem;
+        display: block;
+    }
+    .otp-title {
+        margin: 0 0 0.35rem;
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: #0f172a;
+    }
+    .otp-subtitle {
+        margin: 0 0 1.35rem;
+        font-size: 0.9rem;
+        color: #64748b;
+        line-height: 1.45;
+    }
+    .otp-inputs {
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-bottom: 1.35rem;
+    }
+    .otp-inputs .otpInput {
+        width: 44px;
+        height: 48px;
+        border: 1px solid #cbd5e1;
+        border-radius: 10px;
+        text-align: center;
+        font-size: 1.15rem;
+        font-weight: 600;
+        color: #0f172a;
+        background: #fff;
+        transition: border-color .15s ease, box-shadow .15s ease;
+        -moz-appearance: textfield;
+    }
+    .otp-inputs .otpInput:focus {
+        outline: none;
+        border-color: #0ea5e9;
+        box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.18);
+    }
+    .otp-inputs .otpInput::-webkit-outer-spin-button,
+    .otp-inputs .otpInput::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+    .otp-actions {
+        display: flex;
+        gap: 0.65rem;
+        justify-content: center;
+    }
+    .otp-actions .btn {
+        min-width: 110px;
+        border-radius: 10px;
+        font-weight: 600;
+        padding: 0.55rem 1rem;
+    }
+    .otp-actions .btn-submit {
+        background: #e31c23;
+        border-color: #e31c23;
+        color: #fff;
+    }
+    .otp-actions .btn-submit:hover {
+        background: #c4151c;
+        border-color: #c4151c;
+        color: #fff;
+    }
+    .otp-actions .btn-cancel {
+        background: #e2e8f0;
+        border-color: #e2e8f0;
+        color: #334155;
+    }
+    .otp-actions .btn-cancel:hover {
+        background: #cbd5e1;
+        border-color: #cbd5e1;
+        color: #0f172a;
+    }
+    .otp-alert {
+        text-align: left;
+        margin-bottom: 1rem;
+        border-radius: 10px;
+    }
+    @media (max-width: 420px) {
+        .otp-card { padding: 1.5rem 1rem; }
+        .otp-inputs .otpInput {
+            width: 38px;
+            height: 44px;
+            font-size: 1rem;
         }
-        .otpInput {
-            width: 35px;
-            height: 35px;
-            font-size: 16px;
-            text-align: center;
-            margin: 0 5px;
+        .otp-actions {
+            flex-direction: column;
         }
-        input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-.responsive {
-  width: 30%;
-  max-width: 400px;
-  height: auto;
-}
-/* Firefox */
-input[type=number] {
-  -moz-appearance: textfield;
-}
-@media only screen and (min-width: 810px) and (max-width: 1440px) {
-  .cards {
-    width: 50%;
-  }
-}
+        .otp-actions .btn {
+            width: 100%;
+        }
+    }
+</style>
 
-    </style>
-<div class="container">
-    <div class="row">
-        <div class="col-md-12" align="center">
-           
-                <div class="card-body">
-                    @if (session('status'))
-                    <div class="alert alert-success alert-dismissible fade show" id="success-alert" role="alert">
-                            {{ session('status') }}
-                        </div>
-                    @endif
-                    @if (session('login_error'))
-                    <div class="alert alert-warning alert-dismissible fade show" id="success-alert" role="alert">
-                            {{ session('login_error') }}
-                        </div>
-                    @endif
-                    {{-- jika ada error maka tampilkan pesan login_error --}}
-                    @error('login_error')
-                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                       <strong>{{  $message }}</strong>
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                          <span aria-hidden="true">&times;</span>
-                        </button>
-                      </div>
-                     @enderror
-                      {{-- ganti action ke route name yaitu proses.login --}}
-                        <br><br>
-                            <div class="card cards">
-                                 <div class="card-body">
-                                <img class="responsive" src="vendor/adminlte/dist/img/logo-arsema.jpg">
-              
-                                <form method="POST" action="{{ route('proses.verify') }}">
-                                  @csrf
-                                <br/>
-                                    <label>Input code from Authenticator Apps</label>
-                                    <!--<input type=number name="code" class="form-control" required>--->
-                                   <br><br>
-                                    <form id="otpForm">
-                                        <input type="number" name="satu" class="otpInput" maxlength="1">
-                                        <input type="number" name="dua" class="otpInput" maxlength="1">
-                                        <input type="number" name="tiga" class="otpInput" maxlength="1">
-                                        <input type="number" name="empat" class="otpInput" maxlength="1">
-                                        <input type="number" name="lima" class="otpInput" maxlength="1">
-                                        <input type="number" name="enam" class="otpInput" maxlength="1">
-                                    <br/><br/>
-                                    <button type="submit" class="btn btn-success">Submit</button>
-                                    <a href="{{url('login')}}"><button type="button" class="btn btn-primary ml-3">Cancel</button></a>
-                                </form> 
-                            </div>
-                        </div>
-                      
-               
+<div class="otp-page">
+    <div class="otp-card">
+        @if (session('status') || session('success'))
+            <div class="alert alert-success otp-alert" id="success-alert" role="alert">
+                {{ session('status') ?: session('success') }}
             </div>
-        </div>
+        @endif
+
+        @if (session('login_error'))
+            <div class="alert alert-warning otp-alert" id="success-alert" role="alert">
+                {{ session('login_error') }}
+            </div>
+        @endif
+
+        @error('login_error')
+            <div class="alert alert-warning otp-alert" role="alert">
+                <strong>{{ $message }}</strong>
+            </div>
+        @enderror
+
+        <img
+            class="otp-logo"
+            src="{{ asset('vendor/adminlte/dist/img/logo-arsema.jpg') }}"
+            alt="Artha Semesta Utama"
+        >
+
+        <h1 class="otp-title">Verifikasi Authenticator</h1>
+        <p class="otp-subtitle">
+            Masukkan 6 digit kode dari Authenticator App Anda.
+        </p>
+
+        <form method="POST" action="{{ route('proses.verify') }}" id="otpForm" autocomplete="one-time-code">
+            @csrf
+            <div class="otp-inputs" role="group" aria-label="Kode autentikator">
+                <input type="text" name="satu" class="otpInput" maxlength="1" inputmode="numeric" pattern="[0-9]*" autocomplete="one-time-code" required>
+                <input type="text" name="dua" class="otpInput" maxlength="1" inputmode="numeric" pattern="[0-9]*" required>
+                <input type="text" name="tiga" class="otpInput" maxlength="1" inputmode="numeric" pattern="[0-9]*" required>
+                <input type="text" name="empat" class="otpInput" maxlength="1" inputmode="numeric" pattern="[0-9]*" required>
+                <input type="text" name="lima" class="otpInput" maxlength="1" inputmode="numeric" pattern="[0-9]*" required>
+                <input type="text" name="enam" class="otpInput" maxlength="1" inputmode="numeric" pattern="[0-9]*" required>
+            </div>
+
+            <div class="otp-actions">
+                <button type="submit" class="btn btn-submit">Submit</button>
+                <a href="{{ url('login') }}" class="btn btn-cancel">Cancel</a>
+            </div>
+        </form>
     </div>
 </div>
+
 <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const otpInputs = document.querySelectorAll('.otpInput');
+    document.addEventListener('DOMContentLoaded', function () {
+        const otpInputs = Array.from(document.querySelectorAll('.otpInput'));
+        if (!otpInputs.length) {
+            return;
+        }
 
-            function focusNext(currentInput) {
-                const maxLength = parseInt(currentInput.maxLength, 10);
-                const currentInputIndex = Array.from(otpInputs).indexOf(currentInput);
+        otpInputs[0].focus();
 
-                if (currentInput.value.length === maxLength) {
-                    // Move focus to the next input field
-                    const nextInput = otpInputs[currentInputIndex + 1];
-                    if (nextInput) {
-                        nextInput.focus();
-                    } else {
-                        // Submit the form or trigger another action when all inputs are filled
-                        console.log('OTP Entered:', getOTP());
-                    }
+        function onlyDigit(value) {
+            return String(value || '').replace(/\D/g, '');
+        }
+
+        function fillFromPaste(startIndex, digits) {
+            digits.split('').forEach(function (digit, offset) {
+                const target = otpInputs[startIndex + offset];
+                if (target) {
+                    target.value = digit;
                 }
+            });
+            const next = otpInputs[Math.min(startIndex + digits.length, otpInputs.length - 1)];
+            if (next) {
+                next.focus();
+                next.select();
             }
+        }
 
-            function focusPrevious(currentInput) {
-                const currentInputIndex = Array.from(otpInputs).indexOf(currentInput);
+        otpInputs.forEach(function (input, index) {
+            input.addEventListener('input', function () {
+                const digits = onlyDigit(input.value);
+                input.value = digits.slice(0, 1);
 
-                if (currentInput.value.length === 0) {
-                    const previousInput = otpInputs[currentInputIndex - 1];
-                    if (previousInput) {
-                        previousInput.focus();
-                    }
+                if (digits.length > 1) {
+                    fillFromPaste(index, digits.slice(0, otpInputs.length - index));
+                    return;
                 }
-            }
 
-            function getOTP() {
-                // Concatenate values of all input fields to get the complete OTP
-                return Array.from(otpInputs).map(input => input.value).join('');
-            }
+                if (input.value && otpInputs[index + 1]) {
+                    otpInputs[index + 1].focus();
+                    otpInputs[index + 1].select();
+                }
+            });
 
-            // Add event listeners for input and keydown events
-            otpInputs.forEach(input => {
-                input.addEventListener('input', function () {
-                    focusNext(this);
-                });
+            input.addEventListener('keydown', function (event) {
+                if (event.key === 'Backspace' && !input.value && otpInputs[index - 1]) {
+                    otpInputs[index - 1].focus();
+                    otpInputs[index - 1].select();
+                }
+            });
 
-                input.addEventListener('keydown', function (event) {
-                    if (event.key === 'Backspace') {
-                        focusPrevious(this);
-                    }
-                });
+            input.addEventListener('paste', function (event) {
+                event.preventDefault();
+                const pasted = onlyDigit((event.clipboardData || window.clipboardData).getData('text'));
+                if (!pasted) {
+                    return;
+                }
+                fillFromPaste(index, pasted.slice(0, otpInputs.length - index));
             });
         });
-    </script>
+    });
+</script>
 @endsection
