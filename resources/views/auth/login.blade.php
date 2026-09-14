@@ -77,9 +77,32 @@
         box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.18);
     }
     .login-captcha {
-        margin: 0.35rem 0 1rem;
+        margin: 0.15rem 0 1.1rem;
+    }
+    .login-captcha > label {
+        display: block;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #475569;
+        margin-bottom: 0.45rem;
+    }
+    .login-captcha-box {
         display: flex;
+        flex-direction: column;
+        align-items: center;
         justify-content: center;
+        width: 100%;
+        min-height: 78px;
+        padding: 0.7rem 0.75rem;
+        border: 1px solid #cbd5e1;
+        border-radius: 10px;
+        background: #f8fafc;
+    }
+    .login-captcha-box .g-recaptcha {
+        transform-origin: center center;
+    }
+    .login-captcha-box iframe {
+        max-width: 100%;
     }
     .login-captcha .help-block {
         display: block;
@@ -87,7 +110,12 @@
         text-align: center;
         color: #b91c1c;
         font-size: 0.85rem;
-        margin-top: 0.4rem;
+        margin-top: 0.45rem;
+    }
+    @media (max-width: 420px) {
+        .login-captcha-box .g-recaptcha {
+            transform: scale(0.92);
+        }
     }
     .login-actions .btn-signin {
         width: 100%;
@@ -178,14 +206,15 @@
                 </div>
 
                 <div class="login-captcha">
-                    <div>
+                    <label>Verifikasi keamanan</label>
+                    <div class="login-captcha-box">
                         {!! app('captcha')->display() !!}
-                        @if ($errors->has('g-recaptcha-response'))
-                            <span class="help-block">
-                                <strong>{{ $errors->first('g-recaptcha-response') }}</strong>
-                            </span>
-                        @endif
                     </div>
+                    @if ($errors->has('g-recaptcha-response'))
+                        <span class="help-block">
+                            <strong>{{ $errors->first('g-recaptcha-response') }}</strong>
+                        </span>
+                    @endif
                 </div>
 
                 <div class="login-actions">
