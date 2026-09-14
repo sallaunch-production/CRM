@@ -35,7 +35,7 @@
         [
             'route' => 'filtering_identitas',
             'label' => 'Identitas',
-            'hint' => 'By NIK',
+            'hint' => 'By nomor identitas',
             'img' => 'vendor/adminlte/dist/img/card.png',
             'icon' => 'fas fa-id-card',
         ],
