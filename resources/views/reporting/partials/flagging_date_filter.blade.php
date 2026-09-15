@@ -29,7 +29,7 @@
     >
 </div>
 
-<button type="submit" class="btn btn-info">
+<button type="submit" class="btn btn-arsema">
     <i class="fas fa-search mr-1"></i> Cari
 </button>
 

@@ -13,7 +13,7 @@
                                 
                               </div><br>
                             @endif
-        <div class="card card-outline card-primary">
+        <div class="card card-outline card-primary arsema-welcome-card">
                
 
                 <div class="card-body">

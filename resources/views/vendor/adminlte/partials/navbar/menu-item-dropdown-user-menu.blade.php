@@ -88,25 +88,120 @@
 </li>
 
 {{-- Logout confirmation modal (dipindah ke body via JS) --}}
+<style>
+    #logoutConfirmModal .modal-dialog {
+        max-width: 400px;
+    }
+    #logoutConfirmModal .modal-content {
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        box-shadow: 0 18px 40px rgba(15, 23, 42, 0.12);
+        overflow: hidden;
+    }
+    #logoutConfirmModal .logout-modal-body {
+        padding: 1.75rem 1.5rem 1.5rem;
+        text-align: center;
+    }
+    #logoutConfirmModal .logout-modal-icon {
+        width: 56px;
+        height: 56px;
+        margin: 0 auto 1rem;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #fde8e9;
+        color: #e31c23;
+        font-size: 1.35rem;
+    }
+    #logoutConfirmModal .logout-modal-title {
+        margin: 0 0 0.4rem;
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: #0f172a;
+    }
+    #logoutConfirmModal .logout-modal-subtitle {
+        margin: 0 0 1.4rem;
+        font-size: 0.92rem;
+        color: #64748b;
+        line-height: 1.45;
+    }
+    #logoutConfirmModal .logout-modal-actions {
+        display: flex;
+        gap: 0.65rem;
+        justify-content: center;
+    }
+    #logoutConfirmModal .logout-modal-actions .btn {
+        min-width: 110px;
+        border-radius: 10px;
+        font-weight: 600;
+        padding: 0.55rem 1rem;
+    }
+    #logoutConfirmModal .btn-logout-cancel {
+        background: #e2e8f0;
+        border-color: #e2e8f0;
+        color: #334155;
+    }
+    #logoutConfirmModal .btn-logout-cancel:hover {
+        background: #cbd5e1;
+        border-color: #cbd5e1;
+        color: #0f172a;
+    }
+    #logoutConfirmModal .btn-logout-confirm {
+        background: #e31c23;
+        border-color: #e31c23;
+        color: #fff;
+    }
+    #logoutConfirmModal .btn-logout-confirm:hover {
+        background: #c4151c;
+        border-color: #c4151c;
+        color: #fff;
+    }
+    #logoutConfirmModal .btn-logout-close {
+        position: absolute;
+        top: 0.75rem;
+        right: 0.85rem;
+        border: 0;
+        background: transparent;
+        color: #94a3b8;
+        font-size: 1.25rem;
+        line-height: 1;
+        padding: 0.15rem;
+        cursor: pointer;
+    }
+    #logoutConfirmModal .btn-logout-close:hover {
+        color: #475569;
+    }
+    @media (max-width: 420px) {
+        #logoutConfirmModal .logout-modal-actions {
+            flex-direction: column;
+        }
+        #logoutConfirmModal .logout-modal-actions .btn {
+            width: 100%;
+        }
+    }
+</style>
+
 <div class="modal fade" id="logoutConfirmModal" tabindex="-1" role="dialog" aria-labelledby="logoutConfirmModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="logoutConfirmModalLabel">Konfirmasi Logout</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                Apakah Anda yakin ingin keluar dari aplikasi?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                <button type="button"
-                        class="btn btn-danger"
-                        onclick="document.getElementById('logout-form').submit();">
-                    <i class="fa fa-fw fa-power-off"></i> Logout
-                </button>
+        <div class="modal-content position-relative">
+            <button type="button" class="btn-logout-close" data-dismiss="modal" aria-label="Tutup">&times;</button>
+            <div class="logout-modal-body">
+                <div class="logout-modal-icon" aria-hidden="true">
+                    <i class="fas fa-sign-out-alt"></i>
+                </div>
+                <h5 class="logout-modal-title" id="logoutConfirmModalLabel">Keluar dari CRM?</h5>
+                <p class="logout-modal-subtitle">
+                    Apakah anda yakin untuk keluar dari sesi saat ini ?
+                </p>
+                <div class="logout-modal-actions">
+                    <button type="button" class="btn btn-logout-cancel" data-dismiss="modal">Batal</button>
+                    <button type="button"
+                            class="btn btn-logout-confirm"
+                            onclick="document.getElementById('logout-form').submit();">
+                        Logout
+                    </button>
+                </div>
             </div>
         </div>
     </div>

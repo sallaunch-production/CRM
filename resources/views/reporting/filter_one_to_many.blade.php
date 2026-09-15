@@ -29,7 +29,8 @@
 
                     <h3 class="flag-section-title">Filter — One to Many</h3>
                     <p class="flag-section-sub">
-                        Deteksi 1 nama pengirim yang mengirim ke banyak penerima dalam periode.
+                        Deteksi 1 ID pengirim (nomor identitas) yang mengirim ke banyak nama penerima
+                        pada transaksi <strong>sending</strong> dalam periode.
                     </p>
 
                     @php
@@ -49,16 +50,18 @@
                                 <h3 class="flag-section-title mb-1">Hasil One to Many</h3>
                                 <p class="flag-section-sub mb-0">
                                     Periode {{ $tanggal_dari }} s/d {{ $tanggal_sampai }}
+                                    · Sumber: transaksi sending
                                     · Ambang &gt; {{ $threshold ?? 5 }} penerima berbeda
                                 </p>
                             </div>
-                            <span class="badge badge-info p-2">{{ count($data) }} pengirim terflag</span>
+                            <span class="flag-count-badge">{{ count($data) }} ID pengirim terflag</span>
                         </div>
 
                         <table id="example" class="table table-striped table-bordered table-hover">
                             <thead>
                                 <tr>
                                     <th>No</th>
+                                    <th>ID Pengirim</th>
                                     <th>Nama Pengirim</th>
                                     <th>Total BSU</th>
                                     <th>Banyak Penerima</th>
@@ -74,29 +77,33 @@
                                                     ? route('detail_one_to_many_operasional')
                                                     : route('detail_one_to_many');
                                             @endphp
-                                            <form action="{{ $detailRoute }}" method="POST" class="d-inline">
+                                            <form action="{{ $detailRoute }}" method="POST" class="d-inline m-0">
                                                 @csrf
                                                 <input type="hidden" name="dari" value="{{ $tanggal_dari }}">
                                                 <input type="hidden" name="sampai" value="{{ $tanggal_sampai }}">
-                                                <input type="hidden" name="nama_pengirim" value="{{ $row->nama_pengirim }}">
-                                                <button type="submit" class="btn btn-outline-info btn-sm">
-                                                    {{ $row->nama_pengirim }}
+                                                <input type="hidden" name="nomor_identitas" value="{{ $row->nomor_identitas }}">
+                                                <button type="submit" class="flag-id-link" title="Lihat detail transaksi">
+                                                    {{ $row->nomor_identitas }}
                                                 </button>
                                             </form>
                                         </td>
+                                        <td>{{ $row->nama_pengirim }}</td>
                                         <td>{{ number_format($row->total_bsu) }}</td>
-                                        <td><span class="badge badge-warning">{{ $row->perbuatan }}</span></td>
+                                        <td><span class="flag-count-pill">{{ $row->perbuatan }}</span></td>
                                     </tr>
                                 @endforeach
                             </tbody>
                         </table>
-                    @elseif(!empty($nama_pengirim))
+                    @elseif(!empty($nomor_identitas))
                         <hr class="my-4">
                         <div class="d-flex flex-wrap align-items-center justify-content-between mb-3">
                             <div>
                                 <h3 class="flag-section-title mb-1">Detail One to Many</h3>
                                 <p class="flag-section-sub mb-0">
-                                    Pengirim {{ $nama_pengirim }}
+                                    ID Pengirim <span class="flag-id-text">{{ $nomor_identitas }}</span>
+                                    @if(!empty($nama_pengirim))
+                                        · {{ $nama_pengirim }}
+                                    @endif
                                     · {{ $dari }} s/d {{ $sampai }}
                                 </p>
                             </div>
@@ -105,7 +112,7 @@
                                     ? route('filter_one_to_many_operasional')
                                     : route('filter_one_to_many');
                             @endphp
-                            <a href="{{ $backRoute }}" class="btn btn-outline-secondary btn-sm">
+                            <a href="{{ $backRoute }}" class="btn btn-arsema-outline btn-sm">
                                 <i class="fas fa-arrow-left mr-1"></i> Kembali
                             </a>
                         </div>
@@ -115,13 +122,13 @@
                                 <tr>
                                     <th>No</th>
                                     <th>Id Transaksi</th>
-                                    <th>BSU</th>
+                                    <th>Amount</th>
                                     <th>Nama Penerima</th>
                                     <th>Nama Pengirim</th>
-                                    <th>Negara Pengirim</th>
+                                    <th>Negara Penerima</th>
                                     <th>No Referensi</th>
                                     <th>Identitas</th>
-                                    <th>Nomor Identitas</th>
+                                    <th>ID Pengirim</th>
                                     <th>Tanggal Lahir</th>
                                     <th>Alamat Penerima</th>
                                     <th>Telepon Penerima</th>
@@ -136,10 +143,10 @@
                                     <tr>
                                         <td>{{ $key + 1 }}</td>
                                         <td>{{ $row->id_transaksi }}</td>
-                                        <td>{{ $row->bsubanyak }}</td>
+                                        <td>{{ $row->amount }}</td>
                                         <td>{{ $row->nama_penerima }}</td>
                                         <td>{{ $row->nama_pengirim }}</td>
-                                        <td>{{ $row->negara_pengirim }}</td>
+                                        <td>{{ $row->negara_penerima }}</td>
                                         <td>{{ $row->no_referensi }}</td>
                                         <td>{{ $row->identitas }}</td>
                                         <td>{{ $row->nomor_identitas }}</td>
