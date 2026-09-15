@@ -3,7 +3,6 @@
 @section('title', 'CRM Arsema')
 
 @section('content')
-{!! NoCaptcha::renderJs() !!}
 
 <style>
     .login-page-wrap {
@@ -205,6 +204,7 @@
                     @enderror
                 </div>
 
+                @unless(app()->isLocal())
                 <div class="login-captcha">
                     <label>Verifikasi keamanan</label>
                     <div class="login-captcha-box">
@@ -216,6 +216,7 @@
                         </span>
                     @endif
                 </div>
+                @endunless
 
                 <div class="login-actions">
                     <button type="submit" class="btn btn-signin">Sign In</button>

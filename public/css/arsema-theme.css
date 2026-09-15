@@ -1,0 +1,109 @@
+/* Arsema brand theme — remap AdminLTE/Bootstrap primary blue → Arsema red */
+:root {
+    --arsema-red: #e31c23;
+    --arsema-red-hover: #c4151c;
+    --arsema-red-soft: rgba(227, 28, 35, 0.15);
+    --primary: #e31c23;
+}
+
+/* Sidebar active / hover accent */
+.sidebar-dark-primary .nav-sidebar > .nav-item > .nav-link.active,
+.sidebar-light-primary .nav-sidebar > .nav-item > .nav-link.active,
+.sidebar-dark-danger .nav-sidebar > .nav-item > .nav-link.active,
+.sidebar-light-danger .nav-sidebar > .nav-item > .nav-link.active {
+    background-color: var(--arsema-red) !important;
+    color: #fff !important;
+}
+
+.sidebar-dark-primary .nav-sidebar > .nav-item > .nav-link:hover,
+.sidebar-dark-danger .nav-sidebar > .nav-item > .nav-link:hover {
+    background-color: rgba(227, 28, 35, 0.35);
+    color: #fff;
+}
+
+/* Cards / outlines (dashboard welcome, etc.) */
+.card-primary.card-outline,
+.card-danger.card-outline {
+    border-top-color: var(--arsema-red);
+}
+
+.card-primary:not(.card-outline) > .card-header,
+.bg-primary {
+    background-color: var(--arsema-red) !important;
+}
+
+.border-primary {
+    border-color: var(--arsema-red) !important;
+}
+
+.text-primary {
+    color: var(--arsema-red) !important;
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: var(--arsema-red);
+    border-color: var(--arsema-red);
+    color: #fff;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:not(:disabled):not(.disabled):active,
+.btn-primary:not(:disabled):not(.disabled).active {
+    background-color: var(--arsema-red-hover);
+    border-color: var(--arsema-red-hover);
+    color: #fff;
+    box-shadow: 0 0 0 0.2rem var(--arsema-red-soft);
+}
+
+.btn-outline-primary {
+    color: var(--arsema-red);
+    border-color: var(--arsema-red);
+}
+
+.btn-outline-primary:hover,
+.btn-outline-primary:focus,
+.btn-outline-primary:not(:disabled):not(.disabled):active {
+    background-color: var(--arsema-red);
+    border-color: var(--arsema-red);
+    color: #fff;
+}
+
+/* Badges / alerts */
+.badge-primary {
+    background-color: var(--arsema-red);
+}
+
+.alert-primary {
+    color: #6b1216;
+    background-color: #fde8e9;
+    border-color: #f5c2c4;
+}
+
+/* Pagination active (DataTables etc.) */
+.page-item.active .page-link {
+    background-color: var(--arsema-red);
+    border-color: var(--arsema-red);
+}
+
+.page-link {
+    color: var(--arsema-red);
+}
+
+.page-link:hover {
+    color: var(--arsema-red-hover);
+}
+
+/* Form focus ring */
+.form-control:focus,
+.custom-select:focus {
+    border-color: #f1a3a6;
+    box-shadow: 0 0 0 0.2rem var(--arsema-red-soft);
+}
+
+/* Nav pills / tabs */
+.nav-pills .nav-link.active,
+.nav-pills .show > .nav-link {
+    background-color: var(--arsema-red);
+}

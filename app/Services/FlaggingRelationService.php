@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Carbon\Carbon;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
@@ -10,6 +11,10 @@ use InvalidArgumentException;
 class FlaggingRelationService
 {
     public const THRESHOLD = 5;
+
+    public const TABLE_SENDING = 'transaksi_send_pos';
+
+    public const TABLE_RECEIVING = 'transaksi_valid';
 
     /**
      * Parse HTML date inputs start_date / end_date (Y-m-d).
@@ -68,35 +73,40 @@ class FlaggingRelationService
     }
 
     /**
-     * One pengirim (nama saja) → many penerima.
+     * One to Many (sending only):
+     * 1 ID pengirim (nomor_identitas) → banyak nama penerima.
      */
     public function oneToManySummary(string $dari, string $sampai, int $threshold = self::THRESHOLD): Collection
     {
-        return $this->baseQuery($dari, $sampai)
+        return $this->sendingQuery($dari, $sampai)
             ->select(
-                'nama_pengirim',
+                'nomor_identitas',
+                DB::raw('MAX(nama_pengirim) as nama_pengirim'),
                 DB::raw('COUNT(DISTINCT nama_penerima) as perbuatan'),
-                DB::raw("SUM(CAST(REPLACE(COALESCE(bsubanyak, '0'), ',', '') AS FLOAT)) as total_bsu")
+                DB::raw($this->sumAmountExpression('amount').' as total_bsu')
             )
-            ->whereNotNull('nama_pengirim')
-            ->whereRaw("TRIM(nama_pengirim) <> ''")
-            ->groupBy('nama_pengirim')
+            ->whereNotNull('nomor_identitas')
+            ->whereRaw("TRIM(nomor_identitas) <> ''")
+            ->whereNotNull('nama_penerima')
+            ->whereRaw("TRIM(nama_penerima) <> ''")
+            ->groupBy('nomor_identitas')
             ->havingRaw('COUNT(DISTINCT nama_penerima) > ?', [$threshold])
             ->orderByDesc('perbuatan')
             ->get();
     }
 
     /**
-     * Many pengirim → one penerima (keyed by nama_penerima only; no NIK penerima).
+     * Many pengirim → one penerima (receiving / transaksi_valid).
+     * Keyed by nama_penerima only; no NIK penerima.
      */
     public function manyToOneSummary(string $dari, string $sampai, int $threshold = self::THRESHOLD): Collection
     {
-        return $this->baseQuery($dari, $sampai)
+        return $this->receivingQuery($dari, $sampai)
             ->select(
                 'nama_penerima',
                 DB::raw('COUNT(DISTINCT nama_pengirim) as perbuatan'),
                 DB::raw('COUNT(DISTINCT nomor_identitas) as jumlah_nik_pengirim'),
-                DB::raw("SUM(CAST(REPLACE(COALESCE(bsubanyak, '0'), ',', '') AS FLOAT)) as total_bsu")
+                DB::raw($this->sumAmountExpression('bsubanyak').' as total_bsu')
             )
             ->whereNotNull('nama_penerima')
             ->whereRaw("TRIM(nama_penerima) <> ''")
@@ -109,28 +119,57 @@ class FlaggingRelationService
     public function oneToManyDetail(
         string $dari,
         string $sampai,
-        string $namaPengirim
+        string $nomorIdentitas
     ): Collection {
-        return $this->baseQuery($dari, $sampai)
-            ->where('nama_pengirim', $namaPengirim)
+        return $this->sendingQuery($dari, $sampai)
+            ->where('nomor_identitas', $nomorIdentitas)
             ->orderByDesc('tanggal')
             ->get();
     }
 
     public function manyToOneDetail(string $dari, string $sampai, string $namaPenerima): Collection
     {
-        return $this->baseQuery($dari, $sampai)
+        return $this->receivingQuery($dari, $sampai)
             ->where('nama_penerima', $namaPenerima)
             ->orderByDesc('tanggal')
             ->get();
     }
 
-    protected function baseQuery(string $dari, string $sampai)
+    /**
+     * Sending transactions source (POS send).
+     * Note: deltawork is mostly empty on send rows — do not require deltawork = 'ya'.
+     */
+    protected function sendingQuery(string $dari, string $sampai): Builder
     {
-        return DB::table('transaksi_valid')
+        return DB::table(self::TABLE_SENDING)
+            ->whereNotNull('id_transaksi')
+            ->where('id_transaksi', '<>', '')
+            ->where('tanggal', '>=', $dari.' 00:00:00')
+            ->where('tanggal', '<=', $sampai.' 23:59:59');
+    }
+
+    /**
+     * Receiving / validated inbound source used by existing flagging categories.
+     */
+    protected function receivingQuery(string $dari, string $sampai): Builder
+    {
+        return DB::table(self::TABLE_RECEIVING)
             ->where('deltawork', 'ya')
             ->where('id_transaksi', '<>', '')
             ->where('tanggal', '>=', $dari.' 00:00:00')
             ->where('tanggal', '<=', $sampai.' 23:59:59');
+    }
+
+    /**
+     * @deprecated Use receivingQuery() — kept for callers that still expect mixed base.
+     */
+    protected function baseQuery(string $dari, string $sampai): Builder
+    {
+        return $this->receivingQuery($dari, $sampai);
+    }
+
+    protected function sumAmountExpression(string $column): string
+    {
+        return "SUM(CAST(REPLACE(COALESCE({$column}, '0'), ',', '') AS FLOAT))";
     }
 }

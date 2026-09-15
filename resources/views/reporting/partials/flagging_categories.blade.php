@@ -35,7 +35,7 @@
         [
             'route' => 'filtering_identitas',
             'label' => 'Identitas',
-            'hint' => 'By NIK',
+            'hint' => 'By nomor identitas',
             'img' => 'vendor/adminlte/dist/img/card.png',
             'icon' => 'fas fa-id-card',
         ],
@@ -63,7 +63,7 @@
         [
             'route' => 'filter_one_to_many',
             'label' => 'One to Many',
-            'hint' => '1 nama pengirim → banyak penerima',
+            'hint' => '1 ID pengirim → banyak penerima',
             'img' => 'vendor/adminlte/dist/img/one-to-many.png',
             'icon' => 'fas fa-share-alt',
             'accent' => 'otm',
@@ -80,6 +80,11 @@
 @endphp
 
 <style>
+    :root {
+        --arsema-red: #e31c23;
+        --arsema-red-hover: #c4151c;
+        --arsema-red-soft: rgba(227, 28, 35, 0.12);
+    }
     .flag-cat-wrap { margin-bottom: 1.25rem; }
     .flag-cat-title {
         font-size: 0.95rem;
@@ -111,22 +116,19 @@
     }
     .flag-cat-card:hover {
         background: #fff;
-        border-color: #94a3b8;
-        box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
+        border-color: #f1a3a6;
+        box-shadow: 0 6px 16px rgba(227, 28, 35, 0.08);
         transform: translateY(-1px);
     }
     .flag-cat-card.is-active {
         background: #fff;
-        border-color: #0ea5e9;
-        box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.18);
+        border-color: var(--arsema-red);
+        box-shadow: 0 0 0 3px var(--arsema-red-soft);
     }
-    .flag-cat-card.is-active.accent-otm {
-        border-color: #0891b2;
-        box-shadow: 0 0 0 3px rgba(8, 145, 178, 0.2);
-    }
+    .flag-cat-card.is-active.accent-otm,
     .flag-cat-card.is-active.accent-mto {
-        border-color: #2563eb;
-        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
+        border-color: var(--arsema-red);
+        box-shadow: 0 0 0 3px var(--arsema-red-soft);
     }
     .flag-cat-icon {
         width: 52px;
@@ -143,6 +145,9 @@
         line-height: 1.2;
         margin-bottom: 0.2rem;
     }
+    .flag-cat-card.is-active .flag-cat-label {
+        color: var(--arsema-red);
+    }
     .flag-cat-hint {
         font-size: 0.68rem;
         color: #64748b;
@@ -155,8 +160,8 @@
         flex-wrap: wrap;
         align-items: flex-end;
         gap: 0.75rem 1rem;
-        background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
-        border: 1px solid #e2e8f0;
+        background: linear-gradient(180deg, #fff 0%, #fff7f7 100%);
+        border: 1px solid #f0d0d2;
         border-radius: 12px;
         padding: 1rem 1.1rem;
         max-width: 780px;
@@ -178,12 +183,26 @@
         border-color: #cbd5e1;
         height: 40px;
     }
-    .flag-filter-bar .btn {
+    .flag-filter-bar .form-control:focus {
+        border-color: var(--arsema-red);
+        box-shadow: 0 0 0 0.2rem var(--arsema-red-soft);
+    }
+    .flag-filter-bar .btn,
+    .btn-arsema {
         height: 40px;
         border-radius: 8px;
         padding-left: 1.15rem;
         padding-right: 1.15rem;
         font-weight: 600;
+        background: var(--arsema-red);
+        border-color: var(--arsema-red);
+        color: #fff;
+    }
+    .flag-filter-bar .btn:hover,
+    .btn-arsema:hover {
+        background: var(--arsema-red-hover);
+        border-color: var(--arsema-red-hover);
+        color: #fff;
     }
     .flag-section-title {
         font-size: 1.15rem;
@@ -195,6 +214,64 @@
         color: #64748b;
         font-size: 0.9rem;
         margin-bottom: 0.9rem;
+    }
+    .flag-count-badge {
+        display: inline-block;
+        background: var(--arsema-red);
+        color: #fff;
+        font-size: 0.8rem;
+        font-weight: 600;
+        border-radius: 999px;
+        padding: 0.4rem 0.85rem;
+    }
+    .flag-id-link {
+        display: inline;
+        padding: 0;
+        margin: 0;
+        border: 0;
+        background: none;
+        color: #1e293b;
+        font-weight: 600;
+        font-size: inherit;
+        line-height: inherit;
+        text-decoration: underline;
+        text-underline-offset: 2px;
+        text-decoration-color: #94a3b8;
+        cursor: pointer;
+    }
+    .flag-id-link:hover,
+    .flag-id-link:focus {
+        color: #0f172a;
+        text-decoration-color: #475569;
+        outline: none;
+    }
+    .flag-id-text {
+        color: #1e293b;
+        font-weight: 700;
+    }
+    .flag-count-pill {
+        display: inline-block;
+        min-width: 1.75rem;
+        text-align: center;
+        background: transparent;
+        color: #1e293b;
+        border: 0;
+        border-radius: 0;
+        font-weight: 600;
+        font-size: inherit;
+        padding: 0;
+    }
+    .btn-arsema-outline {
+        color: var(--arsema-red);
+        border: 1px solid var(--arsema-red);
+        background: #fff;
+        border-radius: 8px;
+        font-weight: 600;
+    }
+    .btn-arsema-outline:hover {
+        background: var(--arsema-red);
+        color: #fff;
+        border-color: var(--arsema-red);
     }
     @media (max-width: 576px) {
         .flag-cat-grid { grid-template-columns: repeat(2, 1fr); }

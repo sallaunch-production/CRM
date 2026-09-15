@@ -779,6 +779,16 @@ return [
     */
 
     'plugins' => [
+        'ArsemaTheme' => [
+            'active' => true,
+            'files' => [
+                [
+                    'type' => 'css',
+                    'asset' => true,
+                    'location' => 'css/arsema-theme.css',
+                ],
+            ],
+        ],
         'Datatables' => [
             'active' => true,
             'files' => [

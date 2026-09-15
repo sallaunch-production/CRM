@@ -692,11 +692,14 @@ class ReportingController extends Controller
 
         $dari = (string) $request->dari;
         $sampai = (string) $request->sampai;
-        $namaPengirim = (string) $request->nama_pengirim;
+        $nomorIdentitas = (string) $request->input('nomor_identitas', $request->input('nama_pengirim'));
+
+        $detail = $service->oneToManyDetail($dari, $sampai, $nomorIdentitas);
 
         return view('reporting.filter_one_to_many', [
-            'data' => $service->oneToManyDetail($dari, $sampai, $namaPengirim),
-            'nama_pengirim' => $namaPengirim,
+            'data' => $detail,
+            'nomor_identitas' => $nomorIdentitas,
+            'nama_pengirim' => optional($detail->first())->nama_pengirim,
             'dari' => $dari,
             'sampai' => $sampai,
         ]);
