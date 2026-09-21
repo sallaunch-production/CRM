@@ -222,7 +222,7 @@
                                     <td>{{ $row->id_transaksi }}</td>
                                     <td>{{ $row->kanal ?? '—' }}</td>
                                     <td>{{ $row->arah ?? '—' }}</td>
-                                    <td>{{ $row->bsubanyak ?? $row->amount }}</td>
+                                    <td>{{ number_format((float) ($row->amount_num ?? $row->bsubanyak ?? $row->amount ?? 0)) }}</td>
                                     <td>{{ $row->nama_penerima }}</td>
                                     <td>{{ $row->nama_pengirim }}</td>
                                     <td>{{ $row->negara_pengirim }}</td>
