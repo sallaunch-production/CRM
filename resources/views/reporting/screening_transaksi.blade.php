@@ -1,96 +1,108 @@
 @extends('adminlte::page')
 
-@section('title','CRM Arsema')
-    
+@section('title', 'CRM Arsema')
+
 @section('content_header')
-    <h1>Filter Transaksi</h1>
 @stop
+
 @section('content')
+@php
+    $hasResult = !empty($tanggal_dari);
+@endphp
+
 <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-12">
+    <div class="crm-page">
+        <div class="crm-page-header">
+            <div>
+                <h1 class="crm-page-title">Filter Transaksi</h1>
+                <p class="crm-page-sub">
+                    Filter pengirim dengan frekuensi transaksi tinggi berdasarkan periode.
+                </p>
+            </div>
+        </div>
 
-                    <div class="card">
-                        <div class="card-body">
-                            @if(session('success'))
-                            <div class="alert alert-success alert-dismissible fade show" id="success-alert" role="alert">
-                               <strong>{{  session('success') }}</strong>
-                                
-                              </div>
-                            @endif
+        @include('partials.crm.alerts')
 
-                            @if(session('error'))
-                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                                <strong>{{  session('error')}} </strong>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                              </div>
-                            @endif
-                          
-                            <label>Tanggal Pencarian: </label><br>
-                           @if($levelnya=="operasional")
-                            <form action="{{route('cari_screening_transaksi_oprasional')}}" method="POST" style="width:40%;">
-                           @elseif($levelnya=="compliance") 
-                           <form action="{{route('cari_screening_transaksi')}}" method="POST" style="width:40%;">
-                           @endif
-                                @csrf
-                             <div class="form-group">
-                             <div class="input-group"> 
-                                <input type="hidden" name="cari" value="ya">
-                                <input type='text' class="form-control" id="daterange" name="reservation"/>&nbsp;
-                                <button type=submit class="btn btn-info">Cari</button>
-                             </div>
-                             </div>
-                            </form>
-                         <br>
-                            @if(!empty($tanggal_dari))
-                            <strong>Tanggal mulai {{ \Carbon\Carbon::createFromTimestamp(strtotime($tanggal_dari))->format('d-m-Y')}} sampai {{ \Carbon\Carbon::createFromTimestamp(strtotime($tanggal_sampai))->format('d-m-Y')}}</strong><br><br>
-                            <table  id="example" class="table  table-striped  table-bordered" style="width:100%">
-                            <thead>
-                                <tr>
-                                    <th>No</th>
-                                    <th>Nama Pengirim</th>
-                                    <th>Total BSU</th>
-                                    <th>Banyak Pengirim</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                @foreach ($data  as $key => $datas)
-                                    @if($datas->perbuatan > 5)
-                                        <tr>
-                                            <th>{{$key+1 }}</th>
-                                            <th>{{$datas->nama_pengirim }}</th>
-                                            <th>{{ number_format($datas->sum ?? '0') }}</th>
-                                            <th>{{ $datas->perbuatan ?? '0' }}</th>
-                                        </tr>  
-                                    @endif
-                                 @endforeach
-                                </tbody>
-                              </table>
-                            @endif
-                        </div><!--card-body-->
+        <div class="crm-search">
+            @if($levelnya == 'operasional')
+                <form class="crm-search-form" action="{{ route('cari_screening_transaksi_oprasional') }}" method="POST">
+            @elseif($levelnya == 'compliance')
+                <form class="crm-search-form" action="{{ route('cari_screening_transaksi') }}" method="POST">
+            @endif
+                @csrf
+                <input type="hidden" name="cari" value="ya">
+                <div class="crm-search-field">
+                    <label for="daterange">Tanggal Pencarian</label>
+                    <input type="text" class="form-control" id="daterange" name="reservation">
+                </div>
+                <div class="crm-search-actions">
+                    <button type="submit" class="crm-btn crm-btn-primary">
+                        <i class="fas fa-search"></i> Cari
+                    </button>
+                </div>
+            </form>
+        </div>
 
-                    </div><!--card-->
-                </div><!--col-md-12-->
-            </div><!--row-->
-        </div><!--container-fluid-->
+        @if(!$hasResult)
+            <div class="crm-empty">
+                <div class="crm-empty-icon" aria-hidden="true">
+                    <i class="fas fa-filter"></i>
+                </div>
+                <h2 class="crm-empty-title">Mulai dengan periode</h2>
+                <p class="crm-empty-text">
+                    Pilih <strong>Tanggal Pencarian</strong>, lalu tekan <strong>Cari</strong>
+                    untuk menampilkan filter transaksi.
+                </p>
+            </div>
+        @else
+            <div class="crm-table-card">
+                <div class="crm-table-toolbar">
+                    <div>
+                        <h2 class="crm-table-title">Hasil Filter</h2>
+                        <div class="crm-table-meta">
+                            Tanggal mulai
+                            {{ \Carbon\Carbon::createFromTimestamp(strtotime($tanggal_dari))->format('d-m-Y') }}
+                            sampai
+                            {{ \Carbon\Carbon::createFromTimestamp(strtotime($tanggal_sampai))->format('d-m-Y') }}
+                        </div>
+                    </div>
+                </div>
+                <div class="crm-table-wrap">
+                    <table id="example" class="table crm-table table-striped table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Nama Pengirim</th>
+                                <th>Total BSU</th>
+                                <th>Banyak Pengirim</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($data as $key => $datas)
+                                @if($datas->perbuatan > 5)
+                                    <tr>
+                                        <td>{{ $key + 1 }}</td>
+                                        <td>{{ $datas->nama_pengirim }}</td>
+                                        <td>{{ number_format($datas->sum ?? '0') }}</td>
+                                        <td>{{ $datas->perbuatan ?? '0' }}</td>
+                                    </tr>
+                                @endif
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        @endif
+    </div>
+</div>
 @stop
 
 @section('js')
-
-<script type="text/javascript">
-  $(document).ready(function() {
-    $(document).ready(function() {
-    $('#daterange').daterangepicker();
-    $('#daterange2').daterangepicker();
-    $('#example').DataTable();
-} );
-} );
+@include('partials.crm.datatable-boot')
+<script>
+    $(document).ready(function () {
+        $('#daterange').daterangepicker();
+        CrmDataTable.mount('#example');
+    });
 </script>
-
-   <script>
-            
-        $("#success-alert").fadeTo(2000, 500).fadeOut(500, function(){
-        $("#success-alert").fadeOut(500);
-        });
-   </script>
 @stop

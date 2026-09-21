@@ -1,48 +1,59 @@
 @extends('adminlte::page')
 
-@section('title','Dashboard')
-    
+@section('title', 'Dashboard')
+
+@section('content_header')
+@stop
+
 @section('content')
+@php
+    $userName = Auth::user()->name ?? Auth::user()->email ?? 'User';
+    $userLevel = Auth::user()->level ?? '';
+    $levelLabel = $userLevel === 'operasional'
+        ? 'Operasional'
+        : ($userLevel === 'compliance' ? 'Compliance' : ucfirst((string) $userLevel));
+@endphp
 
-<div class="container mt-4">
-    <div class="row justify-content-center">
-        <div class="col-md-12"><br>
-        @if(session('success'))
-                            <div class="alert alert-primary alert-dismissible fade show" id="success-alert" role="alert">
-                               <strong>{{  session('success') }}</strong>
-                                
-                              </div><br>
-                            @endif
-        <div class="card card-outline card-primary arsema-welcome-card">
-               
+<div class="container-fluid crm-home-wrap">
+    <div class="crm-page">
+        @include('partials.crm.alerts')
 
-                <div class="card-body">
-                   
-                  <div class="row">
-                            <h1> Selamat Datang di Dashboard CRM Arsema</h1>
-							<p style=font-size:15px;>Dashboard ini merupakan sebuah aplikasi yang dikembangkan untuk Customer Relationship Management ARSEMA. </p><p style=font-size:15px;> Contact Us : info@arsema.co.id | https://arsema.co.id</p>
-							
-                 </div>
-                        
+        <section class="crm-home-card">
+            <p class="crm-home-brand">CRM Arsema</p>
+            <h1 class="crm-home-title">Selamat datang, {{ $userName }}</h1>
+            <p class="crm-home-text">
+                Dashboard Customer Relationship Management untuk operasional ARSEMA —
+                transaksi, screening, flagging, dan reporting dalam satu tempat.
+            </p>
+
+            <div class="crm-home-meta">
+                <div class="crm-home-meta-item">
+                    <span class="crm-home-meta-label">Peran</span>
+                    <span class="crm-home-meta-value">{{ $levelLabel }}</span>
+                </div>
+                <div class="crm-home-meta-item">
+                    <span class="crm-home-meta-label">Kontak</span>
+                    <a class="crm-home-meta-value" href="mailto:info@arsema.co.id">info@arsema.co.id</a>
+                </div>
+                <div class="crm-home-meta-item">
+                    <span class="crm-home-meta-label">Website</span>
+                    <a
+                        class="crm-home-meta-value"
+                        href="https://arsema.co.id"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >arsema.co.id</a>
                 </div>
             </div>
-        </div>
+
+            <p class="crm-home-hint">
+                Gunakan menu di sisi kiri untuk membuka fitur yang Anda butuhkan.
+            </p>
+        </section>
     </div>
 </div>
- 
 @stop
 
 @section('js')
-<script type="text/javascript">
-  $(document).ready(function() {
-    $('#daterange').daterangepicker();
-} );
-</script>
-
-   <script>
-            
-        $("#success-alert").fadeTo(2000, 500).fadeOut(500, function(){
-        $("#success-alert").fadeOut(500);
-        });
-   </script>
+@include('partials.crm.datatable-boot')
 @stop

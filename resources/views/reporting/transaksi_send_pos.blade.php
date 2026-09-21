@@ -1,70 +1,76 @@
 @extends('adminlte::page')
 
-@section('title','CRM Arsema')
+@section('title', 'CRM Arsema')
 
 @section('content_header')
-    <h1>Transaksi Send Pos</h1>
 @stop
 
 @section('content')
+@php
+    $sendAjaxUrl = (($levelnya ?? '') === 'operasional')
+        ? route('transaksi_send_pos_operasional')
+        : route('transaksi_send_pos');
+@endphp
+
 <div class="container-fluid">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-body pos-dt-wrap">
-                    @if(session('success'))
-                        <div class="alert alert-success alert-dismissible fade show" id="success-alert" role="alert">
-                            <strong>{{ session('success') }}</strong>
-                        </div>
-                    @endif
+    <div class="crm-page">
+        <div class="crm-page-header">
+            <div>
+                <h1 class="crm-page-title">Transaksi Send Pos</h1>
+                <p class="crm-page-sub">Daftar transaksi send dari POS. Gunakan kotak filter untuk mencari NOPEND, NOREF, NIK, telepon, atau nama.</p>
+            </div>
+        </div>
 
-                    @if(session('error'))
-                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                            <strong>{{ session('error') }}</strong>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    @endif
+        @include('partials.crm.alerts')
 
-                    <div class="pos-dt-initial" aria-live="polite">
-                        <span class="pos-dt-spinner" aria-hidden="true"></span>
-                        Memuat daftar transaksi…
-                    </div>
-
-                    <table id="example" class="table table-responsive table-striped table-bordered" style="width:100%">
-                        <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th>No Referensi</th>
-                                <th>Negara Penerima</th>
-                                <th>BSU</th>
-                                <th>Fee</th>
-                                <th>Total Collect</th>
-                                <th>Nama Penerima</th>
-                                <th>Nama Pengirim</th>
-                                <th>Nopend</th>
-                                <th>Identitas</th>
-                                <th>Nomor Identitas</th>
-                                <th>Tanggal Lahir</th>
-                                <th>Kota Lahir Pengirim</th>
-                                <th>Alamat Penerima</th>
-                                <th>Telepon Penerima</th>
-                                <th>Telepon Pengirim</th>
-                                <th>Kota</th>
-                                <th>Pekerjaan</th>
-                                <th>Alamat Identitas Pengirim</th>
-                                <th>Alamat Domisili Pengirim</th>
-                                <th>Jenis Pengiriman</th>
-                                <th>Hubungan Pengirim</th>
-                                <th>Kewarganegaraan</th>
-                                <th>Tujuan Penggunaan Dana</th>
-                                <th>Kota Kelahiran</th>
-                                <th>Jenis Kelamin</th>
-                                <th>Tanggal</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
+        <div class="crm-table-card pos-dt-wrap">
+            <div class="crm-table-toolbar">
+                <div>
+                    <h2 class="crm-table-title">Daftar Transaksi</h2>
+                    <div class="crm-table-meta">Server-side DataTables · filter langsung di tabel</div>
                 </div>
+            </div>
+
+            <div class="pos-dt-initial" aria-live="polite">
+                <span class="pos-dt-spinner" aria-hidden="true"></span>
+                Memuat daftar transaksi…
+            </div>
+
+            <div class="crm-table-wrap">
+                <table id="example" class="table crm-table table-striped table-bordered" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th>No Referensi</th>
+                            <th>Negara Penerima</th>
+                            <th>BSU</th>
+                            <th>Fee</th>
+                            <th>Total Collect</th>
+                            <th>Nama Penerima</th>
+                            <th>Nama Pengirim</th>
+                            <th>Nopend</th>
+                            <th>Identitas</th>
+                            <th>Nomor Identitas</th>
+                            <th>Tanggal Lahir</th>
+                            <th>Kota Lahir Pengirim</th>
+                            <th>Alamat Penerima</th>
+                            <th>Telepon Penerima</th>
+                            <th>Telepon Pengirim</th>
+                            <th>Kota</th>
+                            <th>Pekerjaan</th>
+                            <th>Alamat Identitas Pengirim</th>
+                            <th>Alamat Domisili Pengirim</th>
+                            <th>Jenis Pengiriman</th>
+                            <th>Hubungan Pengirim</th>
+                            <th>Kewarganegaraan</th>
+                            <th>Tujuan Penggunaan Dana</th>
+                            <th>Kota Kelahiran</th>
+                            <th>Jenis Kelamin</th>
+                            <th>Tanggal</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -73,16 +79,11 @@
 
 @section('js')
 @include('reporting.partials.pos_datatable_loading')
-
-@php
-    $sendAjaxUrl = (($levelnya ?? '') === 'operasional')
-        ? route('transaksi_send_pos_operasional')
-        : route('transaksi_send_pos');
-@endphp
+@include('partials.crm.datatable-boot')
 
 <script type="text/javascript">
     $(function () {
-        var table = $('.table-bordered').DataTable({
+        var table = $('#example').DataTable(CrmDataTable.defaults({
             processing: true,
             serverSide: true,
             deferRender: true,
@@ -124,12 +125,8 @@
                 {data: 'jenis_kelamin', name: 'jenis_kelamin'},
                 {data: 'tanggal', name: 'tanggal'},
             ]
-        });
+        }));
         PosDatatableUi.bindLoadingOverlay(table);
-    });
-
-    $("#success-alert").fadeTo(2000, 500).fadeOut(500, function () {
-        $("#success-alert").fadeOut(500);
     });
 </script>
 @stop

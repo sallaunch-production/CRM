@@ -86,33 +86,51 @@ class NopendController extends Controller
       public function cari_agent(Request $request)
       {
         if(Auth::check()){
-            
-            $tanggal = $request->reservation;
-            $dari = explode('/',$tanggal);
-            $tahunini = date('Y');
-            
-            $tahun_dari = $dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3];
-            $periode_dari = $dari[1].'-'.$dari[0].'-'.$dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3];
-            $periode_sampai = $dari[3].'-'.$dari[2][7].$dari[2][8].'-'.$dari[4];
-    
-            $tanggal_dari = $dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3].'-'.$dari[0].'-'.$dari[1];
-            $tanggal_sampai =  $dari[4].'-'.$dari[2][7].$dari[2][8].'-'.$dari[3];
-            $tahun_sampai =  $dari[4];
-            $hariini = date("Y-m-d H:i:s");
-            
-            //$jum=DB::connection('mysql')->table('transaksi_valid')->join('agent_id_test','agent_id_test.id_pos','=','transaksi_valid.id_pos')->where('tanggal','>',$tanggal_dari.' 00:00:00')->where('tanggal','<',$tanggal_sampai.' 23:59:59')->groupBy('agent_id_test.agent_id')->count();
-            $jum=DB::table('transaksi_valid')->join('agent_id_test','agent_id_test.id_pos','=','transaksi_valid.id_pos')->where('tanggal','>',$tanggal_dari.' 00:00:00')->where('tanggal','<',$tanggal_sampai.' 23:59:59')->groupBy('agent_id_test.agent_id')->count();
-            //$jumkah=DB::connection('mysql')->table('transaksi_valid')->join('agent_id_test','agent_id_test.id_pos','=','transaksi_valid.id_pos')->groupBy('agent_id_test.agent_id')->count();
-            $jumkah=DB::table('transaksi_valid')->join('agent_id_test','agent_id_test.id_pos','=','transaksi_valid.id_pos')->groupBy('agent_id_test.agent_id')->count();
-            //$jumtv=DB::connection('mysql')->table('agent_id_test')->count();
-            $jumtv=DB::table('agent_id_test')->count();
-            $belumaktif =$jumtv-$jumkah; 
+            // Prefer start_date/end_date (CRM filter); keep reservation fallback for old form posts
+            if ($request->filled('start_date') && $request->filled('end_date')) {
+                $tanggal_dari = $request->input('start_date');
+                $tanggal_sampai = $request->input('end_date');
+            } else {
+                $tanggal = $request->reservation;
+                $dari = explode('/', $tanggal);
+                $tanggal_dari = $dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3].'-'.$dari[0].'-'.$dari[1];
+                $tanggal_sampai = $dari[4].'-'.$dari[2][7].$dari[2][8].'-'.$dari[3];
+            }
 
-            //$quer=DB::connection('mysql')->table('transaksi_valid')->select('transaksi_valid.id_pos','agent_id_test.agent_id','agent_id_test.nama',DB::raw('count(agent_id_test.agent_id) as totalid'))->join('agent_id_test','agent_id_test.id_pos','=','transaksi_valid.id_pos')->where('tanggal','<=',$tanggal_sampai.' 23:59:59')->groupBy('agent_id_test.agent_id','transaksi_valid.id_pos','agent_id_test.agent_id','agent_id_test.nama')->orderBy('totalid','desc')->get();  
-            $quer=DB::table('transaksi_valid')->select('transaksi_valid.id_pos','agent_id_test.agent_id','agent_id_test.nama',DB::raw('count(agent_id_test.agent_id) as totalid'))->join('agent_id_test','agent_id_test.id_pos','=','transaksi_valid.id_pos')->where('tanggal','<=',$tanggal_sampai.' 23:59:59')->groupBy('agent_id_test.agent_id','transaksi_valid.id_pos','agent_id_test.agent_id','agent_id_test.nama')->orderBy('totalid','desc')->get();
+            $jum = DB::table('transaksi_valid')
+                ->join('agent_id_test', 'agent_id_test.id_pos', '=', 'transaksi_valid.id_pos')
+                ->where('tanggal', '>', $tanggal_dari.' 00:00:00')
+                ->where('tanggal', '<', $tanggal_sampai.' 23:59:59')
+                ->groupBy('agent_id_test.agent_id')
+                ->count();
+            $jumkah = DB::table('transaksi_valid')
+                ->join('agent_id_test', 'agent_id_test.id_pos', '=', 'transaksi_valid.id_pos')
+                ->groupBy('agent_id_test.agent_id')
+                ->count();
+            $jumtv = DB::table('agent_id_test')->count();
+            $belumaktif = $jumtv - $jumkah;
 
-            return view('reporting.agent_sort',[
-                'tanggal_dari'=>$tanggal_dari,'jum'=>$jum,'jumkah'=>$jumkah,'jumtv'=>$jumtv,'tanggal_sampai'=>$tanggal_sampai,'belumaktif'=>$belumaktif,'quer'=>$quer
+            $quer = DB::table('transaksi_valid')
+                ->select(
+                    'transaksi_valid.id_pos',
+                    'agent_id_test.agent_id',
+                    'agent_id_test.nama',
+                    DB::raw('count(agent_id_test.agent_id) as totalid')
+                )
+                ->join('agent_id_test', 'agent_id_test.id_pos', '=', 'transaksi_valid.id_pos')
+                ->where('tanggal', '<=', $tanggal_sampai.' 23:59:59')
+                ->groupBy('agent_id_test.agent_id', 'transaksi_valid.id_pos', 'agent_id_test.agent_id', 'agent_id_test.nama')
+                ->orderBy('totalid', 'desc')
+                ->get();
+
+            return view('reporting.agent_sort', [
+                'tanggal_dari' => $tanggal_dari,
+                'jum' => $jum,
+                'jumkah' => $jumkah,
+                'jumtv' => $jumtv,
+                'tanggal_sampai' => $tanggal_sampai,
+                'belumaktif' => $belumaktif,
+                'quer' => $quer,
             ]);
         }
 

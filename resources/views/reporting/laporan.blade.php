@@ -1,138 +1,133 @@
 @extends('adminlte::page')
 
-@section('title','CRM Arsema')
-    
+@section('title', 'CRM Arsema')
+
 @section('content_header')
-<h2>Laporan</h2>
 @stop
+
 @section('content')
+@php
+    $hasResult = !empty($tanggal_dari);
+    $startDate = old('start_date', $tanggal_dari ?? '');
+    $endDate = old('end_date', $tanggal_sampai ?? '');
+    $isOps = Auth::user()->level === 'operasional';
+@endphp
+
 <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-12">
+    <div class="crm-page">
+        <div class="crm-page-header">
+            <div>
+                <h1 class="crm-page-title">Laporan</h1>
+                <p class="crm-page-sub">Pilih periode, lalu unduh laporan BI atau PPATK.</p>
+            </div>
+        </div>
 
-                    <div class="card">
-                        <div class="card-body">
-                            @if(session('success'))
-                            <div class="alert alert-success alert-dismissible fade show" id="success-alert" role="alert">
-                               <strong>{{  session('success') }}</strong>
-                            </div>
-                            @endif
+        @include('partials.crm.alerts')
 
-                            @if(session('error'))
-                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                                <strong>{{  session('error')}} </strong>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                              </div>
-                            @endif
-                            <br>
-                          
-                             <div class="row">
-                                <div class="col-md-6">   
-                            <label>Tanggal Pencarian: </label>
-                            <form action="{{ Auth::user()->level == 'operasional' ? route('cari_laporan_operasional') : route('cari_laporan_compliance') }}" method="POST">
-                            @csrf
-                             <div class="form-group">
-                             <div class="input-group"> 
-                                <input type='text' class="form-control" id="daterange" name="reservation"/>&nbsp;
-                                <button type=submit class="btn btn-info">Cari</button>
-                             </div>
-                             </div><br>
-                            </form>
-                            </div>
+        <div class="crm-search">
+            <form
+                class="crm-search-form"
+                action="{{ $isOps ? route('cari_laporan_operasional') : route('cari_laporan_compliance') }}"
+                method="POST"
+            >
+                @csrf
+                @include('partials.crm.date-range-filter', [
+                    'groupLabel' => 'Periode Laporan',
+                    'startDate' => $startDate,
+                    'endDate' => $endDate,
+                ])
+                <div class="crm-search-actions">
+                    <button type="submit" class="crm-btn crm-btn-primary">
+                        <i class="fas fa-search"></i> Cari
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        @if(!$hasResult)
+            <div class="crm-empty">
+                <div class="crm-empty-icon" aria-hidden="true">
+                    <i class="fas fa-file-export"></i>
+                </div>
+                <h2 class="crm-empty-title">Mulai dengan periode</h2>
+                <p class="crm-empty-text">
+                    Pilih <strong>Start Date</strong> dan <strong>End Date</strong>, lalu tekan <strong>Cari</strong>
+                    untuk menampilkan tombol unduh laporan.
+                </p>
+            </div>
+        @else
+            <div class="crm-table-card">
+                <div class="crm-table-toolbar">
+                    <div>
+                        <h2 class="crm-table-title">Export Laporan</h2>
+                        <div class="crm-table-meta">
+                            Periode {{ $tanggal_dari }} s/d {{ $tanggal_sampai }}
                         </div>
-                    @if(!empty($tanggal_dari))
-                    <h3>Tanggal Dari : {{($tanggal_dari)}} dan Sampai {{($tanggal_sampai)}}</h3>
-                    <table  id="example" class="table  table-responsive" style="width:100%;">
-                        <thead>
-                        <tr>
-                                    
-                        </tr> 
-                        </thead>
-                        <tfoot>
-                        <tr>
-                                        
-                        </tr> 
-                        </tfoot>
-                        <tbody>
-                            <tr>		
-                                <td width=25%>
-                                <form action="{{Auth::user()->level == 'compliance' ? route('cetak_laporan_bi_baru') : route('cetak_laporan_bi_baru_operasional')}}" method="POST">
-                                  @csrf
-                                    <input type=hidden  name="tanggal_dari" value="{{$tanggal_dari}}">
-                                    <input type=hidden  name="tanggal_sampai" value="{{$tanggal_sampai}}">
-                                    <input type=submit class="btn btn-info" value="Cetak Laporan BI">
-                                </form>
-                                </td>
-                                <td width=25%>
-                                    <form action="{{Auth::user()->level == 'operasional' ? route('cetak_laporan_bi_g0001_operasional') : route('cetak_laporan_bi_g0001') }}" method="POST">
-                                    @csrf
-                                        <input type=hidden  name="tanggal_dari" value="{{$tanggal_dari}}">
-                                        <input type=hidden  name="tanggal_sampai" value="{{$tanggal_sampai}}">
-                                    <input type=submit class="btn btn-info" value="Download G0001 Laporan BI">
-                                    </form>
-                                 </td>
-                                <td width=25%>
-                                    <form action="{{Auth::user()->level == 'operasional' ? route('cetak_laporan_bi_baru_txt_operasional') : route('cetak_laporan_bi_baru_txt')}}" method="POST">
-                                    @csrf
-                                        <input type=hidden  name="tanggal_dari" value="{{$tanggal_dari}}">
-                                        <input type=hidden  name="tanggal_sampai" value="{{$tanggal_sampai}}">
-                                    <input type=submit class="btn btn-info" value="Download G0002 Laporan BI">
-                                    </form>
-                                </td>
-                                <td width=25%>
-                                    <form action="{{Auth::user()->level == 'compliance' ? route('cetak_laporan_bi_g0003') :route('cetak_laporan_bi_g0003_operasional')}}" method="POST">
-                                    @csrf
-                                        <input type=hidden  name="tanggal_dari" value="{{$tanggal_dari}}">
-                                        <input type=hidden  name="tanggal_sampai" value="{{$tanggal_sampai}}">
-                                    <input type=submit class="btn btn-info" value="Download G0003 Laporan BI">
-                                    </form>
-                                </td>
-                                <td>
-                                <form action="{{Auth::user()->level == 'compliance' ? route('cetak_laporan_ppatk_baru'): route('cetak_laporan_ppatk_baru_operasional')}}" method="POST">
-                                    @csrf
-                                        <input type=hidden  name="tanggal_dari" value="{{$tanggal_dari}}">
-                                        <input type=hidden  name="tanggal_sampai" value="{{$tanggal_sampai}}">
-                                     <input type=submit class="btn btn-danger" value="Cetak Laporan PPATK">
-                                     </form>
-                                </td>
-                                <td>
-                                <form action="{{Auth::user()->level == 'compliance' ? route('cetak_laporan_ppatk_baru_c2a') : route('cetak_laporan_ppatk_baru_c2a_operasional')}}" method="POST">
-                                    @csrf
-                                        <input type=hidden  name="tanggal_dari" value="{{$tanggal_dari}}">
-                                        <input type=hidden  name="tanggal_sampai" value="{{$tanggal_sampai}}">
-                                  <input type=submit class="btn btn-danger" value="Cetak Laporan PPATK C2A">
-                                    </form>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>	
-                    @else
-                    @endif
-                        </div><!--card-body-->
-
-                    </div><!--card-->
-                </div><!--col-md-12-->
-            </div><!--row-->
-        </div><!--container-fluid-->
+                    </div>
+                </div>
+                <div class="crm-export-grid">
+                    <form
+                        action="{{ $isOps ? route('cetak_laporan_bi_baru_operasional') : route('cetak_laporan_bi_baru') }}"
+                        method="POST"
+                    >
+                        @csrf
+                        <input type="hidden" name="tanggal_dari" value="{{ $tanggal_dari }}">
+                        <input type="hidden" name="tanggal_sampai" value="{{ $tanggal_sampai }}">
+                        <button type="submit" class="crm-btn crm-btn-primary">Cetak Laporan BI</button>
+                    </form>
+                    <form
+                        action="{{ $isOps ? route('cetak_laporan_bi_g0001_operasional') : route('cetak_laporan_bi_g0001') }}"
+                        method="POST"
+                    >
+                        @csrf
+                        <input type="hidden" name="tanggal_dari" value="{{ $tanggal_dari }}">
+                        <input type="hidden" name="tanggal_sampai" value="{{ $tanggal_sampai }}">
+                        <button type="submit" class="crm-btn crm-btn-primary">Download G0001 Laporan BI</button>
+                    </form>
+                    <form
+                        action="{{ $isOps ? route('cetak_laporan_bi_baru_txt_operasional') : route('cetak_laporan_bi_baru_txt') }}"
+                        method="POST"
+                    >
+                        @csrf
+                        <input type="hidden" name="tanggal_dari" value="{{ $tanggal_dari }}">
+                        <input type="hidden" name="tanggal_sampai" value="{{ $tanggal_sampai }}">
+                        <button type="submit" class="crm-btn crm-btn-primary">Download G0002 Laporan BI</button>
+                    </form>
+                    <form
+                        action="{{ $isOps ? route('cetak_laporan_bi_g0003_operasional') : route('cetak_laporan_bi_g0003') }}"
+                        method="POST"
+                    >
+                        @csrf
+                        <input type="hidden" name="tanggal_dari" value="{{ $tanggal_dari }}">
+                        <input type="hidden" name="tanggal_sampai" value="{{ $tanggal_sampai }}">
+                        <button type="submit" class="crm-btn crm-btn-primary">Download G0003 Laporan BI</button>
+                    </form>
+                    <form
+                        action="{{ $isOps ? route('cetak_laporan_ppatk_baru_operasional') : route('cetak_laporan_ppatk_baru') }}"
+                        method="POST"
+                    >
+                        @csrf
+                        <input type="hidden" name="tanggal_dari" value="{{ $tanggal_dari }}">
+                        <input type="hidden" name="tanggal_sampai" value="{{ $tanggal_sampai }}">
+                        <button type="submit" class="crm-btn crm-btn-warn">Cetak Laporan PPATK</button>
+                    </form>
+                    <form
+                        action="{{ $isOps ? route('cetak_laporan_ppatk_baru_c2a_operasional') : route('cetak_laporan_ppatk_baru_c2a') }}"
+                        method="POST"
+                    >
+                        @csrf
+                        <input type="hidden" name="tanggal_dari" value="{{ $tanggal_dari }}">
+                        <input type="hidden" name="tanggal_sampai" value="{{ $tanggal_sampai }}">
+                        <button type="submit" class="crm-btn crm-btn-warn">Cetak Laporan PPATK C2A</button>
+                    </form>
+                </div>
+            </div>
+        @endif
+    </div>
+</div>
 @stop
 
 @section('js')
-<script type="text/javascript">
-  $(document).ready(function() {
-    $('#daterange').daterangepicker();
-    $('#daterange2').daterangepicker();
-    $('#example').DataTable();
-} );
-</script>
-
-   <script>
-            
-        $("#success-alert").fadeTo(2000, 500).fadeOut(500, function(){
-        $("#success-alert").fadeOut(500);
-        });
-   </script>
-     
-
+@include('partials.crm.datatable-boot')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
-
 @stop

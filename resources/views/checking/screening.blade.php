@@ -1,107 +1,121 @@
 @extends('adminlte::page')
 
-@section('title','CRM Arsema')
-    
+@section('title', 'CRM Arsema')
+
 @section('content_header')
-<h2>Screening Customer</h2>
 @stop
+
 @section('content')
-<div class="container-fluid">
-            <div class="row">
-                <div class="col-md-12">
+@php
+    $hasResult = !empty($tanggal_dari);
+    $startDate = old('start_date', $tanggal_dari ?? '');
+    $endDate = old('end_date', $tanggal_sampai ?? '');
+@endphp
 
-                    <div class="card">
-                        <div class="card-body">
-                            @if(session('success'))
-                            <div class="alert alert-success alert-dismissible fade show" id="success-alert" role="alert">
-                               <strong>{{  session('success') }}</strong>
-                                
-                              </div>
-                            @endif
+<div class="container-fluid crm-page-wrap">
+    <div class="crm-page">
+        <div class="crm-page-header">
+            <div>
+                <h1 class="crm-page-title">Screening Customer</h1>
+                <p class="crm-page-sub">
+                    Cari customer yang cocok dengan OFAC SDN List &amp; UK Sanction List berdasarkan periode transaksi.
+                </p>
+            </div>
+        </div>
 
-                            @if(session('error'))
-                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                                <strong>{{  session('error')}} </strong>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                              </div>
-                            @endif
-                            <br/>
-                            <!-- COLOR PALETTE -->
-                          
-                                        <div class="box-body" >
-                                       
-                                        <form action="{{Auth::user()->level == 'compliance' ? route('cari_screening') : route('cari_screening_operasional')}}" method="POST" style="width:30%;">
-                                        @csrf
-                                        
-                                        <input type=hidden name=proses value=cari>
-                                        <label>Date Range : </label>
-                                        <input type='text' class="form-control" id="daterange" name="reservation" required/> 
-                                        <br><input type=submit value=Cari class="btn btn-info">
-                                        </form> 
-                                            <br>* Data OFAC SDN List & UK Sanction List : update per 25-10-2016<br><br>
-                                    
-                                            <br>
-                                        @if(!empty($tanggal_dari))
-                                        <h3>Tanggal Dari : {{date('d-m-Y', strtotime($tanggal_dari))}} | Sampai : {{date('d-m-Y', strtotime($tanggal_sampai))}}</h3>
-                                        <table  id="example" class="table table-striped  table-bordered" style="width:100%;">
-                                            <thead>
-                                                <tr>
-                                                    <th>No</th>
-                                                    <th>No Referensi</th>
-                                                    <th>Nama Pengirim</th>
-                                                    <th>Nama Penerima</th>	
-                                                    <th>Tanggal Lahir</th>
-                                                    <th>Negara Pengirim</th>
-                                                </tr> 
-                                            </thead>
-                                            <tbody>
-                                                
-                                                @foreach ($data  as $key => $que_caris)
-                                                <?php
-                                                        $query_sanction=DB::table('sanction_list')->where('nama','like',$que_caris->nama_pengirim.'%')->where('nama','like',$que_caris->nama_penerima.'%')->first();
-                                                    ?>
-                                                    @if(is_array($query_sanction)>0)
-                                                <tr>
-                                                    
-                                                    <th >{{$key+1 }} </th>
-                                                    <td>{{ $que_caris->no_referensi }}</td>
-                                                    <td>{{ $que_caris->nama_pengirim }}</td>
-                                                    <td>{{ $que_caris->nama_penerima }}</td>
-                                                    <td>{{ $que_caris->tanggal_lahir }}</td>
-                                                    <td>{{ $que_caris->negara_pengirim }}</td>
-                                                    </tr>
-                                                    @endif
-                                                @endforeach
-                                            
-                                                </tbody>
-                                            </table>
-                                        @endif
+        @include('partials.crm.alerts')
 
-                                    <!-- /.col -->
-                               
-                                <!-- /.row --><br><br><br><br>
-                               
-                              
-                        </div><!--card-body-->
+        <div class="crm-search">
+            <form
+                class="crm-search-form"
+                action="{{ Auth::user()->level == 'compliance' ? route('cari_screening') : route('cari_screening_operasional') }}"
+                method="POST"
+            >
+                @csrf
+                <input type="hidden" name="proses" value="cari">
+                @include('partials.crm.date-range-filter', [
+                    'startDate' => $startDate,
+                    'endDate' => $endDate,
+                ])
+                <div class="crm-search-actions">
+                    <button type="submit" class="crm-btn crm-btn-primary">
+                        <i class="fas fa-search"></i> Cari
+                    </button>
+                </div>
+            </form>
+        </div>
 
-                    </div><!--card-->
-                </div><!--col-md-12-->
-            </div><!--row-->
-        </div><!--container-fluid-->
+        <p class="crm-page-sub" style="margin-top:-0.35rem;">
+            * Data OFAC SDN List &amp; UK Sanction List : update per 25-10-2016
+        </p>
+
+        @if(!$hasResult)
+            <div class="crm-empty">
+                <div class="crm-empty-icon" aria-hidden="true">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <h2 class="crm-empty-title">Mulai dengan periode</h2>
+                <p class="crm-empty-text">
+                    Pilih <strong>Start Date</strong> dan <strong>End Date</strong>, lalu tekan <strong>Cari</strong>
+                    untuk menampilkan hasil screening customer.
+                </p>
+            </div>
+        @else
+            <div class="crm-table-card">
+                <div class="crm-table-toolbar">
+                    <div>
+                        <h2 class="crm-table-title">Hasil Screening</h2>
+                        <div class="crm-table-meta">
+                            Periode {{ date('d-m-Y', strtotime($tanggal_dari)) }}
+                            s/d {{ date('d-m-Y', strtotime($tanggal_sampai)) }}
+                        </div>
+                    </div>
+                </div>
+                <div class="crm-table-wrap">
+                    <table id="example" class="table crm-table table-striped table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>No Referensi</th>
+                                <th>Nama Pengirim</th>
+                                <th>Nama Penerima</th>
+                                <th>Tanggal Lahir</th>
+                                <th>Negara Pengirim</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($data as $key => $que_caris)
+                                <?php
+                                    $query_sanction = DB::table('sanction_list')
+                                        ->where('nama', 'like', $que_caris->nama_pengirim . '%')
+                                        ->where('nama', 'like', $que_caris->nama_penerima . '%')
+                                        ->first();
+                                ?>
+                                @if(is_array($query_sanction) > 0)
+                                    <tr>
+                                        <td>{{ $key + 1 }}</td>
+                                        <td>{{ $que_caris->no_referensi }}</td>
+                                        <td>{{ $que_caris->nama_pengirim }}</td>
+                                        <td>{{ $que_caris->nama_penerima }}</td>
+                                        <td>{{ $que_caris->tanggal_lahir }}</td>
+                                        <td>{{ $que_caris->negara_pengirim }}</td>
+                                    </tr>
+                                @endif
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        @endif
+    </div>
+</div>
 @stop
 
 @section('js')
-<script type="text/javascript">
-  $(document).ready(function() {
-    $('#example').DataTable();
-    $('#daterange').daterangepicker();
-} );
+@include('partials.crm.datatable-boot')
+<script>
+    $(document).ready(function () {
+        CrmDataTable.mount('#example');
+    });
 </script>
-
-   <script>
-            
-        $("#success-alert").fadeTo(2000, 500).fadeOut(500, function(){
-        $("#success-alert").fadeOut(500);
-        });
-   </script>
 @stop

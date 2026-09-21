@@ -1,174 +1,178 @@
 @extends('adminlte::page')
 
-@section('title','CRM Arsema')
-    
+@section('title', 'CRM Arsema')
+
 @section('content_header')
-    <h1></h1>
 @stop
+
 @section('content')
+@php
+    $isOps = (($levelnya ?? '') === 'operasional');
+    $searchRoute = $isOps ? route('cari_agent_operasional') : route('cari_agent');
+    $detailRoute = $isOps ? route('liat_agent_belum_aktif_operasional') : route('liat_agent_belum_aktif');
+    $hasResult = !empty($tanggal_dari) && empty($belumaktifnya);
+    $hasInactive = !empty($belumaktifnya);
+    $startDate = old('start_date', $tanggal_dari ?? ($tanggal_dari_s ?? ''));
+    $endDate = old('end_date', $tanggal_sampai ?? '');
+@endphp
+
 <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-12">
+    <div class="crm-page">
+        <div class="crm-page-header">
+            <div>
+                <h1 class="crm-page-title">Agent Id Terdaftar</h1>
+                <p class="crm-page-sub">
+                    Cari agent id aktif berdasarkan periode transaksi, atau lihat agent yang belum aktif.
+                </p>
+            </div>
+        </div>
 
-                    <div class="card">
-                        <div class="card-body">
-                            @if(session('success'))
-                            <div class="alert alert-success alert-dismissible fade show" id="success-alert" role="alert">
-                               <strong>{{  session('success') }}</strong>
-                                
-                              </div>
-                            @endif
+        @include('partials.crm.alerts')
 
-                            @if(session('error'))
-                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                                <strong>{{  session('error')}} </strong>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                              </div>
-                            @endif
-                          
-                            
-                                <h2> Agent id terdaftar</h2>
-                                <hr></hr><br>
-                                <div class=col-md-6>
-                        
-                                    @if($levelnya=="compliance")
-                                        <form action="{{route('cari_agent')}}" method="POST">
-                                    @elseif($levelnya=="operasional")
-                                    <form action="{{route('cari_agent_operasional')}}" method="POST">
-                                    @endif 
-                                    @csrf 
-                                        <div class=form-group>
-                                            <label>Tanggal Transaksi </label>   
-                                            <table class="table table-border">
-                                            <tr><td><input type='text' class="form-control" id="daterange" name="reservation"/></td></tr> 
-                                            
-                                            </table>
-                                        </div>
-                                        
-                                        <div class=form-group>
-                                            <input type=submit class="btn btn-info" value=CARI>
-                                        </div>
-                                    </form>
-                                    </div>
-                                    <div class=col-md-12>
-                                    @if(!empty($tanggal_dari))
-                                               
-                                  
-                                    <table class="table table-border">
-                                    
-                                    <tr><td>Total agent id aktif Dari : {{$tanggal_dari}} | Sampai : {{$tanggal_sampai}} : <b>{{$jum}}</b></td></tr> 
-                                    <tr><td>Total agent id aktif seluruhnya: <b>{{$jumkah}}</b></td></tr> 
-                                    <tr><td>Total agent id belum aktif: <b> {{$belumaktif}} </b>&nbsp;
-                                   
-                                    @if($levelnya=="compliance")
-                                        <form action="{{route('liat_agent_belum_aktif')}}" method="POST">
-                                    @elseif($levelnya=="operasional")
-                                    <form action="{{route('liat_agent_belum_aktif_operasional')}}" method="POST">
-                                    @endif 
-                                    @csrf  
-                                      <input type='hidden' name="tanggal_dari" value="{{$tanggal_dari}}">
-                                      <input type='hidden' name="tanggal_sampai" value="{{$tanggal_sampai}}">
-                                      <input type=submit class="btn btn-info" value='Lihat Detail'>
-                                    </form>
-                                    </td></tr> 
-                                    </table>
+        <div class="crm-search">
+            <form class="crm-search-form" action="{{ $searchRoute }}" method="POST">
+                @csrf
+                @include('partials.crm.date-range-filter', [
+                    'groupLabel' => 'Tanggal Transaksi',
+                    'startDate' => $startDate,
+                    'endDate' => $endDate,
+                ])
+                <div class="crm-search-actions">
+                    <button type="submit" class="crm-btn crm-btn-primary">
+                        <i class="fas fa-search"></i> Cari
+                    </button>
+                </div>
+            </form>
+        </div>
 
-                                    <table  id="example" class="table  table-striped  table-bordered">
-                                            <thead>
-                                            <tr>
-                                                <th>No</th>
-                                                <th>Agent Id </th>
-                                                <th>Nopend</th>      
-                                                <th>Perbuatan</th>      
-                                            
-                                            </tr>
-                                            </thead>
-                                            <tfoot>
-                                            <tr>
-                                                <th>No</th>
-                                                <th>Agent Id </th>
-                                                <th>Nopend</th>      
-                                                <th>Perbuatan</th>    
-                                            </tr>
-                                            </tfoot>
-                                            <tbody>
-                                            @php
-                                        $nopends = array_map(function($item) {
-                                                return substr($item->id_pos, 0, 5);
-                                            }, $quer->toArray());
-                                            $slkotaData = DB::table('nopend_lama')
-                                                ->whereIn('kpc', $nopends)
-                                                ->get()
-                                                ->keyBy('kpc'); // Menggunakan keyBy untuk akses cepat
-                                            @endphp 
-                                                @foreach ($quer  as $key => $dat)
-                                                <tr>
-                                                    <th >{{$key+1 }}</th>
-                                                    <td>{{$dat->agent_id}} {{($dat->nama)}}</td>
-                                                    <td>{{$dat->id_pos}}  {{ isset($slkotaData[substr($dat->id_pos, 0, 5)]) ? $slkotaData[substr($dat->id_pos, 0, 5)]->nama : 'N/A' }}</td>
-                                                    <td>{{$dat->totalid}}</td>
-                                                </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
-                                    @elseif(!empty($belumaktifnya))
-                                    <h2>Data Agent Id belum aktif</h2>
-                                        <table id="example"  class="table table-border" cellspacing="0" width="100%">
-                                        <thead>
-                                        <tr>
-                                            <th>No</th>
-                                            <th>Agent Id </th>
-                                            <th>Nopend</th>      
-                                            
-                                        
-                                        </tr>
-                                        </thead>
-                                       
-                                        <tbody>
-                                        @php
-                                        $nopends = array_map(function($item) {
-                                                return substr($item->id_pos, 0, 5);
-                                            }, $quer->toArray());
+        @if(!$hasResult && !$hasInactive)
+            <div class="crm-empty">
+                <div class="crm-empty-icon" aria-hidden="true">
+                    <i class="fas fa-id-badge"></i>
+                </div>
+                <h2 class="crm-empty-title">Mulai dengan periode</h2>
+                <p class="crm-empty-text">
+                    Pilih <strong>Start Date</strong> dan <strong>End Date</strong>, lalu tekan <strong>Cari</strong>
+                    untuk menampilkan agent id yang aktif pada periode tersebut.
+                </p>
+            </div>
+        @endif
 
-                                            $slkotaData = DB::table('nopend_lama')
-                                                ->whereIn('kpc', $nopends)
-                                                ->get()
-                                                ->keyBy('kpc'); // Menggunakan keyBy untuk akses cepat
-                                            @endphp    
-                                        @foreach ($quer  as $key => $datanya)
-                                        <tr>
-                                           
-                                            <th>{{$key+1 }}</th>
-                                            <td>{{$datanya->agent_id}} {{$datanya->nama}}</td>
-                                            <td>{{$datanya->id_pos}}  {{ isset($slkotaData[substr($datanya->id_pos, 0, 5)]) ? $slkotaData[substr($datanya->id_pos, 0, 5)]->nama : 'N/A' }} </td>
-                                        </tr>
-                                        @endforeach
-
-                                        </tbody>
-                                        </table>
-
-                                    @endif
-                            </div>  
-                        </div><!--card-body-->
-
-                    </div><!--card-->
-                </div><!--col-md-12-->
-            </div><!--row-->
-        </div><!--container-fluid-->
+        @if($hasResult)
+            <div class="crm-table-card">
+                <div class="crm-table-toolbar">
+                    <div>
+                        <h2 class="crm-table-title">Ringkasan Agent</h2>
+                        <div class="crm-table-meta">
+                            Periode {{ $tanggal_dari }} s/d {{ $tanggal_sampai }}
+                        </div>
+                    </div>
+                    <div class="crm-actions">
+                        <span class="crm-badge">Aktif periode: {{ $jum }}</span>
+                        <span class="crm-badge">Seluruh aktif: {{ $jumkah }}</span>
+                        <span class="crm-badge">Belum aktif: {{ $belumaktif }}</span>
+                        <form action="{{ $detailRoute }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="tanggal_dari" value="{{ $tanggal_dari }}">
+                            <input type="hidden" name="tanggal_sampai" value="{{ $tanggal_sampai }}">
+                            <button type="submit" class="crm-btn crm-btn-sm crm-btn-primary">
+                                Lihat Detail Belum Aktif
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                <div class="crm-table-wrap">
+                    <table id="example" class="table crm-table table-striped table-bordered" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Agent Id</th>
+                                <th>Nopend</th>
+                                <th>Perbuatan</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @php
+                                $nopends = array_map(function ($item) {
+                                    return substr($item->id_pos, 0, 5);
+                                }, $quer->toArray());
+                                $slkotaData = DB::table('nopend_lama')
+                                    ->whereIn('kpc', $nopends)
+                                    ->get()
+                                    ->keyBy('kpc');
+                            @endphp
+                            @foreach ($quer as $key => $dat)
+                                <tr>
+                                    <td>{{ $key + 1 }}</td>
+                                    <td>{{ $dat->agent_id }} {{ $dat->nama }}</td>
+                                    <td>
+                                        {{ $dat->id_pos }}
+                                        {{ isset($slkotaData[substr($dat->id_pos, 0, 5)]) ? $slkotaData[substr($dat->id_pos, 0, 5)]->nama : 'N/A' }}
+                                    </td>
+                                    <td>{{ $dat->totalid }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        @elseif($hasInactive)
+            <div class="crm-table-card">
+                <div class="crm-table-toolbar">
+                    <div>
+                        <h2 class="crm-table-title">Data Agent Id Belum Aktif</h2>
+                        <div class="crm-table-meta">
+                            Berdasarkan transaksi sampai {{ $tanggal_sampai ?? '-' }}
+                        </div>
+                    </div>
+                    <div class="crm-actions">
+                        <span class="crm-badge">{{ count($quer) }} data</span>
+                    </div>
+                </div>
+                <div class="crm-table-wrap">
+                    <table id="example2" class="table crm-table table-striped table-bordered" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Agent Id</th>
+                                <th>Nopend</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @php
+                                $nopends = array_map(function ($item) {
+                                    return substr($item->id_pos, 0, 5);
+                                }, $quer->toArray());
+                                $slkotaData = DB::table('nopend_lama')
+                                    ->whereIn('kpc', $nopends)
+                                    ->get()
+                                    ->keyBy('kpc');
+                            @endphp
+                            @foreach ($quer as $key => $datanya)
+                                <tr>
+                                    <td>{{ $key + 1 }}</td>
+                                    <td>{{ $datanya->agent_id }} {{ $datanya->nama }}</td>
+                                    <td>
+                                        {{ $datanya->id_pos }}
+                                        {{ isset($slkotaData[substr($datanya->id_pos, 0, 5)]) ? $slkotaData[substr($datanya->id_pos, 0, 5)]->nama : 'N/A' }}
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        @endif
+    </div>
+</div>
 @stop
 
 @section('js')
-<script type="text/javascript">
-  $(document).ready(function() {
-    $('#daterange').daterangepicker();
-    $('#example').DataTable();
-} );
+@include('partials.crm.datatable-boot')
+<script>
+    $(document).ready(function () {
+        CrmDataTable.mount('#example');
+        CrmDataTable.mount('#example2');
+    });
 </script>
-
-   <script>
-            
-        $("#success-alert").fadeTo(2000, 500).fadeOut(500, function(){
-        $("#success-alert").fadeOut(500);
-        });
-   </script>
 @stop

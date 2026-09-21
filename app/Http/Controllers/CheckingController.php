@@ -18,6 +18,7 @@ use App\Models\TransaksiValid;
 use App\Services\CustomerAnalyticsService;
 use DB;
 use Carbon\Carbon;
+use InvalidArgumentException;
 
 class CheckingController extends Controller
 {
@@ -46,23 +47,43 @@ class CheckingController extends Controller
         //  cek berhasil login 
         if(Auth::check()){
             $cari=$request->proses;
-            $tanggal = $request->reservation;
-            $dari = explode('/',$tanggal);
-  
-            $tahunini = date('Y');
-            
-            $tahun_dari = $dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3];
-            $periode_dari = $dari[1].'-'.$dari[0].'-'.$dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3];
-            $periode_sampai = $dari[3].'-'.$dari[2][7].$dari[2][8].'-'.$dari[4];
-    
-            $tanggal_dari = $dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3].'-'.$dari[0].'-'.$dari[1];
-            $tanggal_sampai =  $dari[4].'-'.$dari[2][7].$dari[2][8].'-'.$dari[3];
-            $tahun_sampai =  $dari[4];
-            $namafile = $dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3].$dari[0].$dari[1];
+
+            // Prefer start_date / end_date (Y-m-d); keep legacy reservation fallback.
+            if ($request->filled('start_date') && $request->filled('end_date')) {
+                try {
+                    $start = Carbon::createFromFormat('Y-m-d', trim((string) $request->start_date))->startOfDay();
+                    $end = Carbon::createFromFormat('Y-m-d', trim((string) $request->end_date))->startOfDay();
+                } catch (\Throwable $e) {
+                    return redirect()->back()->with('error', 'Format tanggal tidak valid.')->withInput();
+                }
+
+                if ($end->lt($start)) {
+                    return redirect()->back()->with('error', 'End date tidak boleh lebih kecil dari start date.')->withInput();
+                }
+
+                $tanggal_dari = $start->toDateString();
+                $tanggal_sampai = $end->toDateString();
+                $periode_dari = $start->format('d-m-Y');
+                $periode_sampai = $end->format('d-m-Y');
+            } else {
+                $tanggal = $request->reservation;
+                $dari = explode('/',$tanggal);
+
+                $periode_dari = $dari[1].'-'.$dari[0].'-'.$dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3];
+                $periode_sampai = $dari[3].'-'.$dari[2][7].$dari[2][8].'-'.$dari[4];
+                $tanggal_dari = $dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3].'-'.$dari[0].'-'.$dari[1];
+                $tanggal_sampai =  $dari[4].'-'.$dari[2][7].$dari[2][8].'-'.$dari[3];
+            }
+
             $query=DB::table('transaksi_valid')->where('tanggal','>=',$tanggal_dari.' 00:00:00')->where('tanggal','<=',$tanggal_sampai.' 23:59:59')->groupBy('nama_penerima','no')->orderBy('nama_penerima','asc')->get();
             
                 return view('checking.nama', [
-                    'query' => $query,'cari'=>$cari,'periode_dari'=>$periode_dari,'periode_sampai'=>$periode_sampai
+                    'query' => $query,
+                    'cari'=>$cari,
+                    'periode_dari'=>$periode_dari,
+                    'periode_sampai'=>$periode_sampai,
+                    'start_date' => $tanggal_dari,
+                    'end_date' => $tanggal_sampai,
              ]);
 
 
@@ -95,11 +116,35 @@ class CheckingController extends Controller
       public function search_profil(Request $request){ 
         //  cek berhasil login 
         if(Auth::check()){
-              $nama=$request->nama;
-              $berdasarkan=$request->berdasarkan;
-                //$query=DB::connection('mysql')->table('profil')->where($berdasarkan,'LIKE','%'.$nama.'%')->orderBy('nama','desc')->get();
-                $query=DB::table('profil')->where($berdasarkan,'LIKE','%'.$nama.'%')->orderBy('nama','desc')->get();
-            
+              $nama = trim((string) $request->nama);
+              $allowed = ['nama', 'telepon_penerima', 'tanggal_lahir', 'nomor_identitas'];
+              $berdasarkan = in_array($request->berdasarkan, $allowed, true)
+                  ? $request->berdasarkan
+                  : 'nama';
+
+              // Tabel profil punya duplikat orang yang sama (beda id, isi hampir identik).
+              // Listing di-unique: utamakan NIK; jika NIK kosong pakai nama+telepon+tgl lahir.
+              // DISTINCT ON (PostgreSQL) ambil 1 baris per orang (id terbaru).
+              $uniqueKey = "COALESCE(
+                    NULLIF(TRIM(nomor_identitas), ''),
+                    CONCAT(
+                        COALESCE(TRIM(nama), ''), '|',
+                        COALESCE(TRIM(telepon_penerima), ''), '|',
+                        COALESCE(TRIM(tanggal_lahir), '')
+                    )
+                )";
+
+              $dedup = DB::table('profil')
+                  ->selectRaw("DISTINCT ON ({$uniqueKey}) *")
+                  ->where($berdasarkan, 'ILIKE', '%'.$nama.'%')
+                  ->orderByRaw($uniqueKey)
+                  ->orderByDesc('id');
+
+              $query = DB::query()
+                  ->fromSub($dedup, 'profil_unique')
+                  ->orderByDesc('nama')
+                  ->get();
+
                 return view('checking.profil',[
                     'dat'=>$query,'nama'=>$nama
                 ]);
@@ -167,7 +212,21 @@ class CheckingController extends Controller
               $querySendClient = $querySendClient->get();
             
                 return view('checking.profil',[
-                    'dat'=>$query,'nama'=>$nama,'detail'=>$detail,'querySendPos'=>$querySendPos,'querySend'=>$querySend,'queryReceive'=>$queryReceive,'queryReceiveClient'=>$queryReceiveClient,'querySendClient'=>$querySendClient
+                    'dat'=>$query,
+                    'nama'=>$nama,
+                    'detail'=>$detail,
+                    'querySendPos'=>$querySendPos,
+                    'querySend'=>$querySend,
+                    'queryReceive'=>$queryReceive,
+                    'queryReceiveClient'=>$queryReceiveClient,
+                    'querySendClient'=>$querySendClient,
+                    'profilListing' => [
+                        'nama' => $nama,
+                        'alamat_penerima' => trim((string) $request->alamat_penerima),
+                        'telepon_penerima' => trim((string) $request->telepon_penerima),
+                        'tanggal_lahir' => trim((string) $tanggal_lahir),
+                        'nomor_identitas' => $nomor_identitas,
+                    ],
                 ]);
 
 
@@ -199,36 +258,57 @@ class CheckingController extends Controller
       public function search_sales(Request $request){ 
         //  cek berhasil login 
         if(Auth::check()){
-          $tanggal = $request->reservation;
-          $dari = explode('/',$tanggal);
+          try {
+              if ($request->filled('ever_start_date') && $request->filled('ever_end_date')
+                  && $request->filled('search_start_date') && $request->filled('search_end_date')) {
+                  $everStart = Carbon::createFromFormat('Y-m-d', trim((string) $request->ever_start_date))->startOfDay();
+                  $everEnd = Carbon::createFromFormat('Y-m-d', trim((string) $request->ever_end_date))->startOfDay();
+                  $searchStart = Carbon::createFromFormat('Y-m-d', trim((string) $request->search_start_date))->startOfDay();
+                  $searchEnd = Carbon::createFromFormat('Y-m-d', trim((string) $request->search_end_date))->startOfDay();
 
-          $tanggal_2 = $request->reservation2;
-          $dari_2 = explode('/',$tanggal_2);
+                  if ($everEnd->lt($everStart) || $searchEnd->lt($searchStart)) {
+                      return redirect()->back()
+                          ->with('error', 'End date tidak boleh lebih kecil dari start date.')
+                          ->withInput();
+                  }
 
-          $tahunini = date('Y');
-          
-          $tahun_dari = $dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3];
-          $periode_dari = $dari[1].'-'.$dari[0].'-'.$dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3];
-          $periode_sampai = $dari[3].'-'.$dari[2][7].$dari[2][8].'-'.$dari[4];
-  
-          $tanggal_dari = $dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3].'-'.$dari[0].'-'.$dari[1];
-          $tanggal_sampai =  $dari[4].'-'.$dari[2][7].$dari[2][8].'-'.$dari[3];
-          $tahun_sampai =  $dari[4];
-          $namafile = $dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3].$dari[0].$dari[1];
+                  $tanggal_dari = $everStart->toDateString();
+                  $tanggal_sampai = $everEnd->toDateString();
+                  $tanggal_dari_2 = $searchStart->toDateString();
+                  $tanggal_sampai_2 = $searchEnd->toDateString();
+              } else {
+                  $tanggal = $request->reservation;
+                  $dari = explode('/',$tanggal);
 
-          $tahun_dari_2 = $dari_2[2][0].$dari_2[2][1].$dari_2[2][2].$dari_2[2][3];
-          $periode_dari_2 = $dari_2[1].'-'.$dari_2[0].'-'.$dari_2[2][0].$dari_2[2][1].$dari_2[2][2].$dari_2[2][3];
-          $periode_sampai_2 = $dari_2[3].'-'.$dari_2[2][7].$dari_2[2][8].'-'.$dari_2[4];
-  
-          $tanggal_dari_2 = $dari_2[2][0].$dari_2[2][1].$dari_2[2][2].$dari_2[2][3].'-'.$dari_2[0].'-'.$dari_2[1];
-          $tanggal_sampai_2 =  $dari_2[4].'-'.$dari_2[2][7].$dari_2[2][8].'-'.$dari_2[3];
+                  $tanggal_2 = $request->reservation2;
+                  $dari_2 = explode('/',$tanggal_2);
+
+                  $tanggal_dari = $dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3].'-'.$dari[0].'-'.$dari[1];
+                  $tanggal_sampai =  $dari[4].'-'.$dari[2][7].$dari[2][8].'-'.$dari[3];
+
+                  $tanggal_dari_2 = $dari_2[2][0].$dari_2[2][1].$dari_2[2][2].$dari_2[2][3].'-'.$dari_2[0].'-'.$dari_2[1];
+                  $tanggal_sampai_2 =  $dari_2[4].'-'.$dari_2[2][7].$dari_2[2][8].'-'.$dari_2[3];
+              }
+          } catch (\Throwable $e) {
+              return redirect()->back()
+                  ->with('error', 'Format tanggal tidak valid.')
+                  ->withInput();
+          }
 
           $quer= DB::table('transaksi_valid')->where('tanggal','>=',$tanggal_dari.' 00:00:00')->where('tanggal','<=',$tanggal_sampai.' 23:59:59')->whereNotIn('nama_penerima', function($q) use($tanggal_dari_2,$tanggal_sampai_2) {
                                               $q->select('nama_penerima')->from('transaksi_valid')->where('tanggal','>=',$tanggal_dari_2.' 00:00:00')->where('tanggal','<=',$tanggal_sampai_2.' 23:59:59')->whereNotNull('nama_penerima');
                                           })->groupBy('nama_penerima','no')->orderBy('tanggal','desc')->get();
 
                 return view('checking.sales',[
-                    'tanggal_dari_2'=>$tanggal_dari_2,'data'=>$quer,'tanggal_dari'=>$tanggal_dari,'tanggal_sampai'=>$tanggal_sampai
+                    'tanggal_dari_2'=>$tanggal_dari_2,
+                    'tanggal_sampai_2'=>$tanggal_sampai_2,
+                    'data'=>$quer,
+                    'tanggal_dari'=>$tanggal_dari,
+                    'tanggal_sampai'=>$tanggal_sampai,
+                    'ever_start_date' => $tanggal_dari,
+                    'ever_end_date' => $tanggal_sampai,
+                    'search_start_date' => $tanggal_dari_2,
+                    'search_end_date' => $tanggal_sampai_2,
                 ]);
         }
 
@@ -299,41 +379,42 @@ public function newcustomer_all(){
 
 public function search_newcustomer(Request $request)
 {
-     if ($request->ajax()) {
+    try {
+        [$tanggal_dari, $tanggal_sampai] = $this->resolveStartEndDates($request);
+    } catch (InvalidArgumentException $e) {
+        if ($request->ajax()) {
+            return response()->json(['message' => $e->getMessage()], 422);
+        }
 
-        $reservation = str_replace('+-+', ' - ', $request->reservation);
-        [$tanggal_dari, $tanggal_sampai] = explode(' - ', $reservation);
+        return redirect()->back()->with('error', $e->getMessage())->withInput();
+    }
 
-        $tanggal_dari = Carbon::createFromFormat('m/d/Y', trim($tanggal_dari))->format('Y-m-d');
-        $tanggal_sampai = Carbon::createFromFormat('m/d/Y', trim($tanggal_sampai))->format('Y-m-d');
+    $query  = DB::table('transaksi_valid as t1')
+      ->select(
+          DB::raw('MIN(t1.no) AS no'),
+          't1.nama_penerima',
+          DB::raw('MIN(t1.no_referensi) AS no_referensi'),
+          DB::raw('MIN(t1.tanggal) AS tanggal'),
+          DB::raw('MIN(t1.nomor_identitas) AS nomor_identitas'),
+          DB::raw('MIN(t1.tanggal_lahir) AS tanggal_lahir'),
+          DB::raw('MIN(t1.tempat_lahir) AS tempat_lahir'),
+          DB::raw('MIN(t1.kota_kelahiran) AS kota_kelahiran'),
+          DB::raw('MIN(t1.alamat_penerima) AS alamat_penerima'),
+          DB::raw('MIN(t1.telepon_penerima) AS telepon_penerima'),
+          DB::raw('MIN(t1.negara_pengirim) AS negara_pengirim'),
+          DB::raw('MIN(t1.kode_pos_penerima) AS kode_pos_penerima')
+      )
+      ->leftJoin('transaksi_valid as t2', function($join) use ($tanggal_dari) {
+          $join->on('t1.nama_penerima', '=', 't2.nama_penerima')
+                ->where('t2.tanggal', '<=', $tanggal_dari . ' 23:59:59');
+      })
+      ->where('t1.tanggal', '>=', $tanggal_dari . ' 00:00:00')
+      ->where('t1.tanggal', '<=', $tanggal_sampai . ' 23:59:59')
+      ->whereNull('t2.nama_penerima')
+      ->groupBy('t1.nama_penerima')
+      ->get();
 
-       // Gunakan DISTINCT ON (nama_penerima) untuk performa tinggi di PostgreSQL
-        $query  = DB::table('transaksi_valid as t1')
-          ->select(
-              DB::raw('MIN(t1.no) AS no'),
-              't1.nama_penerima',
-              DB::raw('MIN(t1.no_referensi) AS no_referensi'),
-              DB::raw('MIN(t1.tanggal) AS tanggal'),
-              DB::raw('MIN(t1.nomor_identitas) AS nomor_identitas'),
-              DB::raw('MIN(t1.tanggal_lahir) AS tanggal_lahir'),
-              DB::raw('MIN(t1.tempat_lahir) AS tempat_lahir'),
-              DB::raw('MIN(t1.kota_kelahiran) AS kota_kelahiran'),
-              DB::raw('MIN(t1.alamat_penerima) AS alamat_penerima'),
-              DB::raw('MIN(t1.telepon_penerima) AS telepon_penerima'),
-              DB::raw('MIN(t1.negara_pengirim) AS negara_pengirim'),
-              DB::raw('MIN(t1.kode_pos_penerima) AS kode_pos_penerima')
-          )
-          ->leftJoin('transaksi_valid as t2', function($join) use ($tanggal_dari) {
-              $join->on('t1.nama_penerima', '=', 't2.nama_penerima')
-                    ->where('t2.tanggal', '<=', $tanggal_dari . ' 23:59:59');
-          })
-          ->where('t1.tanggal', '>=', $tanggal_dari . ' 00:00:00')
-          ->where('t1.tanggal', '<=', $tanggal_sampai . ' 23:59:59')
-          ->whereNull('t2.nama_penerima') // Filter nama_pengirim yang tidak ada di t2
-          ->groupBy('t1.nama_penerima')
-          ->get();
-
-        // DataTables builder
+    if ($request->ajax()) {
         return DataTables::of($query)
             ->addIndexColumn()
             ->addColumn('idpjk', fn() => '1003780')
@@ -344,19 +425,25 @@ public function search_newcustomer(Request $request)
             ->make(true);
     }
 
-    return view('checking.newcustomer');
-
-   
+    return view('checking.newcustomer_new', [
+        'tanggal_sampai' => $tanggal_sampai,
+        'tanggal_dari' => $tanggal_dari,
+        'start_date' => $tanggal_dari,
+        'end_date' => $tanggal_sampai,
+        'data' => $query,
+        'send' => ' ',
+    ]);
 }
 
 public function search_newcustomer_all(Request $request){ 
         //  cek berhasil login 
         if(Auth::check()){
           $send="ya";
-          $tanggal = $request->reservation; // Misalnya "09/01/2024 - 09/30/2024"
-          $dari = explode(' - ', $tanggal);
-          $tanggal_dari = Carbon::createFromFormat('m/d/Y', trim($dari[0]))->format('Y-m-d');
-          $tanggal_sampai = Carbon::createFromFormat('m/d/Y', trim($dari[1]))->format('Y-m-d');
+          try {
+              [$tanggal_dari, $tanggal_sampai] = $this->resolveStartEndDates($request);
+          } catch (InvalidArgumentException $e) {
+              return redirect()->back()->with('error', $e->getMessage())->withInput();
+          }
           
           // Ambil tahun dari tanggal_sampai
           $tahun_sampai = Carbon::createFromFormat('Y-m-d', $tanggal_sampai)->year;
@@ -412,7 +499,13 @@ public function search_newcustomer_all(Request $request){
           ->groupBy('t1.nama_penerima')
           ->get();
           return view('checking.newcustomerall',[
-            'tanggal_sampai'=>$tanggal_sampai,'tanggal_dari'=>$tanggal_dari,'data'=>$quer,'datarcv'=>$query, 'send'=>$send
+            'tanggal_sampai'=>$tanggal_sampai,
+            'tanggal_dari'=>$tanggal_dari,
+            'start_date' => $tanggal_dari,
+            'end_date' => $tanggal_sampai,
+            'data'=>$quer,
+            'datarcv'=>$query,
+            'send'=>$send
           ]);
           
 
@@ -475,10 +568,11 @@ public function search_newcustomer(Request $request)
         //  cek berhasil login 
         if(Auth::check()){
           $send="ya";
-          $tanggal = $request->reservation; // Misalnya "09/01/2024 - 09/30/2024"
-          $dari = explode(' - ', $tanggal);
-          $tanggal_dari = Carbon::createFromFormat('m/d/Y', trim($dari[0]))->format('Y-m-d');
-          $tanggal_sampai = Carbon::createFromFormat('m/d/Y', trim($dari[1]))->format('Y-m-d');
+          try {
+              [$tanggal_dari, $tanggal_sampai] = $this->resolveStartEndDates($request);
+          } catch (InvalidArgumentException $e) {
+              return redirect()->back()->with('error', $e->getMessage())->withInput();
+          }
           
           // Ambil tahun dari tanggal_sampai
           $tahun_sampai = Carbon::createFromFormat('Y-m-d', $tanggal_sampai)->year;
@@ -511,7 +605,12 @@ public function search_newcustomer(Request $request)
                
 
           return view('checking.newcustomersend',[
-            'tanggal_sampai'=>$tanggal_sampai,'tanggal_dari'=>$tanggal_dari,'data'=>$quer,'send'=>$send
+            'tanggal_sampai'=>$tanggal_sampai,
+            'tanggal_dari'=>$tanggal_dari,
+            'start_date' => $tanggal_dari,
+            'end_date' => $tanggal_sampai,
+            'data'=>$quer,
+            'send'=>$send
           ]);
 
 
@@ -546,46 +645,58 @@ public function search_newcustomer(Request $request)
         return redirect('login')->with('You dont have access');
       }
 
-      public function cari_screening(Request $request){ 
-        //  cek berhasil login 
-        if(Auth::check()){
-          $tanggal = $request->reservation;
-          $dari = explode('/',$tanggal);
-          $tanggal_dari = $dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3].'-'.$dari[0].'-'.$dari[1];
-          $tanggal_sampai =  $dari[4].'-'.$dari[2][7].$dari[2][8].'-'.$dari[3];
-          $tahun_sampai =  $dari[4];
-          $cari = "ya";
-          $quer=DB::table('transaksi_valid')->where('deltawork','=','ya')->where('tanggal','>=',$tanggal_dari.' 00:00:00')->where('tanggal','<=',$tanggal_sampai.' 23:59:59')->orderBy('tanggal','desc')->get();
-          
-          return view('checking.screening',[
-            'tanggal_sampai'=>$tanggal_sampai,'tanggal_dari'=>$tanggal_dari,'data'=>$quer,'cari'=>$cari
-          ]);
-
-
+      public function cari_screening(Request $request){
+        if (! Auth::check()) {
+            return redirect('login')->with('You dont have access');
         }
 
-        return redirect('login')->with('You dont have access');
+        try {
+            [$tanggal_dari, $tanggal_sampai] = $this->resolveStartEndDates($request);
+        } catch (InvalidArgumentException $e) {
+            return redirect()->back()->with('error', $e->getMessage())->withInput();
+        }
+
+        $cari = 'ya';
+        $quer = DB::table('transaksi_valid')
+            ->where('deltawork', '=', 'ya')
+            ->where('tanggal', '>=', $tanggal_dari.' 00:00:00')
+            ->where('tanggal', '<=', $tanggal_sampai.' 23:59:59')
+            ->orderBy('tanggal', 'desc')
+            ->get();
+
+        return view('checking.screening', [
+            'tanggal_sampai' => $tanggal_sampai,
+            'tanggal_dari' => $tanggal_dari,
+            'data' => $quer,
+            'cari' => $cari,
+        ]);
       }
 
-      public function cari_screening_operasional(Request $request){ 
-        //  cek berhasil login 
-        if(Auth::check()){
-          $tanggal = $request->reservation;
-          $dari = explode('/',$tanggal);
-          $tanggal_dari = $dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3].'-'.$dari[0].'-'.$dari[1];
-          $tanggal_sampai =  $dari[4].'-'.$dari[2][7].$dari[2][8].'-'.$dari[3];
-          $tahun_sampai =  $dari[4];
-          $cari = "ya";
-          $quer=DB::table('transaksi_valid')->where('deltawork','=','ya')->where('tanggal','>=',$tanggal_dari.' 00:00:00')->where('tanggal','<=',$tanggal_sampai.' 23:59:59')->orderBy('tanggal','desc')->get();
-          
-          return view('checking.screening',[
-            'tanggal_sampai'=>$tanggal_sampai,'tanggal_dari'=>$tanggal_dari,'data'=>$quer,'cari'=>$cari
-          ]);
-
-
+      public function cari_screening_operasional(Request $request){
+        if (! Auth::check()) {
+            return redirect('login')->with('You dont have access');
         }
 
-        return redirect('login')->with('You dont have access');
+        try {
+            [$tanggal_dari, $tanggal_sampai] = $this->resolveStartEndDates($request);
+        } catch (InvalidArgumentException $e) {
+            return redirect()->back()->with('error', $e->getMessage())->withInput();
+        }
+
+        $cari = 'ya';
+        $quer = DB::table('transaksi_valid')
+            ->where('deltawork', '=', 'ya')
+            ->where('tanggal', '>=', $tanggal_dari.' 00:00:00')
+            ->where('tanggal', '<=', $tanggal_sampai.' 23:59:59')
+            ->orderBy('tanggal', 'desc')
+            ->get();
+
+        return view('checking.screening', [
+            'tanggal_sampai' => $tanggal_sampai,
+            'tanggal_dari' => $tanggal_dari,
+            'data' => $quer,
+            'cari' => $cari,
+        ]);
       }
 
       public function sanction(Request $request)
@@ -819,30 +930,35 @@ public function search_newcustomer(Request $request)
         }
 
 
-      public function cari_filtering(Request $request){ 
+      public function cari_filtering(Request $request){
         //  cek berhasil login 
         if(Auth::check()){
-          
-          $tanggal = $request->reservation;
-          $dari = explode('/',$tanggal);
-          $cari_filtering_s="ya";
-          $tahunini = date('Y');
-          
-          $tahun_dari = $dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3];
-          $periode_dari = $dari[1].'-'.$dari[0].'-'.$dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3];
-          $periode_sampai = $dari[3].'-'.$dari[2][7].$dari[2][8].'-'.$dari[4];
-  
-          $tanggal_dari = $dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3].'-'.$dari[0].'-'.$dari[1];
-          $tanggal_sampai =  $dari[4].'-'.$dari[2][7].$dari[2][8].'-'.$dari[3];
-          $tahun_sampai =  $dari[4];
-          $namafile = $dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3].$dari[0].$dari[1];
+          $cari_filtering_s = "ya";
 
-          $query = DB::table('transaksi_valid')->join('high_risk_country','high_risk_country.nama','=','transaksi_valid.negara_pengirim')->where('id_transaksi','<>','')->where('transaksi_valid.tanggal','>=',$tanggal_dari.' 00:00:00')->where('transaksi_valid.tanggal','<=',$tanggal_sampai.' 23:59:59')->orderBy('transaksi_valid.negara_pengirim','desc')->get(); 
-                return view('reporting.filtering', [
-                    'data' => $query,'cari_s'=>$cari_filtering_s
-             ]);
+          if ($request->filled('start_date') && $request->filled('end_date')) {
+            $tanggal_dari = $request->input('start_date');
+            $tanggal_sampai = $request->input('end_date');
+          } else {
+            $tanggal = $request->reservation;
+            $dari = explode('/', $tanggal);
+            $tanggal_dari = $dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3].'-'.$dari[0].'-'.$dari[1];
+            $tanggal_sampai = $dari[4].'-'.$dari[2][7].$dari[2][8].'-'.$dari[3];
+          }
 
+          $query = DB::table('transaksi_valid')
+            ->join('high_risk_country', 'high_risk_country.nama', '=', 'transaksi_valid.negara_pengirim')
+            ->where('id_transaksi', '<>', '')
+            ->where('transaksi_valid.tanggal', '>=', $tanggal_dari.' 00:00:00')
+            ->where('transaksi_valid.tanggal', '<=', $tanggal_sampai.' 23:59:59')
+            ->orderBy('transaksi_valid.negara_pengirim', 'desc')
+            ->get();
 
+          return view('reporting.filtering', [
+            'data' => $query,
+            'cari_s' => $cari_filtering_s,
+            'tanggal_dari' => $tanggal_dari,
+            'tanggal_sampai' => $tanggal_sampai,
+          ]);
         }
 
         return redirect('login')->with('You dont have access');
@@ -1062,6 +1178,43 @@ public function search_newcustomer(Request $request)
             ->startOfDay();
 
         return [$startDate, $endDateExclusive];
+    }
+
+    /**
+     * @return array{0: string, 1: string} [start Y-m-d, end Y-m-d]
+     */
+    private function resolveStartEndDates(Request $request): array
+    {
+        if ($request->filled('start_date') && $request->filled('end_date')) {
+            try {
+                $start = Carbon::createFromFormat('Y-m-d', trim((string) $request->start_date))->startOfDay();
+                $end = Carbon::createFromFormat('Y-m-d', trim((string) $request->end_date))->startOfDay();
+            } catch (\Throwable $e) {
+                throw new InvalidArgumentException('Format tanggal tidak valid.');
+            }
+
+            if ($end->lt($start)) {
+                throw new InvalidArgumentException('End date tidak boleh lebih kecil dari start date.');
+            }
+
+            return [$start->toDateString(), $end->toDateString()];
+        }
+
+        $reservation = str_replace('+-+', ' - ', (string) $request->input('reservation', ''));
+        if (! str_contains($reservation, ' - ')) {
+            throw new InvalidArgumentException('Start date dan end date wajib diisi.');
+        }
+
+        try {
+            [$dari, $sampai] = explode(' - ', $reservation, 2);
+
+            return [
+                Carbon::createFromFormat('m/d/Y', trim($dari))->format('Y-m-d'),
+                Carbon::createFromFormat('m/d/Y', trim($sampai))->format('Y-m-d'),
+            ];
+        } catch (\Throwable $e) {
+            throw new InvalidArgumentException('Format tanggal tidak valid.');
+        }
     }
 
 }

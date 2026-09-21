@@ -12,6 +12,9 @@ class FlaggingRelationService
 {
     public const THRESHOLD = 5;
 
+    /** Default BSU threshold for NIK aggregation flagging (Rp). */
+    public const DEFAULT_NOMINAL_THRESHOLD = 100000000;
+
     public const TABLE_SENDING = 'transaksi_send_pos';
 
     public const TABLE_RECEIVING = 'transaksi_valid';
@@ -46,6 +49,30 @@ class FlaggingRelationService
             'dari' => $start->toDateString(),
             'sampai' => $end->toDateString(),
         ];
+    }
+
+    /**
+     * Parse mandatory nominal threshold from the UI.
+     * Accepts plain digits or thousand-separated values (e.g. 100000000 / 100.000.000 / 100,000,000).
+     */
+    public function parseNominalThreshold($raw): float
+    {
+        $raw = trim((string) $raw);
+        if ($raw === '') {
+            throw new InvalidArgumentException('Nominal ambang wajib diisi.');
+        }
+
+        $cleaned = preg_replace('/[^\d.]/', '', $raw);
+        if ($cleaned === '' || ! is_numeric($cleaned)) {
+            throw new InvalidArgumentException('Nominal ambang harus berupa angka.');
+        }
+
+        $value = (float) $cleaned;
+        if ($value <= 0) {
+            throw new InvalidArgumentException('Nominal ambang harus lebih dari 0.');
+        }
+
+        return $value;
     }
 
     /**
@@ -116,6 +143,33 @@ class FlaggingRelationService
             ->get();
     }
 
+    /**
+     * NIK aggregation (receiving / transaksi_valid):
+     * group by nomor_identitas penerima where total BSU in period > threshold.
+     */
+    public function nikAmountSummary(
+        string $dari,
+        string $sampai,
+        float $threshold = self::DEFAULT_NOMINAL_THRESHOLD
+    ): Collection {
+        $sumExpr = $this->sumAmountExpression('bsubanyak');
+
+        return $this->receivingQuery($dari, $sampai)
+            ->select(
+                'nomor_identitas',
+                DB::raw('MAX(nama_penerima) as nama_penerima'),
+                DB::raw('MAX(telepon_penerima) as telepon_penerima'),
+                DB::raw('COUNT(*) as jumlah_transaksi'),
+                DB::raw($sumExpr.' as total_bsu')
+            )
+            ->whereNotNull('nomor_identitas')
+            ->whereRaw("TRIM(nomor_identitas) <> ''")
+            ->groupBy('nomor_identitas')
+            ->havingRaw($sumExpr.' > ?', [$threshold])
+            ->orderByDesc('total_bsu')
+            ->get();
+    }
+
     public function oneToManyDetail(
         string $dari,
         string $sampai,
@@ -131,6 +185,14 @@ class FlaggingRelationService
     {
         return $this->receivingQuery($dari, $sampai)
             ->where('nama_penerima', $namaPenerima)
+            ->orderByDesc('tanggal')
+            ->get();
+    }
+
+    public function nikAmountDetail(string $dari, string $sampai, string $nomorIdentitas): Collection
+    {
+        return $this->receivingQuery($dari, $sampai)
+            ->where('nomor_identitas', $nomorIdentitas)
             ->orderByDesc('tanggal')
             ->get();
     }

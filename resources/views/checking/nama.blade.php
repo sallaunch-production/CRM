@@ -1,106 +1,103 @@
 @extends('adminlte::page')
 
-@section('title','CRM Arsema')
-    
+@section('title', 'CRM Arsema')
+
 @section('content_header')
-    <h1></h1>
 @stop
+
 @section('content')
+@php
+    $hasResult = !empty($cari);
+    $startDate = old('start_date', $start_date ?? '');
+    $endDate = old('end_date', $end_date ?? '');
+@endphp
+
 <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-12">
+    <div class="crm-page">
+        <div class="crm-page-header">
+            <div>
+                <h1 class="crm-page-title">Customer</h1>
+                <p class="crm-page-sub">Lihat daftar nama customer berdasarkan periode transaksi.</p>
+            </div>
+        </div>
 
-                    <div class="card">
-                        <div class="card-body">
-                            @if(session('success'))
-                            <div class="alert alert-success alert-dismissible fade show" id="success-alert" role="alert">
-                               <strong>{{  session('success') }}</strong>
-                                
-                              </div>
-                            @endif
+        @include('partials.crm.alerts')
 
-                            @if(session('error'))
-                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                                <strong>{{  session('error')}} </strong>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                              </div>
-                            @endif
-                            <br>
-                           
-                            <div class="form-group">
-                                <label>Date range:</label>
-                                <form class=form-group action="{{ route('cari_nama')}}"  method="POST" style="width:30%;">
-                                  @csrf
-                                <div class='input-group date' id='datetimepicker'>
-                                    <input type=hidden name=act >
-		                            <input type=hidden name=proses value=cari>
-                                    <input type='text' class="form-control" id="daterange" name="reservation"/> 
-                                    <span class="input-group-addon">
-                                    </span>
-                                </div><br>
-                                <button type="submit"  class="btn bg-maroon btn-flat margin" >Cari</button>
-                               
-                                </form>
-                                </div>
-                            @if(!empty($cari))
-                            <h2>Nama Customer</h2>
-                            <h3>Tanggal Dari : {{$periode_dari}} dan Sampai {{$periode_sampai}} </h3>
-                            	
-                         <table  id="example" class="table table-responsive table-striped  table-bordered">
-                            <thead>
+        <div class="crm-search">
+            <form class="crm-search-form" action="{{ route('cari_nama') }}" method="POST">
+                @csrf
+                <input type="hidden" name="act">
+                <input type="hidden" name="proses" value="cari">
+                @include('partials.crm.date-range-filter', [
+                    'startDate' => $startDate,
+                    'endDate' => $endDate,
+                ])
+                <div class="crm-search-actions">
+                    <button type="submit" class="crm-btn crm-btn-primary">
+                        <i class="fas fa-search"></i> Cari
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        @if(!$hasResult)
+            <div class="crm-empty">
+                <div class="crm-empty-icon" aria-hidden="true">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h2 class="crm-empty-title">Mulai dengan periode</h2>
+                <p class="crm-empty-text">
+                    Pilih <strong>Start Date</strong> dan <strong>End Date</strong>, lalu tekan <strong>Cari</strong>
+                    untuk menampilkan nama customer pada periode tersebut.
+                </p>
+            </div>
+        @else
+            <div class="crm-table-card">
+                <div class="crm-table-toolbar">
+                    <div>
+                        <h2 class="crm-table-title">Nama Customer</h2>
+                        <div class="crm-table-meta">
+                            {{ $periode_dari }} s/d {{ $periode_sampai }}
+                        </div>
+                    </div>
+                    <div class="crm-actions">
+                        <span class="crm-badge">{{ count($query) }} data</span>
+                        <a href="#" class="crm-btn crm-btn-sm crm-btn-primary">Cetak</a>
+                    </div>
+                </div>
+                <div class="crm-table-wrap">
+                    <table id="example" class="table crm-table table-striped table-bordered" style="width:100%;">
+                        <thead>
                             <tr>
                                 <th>No</th>
                                 <th>Nama Penerima</th>
                                 <th>Nama Pengirim</th>
-                                <th>BSU</th>  
-                            
-                            </tr> 
-                            </thead>
-                            <tfoot>
-                            <tr>
-                                <th>No</th>
-                                <th>Nama Penerima</th>
-                                <th>Nama Pengirim</th>
-                                <th>BSU</th>  			  
-                            </tr> 
-                            </tfoot>
-                            <tbody>
-                            @foreach ($query  as $key => $transactions)
-                                    <tr>
-                                        <th >{{$key+1 }}</th>
-                                        <td>{{ $transactions->nama_penerima }}</td>
-                                        <td>{{ $transactions->nama_pengirim }}</td>
-                                        <td>{{ ($transactions->bsubanyak) }}</td>
-                                    </tr> 
-                               @endforeach           
-                                </tbody>
-                                </table>
-                                <td><a href="#"><input type=button class="btn btn-danger" value=Cetak></a></td>
-                            @else
-
-                            @endif
-                        </div><!--card-body-->
-                       
-                    </div><!--card-->
-                </div><!--col-md-12-->
-            </div><!--row-->
-        </div><!--container-fluid-->
+                                <th>BSU</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($query as $key => $transactions)
+                                <tr>
+                                    <td>{{ $key + 1 }}</td>
+                                    <td>{{ $transactions->nama_penerima }}</td>
+                                    <td>{{ $transactions->nama_pengirim }}</td>
+                                    <td>{{ $transactions->bsubanyak }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        @endif
+    </div>
+</div>
 @stop
 
 @section('js')
-<script type="text/javascript">
-  $(document).ready(function() {
-    $('#example').DataTable();
-} );
-$(document).ready(function() {
-    $('#daterange').daterangepicker();
-} );
+@include('partials.crm.datatable-boot')
+<script>
+    $(document).ready(function () {
+        CrmDataTable.mount('#example');
+    });
 </script>
-
-   <script>
-            
-        $("#success-alert").fadeTo(2000, 500).fadeOut(500, function(){
-        $("#success-alert").fadeOut(500);
-        });
-   </script>
 @stop
