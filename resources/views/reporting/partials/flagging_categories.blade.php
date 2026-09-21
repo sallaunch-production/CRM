@@ -79,9 +79,9 @@
         ],
         [
             'route' => 'filter_nik_amount',
-            'label' => 'NIK Nominal',
+            'label' => 'High Nominal',
             'hint' => 'Total BSU per NIK',
-            'icon' => 'fas fa-coins',
+            'icon' => 'fas fa-chart-line',
             'accent' => 'nik',
         ],
     ];

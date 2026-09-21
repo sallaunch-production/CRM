@@ -22,7 +22,7 @@
             <div>
                 <h1 class="crm-page-title">Flagging Transaction</h1>
                 <p class="crm-page-sub">
-                    Many to One — banyak pengirim ke 1 penerima (nama penerima; tanpa NIK penerima).
+                    Many to One — banyak pengirim ke 1 penerima (Pos / Branch / Direct · send &amp; receive).
                 </p>
             </div>
         </div>
@@ -52,6 +52,7 @@
                         <h2 class="crm-table-title">Hasil Many to One</h2>
                         <div class="crm-table-meta">
                             Periode {{ $tanggal_dari }} s/d {{ $tanggal_sampai }}
+                            · Sumber: Pos / Branch / Direct (send &amp; receive)
                             · Ambang &gt; {{ $threshold ?? 5 }} pengirim berbeda
                         </div>
                     </div>
@@ -124,6 +125,8 @@
                             <tr>
                                 <th>No</th>
                                 <th>Id Transaksi</th>
+                                <th>Kanal</th>
+                                <th>Arah</th>
                                 <th>BSU</th>
                                 <th>Nama Penerima</th>
                                 <th>Nama Pengirim</th>
@@ -145,7 +148,9 @@
                                 <tr>
                                     <td>{{ $key + 1 }}</td>
                                     <td>{{ $row->id_transaksi }}</td>
-                                    <td>{{ $row->bsubanyak }}</td>
+                                    <td>{{ $row->kanal ?? '—' }}</td>
+                                    <td>{{ $row->arah ?? '—' }}</td>
+                                    <td>{{ $row->bsubanyak ?? $row->amount }}</td>
                                     <td>{{ $row->nama_penerima }}</td>
                                     <td>{{ $row->nama_pengirim }}</td>
                                     <td>{{ $row->negara_pengirim }}</td>

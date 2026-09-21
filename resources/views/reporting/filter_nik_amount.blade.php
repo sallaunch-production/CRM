@@ -27,7 +27,7 @@
             <div>
                 <h1 class="crm-page-title">Flagging Transaction</h1>
                 <p class="crm-page-sub">
-                    NIK Nominal — grouping NIK penerima dengan total BSU di atas ambang dalam periode.
+                    High Nominal — grouping NIK dengan total BSU di atas ambang (Pos / Branch / Direct · send &amp; receive).
                 </p>
             </div>
         </div>
@@ -114,10 +114,10 @@
             <div class="crm-table-card">
                 <div class="crm-table-toolbar">
                     <div>
-                        <h2 class="crm-table-title">Hasil NIK Nominal</h2>
+                        <h2 class="crm-table-title">Hasil High Nominal</h2>
                         <div class="crm-table-meta">
                             Periode {{ $tanggal_dari }} s/d {{ $tanggal_sampai }}
-                            · Sumber: transaksi receive (valid)
+                            · Sumber: Pos / Branch / Direct (send &amp; receive)
                             · Ambang total BSU &gt; Rp {{ number_format((float) $nominalValue, 0, ',', '.') }}
                         </div>
                     </div>
@@ -128,7 +128,7 @@
                         <thead>
                             <tr>
                                 <th>No</th>
-                                <th>NIK Penerima</th>
+                                <th>NIK</th>
                                 <th>Nama Penerima</th>
                                 <th>Telepon</th>
                                 <th>Jumlah Transaksi</th>
@@ -175,7 +175,7 @@
             <div class="crm-table-card">
                 <div class="crm-table-toolbar">
                     <div>
-                        <h2 class="crm-table-title">Detail NIK Nominal</h2>
+                        <h2 class="crm-table-title">Detail High Nominal</h2>
                         <div class="crm-table-meta">
                             NIK <span class="flag-id-text">{{ $nomor_identitas }}</span>
                             @if(!empty($nama_penerima))
@@ -197,6 +197,8 @@
                             <tr>
                                 <th>No</th>
                                 <th>Id Transaksi</th>
+                                <th>Kanal</th>
+                                <th>Arah</th>
                                 <th>BSU</th>
                                 <th>Nama Penerima</th>
                                 <th>Nama Pengirim</th>
@@ -218,7 +220,9 @@
                                 <tr>
                                     <td>{{ $key + 1 }}</td>
                                     <td>{{ $row->id_transaksi }}</td>
-                                    <td>{{ $row->bsubanyak }}</td>
+                                    <td>{{ $row->kanal ?? '—' }}</td>
+                                    <td>{{ $row->arah ?? '—' }}</td>
+                                    <td>{{ $row->bsubanyak ?? $row->amount }}</td>
                                     <td>{{ $row->nama_penerima }}</td>
                                     <td>{{ $row->nama_pengirim }}</td>
                                     <td>{{ $row->negara_pengirim }}</td>
