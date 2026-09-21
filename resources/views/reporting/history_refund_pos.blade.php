@@ -1,273 +1,226 @@
 @extends('adminlte::page')
 
-@section('title','CRM Arsema')
-    
+@section('title', 'CRM Arsema')
+
 @section('content_header')
-<h2>Refund History PT POS</h2>
 @stop
+
 @section('content')
-<div class="container-fluid">
-            <div class="row">
-                <div class="col-md-12">
+@php
+    $isOps = (($levelnya ?? '') === 'operasional');
+    $isList = empty($upload) && empty($edit);
+    $uploadRoute = $isOps ? route('act_upload_refund_pos_operasional') : route('act_upload_refund_pos');
+    $uploadEntryRoute = $isOps ? route('upload_refund_pos_operasional') : route('upload_refund_pos');
+@endphp
 
-                    <div class="card">
-                        <div class="card-body">
-                            @if(session('success'))
-                            <div class="alert alert-success alert-dismissible fade show" id="success-alert" role="alert">
-                               <strong>{{  session('success') }}</strong>
-                                
-                              </div>
-                            @endif
+<div class="container-fluid crm-page-wrap">
+    <div class="crm-page">
+        <div class="crm-page-header">
+            <div>
+                <h1 class="crm-page-title">Refund History PT POS</h1>
+                <p class="crm-page-sub">Riwayat refund PT POS. Upload dokumen, edit, atau hapus sesuai peran Anda.</p>
+            </div>
+        </div>
 
-                            @if(session('error'))
-                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                                <strong>{{  session('error')}} </strong>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                              </div>
-                            @endif
-                            @if(empty($upload) && empty($edit))
-                            <table  id="example" class="table table-responsive table-striped  table-bordered" style="width:100%">
-                                <thead>
-                                  <tr>
-                                    <th>No</th>
-                                    <th>No Referensi</th>
-                                    <th>Tanggal Transaksi</th>
-                                    <th>Tanggal Refund</th>
-                                    <th>Nama Pengirim</th>
-                                    <th>Nama Penerima</th>
-                                    <th>BSU</th>
-                                    <th>Negara Tujuan</th>
-                                    <th>Nopend</th>
-                                    <th>Alasan</th>
-                                    <th>Komentar</th>
-                                     <th></th>
-                                     <th></th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                @foreach ($data  as $key => $refunds)
-                                    <tr>
-                                        <?php
-                                            $no = $refunds->no ?? '';
-                                            $dats=DB::table('history_refund')->where('id_refund','=',$no)->first(); $dats1=DB::table('history_refund')->where('id_refund','=',$no)->get();
-                                        ?>
-                                        <th >{{$key+1 }}</th>
-                                        <td>{{ $refunds->no_referensi }}</td>
-                                        <td>{{ $refunds->tanggal_transaksi_view }}</td>
-                                        <td>{{ $refunds->tanggal_view }}</td>
-                                        <td>{{ $refunds->nama_pengirim }}</td>
-                                        <td>{{ $refunds->nama_penerima }}</td>
-                                        <td>{{ number_format((float)$refunds->bsu_view) }}</td>
-                                        <td>{{ $refunds->negara_view }}</td>
-                                        <td>{{ $refunds->id_pos }}</td>
-                                        <td>{{ $dats->alasan ?? '' }}</td>
-                                        <td>{{ $dats->ip ?? ''}}</td>
-                                       
-                                        @if(count($dats1)==0)
+        @include('partials.crm.alerts')
+
+        @if($isList)
+            <div class="crm-table-card">
+                <div class="crm-table-toolbar">
+                    <div>
+                        <h2 class="crm-table-title">Daftar Refund POS</h2>
+                        <div class="crm-table-meta">{{ count($data) }} data</div>
+                    </div>
+                </div>
+                <div class="crm-table-wrap">
+                    <table id="example" class="table crm-table table-striped table-bordered" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>No Referensi</th>
+                                <th>Tanggal Transaksi</th>
+                                <th>Tanggal Refund</th>
+                                <th>Nama Pengirim</th>
+                                <th>Nama Penerima</th>
+                                <th>BSU</th>
+                                <th>Negara Tujuan</th>
+                                <th>Nopend</th>
+                                <th>Alasan</th>
+                                <th>Komentar</th>
+                                <th>Dokumen</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($data as $key => $refunds)
+                                @php
+                                    $no = $refunds->no ?? '';
+                                    $dats = DB::table('history_refund')->where('id_refund', '=', $no)->first();
+                                    $dats1 = DB::table('history_refund')->where('id_refund', '=', $no)->get();
+                                @endphp
+                                <tr>
+                                    <td>{{ $key + 1 }}</td>
+                                    <td>{{ $refunds->no_referensi }}</td>
+                                    <td>{{ $refunds->tanggal_transaksi_view }}</td>
+                                    <td>{{ $refunds->tanggal_view }}</td>
+                                    <td>{{ $refunds->nama_pengirim }}</td>
+                                    <td>{{ $refunds->nama_penerima }}</td>
+                                    <td>{{ number_format((float)$refunds->bsu_view) }}</td>
+                                    <td>{{ $refunds->negara_view }}</td>
+                                    <td>{{ $refunds->id_pos }}</td>
+                                    <td>{{ $dats->alasan ?? '' }}</td>
+                                    <td>{{ $dats->ip ?? '' }}</td>
+                                    @if(count($dats1) == 0)
                                         <td>
-                                        @if($levelnya=="compliance")
-                                          <form action="{{route('upload_refund_pos')}}" method="POST">
-                                        @elseif($levelnya=="operasional") 
-                                          <form action="{{route('upload_refund_pos_operasional')}}" method="POST">
-                                        @endif
-                                        @csrf
-                                             <input type="hidden" name="no" value="{{$no}}"/>
-                                             <button type=submit class="badge badge-primary">
-                                                  Upload
-                                              </button> 
-                                        </form>    
+                                            <form action="{{ $uploadEntryRoute }}" method="POST">
+                                                @csrf
+                                                <input type="hidden" name="no" value="{{ $no }}"/>
+                                                <button type="submit" class="crm-btn crm-btn-sm crm-btn-primary">
+                                                    <i class="fas fa-upload"></i> Upload
+                                                </button>
+                                            </form>
                                         </td>
                                         <td></td>
-                                        @else
+                                    @else
                                         <td>
-                                        @if($dats->pop_image && file_exists(storage_path('app/public/pop/' . $dats->pop_image)))
-                                            <a target="_blank" href="{{url('storage/pop/' . rawurlencode($dats->pop_image))}}"><button type=submit class="badge badge-success">View Image </button></a>
-                                        @else
-                                            <button type="button" class="badge badge-secondary" disabled title="Dokumen tidak tersedia di server">File tidak tersedia</button>
-                                        @endif
+                                            @if($dats->pop_image && file_exists(storage_path('app/public/pop/' . $dats->pop_image)))
+                                                <a
+                                                    target="_blank"
+                                                    href="{{ url('storage/pop/' . rawurlencode($dats->pop_image)) }}"
+                                                    class="crm-btn crm-btn-sm crm-btn-ghost"
+                                                >View Image</a>
+                                            @else
+                                                <span class="crm-badge">File tidak tersedia</span>
+                                            @endif
                                         </td>
                                         <td>
-                                          <form action="{{route('edit_refund_pos')}}" method="POST">
-                                            @csrf
-                                              <input type="hidden" name="id" value="{{$no}}"/> 
-                                              <button  type=submit class="badge badge-warning">Edit</button>
-                                            </form>
-                                            <form action="{{route('delete_refund_pos')}}" method="POST">
-                                            @csrf
-                                            <input type="hidden" class="form-control @error('name') is-invalid @enderror"  name="id" value="{{$no}}"/> 
-                                             <button type=submit class="badge badge-danger show_confirm" data-toggle="tooltip" title='Delete'>Delete</button>
-                                             </form>
-                                            </td>
-                                        @endif
-                                   </tr>
-                                @endforeach
-                                </tbody>
-                              </table>
-                              @endif
+                                            <div class="crm-actions">
+                                                <form action="{{ route('edit_refund_pos') }}" method="POST">
+                                                    @csrf
+                                                    <input type="hidden" name="id" value="{{ $no }}"/>
+                                                    <button type="submit" class="crm-btn crm-btn-sm crm-btn-ghost">Edit</button>
+                                                </form>
+                                                <form action="{{ route('delete_refund_pos') }}" method="POST">
+                                                    @csrf
+                                                    <input type="hidden" name="id" value="{{ $no }}"/>
+                                                    <button type="submit" class="crm-btn crm-btn-sm crm-btn-warn show_confirm" data-toggle="tooltip" title="Delete">Delete</button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    @endif
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        @endif
 
-                              @if(!empty($upload))
-                              <h3>No Referensi : {{$data->no_referensi}}</h3>
-                              @if($levelnya=="compliance")
-                                <form action="{{route('act_upload_refund_pos')}}" method="POST" enctype="multipart/form-data" style="max-width:350px;">
-                              @elseif($levelnya=="operasional") 
-                              <form action="{{route('act_upload_refund_pos_operasional')}}" method="POST" enctype="multipart/form-data" style="max-width:350px;">
-                              @endif
-                              @csrf    
-                              <div class=form-group>
-                                    
-                                    <fieldset>
-                              <legend>  Alasan dibatalkan:</legend>
-                           <div>
-                                <input type="radio" id="comp" name="alasan" value="Customer" checked>
-                                <label for="dewey">Customer</label>
-                              </div>
-                              <div>
-                                <input type="radio" id="cust" name="alasan" value="Compliance"
-                                      >
-                                <label for="huey">Compliance</label>
-                              </div>
+        @if(!empty($upload))
+            <div class="crm-table-card">
+                <div class="crm-table-toolbar">
+                    <div>
+                        <h2 class="crm-table-title">Upload Refund POS</h2>
+                        <div class="crm-table-meta">No Referensi : {{ $data->no_referensi }}</div>
+                    </div>
+                </div>
 
-                        </fieldset>
+                <form class="crm-form" action="{{ $uploadRoute }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <input type="hidden" name="id" value="{{ $data->no }}">
 
-                                    </div>
-                                      <div class=form-group>
-                                          <label>Image</label>
-                                        <input type=hidden name=id value="{{$data->no}}">
-                                          <input type=file name=gambar required class=form-control  accept="image/*,.pdf">
-                                    </div>
-                                      
-                                  <div class=form-group>
-                                          <label>Komentar</label>
-                                        <input type=text name=ip required class=form-control>
-                                        </div>
+                    <div class="crm-form-block">
+                        <span class="crm-form-label">Alasan dibatalkan</span>
+                        <div class="crm-radio-row">
+                            <label class="crm-radio">
+                                <input type="radio" name="alasan" value="Customer" checked>
+                                <span>Customer</span>
+                            </label>
+                            <label class="crm-radio">
+                                <input type="radio" name="alasan" value="Compliance">
+                                <span>Compliance</span>
+                            </label>
+                        </div>
+                    </div>
 
-                                      <div class=form-group>
-                                  
-                                          <input type=submit class="btn btn-danger" value=UPLOAD>
-                                        </div>
-                                    </form>
+                    <div class="crm-form-block">
+                        <label class="crm-form-label" for="refund_gambar">Image</label>
+                        <input type="file" id="refund_gambar" name="gambar" required class="form-control crm-file-input" accept="image/*,.pdf">
+                    </div>
 
-                              @endif
+                    <div class="crm-form-block">
+                        <label class="crm-form-label" for="refund_ip">Komentar</label>
+                        <input type="text" id="refund_ip" name="ip" required class="form-control" placeholder="Masukkan komentar">
+                    </div>
 
-                              @if(!empty($edit))
-                              <form action="{{route('act_edit_refund_pos')}}" method="post" enctype="multipart/form-data" style="max-width:350px;">
-                              @csrf      
-                              <input type=hidden name=id value="{{$id}}">
-                                  <h3>No Referensi : {{$datas->no_referensi}}</h3>
-                                    <div class=form-group>
-                                    
-                                    <fieldset>
-                              <legend>  Alasan dibatalkan:</legend>
-                                    <?php if($data->alasan=="Customer"){?>
-                                <div>
-                                  <input type="radio" id="comp" name="alasan" value="Customer" checked>
-                                  <label for="dewey">Customer</label>
-                                </div>
-                              <div>
-                                <input type="radio" id="cust" name="alasan" value="Compliance"
-                                      >
-                                <label for="huey">Compliance</label>
-                              </div>
-                          <?php }else{?>
-                                      <div>
-                                <input type="radio" id="comp" name="alasan" value="Customer">
-                                <label for="dewey">Customer</label>
-                              </div>
-                              <div>
-                                <input type="radio" id="cust" name="alasan" value="Compliance" checked
-                                      >
-                                <label for="huey">Compliance</label>
-                              </div>
-                                    <?php } ?>
-                                    <div class=form-group>
-                                        <label>Image</label>
-                                        <input type=file name=gambar class=form-control  accept="image/*,.pdf">
-                                      </div>
+                    <div class="crm-form-actions">
+                        <button type="submit" class="crm-btn crm-btn-primary">
+                            <i class="fas fa-upload"></i> Upload
+                        </button>
+                    </div>
+                </form>
+            </div>
+        @endif
 
-                                      <div class=form-group>
-                                        <label>Komentar</label>
-                                      <input type=text name=ip required class=form-control value="{{$data->ip}}">
-                                      </div>
-                          
+        @if(!empty($edit))
+            @php
+                $alasan = $data->alasan ?? '';
+            @endphp
+            <div class="crm-table-card">
+                <div class="crm-table-toolbar">
+                    <div>
+                        <h2 class="crm-table-title">Edit Refund POS</h2>
+                        <div class="crm-table-meta">No Referensi : {{ $datas->no_referensi }}</div>
+                    </div>
+                </div>
 
-                                  <div class=form-group>
+                <form class="crm-form" action="{{ route('act_edit_refund_pos') }}" method="post" enctype="multipart/form-data">
+                    @csrf
+                    <input type="hidden" name="id" value="{{ $id }}">
 
-                                        
-                                        <input type=submit class="btn btn-danger" value=UPLOAD>
-                                      </div>
-                                  </form>
+                    <div class="crm-form-block">
+                        <span class="crm-form-label">Alasan dibatalkan</span>
+                        <div class="crm-radio-row">
+                            <label class="crm-radio">
+                                <input type="radio" name="alasan" value="Customer" @checked($alasan === 'Customer')>
+                                <span>Customer</span>
+                            </label>
+                            <label class="crm-radio">
+                                <input type="radio" name="alasan" value="Compliance" @checked($alasan === 'Compliance')>
+                                <span>Compliance</span>
+                            </label>
+                        </div>
+                    </div>
 
-                              @endif
-                        </div><!--card-body-->
+                    <div class="crm-form-block">
+                        <label class="crm-form-label" for="edit_refund_gambar">Image</label>
+                        <input type="file" id="edit_refund_gambar" name="gambar" class="form-control crm-file-input" accept="image/*,.pdf">
+                    </div>
 
-                    </div><!--card-->
-                </div><!--col-md-12-->
-            </div><!--row-->
-        </div><!--container-fluid-->
+                    <div class="crm-form-block">
+                        <label class="crm-form-label" for="edit_refund_ip">Komentar</label>
+                        <input type="text" id="edit_refund_ip" name="ip" required class="form-control" value="{{ $data->ip }}">
+                    </div>
+
+                    <div class="crm-form-actions">
+                        <button type="submit" class="crm-btn crm-btn-primary">
+                            <i class="fas fa-save"></i> Simpan
+                        </button>
+                    </div>
+                </form>
+            </div>
+        @endif
+    </div>
+</div>
+
+@include('partials.crm.confirm-modal')
 @stop
 
 @section('js')
+@include('partials.crm.datatable-boot')
 <script type="text/javascript">
-  $(document).ready(function() {
-    $('#daterange').daterangepicker();
-    $('#example').DataTable();
-} );
-</script>
-
-   <script>
-            
-        $("#success-alert").fadeTo(2000, 500).fadeOut(500, function(){
-        $("#success-alert").fadeOut(500);
-        });
-   </script>
-
-   
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
-
-<script>
-         
-     $("#success-alert").fadeTo(2000, 500).fadeOut(500, function(){
-     $("#success-alert").fadeOut(500);
-     });
-</script>
- <script>
-         
-
-         $('.show_confirm').click(function(event) {
-    
-    var form =  $(this).closest("form");
-    
-    var name = $(this).data("name");
-    
-    event.preventDefault();
-    
-    swal({
-    
-        title: `Are you sure you want to delete this record?`,
-    
-        text: "If you delete this, it will be gone forever.",
-    
-        icon: "warning",
-    
-        buttons: true,
-    
-        dangerMode: true,
-    
-    })
-    
-    .then((willDelete) => {
-    
-      if (willDelete) {
-    
-        form.submit();
-    
-      }
-    
+    $(document).ready(function () {
+        CrmDataTable.mount('#example');
     });
-    
-    });
-            $("#success-alert").fadeTo(2000, 500).fadeOut(500, function(){
-            $("#success-alert").fadeOut(500);
-            });
-       </script>
+</script>
 @stop

@@ -1,88 +1,96 @@
 @extends('adminlte::page')
 
-@section('title','CRM Arsema')
-    
+@section('title', 'CRM Arsema')
+
 @section('content_header')
-    <h1>Report Pos</h1>
 @stop
+
 @section('content')
+@php
+    $hasResult = !empty($tanggal_dari);
+@endphp
+
 <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-12">
+    <div class="crm-page">
+        <div class="crm-page-header">
+            <div>
+                <h1 class="crm-page-title">Report Pos</h1>
+                <p class="crm-page-sub">Rekapitulasi transaksi per regional berdasarkan periode.</p>
+            </div>
+        </div>
 
-                    <div class="card">
-                        <div class="card-body">
-                            @if(session('success'))
-                            <div class="alert alert-success alert-dismissible fade show" id="success-alert" role="alert">
-                               <strong>{{  session('success') }}</strong>
-                                
-                              </div>
-                            @endif
+        @include('partials.crm.alerts')
 
-                            @if(session('error'))
-                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                                <strong>{{  session('error')}} </strong>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                              </div>
-                            @endif
-                            <br>
-                            <div class="row">
-                            <div class="col-md-4">
-                            <div class="form-group">
-                                <label>Tanggal Pencarian:</label>
-                                <form class=form-group action="{{ route('report_pos_search')}}"  method="POST">
-                                  @csrf
-                                <div class='input-group date' id='datetimepicker'>
-                                    <input type='text' class="form-control" id="daterange" name="reservation"/> 
-                                    <span class="input-group-addon">
-                                    </span>
-                                </div><br>
-                                <button type="submit"  class="btn bg-maroon btn-flat margin" >Cari</button>
-                               
-                                </form>
-                                </div>
-                        </div><!--card-body-->
-                        @if(!empty($tanggal_dari))
-                        <div class="col-md-8"><br>
-                            <div class="form-group">
-                                <td>Periode </td><td>{{ ($periode_dari)}}  sampai {{($periode_sampai)}}</td><br>
-                                <input type=button class="btn btn-danger" value=CETAK><br>
-                                <br><h3>Rekapitulasi Transaksi Per - Regional</h3>
-                               
-                            </div>
-                        </div><!--card-body-->
-                        <table class="table table-striped">
-			                        <tr><th>Regional</th><th>BSU</th><th>Perbuatan</th></tr>
-                                    @foreach ($dataque  as $key => $dataques)
-                                    <tr>
-                                      <td> Regional {{$dataques->regional}}</td><td> {{$angkaformat}} </td><td>{{$dataques->id}}</td>
-                                    </tr>
-                                    @endforeach
-                                </table>
+        <div class="crm-search">
+            <form class="crm-search-form" action="{{ route('report_pos_search') }}" method="POST">
+                @csrf
+                <div class="crm-search-field">
+                    <label for="daterange">Tanggal Pencarian</label>
+                    <input type="text" class="form-control" id="daterange" name="reservation">
+                </div>
+                <div class="crm-search-actions">
+                    <button type="submit" class="crm-btn crm-btn-primary">
+                        <i class="fas fa-search"></i> Cari
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        @if(!$hasResult)
+            <div class="crm-empty">
+                <div class="crm-empty-icon" aria-hidden="true">
+                    <i class="fas fa-chart-bar"></i>
+                </div>
+                <h2 class="crm-empty-title">Mulai dengan periode</h2>
+                <p class="crm-empty-text">
+                    Pilih <strong>Tanggal Pencarian</strong>, lalu tekan <strong>Cari</strong>
+                    untuk menampilkan rekapitulasi per regional.
+                </p>
+            </div>
+        @else
+            <div class="crm-table-card">
+                <div class="crm-table-toolbar">
+                    <div>
+                        <h2 class="crm-table-title">Rekapitulasi Transaksi Per - Regional</h2>
+                        <div class="crm-table-meta">
+                            Periode {{ $periode_dari }} sampai {{ $periode_sampai }}
                         </div>
-                        @else
-                        @endif
-                       
-                    </div><!--card-->
-                </div><!--col-md-12-->
-            </div><!--row-->
-        </div><!--container-fluid-->
+                    </div>
+                    <div class="crm-actions">
+                        <input type="button" class="crm-btn crm-btn-sm crm-btn-warn" value="CETAK">
+                    </div>
+                </div>
+                <div class="crm-table-wrap">
+                    <table class="table crm-table table-striped table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Regional</th>
+                                <th>BSU</th>
+                                <th>Perbuatan</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($dataque as $key => $dataques)
+                                <tr>
+                                    <td>Regional {{ $dataques->regional }}</td>
+                                    <td>{{ $angkaformat }}</td>
+                                    <td>{{ $dataques->id }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        @endif
+    </div>
+</div>
 @stop
 
 @section('js')
-<script type="text/javascript">
-  $(document).ready(function() {
-    $('#example').DataTable();
-} );
-$(document).ready(function() {
-    $('#daterange').daterangepicker();
-} );
+@include('partials.crm.datatable-boot')
+<script>
+    $(document).ready(function () {
+        $('#daterange').daterangepicker();
+    });
 </script>
-
-   <script>
-            
-        $("#success-alert").fadeTo(2000, 500).fadeOut(500, function(){
-        $("#success-alert").fadeOut(500);
-        });
-   </script>
 @stop

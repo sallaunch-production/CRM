@@ -1,97 +1,81 @@
 @extends('adminlte::page')
 
-@section('title','CRM Arsema')
-    
+@section('title', 'CRM Arsema')
+
 @section('content_header')
-    <h1>Direct Receive Transaction</h1>
 @stop
+
 @section('content')
 <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-12">
+    <div class="crm-page">
+        <div class="crm-page-header">
+            <div>
+                <h1 class="crm-page-title">Direct Receive</h1>
+                <p class="crm-page-sub">Daftar transaksi direct receive.</p>
+            </div>
+        </div>
 
-                    <div class="card">
-                        <div class="card-body">
-                            @if(session('success'))
-                            <div class="alert alert-success alert-dismissible fade show" id="success-alert" role="alert">
-                               <strong>{{  session('success') }}</strong>
-                                
-                              </div>
-                            @endif
+        @include('partials.crm.alerts')
 
-                            @if(session('error'))
-                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                                <strong>{{  session('error')}} </strong>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                              </div>
-                            @endif
-
-                           
-                            <table  id="example" class="table table-responsive table-striped  table-bordered">
-                                <thead>
-                                  <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">No Referensi</th>
-                                    <th scope="col">Nama Pengirim</th>
-                                    <th scope="col">Negara Pengirim</th>
-                                    <th scope="col">BSU</th>
-                                    <th scope="col">Nama Penerima</th>
-                                    <th scope="col">Identitas</th> 
-                                    <th scope="col">Nomor Identitas</th>  
-                                    <th scope="col">Tanggal Lahir</th>  
-                                    <th scope="col">Alamat Penerima</th>   
-                                    <th scope="col">Telepon Penerima</th>   
-                                    <th scope="col">Kota Penerima</th>   
-                                    <th scope="col">Pekerjaan</th>   
-                                    <th scope="col">Tanggal</th>        
-                                   
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                
-                                    @foreach ($transaction  as $key => $transactions)
-                                    <tr>
-                                        <th >{{$key+1 }}</th>
-                                        <td>{{ $transactions->no_referensi }}</td>
-                                        <td>{{ $transactions->nama_pengirim }}</td>
-                                        <td>{{ $transactions->negara_pengirim }}</td>
-                                        <td>{{ number_format($transactions->amount) }}</td>
-                                        <td>{{ $transactions->nama_penerima }}</td>
-                                        <td>{{ $transactions->identitas }}</td>
-                                        <td>{{ $transactions->nomor_identitas }}</td>
-                                        <td>{{ $transactions->tanggal_lahir }}</td>
-                                        <td>{{ $transactions->alamat_penerima }}</td>
-                                        <td>{{ $transactions->telepon_penerima }}</td>
-                                        <td>{{ $transactions->kota_penerima }}</td>
-                                        <td>{{ $transactions->pekerjaan }}</td>
-                                        <td>{{ $transactions->tanggal }}</td>
-                                      
-                                      </tr>
-                                    @endforeach
-                               
-                                 
-                                </tbody>
-                              </table>
-                              
-                        </div><!--card-body-->
-
-                    </div><!--card-->
-                </div><!--col-md-12-->
-            </div><!--row-->
-        </div><!--container-fluid-->
+        <div class="crm-table-card">
+            <div class="crm-table-toolbar">
+                <div>
+                    <h2 class="crm-table-title">Direct Receive Transaction</h2>
+                    <div class="crm-table-meta">{{ count($transaction) }} data</div>
+                </div>
+            </div>
+            <div class="crm-table-wrap">
+                <table id="example" class="table crm-table table-striped table-bordered" style="width:100%;">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>No Referensi</th>
+                            <th>Nama Pengirim</th>
+                            <th>Negara Pengirim</th>
+                            <th>BSU</th>
+                            <th>Nama Penerima</th>
+                            <th>Identitas</th>
+                            <th>Nomor Identitas</th>
+                            <th>Tanggal Lahir</th>
+                            <th>Alamat Penerima</th>
+                            <th>Telepon Penerima</th>
+                            <th>Kota Penerima</th>
+                            <th>Pekerjaan</th>
+                            <th>Tanggal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($transaction as $key => $transactions)
+                            <tr>
+                                <td>{{ $key + 1 }}</td>
+                                <td>{{ $transactions->no_referensi }}</td>
+                                <td>{{ $transactions->nama_pengirim }}</td>
+                                <td>{{ $transactions->negara_pengirim }}</td>
+                                <td>{{ number_format($transactions->amount) }}</td>
+                                <td>{{ $transactions->nama_penerima }}</td>
+                                <td>{{ $transactions->identitas }}</td>
+                                <td>{{ $transactions->nomor_identitas }}</td>
+                                <td>{{ $transactions->tanggal_lahir }}</td>
+                                <td>{{ $transactions->alamat_penerima }}</td>
+                                <td>{{ $transactions->telepon_penerima }}</td>
+                                <td>{{ $transactions->kota_penerima }}</td>
+                                <td>{{ $transactions->pekerjaan }}</td>
+                                <td>{{ $transactions->tanggal }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 @stop
 
 @section('js')
-<script type="text/javascript">
-  $(document).ready(function() {
-    $('#example').DataTable();
-} );
+@include('partials.crm.datatable-boot')
+<script>
+    $(document).ready(function () {
+        CrmDataTable.mount('#example');
+    });
 </script>
-
-   <script>
-            
-        $("#success-alert").fadeTo(2000, 500).fadeOut(500, function(){
-        $("#success-alert").fadeOut(500);
-        });
-   </script>
 @stop

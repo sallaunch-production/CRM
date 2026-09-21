@@ -1,97 +1,85 @@
-@php( $logout_url = View::getSection('logout_url') ?? config('adminlte.logout_url', 'logout') )
-@php( $profile_url = View::getSection('profile_url') ?? config('adminlte.profile_url', 'logout') )
+@php
+    $logout_url = View::getSection('logout_url') ?? config('adminlte.logout_url', 'logout');
+    $profile_url = View::getSection('profile_url') ?? config('adminlte.profile_url', false);
 
-@if (config('adminlte.usermenu_profile_url', false))
-    @php( $profile_url = Auth::user()->adminlte_profile_url() )
-@endif
+    if (config('adminlte.usermenu_profile_url', false)) {
+        $profile_url = Auth::user()->adminlte_profile_url();
+    }
 
-@if (config('adminlte.use_route_url', false))
-    @php( $profile_url = $profile_url ? route($profile_url) : '' )
-    @php( $logout_url = $logout_url ? route($logout_url) : '' )
-@else
-    @php( $profile_url = $profile_url ? url($profile_url) : '' )
-    @php( $logout_url = $logout_url ? url($logout_url) : '' )
-@endif
+    if (config('adminlte.use_route_url', false)) {
+        $profile_url = $profile_url ? route($profile_url) : '';
+        $logout_url = $logout_url ? route($logout_url) : '';
+    } else {
+        $profile_url = $profile_url ? url($profile_url) : '';
+        $logout_url = $logout_url ? url($logout_url) : '';
+    }
 
-<li class="nav-item dropdown user-menu">
+    $userName = Auth::user()->name ?? 'User';
+    $userLevel = Auth::user()->level ?? '';
+    $levelLabel = $userLevel === 'operasional'
+        ? 'Operasional'
+        : ($userLevel === 'compliance' ? 'Compliance' : ucfirst((string) $userLevel));
+@endphp
+
+<li class="nav-item dropdown user-menu crm-user-menu">
 
     {{-- User menu toggler --}}
-    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+    <a href="#" class="nav-link dropdown-toggle crm-user-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         @if(config('adminlte.usermenu_image'))
             <img src="{{ Auth::user()->adminlte_image() }}"
                  class="user-image img-circle elevation-2"
-                 alt="{{ Auth::user()->name }}">
+                 alt="{{ $userName }}">
         @endif
-        <span @if(config('adminlte.usermenu_image')) class="d-none d-md-inline" @endif>
-            {{ Auth::user()->name }}
+        <span class="crm-user-toggle-name @if(config('adminlte.usermenu_image')) d-none d-md-inline @endif">
+            {{ $userName }}
         </span>
     </a>
 
     {{-- User menu dropdown --}}
-    <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+    <div class="dropdown-menu dropdown-menu-right crm-user-dropdown">
+        <div class="crm-user-dropdown-head">
+            <div class="crm-user-dropdown-name">{{ $userName }}</div>
+            @if($levelLabel !== '')
+                <div class="crm-user-dropdown-role">{{ $levelLabel }}</div>
+            @endif
+        </div>
 
-        {{-- User menu header --}}
-        @if(!View::hasSection('usermenu_header') && config('adminlte.usermenu_header'))
-            <li class="user-header {{ config('adminlte.usermenu_header_class', 'bg-primary') }}
-                @if(!config('adminlte.usermenu_image')) h-auto @endif">
-                @if(config('adminlte.usermenu_image'))
-                    <img src="{{ Auth::user()->adminlte_image() }}"
-                         class="img-circle elevation-2"
-                         alt="{{ Auth::user()->name }}">
-                @endif
-                <p class="@if(!config('adminlte.usermenu_image')) mt-0 @endif">
-                    {{ Auth::user()->name }}
-                    @if(config('adminlte.usermenu_desc'))
-                        <small>{{ Auth::user()->adminlte_desc() }}</small>
-                    @endif
-                </p>
-            </li>
-        @else
-            @yield('usermenu_header')
-        @endif
-
-        {{-- Configured user menu links --}}
         @each('adminlte::partials.navbar.dropdown-item', $adminlte->menu("navbar-user"), 'item')
 
-        {{-- User menu body --}}
         @hasSection('usermenu_body')
-            <li class="user-body">
+            <div class="crm-user-dropdown-body">
                 @yield('usermenu_body')
-            </li>
+            </div>
         @endif
 
-        {{-- User menu footer --}}
-        <li class="user-footer">
-            @if($profile_url)
-                <a href="{{ $profile_url }}" class="btn btn-default btn-flat">
-                    <i class="fa fa-fw fa-user text-lightblue"></i>
-                    {{ __('adminlte::menu.profile') }}
+        <div class="crm-user-dropdown-actions">
+            @if(! empty($profile_url))
+                <a href="{{ $profile_url }}" class="crm-user-dropdown-item">
+                    <i class="fas fa-user" aria-hidden="true"></i>
+                    <span>{{ __('adminlte::menu.profile') }}</span>
                 </a>
             @endif
-            <a class="btn btn-default btn-flat float-right @if(!$profile_url) btn-block @endif"
-               href="#"
-               id="btnLogoutTrigger"
-               onclick="event.preventDefault(); window.showLogoutConfirmModal();">
-                <i class="fa fa-fw fa-power-off text-red"></i>
-                {{ __('adminlte::adminlte.log_out') }}
-            </a>
+            <button type="button"
+                    class="crm-user-dropdown-item crm-user-dropdown-logout"
+                    id="btnLogoutTrigger"
+                    onclick="event.preventDefault(); window.showLogoutConfirmModal();">
+                <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
+                <span>{{ __('adminlte::adminlte.log_out') }}</span>
+            </button>
             <form id="logout-form" action="{{ $logout_url }}" method="POST" style="display: none;">
                 @if(config('adminlte.logout_method'))
                     {{ method_field(config('adminlte.logout_method')) }}
                 @endif
                 {{ csrf_field() }}
             </form>
-        </li>
-
-    </ul>
+        </div>
+    </div>
 
 </li>
 
-{{-- Logout confirmation modal (dipindah ke body via JS) --}}
+{{-- Logout confirmation modal --}}
 <style>
-    #logoutConfirmModal .modal-dialog {
-        max-width: 400px;
-    }
+    #logoutConfirmModal .modal-dialog { max-width: 400px; }
     #logoutConfirmModal .modal-content {
         border: 1px solid #e2e8f0;
         border-radius: 16px;
@@ -169,16 +157,10 @@
         padding: 0.15rem;
         cursor: pointer;
     }
-    #logoutConfirmModal .btn-logout-close:hover {
-        color: #475569;
-    }
+    #logoutConfirmModal .btn-logout-close:hover { color: #475569; }
     @media (max-width: 420px) {
-        #logoutConfirmModal .logout-modal-actions {
-            flex-direction: column;
-        }
-        #logoutConfirmModal .logout-modal-actions .btn {
-            width: 100%;
-        }
+        #logoutConfirmModal .logout-modal-actions { flex-direction: column; }
+        #logoutConfirmModal .logout-modal-actions .btn { width: 100%; }
     }
 </style>
 

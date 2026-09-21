@@ -265,77 +265,193 @@ class ReportingController extends Controller
     
     public function detail_kota(Request $request)
     {
-      if(Auth::check()){
-          $id=$request->id;
-          $cari="";
-          //$query = DB::table('transaksi_valid')->where('deltawork','=','ya')->where('id_pos','=',$id)->orderBy('tanggal','desc')->get();
-          $query = DB::table('transaksi_valid')
-                      ->where('deltawork', '=', 'ya')
-                      ->where(DB::raw("REPLACE(id_pos, ' ', '')"), '=', str_replace(' ', '', $id))
-                      ->orderBy('tanggal', 'desc')
-                      ->get();
-          $nopends=substr($id,0,5);
-          $datakotas = DB::table('nopend_lama')->where('kpc','LIKE',$nopends.'%')->first();
-         
-          return view('reporting.kota', [
-            'data'=>$query,'cari'=>$cari,'datakotas'=>$datakotas,'nopends'=>$nopends
-           ]);
+      if (! Auth::check()) {
+          return redirect('login')->with('You dont have access');
       }
-      return redirect('login')->with('You dont have access');
+
+      $id = (string) $request->input('id', '');
+      $idSanitized = str_replace(' ', '', $id);
+      $nopends = substr($id, 0, 5);
+      $datakotas = DB::table('nopend_lama')->where('kpc', 'LIKE', $nopends.'%')->first();
+      $kotaNama = $datakotas->nama ?? '';
+
+      $baseQuery = DB::table('transaksi_valid')
+          ->where('deltawork', '=', 'ya')
+          ->where(DB::raw("REPLACE(id_pos, ' ', '')"), '=', $idSanitized);
+
+      // Server-side DataTables — do not load all rows into the page
+      if ($request->ajax() || $request->has('draw')) {
+          $query = (clone $baseQuery)->orderBy('tanggal', 'desc');
+
+          return DataTables::of($query)
+              ->addIndexColumn()
+              ->addColumn('nopend_label', function ($row) use ($kotaNama) {
+                  return trim(($row->id_pos ?? '').' '.$kotaNama);
+              })
+              ->filter(function ($query) use ($request) {
+                  $search = trim((string) $request->input('search.value', ''));
+                  if ($search === '') {
+                      return;
+                  }
+                  $query->where(function ($q) use ($search) {
+                      $q->where('id_pos', 'like', '%'.$search.'%')
+                          ->orWhere('nama_penerima', 'like', '%'.$search.'%')
+                          ->orWhere('nama_pengirim', 'like', '%'.$search.'%')
+                          ->orWhere('negara_pengirim', 'like', '%'.$search.'%')
+                          ->orWhere('no_referensi', 'like', '%'.$search.'%')
+                          ->orWhere('tanggal', 'like', '%'.$search.'%');
+                  });
+              }, true)
+              ->make(true);
+      }
+
+      $detailTotal = (clone $baseQuery)->count();
+
+      return view('reporting.kota', [
+          'data' => collect(),
+          'cari' => '',
+          'datakotas' => $datakotas,
+          'nopends' => $nopends,
+          'detail_id' => $id,
+          'detail_total' => $detailTotal,
+          'server_side_detail' => true,
+      ]);
     }
 
     
     public function cari_kota(Request $request)
     {
-      if(Auth::check()){
-        $cari="ya"; $nopends="";
-        $tanggal = $request->reservation;
-        $dari = explode('/',$tanggal);
-  
-        $tahunini = date('Y');
-        
-        $tahun_dari = $dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3];
-        $periode_dari = $dari[1].'-'.$dari[0].'-'.$dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3];
-        $periode_sampai = $dari[3].'-'.$dari[2][7].$dari[2][8].'-'.$dari[4];
-  
-        $tanggal_dari = $dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3].'-'.$dari[0].'-'.$dari[1];
-        $tanggal_sampai =  $dari[4].'-'.$dari[2][7].$dari[2][8].'-'.$dari[3];
-        $query= DB::table('transaksi_valid')->select('id_pos',DB::raw("sum(cast(replace(bsubanyak, ',','') as float))"),DB::raw('COUNT(transaksi_valid.no_referensi) as perbuatan'),'bsubanyak')->where('deltawork','=','ya')->where('id_pos','<>','')->where('tanggal','>=',$tanggal_dari.' 00:00:00')->where('tanggal','<=',$tanggal_sampai.' 23:59:59')->groupBy('id_pos','bsubanyak')->orderBy('perbuatan','desc')->get();
-        $databsu = DB::table('transaksi_valid')->select(DB::raw("sum(cast(replace(bsubanyak, ',','') as float))"),DB::raw('COUNT(no) as jumlah'))->where('deltawork','=','ya')->where('id_pos','<>','')->where('tanggal','>=',$tanggal_dari.' 00:00:00')->where('tanggal','<=',$tanggal_sampai.' 23:59:59')->first();
-        $totalbsu=number_format($databsu->sum);
-        $jumlah=number_format($databsu->jumlah);
-
-
-        return view('reporting.kota', [
-            'data'=>$query,'nopends'=>$nopends,'cari'=>$cari,'jumlah'=>$jumlah,'totalbsu'=>$totalbsu,'tanggal_dari'=>$tanggal_dari,'tanggal_sampai'=>$tanggal_sampai
-           ]);
+      if (! Auth::check()) {
+          return redirect('login')->with('You dont have access');
       }
-      return redirect('login')->with('You dont have access');
+
+      $cari = 'ya';
+      $nopends = '';
+
+      if ($request->filled('start_date') && $request->filled('end_date')) {
+          $tanggal_dari = $request->input('start_date');
+          $tanggal_sampai = $request->input('end_date');
+      } else {
+          $tanggal = $request->reservation;
+          $dari = explode('/', $tanggal);
+          $tanggal_dari = $dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3].'-'.$dari[0].'-'.$dari[1];
+          $tanggal_sampai = $dari[4].'-'.$dari[2][7].$dari[2][8].'-'.$dari[3];
+      }
+
+      $query = DB::table('transaksi_valid')
+          ->select(
+              'id_pos',
+              DB::raw("sum(cast(replace(bsubanyak, ',','') as float))"),
+              DB::raw('COUNT(transaksi_valid.no_referensi) as perbuatan'),
+              'bsubanyak'
+          )
+          ->where('deltawork', '=', 'ya')
+          ->where('id_pos', '<>', '')
+          ->where('tanggal', '>=', $tanggal_dari.' 00:00:00')
+          ->where('tanggal', '<=', $tanggal_sampai.' 23:59:59')
+          ->groupBy('id_pos', 'bsubanyak')
+          ->orderBy('perbuatan', 'desc')
+          ->get();
+
+      $databsu = DB::table('transaksi_valid')
+          ->select(
+              DB::raw("sum(cast(replace(bsubanyak, ',','') as float))"),
+              DB::raw('COUNT(no) as jumlah')
+          )
+          ->where('deltawork', '=', 'ya')
+          ->where('id_pos', '<>', '')
+          ->where('tanggal', '>=', $tanggal_dari.' 00:00:00')
+          ->where('tanggal', '<=', $tanggal_sampai.' 23:59:59')
+          ->first();
+
+      $totalbsu = number_format($databsu->sum ?? 0);
+      $jumlah = number_format($databsu->jumlah ?? 0);
+
+      return view('reporting.kota', [
+          'data' => $query,
+          'nopends' => $nopends,
+          'cari' => $cari,
+          'jumlah' => $jumlah,
+          'totalbsu' => $totalbsu,
+          'tanggal_dari' => $tanggal_dari,
+          'tanggal_sampai' => $tanggal_sampai,
+      ]);
     }
 
 
     public function tanggal_valid(Request $request)
     {
-      if(Auth::check()){
-        $tanggal_valid="ya";
-        $tanggal_dari=$request->dari;
-        $tanggal_sampai=$request->sampai;
-        $id=$request->id;
-        $query= DB::table('transaksi_valid')->where('deltawork','=','ya')->where('id_pos','=',$id)->where('tanggal','>=',$tanggal_dari.' 00:00:00')->where('tanggal','<=',$tanggal_sampai.' 23:59:59')->orderBy('tanggal','desc')->get();
-        //$databsu= DB::table('transaksi','transaksi_valid')->select(DB::raw("sum(transaksi.bsu) as float"),DB::raw('COUNT(transaksi_valid.no) as jumlah'))->where('transaksi_valid.deltawork','=','ya')->where('tanggal','>=',$tanggal_dari.' 00:00:00')->where('tanggal','<=',$tanggal_sampai.' 23:59:59')->where('transaksi_valid.id_pos','=',$id)->first();
-        $databsu= TransaksiValid::with('transaksi')->select(DB::raw('COUNT(transaksi_valid.no) as jumlah'))
-        ->whereHas('transaksi',function($q) use ($id){
-            $q->select(DB::raw("sum(transaksi.bsu) as float"))->where('id',$id);
-        })->where('transaksi_valid.deltawork','=','ya')->where('tanggal','>=',$tanggal_dari.' 00:00:00')->where('tanggal','<=',$tanggal_sampai.' 23:59:59')->where('transaksi_valid.id_pos','=',$id)->get();
-       
-        $totalbsu=number_format($databsu->totalbsu);
-        $jumlah=number_format($databsu->jumlah);
-        
-        return view('reporting.kota', [
-            'data'=>$query,'tanggal_valid'=>$tanggal_valid,'tanggal_dari'=>$tanggal_dari,'tanggal_sampai'=>$tanggal_sampai,'totalbsu'=>$totalbsu,'jumlah'=>$jumlah
-           ]);
+      if (! Auth::check()) {
+          return redirect('login')->with('You dont have access');
       }
-      return redirect('login')->with('You dont have access');
+
+      $tanggal_valid = 'ya';
+      $tanggal_dari = $request->dari;
+      $tanggal_sampai = $request->sampai;
+      $id = (string) $request->input('id', '');
+
+      $baseQuery = DB::table('transaksi_valid')
+          ->where('deltawork', '=', 'ya')
+          ->where('id_pos', '=', $id)
+          ->where('tanggal', '>=', $tanggal_dari.' 00:00:00')
+          ->where('tanggal', '<=', $tanggal_sampai.' 23:59:59');
+
+      $nopends = substr($id, 0, 5);
+      $datakotas = DB::table('nopend_lama')->where('kpc', 'like', $nopends.'%')->first();
+      $kotaNama = $datakotas->nama ?? '';
+
+      if ($request->ajax() || $request->has('draw')) {
+          $query = (clone $baseQuery)->orderBy('tanggal', 'desc');
+
+          return DataTables::of($query)
+              ->addIndexColumn()
+              ->addColumn('nopend_label', function ($row) use ($kotaNama) {
+                  return trim(($row->id_pos ?? '').' ('.$kotaNama.')');
+              })
+              ->filter(function ($query) use ($request) {
+                  $search = trim((string) $request->input('search.value', ''));
+                  if ($search === '') {
+                      return;
+                  }
+                  $query->where(function ($q) use ($search) {
+                      $q->where('id_pos', 'like', '%'.$search.'%')
+                          ->orWhere('nama_penerima', 'like', '%'.$search.'%')
+                          ->orWhere('nama_pengirim', 'like', '%'.$search.'%')
+                          ->orWhere('negara_pengirim', 'like', '%'.$search.'%')
+                          ->orWhere('no_referensi', 'like', '%'.$search.'%')
+                          ->orWhere('bsubanyak', 'like', '%'.$search.'%')
+                          ->orWhere('tanggal', 'like', '%'.$search.'%');
+                  });
+              }, true)
+              ->make(true);
+      }
+
+      // Keep existing summary calculation (same as before)
+      $databsu = TransaksiValid::with('transaksi')->select(DB::raw('COUNT(transaksi_valid.no) as jumlah'))
+          ->whereHas('transaksi', function ($q) use ($id) {
+              $q->select(DB::raw('sum(transaksi.bsu) as float'))->where('id', $id);
+          })
+          ->where('transaksi_valid.deltawork', '=', 'ya')
+          ->where('tanggal', '>=', $tanggal_dari.' 00:00:00')
+          ->where('tanggal', '<=', $tanggal_sampai.' 23:59:59')
+          ->where('transaksi_valid.id_pos', '=', $id)
+          ->get();
+
+      $totalbsu = number_format($databsu->totalbsu ?? 0);
+      $jumlah = number_format($databsu->jumlah ?? 0);
+      $detailTotal = (clone $baseQuery)->count();
+
+      return view('reporting.kota', [
+          'data' => collect(),
+          'tanggal_valid' => $tanggal_valid,
+          'tanggal_dari' => $tanggal_dari,
+          'tanggal_sampai' => $tanggal_sampai,
+          'totalbsu' => $totalbsu,
+          'jumlah' => $jumlah,
+          'detail_id' => $id,
+          'detail_total' => $detailTotal,
+          'server_side_tanggal' => true,
+      ]);
     }
 
     public function negara()
@@ -424,21 +540,20 @@ class ReportingController extends Controller
   public function cari_laporan(Request $request)
   {
     if(Auth::check()){
-      $tanggal = $request->reservation;
-      $dari = explode('/',$tanggal);
+      if ($request->filled('start_date') && $request->filled('end_date')) {
+        $tanggal_dari = $request->input('start_date');
+        $tanggal_sampai = $request->input('end_date');
+      } else {
+        $tanggal = $request->reservation;
+        $dari = explode('/', $tanggal);
+        $tanggal_dari = $dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3].'-'.$dari[0].'-'.$dari[1];
+        $tanggal_sampai = $dari[4].'-'.$dari[2][7].$dari[2][8].'-'.$dari[3];
+      }
 
-      $tahunini = date('Y');
-      
-      $tahun_dari = $dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3];
-      $periode_dari = $dari[1].'-'.$dari[0].'-'.$dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3];
-      $periode_sampai = $dari[3].'-'.$dari[2][7].$dari[2][8].'-'.$dari[4];
-
-      $tanggal_dari = $dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3].'-'.$dari[0].'-'.$dari[1];
-      $tanggal_sampai =  $dari[4].'-'.$dari[2][7].$dari[2][8].'-'.$dari[3];
-     
-         return view('reporting.laporan', [
-          'tanggal_dari'=>$tanggal_dari,'tanggal_sampai'=>$tanggal_sampai
-          ]);
+      return view('reporting.laporan', [
+        'tanggal_dari' => $tanggal_dari,
+        'tanggal_sampai' => $tanggal_sampai,
+      ]);
     }
     return redirect('login')->with('You dont have access');
   }
@@ -702,6 +817,65 @@ class ReportingController extends Controller
             'nama_pengirim' => optional($detail->first())->nama_pengirim,
             'dari' => $dari,
             'sampai' => $sampai,
+        ]);
+    }
+
+    public function filter_nik_amount()
+    {
+        if (! Auth::check()) {
+            return redirect('login')->with('You dont have access');
+        }
+
+        return view('reporting.filter_nik_amount', [
+            'data' => collect(),
+            'nominal' => FlaggingRelationService::DEFAULT_NOMINAL_THRESHOLD,
+        ]);
+    }
+
+    public function search_filtering_nik_amount(Request $request, FlaggingRelationService $service)
+    {
+        if (! Auth::check()) {
+            return redirect('login')->with('You dont have access');
+        }
+
+        try {
+            $range = $service->parseStartEndDates(
+                (string) $request->input('start_date'),
+                (string) $request->input('end_date')
+            );
+            $nominal = $service->parseNominalThreshold($request->input('nominal'));
+        } catch (InvalidArgumentException $e) {
+            return redirect()->back()->with('error', $e->getMessage())->withInput();
+        }
+
+        return view('reporting.filter_nik_amount', [
+            'data' => $service->nikAmountSummary($range['dari'], $range['sampai'], $nominal),
+            'tanggal_dari' => $range['dari'],
+            'tanggal_sampai' => $range['sampai'],
+            'nominal' => $nominal,
+        ]);
+    }
+
+    public function detail_nik_amount(Request $request, FlaggingRelationService $service)
+    {
+        if (! Auth::check()) {
+            return redirect('login')->with('You dont have access');
+        }
+
+        $dari = (string) $request->dari;
+        $sampai = (string) $request->sampai;
+        $nomorIdentitas = (string) $request->input('nomor_identitas');
+        $nominal = (float) $request->input('nominal', FlaggingRelationService::DEFAULT_NOMINAL_THRESHOLD);
+
+        $detail = $service->nikAmountDetail($dari, $sampai, $nomorIdentitas);
+
+        return view('reporting.filter_nik_amount', [
+            'data' => $detail,
+            'nomor_identitas' => $nomorIdentitas,
+            'nama_penerima' => optional($detail->first())->nama_penerima,
+            'dari' => $dari,
+            'sampai' => $sampai,
+            'nominal' => $nominal,
         ]);
     }
 

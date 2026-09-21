@@ -1,449 +1,518 @@
 @extends('adminlte::page')
 
-@section('title','CRM Arsema')
-    
+@section('title', 'CRM Arsema')
+
 @section('content_header')
-<h3> <?php 
-    if($send ?? 'List Send' =="ya"){
-        echo"<h2>List Send";
-    }elseif($receive ?? 'List Receive' =="ya"){
-        echo"<h2>List Receive";
-    } 
-?></h3>
 @stop
+
 @section('content')
+@php
+    $isCompliance = ($levelnya ?? '') === 'compliance';
+    $isOperasional = ($levelnya ?? '') === 'operasional';
+    $isReceive = !empty($receive);
+    $isSend = !empty($send);
+    $pageTitle = $isReceive ? 'List Receive' : ($isSend ? 'List Send' : 'List Negara');
+
+    $receiveSearchRoute = $isOperasional
+        ? route('cari_negara_operasional')
+        : route('cari_negara');
+    $sendSearchRoute = $isCompliance
+        ? route('cari_negara_send')
+        : route('cari_negara_send_operasional');
+
+    $sendTabUrl = $isOperasional ? url('negara_send_operasional') : url('negara_send');
+    $receiveTabUrl = $isOperasional ? url('negara_receive_operasional') : url('negara_receive');
+@endphp
+
 <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-12">
-                    
-                    <div class="card">
-                        <div class="card-body">
-                            @if(session('success'))
-                            <div class="alert alert-success alert-dismissible fade show" id="success-alert" role="alert">
-                               <strong>{{  session('success') }}</strong>
+    <div class="crm-page">
+        <div class="crm-page-header">
+            <div>
+                <h1 class="crm-page-title">{{ $pageTitle }}</h1>
+                <p class="crm-page-sub">
+                    Ringkasan negara Send / Receive dengan drill-down ke detail transaksi.
+                </p>
+            </div>
+        </div>
+
+        @include('partials.crm.alerts')
+
+        <nav class="crm-tabs" aria-label="Negara Send Receive tabs">
+            <a href="{{ $sendTabUrl }}" class="crm-tab {{ $isSend ? 'is-active' : '' }}">Send</a>
+            <a href="{{ $receiveTabUrl }}" class="crm-tab {{ $isReceive ? 'is-active' : '' }}">Receive</a>
+        </nav>
+
+        @if($isReceive)
+            <div class="crm-search">
+                <form class="crm-search-form" action="{{ $receiveSearchRoute }}" method="POST">
+                    @csrf
+                    <div class="crm-search-field">
+                        <label for="daterange">Tanggal Dari</label>
+                        <input type="text" class="form-control" id="daterange" name="reservation">
+                    </div>
+                    <div class="crm-search-actions">
+                        <button type="submit" class="crm-btn crm-btn-primary">
+                            <i class="fas fa-search"></i> Cari
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            @if(empty($tanggal_dari) && empty($negara_pengirim) && empty($pencarian_detail_negara))
+                <div class="crm-table-card">
+                    <div class="crm-table-toolbar">
+                        <div>
+                            <h2 class="crm-table-title">Nama Negara</h2>
+                            <div class="crm-table-meta">Receive — daftar negara pengirim</div>
+                        </div>
+                        <span class="crm-badge">{{ count($data) }} data</span>
+                    </div>
+                    <div class="crm-table-wrap">
+                        <table id="example" class="table crm-table table-striped table-bordered" style="width:100%;">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Nama Negara</th>
+                                    <th>BSU</th>
+                                    <th>Perbuatan</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($data as $key => $datas)
+                                    <tr>
+                                        <td>{{ $key + 1 }}</td>
+                                        <td>
+                                            @if($isCompliance)
+                                                <form action="{{ route('proses_detail_negara') }}" method="POST" class="d-inline m-0">
+                                            @elseif($isOperasional)
+                                                <form action="{{ route('proses_detail_negara_operasional') }}" method="POST" class="d-inline m-0">
+                                            @endif
+                                                @csrf
+                                                <input type="hidden" id="negara_pengirim" name="negara_pengirim" value="{{ $datas->negara_pengirim }}">
+                                                <button type="submit" class="badge badge-primary">
+                                                    {{ $datas->negara_pengirim }}
+                                                </button>
+                                            </form>
+                                        </td>
+                                        <td>{{ number_format($datas->sum ?? '0') }}</td>
+                                        <td>{{ number_format($datas->perbuatan ?? '0') }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            @elseif(!empty($negara_pengirim) && !empty($receive) && empty($pencarian_detail_negara))
+                <div class="crm-table-card">
+                    <div class="crm-table-toolbar">
+                        <div>
+                            <h2 class="crm-table-title">Nama Negara : {{ $negara_pengirim }}</h2>
+                            <div class="crm-table-meta">Receive — detail per negara</div>
+                        </div>
+                        <span class="crm-badge">{{ count($data) }} data</span>
+                    </div>
+                    <div class="crm-table-wrap">
+                        <table id="example" class="table crm-table table-striped table-bordered" style="width:100%;">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Nama Negara</th>
+                                    <th>No Referensi</th>
+                                    <th>BSU</th>
+                                    <th>Tanggal</th>
+                                </tr>
+                            </thead>
+                            <tfoot>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Nama Negara</th>
+                                    <th>No Referensi</th>
+                                    <th>BSU</th>
+                                    <th>Tanggal</th>
+                                </tr>
+                            </tfoot>
+                            <tbody>
+                                @foreach ($data as $key => $datas)
+                                    <tr>
+                                        <td>{{ $key + 1 }}</td>
+                                        <td>{{ $datas->negara_pengirim }}</td>
+                                        <td>{{ $datas->no_referensi }}</td>
+                                        <td>{{ number_format($datas->bsu ?? '0') }}</td>
+                                        <td>{{ $datas->tgl_valid ?? '' }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            @elseif(!empty($tanggal_dari) && empty($pencarian_detail_negara))
+                <div class="crm-table-card">
+                    <div class="crm-table-toolbar">
+                        <div>
+                            <h2 class="crm-table-title">Hasil Pencarian Negara</h2>
+                            <div class="crm-table-meta">
+                                Tanggal Dari : {{ $tanggal_dari }} dan Sampai {{ $tanggal_sampai }}
+                                · Total BSU : {{ $totalbsu }}
+                                · Total perbuatan : {{ $jumlah }}
                             </div>
-                            @endif
+                        </div>
+                        <div class="crm-actions">
+                            <span class="crm-badge">{{ count($data) }} data</span>
+                            <input type="button" value="CETAK" class="crm-btn crm-btn-sm crm-btn-primary">
+                        </div>
+                    </div>
+                    <div class="crm-table-wrap">
+                        <table id="example" class="table crm-table table-striped table-bordered" style="width:100%;">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Nama Negara</th>
+                                    <th>BSU</th>
+                                    <th>Perbuatan</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($data as $key => $datas)
+                                    <tr>
+                                        <td>{{ $key + 1 }}</td>
+                                        <td>
+                                            @if($isCompliance)
+                                                <form action="{{ route('pencarian_detail_negara') }}" method="POST" class="d-inline m-0">
+                                            @elseif($isOperasional)
+                                                <form action="{{ route('pencarian_detail_negara_operasional') }}" method="POST" class="d-inline m-0">
+                                            @endif
+                                                @csrf
+                                                <input type="hidden" name="negara_pengirim" value="{{ $datas->negara_pengirim }}">
+                                                <input type="hidden" name="dari" value="{{ $tanggal_dari }}">
+                                                <input type="hidden" name="sampai" value="{{ $tanggal_sampai }}">
+                                                <button type="submit" class="badge badge-primary">
+                                                    {{ $datas->negara_pengirim }}
+                                                </button>
+                                            </form>
+                                        </td>
+                                        <td>{{ number_format($datas->sum) }}</td>
+                                        <td>{{ $datas->perbuatan }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            @elseif(!empty($pencarian_detail_negara) && !empty($receive))
+                <div class="crm-table-card">
+                    <div class="crm-table-toolbar">
+                        <div>
+                            <h2 class="crm-table-title">Nama Kota : {{ $datakotas->nama ?? '-' }}</h2>
+                            <div class="crm-table-meta">
+                                Tanggal Dari : {{ $tanggal_dari }} dan Sampai {{ $tanggal_sampai }}
+                                · Total BSU : {{ $totalbsu }}
+                                · Total perbuatan : {{ $jumlah }}
+                            </div>
+                        </div>
+                        <span class="crm-badge">{{ count($data) }} data</span>
+                    </div>
+                    <div class="crm-table-wrap">
+                        <table id="example" class="table crm-table table-striped table-bordered" style="width:100%;">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Nopend</th>
+                                    <th>Nama Penerima</th>
+                                    <th>Nama Pengirim</th>
+                                    <th>Negara Pengirim</th>
+                                    <th>No Referensi</th>
+                                    <th>BSU</th>
+                                    <th>Tanggal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($data as $key => $datas)
+                                    @php
+                                        $nopend = substr($datas->id_pos, 0, 5);
+                                        $datakota = DB::table('nopend_lama')->where('kpc', 'like', $nopend . '%')->first();
+                                    @endphp
+                                    <tr>
+                                        <td>{{ $key + 1 }}</td>
+                                        <td>{{ $datas->id_pos }} ({{ $datakota->nama ?? '' }})</td>
+                                        <td>{{ $datas->nama_penerima }}</td>
+                                        <td>{{ $datas->nama_pengirim }}</td>
+                                        <td>{{ $datas->negara_pengirim }}</td>
+                                        <td>{{ $datas->no_referensi }}</td>
+                                        <td>{{ $datas->bsubanyak }}</td>
+                                        <td>{{ $datas->tanggal }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            @endif
+        @elseif($isSend)
+            <div class="crm-search">
+                <form class="crm-search-form" action="{{ $sendSearchRoute }}" method="POST">
+                    @csrf
+                    <div class="crm-search-field">
+                        <label for="daterange">Tanggal Dari</label>
+                        <input type="text" class="form-control" id="daterange" name="reservation">
+                    </div>
+                    <div class="crm-search-actions">
+                        <button type="submit" class="crm-btn crm-btn-primary">
+                            <i class="fas fa-search"></i> Cari
+                        </button>
+                    </div>
+                </form>
+            </div>
 
-                            @if(session('error'))
-                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                                <strong>{{  session('error')}} </strong>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                              </div>
-                            @endif
-                            <br>
-                        @if($levelnya=="operasional")   
-                            <a href="{{url('negara_send_operasional')}}"><button type=button class="btn btn-info">Send</button></a>  &nbsp; <a href="{{url('negara_receive_operasional')}}"><button type=button class="btn btn-success">Receive</button></a><br>
-                         @elseif($levelnya=="compliance")  
-                            <a href="{{url('negara_send')}}"><button type=button class="btn btn-info">Send</button></a>  &nbsp; <a href="{{url('negara_receive')}}"><button type=button class="btn btn-success">Receive</button></a><br>
-                         @endif
-                        @if(!empty($receive))
-                            <br>
-                            <label>Tanggal Dari: </label>
-                            @if($levelnya=="operasional") 
-                              <form action="{{route('cari_negara_operasional')}}" method="POST" style="width:35%">
-                            @elseif($levelnya=="compliance")  
-                              <form action="{{route('cari_negara')}}" method="POST" style="width:35%">    
-                            @endif
-                              @csrf
-                                <div class="form-group">
-                                <div class="input-group"> 
-                                    <input type='text' class="form-control" id="daterange" name="reservation"/>&nbsp;
-                                    <button type=submit class="btn btn-info">Cari</button>
-                                </div>
-                                </div><br>
-                            </form>
-
-                            
-                                @if(empty($tanggal_dari) && empty($negara_pengirim) && empty($pencarian_detail_negara))
-                                    <h3>Nama Negara</h3>
-                                    <table  id="example" class="table  table-striped  table-bordered" style="width:100%;">
-                                            <thead>
-                                            <tr>
-                                                <th>No</th>
-                                                <th>Nama Negara</th>	  
-                                                <th>BSU</th>	  
-                                                <th>Perbuatan</th>
-                                            </tr> 
-                                            </thead>
-                                        
-                                            <tbody>
-                                            @foreach ($data  as $key => $datas)
-                                                    <tr>
-                                                    
-                                                        <th >{{$key+1 }}</th>
-                                                        <td>
-                                                            @if($levelnya=="compliance")
-                                                            <form action="{{route('proses_detail_negara')}}" method="POST" style="width:50%;">
-                                                        @elseif($levelnya=="operasional")
-                                                            <form action="{{route('proses_detail_negara_operasional')}}" method="POST" style="width:50%;">
-                                                        @endif
-                                                            @csrf
-                                                                <input type="hidden" id="negara_pengirim" name="negara_pengirim" value="{{$datas->negara_pengirim}}">
-                                                                <button type=submit class="badge badge-primary">
-                                                                    {{ $datas->negara_pengirim }}
-                                                                </button>
-                                                            </form> 
-                                                    
-                                                        </td>
-                                                        <td> {{(number_format($datas->sum ?? '0'))}} </td>
-                                                        <td> {{number_format($datas->perbuatan ?? '0')}} </td>
-                                                    </tr>
-                                            @endforeach 
-                                        </tbody>
-                                        </table>
-                                @elseif(!empty($negara_pengirim) && !empty($receive) && empty($pencarian_detail_negara))
-                                <h2>Nama Negara :{{$negara_pengirim}}</h2>
-                                <table  id="example" class="table  table-striped  table-bordered1" style="width:100%;">
-                                        <thead>
-                                        <tr>
-                                            <th>No</th>
-                                            <th>Nama Negara</th>
-                                            <th>No Referensi</th>
-                                            <th>BSU</th> 
-                                            <th>Tanggal</th> 			  
-                                        </tr> 
-                                        </thead>
-                                        <tfoot>
-                                        <tr>
-                                            <th>No</th>
-                                            <th>Nama Negara</th>
-                                            <th>No Referensi</th>
-                                            <th>BSU</th>  
-                                            <th>Tanggal</th> 			
-                                        </tr> 
-                                        </tfoot>
-                                        <tbody>
-                                        @foreach ($data  as $key => $datas)
-                                            <tr>
-                                                <th>{{$key+1 }}</th>
-                                                <th>{{$datas->negara_pengirim}}</th>
-                                                <th>{{$datas->no_referensi}}</th>
-                                                <th>{{number_format($datas->bsu ?? '0')}}</th>
-                                                <th>{{$datas->tgl_valid ?? ''}}</th>
-                                            </tr>  
-                                        @endforeach 
-                                        </tbody>
-                                        </table>
-                                        @elseif(!empty($tanggal_dari) && empty($pencarian_detail_negara))
-                                            <h3>Tanggal Dari : {{$tanggal_dari}} dan Sampai {{$tanggal_sampai}}</h3><h4>Total BSU : {{$totalbsu}}</h4>
-                                            <h4>Total perbuatan : {{$jumlah}}<br></h4><br><input type=button value=CETAK class=btn btn-danger><br><br>
-                                            <table  id="example" class="table  table-striped  table-bordered" style="width:100%;">
-                                                <thead>
-                                                <tr>
-                                                    <th>No</th>
-                                                    <th>Nama Negara</th>
-                                                    <th>BSU</th>  
-                                                    <th>Perbuatan</th>       
-                                                </tr> 
-                                                </tr> 
-                                                </thead>
-                                            
-                                                <tbody>
-                                                @foreach ($data  as $key => $datas)
-                                                <tr>
-                                                    <th>{{$key+1 }}</th>
-                                                    <th>
-                                                   @if($levelnya=="compliance")     
-                                                    <form action="{{route('pencarian_detail_negara')}}" method="POST" style="width:50%;">
-                                                   @elseif($levelnya=="operasional")
-                                                   <form action="{{route('pencarian_detail_negara_operasional')}}" method="POST" style="width:50%;">
-                                                   @endif 
-                                                    @csrf
-                                                        <input type="hidden" name="negara_pengirim" value="{{$datas->negara_pengirim}}">
-                                                       
-                                                        <input type="hidden" name="dari" value="{{$tanggal_dari}}">
-                                                        <input type="hidden" name="sampai" value="{{$tanggal_sampai}}">
-                                                        <button type=submit class="badge badge-primary">
-                                                            {{ $datas->negara_pengirim }}
-                                                        </button>
-                                                    </form> 
-                                                
-                                                    </th>
-                                                    <th>{{number_format($datas->sum)}}</th>
-                                                    <th>{{$datas->perbuatan}}</th>
-                                                    </tr>  
-                                                @endforeach 
-                                            </tbody>
-                                            </table>
-
-                                        @elseif(!empty($pencarian_detail_negara) && !empty($receive))  
-                                            <h3>Tanggal Dari : {{$tanggal_dari}} dan Sampai {{$tanggal_sampai}}</h3>
-                                            <h4>Total BSU : {{$totalbsu}}</h4>
-                                            <h4>Total perbuatan : {{$jumlah}}<br></h4>
-                                    
-                                            <h2>Nama Kota : {{$datakotas->nama?? '-'}} </h2>
-
-                                            <table  id="example" class="table  table-striped table-responsive   table-bordered" style="width:100%;">
-                                            <thead>
-                                                <tr>
-                                                <th>No</th>
-                                                <th>Nopend</th>
-                                                <th>Nama Penerima</th>
-                                                <th>Nama Pengirim</th>
-                                                <th>Negara Pengirim</th>
-                                                <th>No Referensi</th>
-                                                <th>BSU</th> 
-                                                <th>Tanggal</th> 			  
-                                                </tr> 
-                                                </thead>
-                                            
-                                                <tbody>
-                                                @foreach ($data  as $key => $datas)
-                                                <tr>
-                                                    <?php
-                                                    $nopend=substr($datas->id_pos,0,5);		
-                                                    $datakota= DB::table('nopend_lama')->where('kpc','like',$nopend.'%')->first();
-                                                    ?>
-                                                    <th>{{$key+1 }}</th>
-                                                    <th>{{$datas->id_pos}} ({{$datakota->nama}})</th>
-                                                    <th>{{$datas->nama_penerima}} </th>
-                                                    <th>{{$datas->nama_pengirim}} </th>
-                                                    <th>{{$datas->negara_pengirim}} </th>
-                                                    <th>{{$datas->no_referensi}} </th>
-                                                    <th>{{$datas->bsubanyak}} </th>
-                                                    <th>{{$datas->tanggal}} </th>
-                                                </tr>
-                                                @endforeach 
-                                            </tbody>
-                                            </table>
-                                        @endif
-                                        </div>
-                                        </div>
-                        @elseif(!empty($send))
-                        <br>
-                            <label>Tanggal Dari: </label>
-                           @if($levelnya=="compliance") 
-                              <form action="{{route('cari_negara_send')}}" method="POST" style="width:35%">
-                           @elseif($levelnya=="operasional") 
-                              <form action="{{route('cari_negara_send_operasional')}}" method="POST" style="width:35%">
-                           @endif 
-                            @csrf
-                                <div class="form-group">
-                                <div class="input-group"> 
-                                    <input type='text' class="form-control" id="daterange" name="reservation"/>&nbsp;
-                                    <button type=submit class="btn btn-info">Cari</button>
-                                </div>
-                                </div><br>
-                            </form>
-                            @if(empty($tanggal_dari) && empty($negara_penerima) && empty($pencarian_detail_negara_send))
-                                    <h3>Nama Negara</h3>
-                                    <table  id="example" class="table  table-striped  table-bordered" style="width:100%;">
-                                            <thead>
-                                            <tr>
-                                                <th>No</th>
-                                                <th>Nama Negara Penerima</th>	  
-                                                <th>BSU</th>	  
-                                                <th>Perbuatan</th>
-                                            </tr> 
-                                            </thead>
-                                        
-                                            <tbody>
-                                            @foreach ($data  as $key => $datas)
-                                                    <tr>
-                                                    
-                                                        <th >{{$key+1 }}</th>
-                                                        <td>
-                                                            @if($levelnya=="compliance")
-                                                                <form action="{{route('proses_detail_negara_send')}}" method="POST" style="width:50%;">
-                                                            @elseif($levelnya=="operasional")
-                                                                <form action="{{route('proses_detail_negara_operasional_send')}}" method="POST" style="width:50%;">
-                                                            @endif
-                                                            @csrf
-                                                                <input type="hidden" id="negara_penerima" name="negara_penerima" value="{{$datas->negara_penerima}}">
-                                                                <button type=submit class="badge badge-primary">
-                                                                    {{ $datas->negara_penerima }}
-                                                                </button>
-                                                            </form> 
-                                                    
-                                                        </td>
-                                                        <td> {{(number_format($datas->sum ?? '0'))}} </td>
-                                                        <td> {{number_format($datas->perbuatan ?? '0')}} </td>
-                                                    </tr>
-                                            @endforeach 
-                                        </tbody>
-                                        </table>
-                                        @elseif(!empty($negara_penerima) && !empty($send)  && empty($pencarian_detail_negara_send))
-                                        <h2>Nama Negara :{{$negara_penerima}}</h2>
-                                        <table  id="example" class="table  table-striped  table-bordered1" style="width:100%;">
-                                                <thead>
-                                                <tr>
-                                            <th>No</th>
-                                            <th>Nama Negara</th>
-                                            <th>No Referensi</th>
-                                            <th>BSU</th> 
-                                            <th>Tanggal</th> 			  
-                                            </tr> 
-                                            </thead>
-                                            <tfoot>
-                                            <tr>
-                                                <th>No</th>
-                                                <th>Nama Negara</th>
-                                                <th>No Referensi</th>
-                                                <th>BSU</th>  
-                                                <th>Tanggal</th> 			
-                                            </tr> 
-                                        </tfoot>
-                                        <tbody>
-                                        @foreach ($data  as $key => $datas)
-                                            <tr>
-                                                <th>{{$key+1 }}</th>
-                                                <th>{{$datas->negara_penerima}}</th>
-                                                <th>{{$datas->no_referensi}}</th>
-                                                <th>{{number_format($datas->amount ?? '0')}}</th>
-                                                <th>{{$datas->tanggal ?? ''}}</th>
-                                            </tr>  
-                                        @endforeach 
-                                        </tbody>
-                                        </table>
-                                        @elseif(!empty($tanggal_dari) && empty($pencarian_detail_negara_send))
-                                            <h3>Tanggal Dari : {{$tanggal_dari}} dan Sampai {{$tanggal_sampai}}</h3><h4>Total BSU : {{$totalbsu}}</h4>
-                                            <h4>Total perbuatan : {{$jumlah}}<br></h4><br><input type=button value=CETAK class=btn btn-danger><br><br>
-                                            <table  id="example" class="table  table-striped  table-bordered" style="width:100%;">
-                                                <thead>
-                                                <tr>
-                                                    <th>No</th>
-                                                    <th>Nama Negara</th>
-                                                    <th>BSU</th>  
-                                                    <th>Perbuatan</th>       
-                                                </tr> 
-                                                </tr> 
-                                                </thead>
-                                            
-                                                <tbody>
-                                                @foreach ($data  as $key => $datas)
-                                                <tr>
-                                                    <th>{{$key+1 }}</th>
-                                                    <th>
-                                                    @if($levelnya=="compliance")    
-                                                        <form action="{{route('pencarian_detail_negara_send')}}" method="POST" style="width:50%;">
-                                                    @elseif($levelnya=="operasional")
-                                                        <form action="{{route('pencarian_detail_negara_send_operasional')}}" method="POST" style="width:50%;">
-                                                    @endif    
-                                                    @csrf
-                                                        <input type="hidden" name="negara_penerima" value="{{$datas->negara_penerima}}">
-                                                        <input type="hidden" name="id_pos" value="{{$datas->id_pos}}">
-                                                        <input type="hidden" name="dari" value="{{$tanggal_dari}}">
-                                                        <input type="hidden" name="sampai" value="{{$tanggal_sampai}}">
-                                                        <button type=submit class="badge badge-primary">
-                                                            {{ $datas->negara_penerima }}
-                                                        </button>
-                                                    </form> 
-                                                
-                                                    </th>
-                                                    <th>{{number_format($datas->sum)}}</th>
-                                                    <th>{{$datas->perbuatan}}</th>
-                                                    </tr>  
-                                                @endforeach 
-                                            </tbody>
-                                            </table>
-                                        @elseif(!empty($proses_detail_negara_send))  
-                                            <h3>Tanggal Dari : {{$tanggal_dari}} dan Sampai {{$tanggal_sampai}}</h3>
-                                            <h4>Total BSU : {{$totalbsu}}</h4>
-                                            <h4>Total perbuatan : {{$jumlah}}<br></h4>
-                                    
-                                            <h2>Nama Kota : {{$datakotas->nama?? '-'}} </h2>
-
-                                            <table  id="example" class="table  table-striped table-responsive   table-bordered" style="width:100%;">
-                                            <thead>
-                                                <tr>
-                                                <th>No</th>
-                                                <th>Nopend</th>
-                                                <th>Nama Penerima</th>
-                                                <th>Nama Pengirim</th>
-                                                <th>Negara Pengirim</th>
-                                                <th>No Referensi</th>
-                                                <th>BSU</th> 
-                                                <th>Tanggal</th> 			  
-                                                </tr> 
-                                                </thead>
-                                            
-                                                <tbody>
-                                                @foreach ($data  as $key => $datas)
-                                                <tr>
-                                                    <?php
-                                                    $nopend=substr($datas->id_pos,0,5);		
-                                                    $datakota= DB::table('nopend_lama')->where('kpc','like',$nopend.'%')->first();
-                                                    ?>
-                                                    <th>{{$key+1 }}</th>
-                                                    <th>{{$datas->id_pos}} ({{$datakota->nama}})</th>
-                                                    <th>{{$datas->nama_penerima}} </th>
-                                                    <th>{{$datas->nama_pengirim}} </th>
-                                                    <th>{{$datas->negara_pengirim}} </th>
-                                                    <th>{{$datas->no_referensi}} </th>
-                                                    <th>{{number_format($datas->amount ?? 0)}} </th>
-                                                    <th>{{$datas->tanggal}} </th>
-                                                </tr>
-                                                @endforeach
-                                            </tbody>
-                                            </table>
-                                        @elseif(!empty($pencarian_detail_negara_send) && !empty($send))
-                                            <h3>Tanggal Dari : {{$tanggal_dari}} dan Sampai {{$tanggal_sampai}}</h3>
-                                            <h4>Total BSU : {{$totalbsu}}</h4>
-                                            <h4>Total perbuatansss : {{$jumlah}} <br></h4>
-                                    
-                                            <h2>Nama Kota : {{$datakotas->nama?? '-'}}  </h2>
-
-                                            <table  id="example" class="table  table-striped table-responsive   table-bordered" style="width:100%;">
-                                            <thead>
-                                                <tr>
-                                                <th>No</th>
-                                                <th>Nopend</th>
-                                                <th>Nama Penerima</th>
-                                                <th>Nama Pengirim</th>
-                                                <th>Negara Penerima</th>
-                                                <th>No Referensi</th>
-                                                <th>BSU</th> 
-                                                <th>Tanggal</th> 			  
-                                                </tr> 
-                                                </thead>
-                                            
-                                                <tbody>
-                                                @foreach ($data  as $key => $datas)
-                                                <tr>
-                                                    <?php
-                                                    $nopend=substr($datas->id_pos,0,5);		
-                                                    $datakota= DB::table('nopend_lama')->where('kpc','like',$nopend.'%')->first();
-                                                    ?>
-                                                    <th>{{$key+1 }}</th>
-                                                    <th>{{$datas->id_pos}} ({{$datakota->nama}})</th>
-                                                    <th>{{$datas->nama_penerima}} </th>
-                                                    <th>{{$datas->nama_pengirim}} </th>
-                                                    <th>{{$datas->negara_penerima}} </th>
-                                                    <th>{{$datas->no_referensi}} </th>
-                                                    <th>{{number_format($datas->amount ?? 0)}} </th>
-                                                    <th>{{$datas->tanggal}} </th>
-                                                </tr>
-                                                @endforeach 
-                                            </tbody>
-                                            </table>
-                             @endif
-                        @endif
-                        </div><!--card-body-->
-
-                    </div><!--card-->
-                </div><!--col-md-12-->
-            </div><!--row-->
-        </div><!--container-fluid-->
+            @if(empty($tanggal_dari) && empty($negara_penerima) && empty($pencarian_detail_negara_send))
+                <div class="crm-table-card">
+                    <div class="crm-table-toolbar">
+                        <div>
+                            <h2 class="crm-table-title">Nama Negara</h2>
+                            <div class="crm-table-meta">Send — daftar negara penerima</div>
+                        </div>
+                        <span class="crm-badge">{{ count($data) }} data</span>
+                    </div>
+                    <div class="crm-table-wrap">
+                        <table id="example" class="table crm-table table-striped table-bordered" style="width:100%;">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Nama Negara Penerima</th>
+                                    <th>BSU</th>
+                                    <th>Perbuatan</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($data as $key => $datas)
+                                    <tr>
+                                        <td>{{ $key + 1 }}</td>
+                                        <td>
+                                            @if($isCompliance)
+                                                <form action="{{ route('proses_detail_negara_send') }}" method="POST" class="d-inline m-0">
+                                            @elseif($isOperasional)
+                                                <form action="{{ route('proses_detail_negara_operasional_send') }}" method="POST" class="d-inline m-0">
+                                            @endif
+                                                @csrf
+                                                <input type="hidden" id="negara_penerima" name="negara_penerima" value="{{ $datas->negara_penerima }}">
+                                                <button type="submit" class="badge badge-primary">
+                                                    {{ $datas->negara_penerima }}
+                                                </button>
+                                            </form>
+                                        </td>
+                                        <td>{{ number_format($datas->sum ?? '0') }}</td>
+                                        <td>{{ number_format($datas->perbuatan ?? '0') }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            @elseif(!empty($negara_penerima) && !empty($send) && empty($pencarian_detail_negara_send))
+                <div class="crm-table-card">
+                    <div class="crm-table-toolbar">
+                        <div>
+                            <h2 class="crm-table-title">Nama Negara : {{ $negara_penerima }}</h2>
+                            <div class="crm-table-meta">Send — detail per negara</div>
+                        </div>
+                        <span class="crm-badge">{{ count($data) }} data</span>
+                    </div>
+                    <div class="crm-table-wrap">
+                        <table id="example" class="table crm-table table-striped table-bordered" style="width:100%;">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Nama Negara</th>
+                                    <th>No Referensi</th>
+                                    <th>BSU</th>
+                                    <th>Tanggal</th>
+                                </tr>
+                            </thead>
+                            <tfoot>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Nama Negara</th>
+                                    <th>No Referensi</th>
+                                    <th>BSU</th>
+                                    <th>Tanggal</th>
+                                </tr>
+                            </tfoot>
+                            <tbody>
+                                @foreach ($data as $key => $datas)
+                                    <tr>
+                                        <td>{{ $key + 1 }}</td>
+                                        <td>{{ $datas->negara_penerima }}</td>
+                                        <td>{{ $datas->no_referensi }}</td>
+                                        <td>{{ number_format($datas->amount ?? '0') }}</td>
+                                        <td>{{ $datas->tanggal ?? '' }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            @elseif(!empty($tanggal_dari) && empty($pencarian_detail_negara_send))
+                <div class="crm-table-card">
+                    <div class="crm-table-toolbar">
+                        <div>
+                            <h2 class="crm-table-title">Hasil Pencarian Negara</h2>
+                            <div class="crm-table-meta">
+                                Tanggal Dari : {{ $tanggal_dari }} dan Sampai {{ $tanggal_sampai }}
+                                · Total BSU : {{ $totalbsu }}
+                                · Total perbuatan : {{ $jumlah }}
+                            </div>
+                        </div>
+                        <div class="crm-actions">
+                            <span class="crm-badge">{{ count($data) }} data</span>
+                            <input type="button" value="CETAK" class="crm-btn crm-btn-sm crm-btn-primary">
+                        </div>
+                    </div>
+                    <div class="crm-table-wrap">
+                        <table id="example" class="table crm-table table-striped table-bordered" style="width:100%;">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Nama Negara</th>
+                                    <th>BSU</th>
+                                    <th>Perbuatan</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($data as $key => $datas)
+                                    <tr>
+                                        <td>{{ $key + 1 }}</td>
+                                        <td>
+                                            @if($isCompliance)
+                                                <form action="{{ route('pencarian_detail_negara_send') }}" method="POST" class="d-inline m-0">
+                                            @elseif($isOperasional)
+                                                <form action="{{ route('pencarian_detail_negara_send_operasional') }}" method="POST" class="d-inline m-0">
+                                            @endif
+                                                @csrf
+                                                <input type="hidden" name="negara_penerima" value="{{ $datas->negara_penerima }}">
+                                                <input type="hidden" name="id_pos" value="{{ $datas->id_pos }}">
+                                                <input type="hidden" name="dari" value="{{ $tanggal_dari }}">
+                                                <input type="hidden" name="sampai" value="{{ $tanggal_sampai }}">
+                                                <button type="submit" class="badge badge-primary">
+                                                    {{ $datas->negara_penerima }}
+                                                </button>
+                                            </form>
+                                        </td>
+                                        <td>{{ number_format($datas->sum) }}</td>
+                                        <td>{{ $datas->perbuatan }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            @elseif(!empty($proses_detail_negara_send))
+                <div class="crm-table-card">
+                    <div class="crm-table-toolbar">
+                        <div>
+                            <h2 class="crm-table-title">Nama Kota : {{ $datakotas->nama ?? '-' }}</h2>
+                            <div class="crm-table-meta">
+                                Tanggal Dari : {{ $tanggal_dari }} dan Sampai {{ $tanggal_sampai }}
+                                · Total BSU : {{ $totalbsu }}
+                                · Total perbuatan : {{ $jumlah }}
+                            </div>
+                        </div>
+                        <span class="crm-badge">{{ count($data) }} data</span>
+                    </div>
+                    <div class="crm-table-wrap">
+                        <table id="example" class="table crm-table table-striped table-bordered" style="width:100%;">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Nopend</th>
+                                    <th>Nama Penerima</th>
+                                    <th>Nama Pengirim</th>
+                                    <th>Negara Pengirim</th>
+                                    <th>No Referensi</th>
+                                    <th>BSU</th>
+                                    <th>Tanggal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($data as $key => $datas)
+                                    @php
+                                        $nopend = substr($datas->id_pos, 0, 5);
+                                        $datakota = DB::table('nopend_lama')->where('kpc', 'like', $nopend . '%')->first();
+                                    @endphp
+                                    <tr>
+                                        <td>{{ $key + 1 }}</td>
+                                        <td>{{ $datas->id_pos }} ({{ $datakota->nama ?? '' }})</td>
+                                        <td>{{ $datas->nama_penerima }}</td>
+                                        <td>{{ $datas->nama_pengirim }}</td>
+                                        <td>{{ $datas->negara_pengirim }}</td>
+                                        <td>{{ $datas->no_referensi }}</td>
+                                        <td>{{ number_format($datas->amount ?? 0) }}</td>
+                                        <td>{{ $datas->tanggal }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            @elseif(!empty($pencarian_detail_negara_send) && !empty($send))
+                <div class="crm-table-card">
+                    <div class="crm-table-toolbar">
+                        <div>
+                            <h2 class="crm-table-title">Nama Kota : {{ $datakotas->nama ?? '-' }}</h2>
+                            <div class="crm-table-meta">
+                                Tanggal Dari : {{ $tanggal_dari }} dan Sampai {{ $tanggal_sampai }}
+                                · Total BSU : {{ $totalbsu }}
+                                · Total perbuatansss : {{ $jumlah }}
+                            </div>
+                        </div>
+                        <span class="crm-badge">{{ count($data) }} data</span>
+                    </div>
+                    <div class="crm-table-wrap">
+                        <table id="example" class="table crm-table table-striped table-bordered" style="width:100%;">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Nopend</th>
+                                    <th>Nama Penerima</th>
+                                    <th>Nama Pengirim</th>
+                                    <th>Negara Penerima</th>
+                                    <th>No Referensi</th>
+                                    <th>BSU</th>
+                                    <th>Tanggal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($data as $key => $datas)
+                                    @php
+                                        $nopend = substr($datas->id_pos, 0, 5);
+                                        $datakota = DB::table('nopend_lama')->where('kpc', 'like', $nopend . '%')->first();
+                                    @endphp
+                                    <tr>
+                                        <td>{{ $key + 1 }}</td>
+                                        <td>{{ $datas->id_pos }} ({{ $datakota->nama ?? '' }})</td>
+                                        <td>{{ $datas->nama_penerima }}</td>
+                                        <td>{{ $datas->nama_pengirim }}</td>
+                                        <td>{{ $datas->negara_penerima }}</td>
+                                        <td>{{ $datas->no_referensi }}</td>
+                                        <td>{{ number_format($datas->amount ?? 0) }}</td>
+                                        <td>{{ $datas->tanggal }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            @endif
+        @endif
+    </div>
+</div>
 @stop
 
 @section('js')
-
-<script type="text/javascript">
-  $(document).ready(function() {
-    $('#daterange').daterangepicker();
-    $('#daterange2').daterangepicker();
-    $('#example').DataTable();
-} );
-</script>
-
-   <script>
-            
-        $("#success-alert").fadeTo(2000, 500).fadeOut(500, function(){
-        $("#success-alert").fadeOut(500);
-        });
-   </script>
-     
-
+@include('partials.crm.datatable-boot')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
-
+<script>
+    $(document).ready(function () {
+        $('#daterange').daterangepicker();
+        CrmDataTable.mount('#example');
+    });
+</script>
 @stop
