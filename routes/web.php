@@ -53,9 +53,12 @@ Route::get('history_amend_pos',[App\Http\Controllers\ReportingController::class,
 Route::get('popimage',[App\Http\Controllers\ReportingController::class,'popimage'])->name('popimage')->middleware('auth');
 Route::get('nama',[App\Http\Controllers\CheckingController::class,'nama'])->name('nama')->middleware('auth');
 Route::post('cari_nama',[App\Http\Controllers\CheckingController::class,'cari_nama'])->name('cari_nama')->middleware('auth');
+
 Route::get('profil',[App\Http\Controllers\CheckingController::class,'profil'])->name('profil')->middleware('auth');
-Route::post('search_profil',[App\Http\Controllers\CheckingController::class,'search_profil'])->name('search_profil')->middleware('auth');
-Route::post('detail_transaksi',[App\Http\Controllers\CheckingController::class,'detail_transaksi'])->name('detail_transaksi')->middleware('auth');
+Route::get('search_profil',[App\Http\Controllers\CheckingController::class,'search_profil'])->name('search_profil')->middleware('auth');
+Route::post('update_profil',[App\Http\Controllers\CheckingController::class,'update_profil'])->name('update_profil')->middleware('auth');
+Route::get('detail_transaksi',[App\Http\Controllers\CheckingController::class,'detail_transaksi'])->name('detail_transaksi')->middleware('auth');
+
 Route::get('sales',[App\Http\Controllers\CheckingController::class,'sales'])->name('sales')->middleware('auth');
 Route::get('newcustomer',[App\Http\Controllers\CheckingController::class,'newcustomer'])->name('newcustomer')->middleware('auth');
 Route::get('newcustomer-send',[App\Http\Controllers\CheckingController::class,'newcustomer_send'])->name('newcustomer_send')->middleware('auth');
