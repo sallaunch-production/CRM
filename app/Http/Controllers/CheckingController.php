@@ -120,8 +120,16 @@ class CheckingController extends Controller
     {
         //  cek berhasil login 
         if (Auth::check()) {
+
             $nama = trim((string) $request->nama);
-            $allowed = ['nama', 'telepon_penerima', 'tanggal_lahir', 'nomor_identitas'];
+
+            $allowed = [
+                'nama',
+                'telepon_penerima',
+                'tanggal_lahir',
+                'nomor_identitas'
+            ];
+
             $berdasarkan = in_array($request->berdasarkan, $allowed, true)
                 ? $request->berdasarkan
                 : 'nama';
@@ -139,7 +147,15 @@ class CheckingController extends Controller
                 )";
 
             $dedup = DB::table('profil')
-                ->selectRaw("DISTINCT ON ({$uniqueKey}) *")
+                ->leftJoin('users', function ($join) {
+                    $join->on('users.id', '=', 'profil.lapor_updated_by');
+                })
+                ->selectRaw("
+                    DISTINCT ON ({$uniqueKey}) 
+                    profil.*,
+                    users.name as lapor_updated_by_name
+                    ")
+
                 ->where($berdasarkan, 'ILIKE', '%' . $nama . '%')
                 ->orderByRaw($uniqueKey)
                 ->orderByDesc('id');
@@ -179,7 +195,10 @@ class CheckingController extends Controller
                     'lapor_updated_by' => Auth::id(),
                 ]);
 
-            return redirect()->back()->with('success', 'Profil customer berhasil diperbarui.');
+            return redirect()->back()->with(
+                'success',
+                'Profil customer berhasil diperbarui.'
+            );
         }
 
         return redirect('login')->with('You dont have access');

@@ -164,6 +164,26 @@
                             ['label' => 'Kota', 'value' => $transactions->kota_penerima ?? '', 'wide' => false],
                             ['label' => 'Kewarganegaraan', 'value' => $transactions->negara ?? '', 'wide' => false],
                             ['label' => 'Alamat', 'value' => $transactions->alamat_penerima ?? '', 'wide' => true],
+                            [
+                                'label' => 'Lapor',
+                                'value' => $transactions->lapor ?? '',
+                                'wide' => false,
+                            ],
+                            [
+                                'label' => 'Remark',
+                                'value' => $transactions->remark ?? '',
+                                'wide' => false,
+                            ],
+                            [
+                                'label' => 'Lapor Updated At',
+                                'value' => $transactions->lapor_updated_at ?? '',
+                                'wide' => false,
+                            ],
+                            [
+                                'label' => 'Lapor Updated By',
+                                'value' => $transactions->lapor_updated_by_name ?? '',
+                                'wide' => false,
+                            ],
                         ];
                     @endphp
                     <div class="modal fade crm-modal" id="myModal{{ $transactions->id }}" tabindex="-1" role="dialog"
