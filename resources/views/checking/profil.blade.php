@@ -249,12 +249,14 @@
 
                                         <div class="crm-detail-grid">
 
-                                            {{-- Lapor --}}
-                                            <div class="crm-detail-item">
-                                                <label for="lapor{{ $transactions->id }}">Lapor</label>
+                                            {{-- Lapor (wajib) --}}
+                                            <div class="crm-detail-item is-wide">
+                                                <label for="lapor{{ $transactions->id }}">
+                                                    Lapor <span class="text-danger">*</span>
+                                                </label>
 
                                                 <select id="lapor{{ $transactions->id }}" name="lapor"
-                                                    class="form-control">
+                                                    class="form-control" required>
                                                     <option value="">-- Pilih Lapor --</option>
 
                                                     <option value="LTKM" @selected(old('lapor', $transactions->lapor ?? '') === 'LTKM')>
@@ -270,12 +272,12 @@
                                                     </option>
                                                 </select>
                                             </div>
-                                            {{-- Remark --}}
+                                            {{-- Remark (opsional) --}}
                                             <div class="crm-detail-item is-wide">
                                                 <label for="remark{{ $transactions->id }}">Remark</label>
 
                                                 <textarea id="remark{{ $transactions->id }}" name="remark" class="form-control" rows="3"
-                                                    placeholder="Masukkan remark...">{{ old('remark', $transactions->remark ?? '') }}</textarea>
+                                                    placeholder="Masukkan remark (opsional)...">{{ old('remark', $transactions->remark ?? '') }}</textarea>
                                             </div>
 
                                         </div>

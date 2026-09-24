@@ -181,15 +181,20 @@ class CheckingController extends Controller
         if (Auth::check()) {
             $validated = $request->validate([
                 'id' => ['required', 'integer'],
-                'lapor' => ['nullable', 'string', 'max:255'],
+                'lapor' => ['required', 'string', 'in:LTKM,Monthly Fraud,Sanction'],
                 'remark' => ['nullable', 'string', 'max:255'],
+            ], [
+                'lapor.required' => 'Kolom Lapor wajib diisi.',
+                'lapor.in' => 'Pilihan Lapor tidak valid.',
             ]);
+
+            $remark = trim((string) ($validated['remark'] ?? ''));
 
             DB::table('profil')
                 ->where('id', $validated['id'])
                 ->update([
-                    'lapor' => $validated['lapor'] ?? null,
-                    'remark' => $validated['remark'] ?? null,
+                    'lapor' => $validated['lapor'],
+                    'remark' => $remark !== '' ? $remark : null,
 
                     'lapor_updated_at' => Carbon::now(),
                     'lapor_updated_by' => Auth::id(),
