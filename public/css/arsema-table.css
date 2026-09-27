@@ -563,6 +563,12 @@ table.crm-table {
     margin-left: auto;
 }
 
+.dataTables_wrapper .crm-dt-buttons {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 0.5rem;
+}
+
 .dataTables_wrapper .dataTables_length,
 .dataTables_wrapper .dataTables_filter {
     font-size: 0.85rem;
@@ -1108,17 +1114,22 @@ div.dt-buttons {
 
 div.dt-buttons .dt-button {
     border-radius: 8px !important;
-    border: 1px solid var(--crm-slate-300) !important;
-    background: #fff !important;
-    color: var(--crm-slate-700) !important;
+    border: 1px solid #1dbf73 !important;
+    background: #1dbf73 !important;
+    color: #fff !important;
     font-weight: 600 !important;
-    padding: 0.4rem 0.75rem !important;
+    padding: 0.45rem 0.85rem !important;
+    box-shadow: none !important;
+}
+
+div.dt-buttons .dt-button i {
+    margin-right: 0.35rem;
 }
 
 div.dt-buttons .dt-button:hover {
-    border-color: var(--crm-red) !important;
-    color: var(--crm-red) !important;
-    background: #fff !important;
+    border-color: #18a867 !important;
+    background: #18a867 !important;
+    color: #fff !important;
 }
 
 /* Export / action button grid (Laporan, etc.) */

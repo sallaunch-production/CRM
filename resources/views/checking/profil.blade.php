@@ -98,8 +98,9 @@
                             </thead>
                             <tbody>
                                 @foreach ($dat as $key => $transactions)
-                                    <tr>
-                                        <td>{{ $key + 1 }}</td>
+                                    <tr data-export-date="{{ $transactions->lapor_updated_at }}"
+                                        data-export-modal="myModal{{ $transactions->id }}">
+                                        <td>{{ $key + 1 }}.</td>
                                         <td>{{ $transactions->nama }}</td>
                                         <td>{{ $transactions->alamat_penerima }}</td>
                                         <td>{{ $transactions->telepon_penerima }}</td>
@@ -451,7 +452,8 @@
                                             <td>{{ $transactions_direct_receives->negara_pengirim }}</td>
                                             <td>{{ number_format($transactions_direct_receives->amount) }}</td>
                                             <td>{{ $transactions_direct_receives->identitas }}</td>
-                                            <td>{{ $transactions_direct_receives->nomor_identitas }}</td>
+                                            <td class="text-left">{{ $transactions_direct_receives->nomor_identitas }}
+                                            </td>
                                             <td>{{ $transactions_direct_receives->tanggal_lahir }}</td>
                                             <td>{{ $transactions_direct_receives->alamat_pengirim }}</td>
                                             <td>{{ $transactions_direct_receives->telepon_penerima }}</td>
@@ -675,7 +677,7 @@
                                             <td>{{ $transactions->negara_pengirim }}</td>
                                             <td>{{ number_format($transactions->bsu) }}</td>
                                             <td>{{ $transactions->identitas }}</td>
-                                            <td>{{ $transactions->nomor_identitas }}</td>
+                                            <td class="text-left">{{ $transactions->nomor_identitas }}</td>
                                             <td>{{ $transactions->tanggal_lahir }}</td>
                                             <td>{{ $transactions->alamat_penerima }}</td>
                                             <td>{{ $transactions->telepon_penerima }}</td>
@@ -731,7 +733,7 @@
                                             <td>{{ $transactions_send_pos->negara_pengirim }}</td>
                                             <td>{{ number_format($transactions_send_pos->amount) }}</td>
                                             <td>{{ $transactions_send_pos->identitas }}</td>
-                                            <td>{{ $transactions_send_pos->nomor_identitas }}</td>
+                                            <td class="text-left">{{ $transactions_send_pos->nomor_identitas }}</td>
                                             <td>{{ $transactions_send_pos->tanggal_lahir }}</td>
                                             <td>{{ $transactions_send_pos->alamat_penerima }}</td>
                                             <td>{{ $transactions_send_pos->telepon_penerima }}</td>
@@ -801,7 +803,10 @@
 
             // Search results table (list view)
             if ($('#example').length) {
-                CrmDataTable.mount('#example');
+                CrmDataTable.mount('#example', {
+                    exportModalFields: true,
+                    excelLeftAlignColumns: [5]
+                });
             }
 
             // Detail tabs
