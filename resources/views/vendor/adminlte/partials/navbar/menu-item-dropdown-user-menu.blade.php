@@ -61,8 +61,7 @@
             @endif
             <button type="button"
                     class="crm-user-dropdown-item crm-user-dropdown-logout"
-                    id="btnLogoutTrigger"
-                    onclick="event.preventDefault(); window.showLogoutConfirmModal();">
+                    id="btnLogoutTrigger">
                 <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
                 <span>{{ __('adminlte::adminlte.log_out') }}</span>
             </button>
@@ -77,8 +76,9 @@
 
 </li>
 
-{{-- Logout confirmation modal --}}
+{{-- Logout confirmation modal (moved to body on load so navbar/dropdown cannot clip it) --}}
 <style>
+    #logoutConfirmModal { z-index: 2000; }
     #logoutConfirmModal .modal-dialog { max-width: 400px; }
     #logoutConfirmModal .modal-content {
         border: 1px solid #e2e8f0;
@@ -167,7 +167,7 @@
 <div class="modal fade" id="logoutConfirmModal" tabindex="-1" role="dialog" aria-labelledby="logoutConfirmModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content position-relative">
-            <button type="button" class="btn-logout-close" data-dismiss="modal" aria-label="Tutup">&times;</button>
+            <button type="button" class="btn-logout-close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Tutup">&times;</button>
             <div class="logout-modal-body">
                 <div class="logout-modal-icon" aria-hidden="true">
                     <i class="fas fa-sign-out-alt"></i>
@@ -177,10 +177,10 @@
                     Apakah anda yakin untuk keluar dari sesi saat ini ?
                 </p>
                 <div class="logout-modal-actions">
-                    <button type="button" class="btn btn-logout-cancel" data-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-logout-cancel" data-dismiss="modal" data-bs-dismiss="modal">Batal</button>
                     <button type="button"
                             class="btn btn-logout-confirm"
-                            onclick="document.getElementById('logout-form').submit();">
+                            id="btnLogoutConfirmSubmit">
                         Logout
                     </button>
                 </div>
@@ -190,14 +190,109 @@
 </div>
 
 <script>
-    window.showLogoutConfirmModal = function () {
+(function () {
+    function moveLogoutModalToBody() {
         var modal = document.getElementById('logoutConfirmModal');
         if (modal && modal.parentElement !== document.body) {
             document.body.appendChild(modal);
         }
-        if (window.jQuery) {
-            jQuery('.dropdown-menu').removeClass('show');
-            jQuery('#logoutConfirmModal').modal('show');
+        return modal;
+    }
+
+    function closeUserDropdown() {
+        if (!window.jQuery) return;
+        var $ = window.jQuery;
+        try {
+            if (typeof $.fn.dropdown === 'function') {
+                $('.crm-user-menu .dropdown-toggle').dropdown('hide');
+            }
+        } catch (e) { /* ignore */ }
+        $('.crm-user-menu .dropdown-menu').removeClass('show');
+        $('.crm-user-menu').removeClass('show');
+        $('.crm-user-menu .dropdown-toggle').attr('aria-expanded', 'false');
+    }
+
+    function showLogoutModalFallback(modal) {
+        if (!modal) return;
+        modal.classList.add('show');
+        modal.style.display = 'block';
+        modal.removeAttribute('aria-hidden');
+        modal.setAttribute('aria-modal', 'true');
+        document.body.classList.add('modal-open');
+
+        if (!document.getElementById('logoutConfirmBackdrop')) {
+            var backdrop = document.createElement('div');
+            backdrop.className = 'modal-backdrop fade show';
+            backdrop.id = 'logoutConfirmBackdrop';
+            document.body.appendChild(backdrop);
         }
+    }
+
+    function hideLogoutModalFallback(modal) {
+        if (!modal) return;
+        modal.classList.remove('show');
+        modal.style.display = 'none';
+        modal.setAttribute('aria-hidden', 'true');
+        modal.removeAttribute('aria-modal');
+        document.body.classList.remove('modal-open');
+        var backdrop = document.getElementById('logoutConfirmBackdrop');
+        if (backdrop) backdrop.remove();
+    }
+
+    window.showLogoutConfirmModal = function () {
+        var modal = moveLogoutModalToBody();
+        if (!modal) return;
+
+        closeUserDropdown();
+
+        if (window.jQuery && typeof window.jQuery.fn.modal === 'function') {
+            window.jQuery('#logoutConfirmModal').modal('show');
+            return;
+        }
+
+        showLogoutModalFallback(modal);
     };
+
+    function bindLogoutUi() {
+        moveLogoutModalToBody();
+
+        var trigger = document.getElementById('btnLogoutTrigger');
+        if (trigger && !trigger.dataset.logoutBound) {
+            trigger.dataset.logoutBound = '1';
+            trigger.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                window.showLogoutConfirmModal();
+            });
+        }
+
+        var submitBtn = document.getElementById('btnLogoutConfirmSubmit');
+        if (submitBtn && !submitBtn.dataset.logoutBound) {
+            submitBtn.dataset.logoutBound = '1';
+            submitBtn.addEventListener('click', function () {
+                var form = document.getElementById('logout-form');
+                if (form) form.submit();
+            });
+        }
+
+        document.querySelectorAll('#logoutConfirmModal [data-dismiss="modal"]').forEach(function (btn) {
+            if (btn.dataset.logoutBound) return;
+            btn.dataset.logoutBound = '1';
+            btn.addEventListener('click', function () {
+                var modal = document.getElementById('logoutConfirmModal');
+                if (window.jQuery && typeof window.jQuery.fn.modal === 'function') {
+                    window.jQuery('#logoutConfirmModal').modal('hide');
+                } else {
+                    hideLogoutModalFallback(modal);
+                }
+            });
+        });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', bindLogoutUi);
+    } else {
+        bindLogoutUi();
+    }
+})();
 </script>
