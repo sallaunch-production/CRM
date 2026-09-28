@@ -27,10 +27,9 @@
 
             @include('partials.crm.alerts')
 
-            {{-- Search stays available on list view; hidden on transaction detail to keep focus.
-                 Method GET: pencarian adalah operasi read-only, jadi bisa direfresh/di-bookmark
-                 dan redirect()->back() di update_profil akan bekerja benar. --}}
+            {{-- Search stays available on list view; hidden on transaction detail to keep focus. --}}
             @if (!$hasDetail)
+            
                 <div class="crm-search">
                     <form class="crm-search-form" action="{{ route('search_profil') }}" method="GET">
                         <div class="crm-search-field">
@@ -559,7 +558,7 @@
                                 <tbody>
                                     @foreach ($dat as $key => $transactions)
                                         <tr>
-                                            <td>{{ $key + 1 }}</td>
+                                            <td>{{ $key + 1 }}.</td>
                                             <td>{{ $transactions->no_referensi }}</td>
                                             <td>{{ $transactions->nama_pengirim }}</td>
                                             <td>{{ $transactions->negara_pengirim }}</td>
