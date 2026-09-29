@@ -15,6 +15,12 @@
 <!-- Excel HTML5 -->
 <script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.html5.min.js"></script>
 
+<!-- Flatpickr (date picker) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+<!-- JS: library flatpickr, menyediakan fungsi flatpickr() untuk input tanggal. -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
 
 <style>
     /* DATATABLE TOP */
@@ -30,6 +36,11 @@
     .crm-dt-length {
         display: flex;
         align-items: center;
+        /* border-radius: .375rem !important */
+    }
+
+    .crm-dt-length select {
+        border-radius: .375rem !important
     }
 
 
@@ -55,6 +66,7 @@
 
     .crm-dt-filter input {
         min-width: 220px;
+        border-radius: .375rem !important
     }
 
 
@@ -231,6 +243,18 @@
     .crm-export-btn-success:hover {
         /* background: #218838; */
     }
+
+
+    /* FLATPICKR OVERRIDES */
+    .flatpickr-calendar {
+        z-index: 2000 !important;
+    }
+
+    /* sembunyikan tanggal yang tidak boleh dipilih */
+    .flatpickr-day.flatpickr-disabled,
+    .flatpickr-day.flatpickr-disabled:hover {
+        visibility: hidden;
+    }
 </style>
 
 
@@ -271,7 +295,7 @@
 
 
         // FILTER EXPORT SEMENTARA
-        // currentExportFilter dibaca oleh exportOptions.rows untuk semua baris
+        // currentExportFilter dibaca oleh exportOptions.rows for rows
 
 
         activeExportFilter: {},
@@ -316,49 +340,35 @@
 
                         exportOptions: {
 
-                            // Jangan export kolom Action terakhir
+                            // Don't Export the last action column
                             columns: ':not(:last-child)',
 
                             modifier: {
 
-                                // Jangan dipengaruhi search DataTables
+                                // Don't let DataTables search affect the export
                                 search: 'none',
 
-                                // Pertahankan urutan DataTables
+                                // Keep the DataTables ordering
                                 order: 'applied',
 
-                                // Export semua halaman
+                                // Export all pages
                                 page: 'all'
                             },
 
 
-                            //
-                            // FILTER KHUSUS EXPORT
-                            //
-
+                            //  Special Export filter
                             rows: function(rowIdx, rowData, rowNode) {
 
-                                // Ambil filter dari variabel global.
-                                // Ini BUKAN DataTables ext.search,
-                                // sehingga tidak mempengaruhi tabel utama.
-
+                                // Get the filter from the global variable. This is NOT DataTables ext.search, so it doesn't affect the main table.
                                 var filter =
-                                    window.CrmDataTable.currentExportFilter;
+                                    window.CrmDataTable.currentExportFilter
 
-
-                                //
-                                // TIDAK ADA FILTER EXPORT
-                                //
-
+                                // EXPORT FILTER not found
                                 if (!filter) {
                                     return true;
                                 }
 
-
-                                //
-                                // FILTER LAPOR
-                                //
-
+                                // LAPOR FILTER 
                                 if (
                                     filter.laporCol !== null &&
                                     filter.laporCol !== undefined
@@ -382,9 +392,7 @@
                                 }
 
 
-                                // ======================================================
-                                // 2. WAJIB: LAPOR UPDATED AT TIDAK BOLEH NULL / KOSONG
-                                // ======================================================
+                                // 2. REQUIRED: REPORT UPDATED AT Cannot be NULL / empty
 
                                 if (!rowNode) {
                                     return false;
@@ -398,26 +406,18 @@
                                 }
 
 
-                                // ======================================================
                                 // PARSE LAPOR UPDATED AT
-                                // ======================================================
                                 var rowDate =
                                     window.CrmDataTable
                                     .parseExportDate(exportDate);
 
-                                // Jika tanggal tidak valid
-                                // -> JANGAN EXPORT
+                                // if the date not valid, -> do not export
                                 if (!rowDate) {
                                     return false;
                                 }
 
 
-                                // ======================================================
-                                // FILTER RENTANG TANGGAL
-                                // ======================================================
-                                // Filter ini hanya dijalankan jika user
-                                // mengisi tanggal Start / End di modal.
-
+                                // Date Range Filter, this only runs if the user. Fills in the start/end date in the modal
                                 if (
                                     filter.start &&
                                     rowDate < filter.start
@@ -432,10 +432,8 @@
                                     return false;
                                 }
 
-                                //
-                                // SIMPAN ID MODAL
-                                //
 
+                                // SAVE MODAL ID
                                 if (
                                     extra &&
                                     extra.exportModalFields
@@ -464,25 +462,8 @@
                         customizeData: function(data) {
 
 
-                            //
-                            // NOMOR URUT EXCEL
-                            //
-                            //
-                            // TAMBAHAN UTAMA
-                            //
-                            // Excel sebelumnya:
-                            //
-                            // 9.
-                            // 20.
-                            //
-                            // Sekarang:
-                            //
-                            // 1.
-                            // 2.
-                            //
-                            // berdasarkan urutan BARIS HASIL EXPORT.
-                            //
 
+                            // excel serial number 
                             data.body.forEach(function(row, index) {
 
                                 row[0] = (index + 1) + '.';
@@ -490,10 +471,7 @@
                             });
 
 
-                            //
-                            // KOLOM TAMBAHAN DARI MODAL
-                            //
-
+                            // Addtional column from modal
                             if (
                                 !extra ||
                                 !extra.exportModalFields
@@ -502,7 +480,7 @@
                             }
 
 
-                            // Tambahkan header
+                            // Add header
 
                             data.header.push(
                                 'Remark',
@@ -511,10 +489,7 @@
                             );
 
 
-                            //
-                            // AMBIL VALUE DARI MODAL
-                            //
-
+                            // Take  valued fork capital
                             function modalValue(modalId, label) {
 
                                 var modal =
@@ -553,10 +528,7 @@
                             }
 
 
-                            //
-                            // MASUKKAN DATA MODAL KE EXCEL
-                            //
-
+                            // Input modal *DATA to excel
                             data.body.forEach(function(row, index) {
 
                                 var modalId =
@@ -588,12 +560,8 @@
                         },
 
 
-                        //
                         // CUSTOMIZE XLSX
-                        //
-
                         customize: function(xlsx) {
-
 
                             if (
                                 !extra ||
@@ -615,20 +583,7 @@
                                 sheet.getElementsByTagName('c');
 
 
-                            //
-                            // NOMOR IDENTITAS → TEXT
-                            //
-                            //
-                            // Kolom F = Nomor Identitas
-                            //
-                            // Tujuannya supaya angka panjang seperti:
-                            //
-                            // 1103072711920004
-                            //
-                            // tidak diubah Excel menjadi format angka
-                            // atau scientific notation.
-                            //
-
+                            // Convert ID Number (Column F, row >= 3) to text/inlineStr format to prevent long numbers from converting to scientific notation
                             for (
                                 var i = 0; i < cells.length; i++
                             ) {
@@ -795,11 +750,11 @@
 
                             <div class="crm-export-daterange">
 
-                                <input type="date" class="form-control" id="crm-export-start">
+                                <input type="text" class="form-control" id="crm-export-start" placeholder="mm-dd-yyyy">
 
                                 <span>s/d</span>
 
-                                <input type="date" class="form-control" id="crm-export-end">
+                                <input type="text" class="form-control" id="crm-export-end" placeholder="mm-dd-yyyy">
 
                             </div>
 
@@ -834,6 +789,38 @@
 
 
             jQuery('body').append(overlay);
+
+
+            // FLATPICKR: end date tidak boleh di bawah start date
+
+            var endPicker = flatpickr('#crm-export-end', {
+                dateFormat: 'Y-m-d',
+                altInput: true,
+                altFormat: 'm-d-Y'
+            });
+
+            var startPicker = flatpickr('#crm-export-start', {
+                dateFormat: 'Y-m-d',
+                altInput: true,
+                altFormat: 'm-d-Y',
+
+                onChange: function(selectedDates, dateStr) {
+
+                    // tanggal sebelum start disembunyikan di kalender end
+                    endPicker.set('minDate', dateStr || null);
+
+                    var end = endPicker.selectedDates[0];
+
+                    if (end && selectedDates[0] && end < selectedDates[0]) {
+                        endPicker.clear();
+                    }
+                }
+            });
+
+            overlay.data('pickers', {
+                start: startPicker,
+                end: endPicker
+            });
 
 
             // CLICK OUTSIDE
@@ -880,6 +867,13 @@
                 var startValue = jQuery('#crm-export-start').val();
 
                 var endValue = jQuery('#crm-export-end').val();
+
+
+                // Validation : end date cannot be < start date
+                if (startValue && endValue && endValue < startValue) {
+                    alert('Tanggal akhir tidak boleh lebih kecil dari tanggal mulai.');
+                    return;
+                }
 
                 var startDate =
                     startValue ?
@@ -1038,9 +1032,11 @@
 
                 // Reset tanggal.
 
-                overlay.find('#crm-export-start').val('');
+                var pickers = overlay.data('pickers');
 
-                overlay.find('#crm-export-end').val('');
+                pickers.start.clear();
+                pickers.end.clear();
+                pickers.end.set('minDate', null);
 
 
                 // Simpan context.
