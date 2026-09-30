@@ -15,12 +15,6 @@
 <!-- Excel HTML5 -->
 <script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.html5.min.js"></script>
 
-<!-- Flatpickr (date picker) -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-
-<!-- JS: library flatpickr, menyediakan fungsi flatpickr() untuk input tanggal. -->
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-
 
 <style>
     /* DATATABLE TOP */
@@ -74,22 +68,43 @@
 
     .crm-dt-buttons .dt-button {
         margin: 0 !important;
-        padding: .375rem .75rem !important;
-        border-radius: .375rem !important;
+        height: 36px;
+        padding: 0 0.9rem !important;
+        border-radius: 8px !important;
         box-shadow: none !important;
         vertical-align: middle;
+        display: inline-flex !important;
+        align-items: center;
+        gap: 0.35rem;
+        font-weight: 600 !important;
+        font-size: 0.85rem !important;
+        line-height: 1 !important;
     }
 
-    .crm-dt-buttons .dt-button.crm-btn-success {
-        background: #28a745 !important;
-        border: 1px solid #28a745 !important;
+    .crm-dt-buttons .dt-button.crm-btn-success,
+    .crm-dt-buttons .dt-button.crm-btn-primary,
+    .crm-dt-buttons .dt-button.buttons-excel {
+        background: #e31c23 !important;
+        border: 1px solid #e31c23 !important;
         color: #fff !important;
     }
 
-    .crm-dt-buttons .dt-button.crm-btn-success:hover {
-        background: #218838 !important;
-        border-color: #1e7e34 !important;
+    .crm-dt-buttons .dt-button.crm-btn-success:hover,
+    .crm-dt-buttons .dt-button.crm-btn-primary:hover,
+    .crm-dt-buttons .dt-button.buttons-excel:hover {
+        background: #c4151c !important;
+        border-color: #c4151c !important;
         color: #fff !important;
+    }
+
+    .crm-dt-buttons .dt-button i {
+        margin: 0 !important;
+        font-size: 0.9rem;
+    }
+
+    /* Generate di header card — sembunyikan container tombol DT yang sudah dipindah */
+    .crm-table-card .crm-dt-buttons.is-relocated {
+        display: none !important;
     }
 
 
@@ -104,7 +119,7 @@
     }
 
 
-    /* EXPORT MODAL */
+    /* EXPORT MODAL — match CRM search / date-range pattern */
 
     .crm-export-overlay {
         display: none;
@@ -122,29 +137,28 @@
     }
 
     .crm-export-box {
-        width: min(380px, 100%);
+        width: min(460px, 100%);
         max-height: 90vh;
         overflow: auto;
         background: #fff;
-        border-radius: 12px;
-        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.18);
+        border: 1px solid #e2e8f0;
+        border-radius: 14px;
+        box-shadow: 0 18px 40px rgba(15, 23, 42, 0.14);
     }
-
-
-    /* MODAL HEADER */
 
     .crm-export-box-header {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 1rem 1.25rem;
+        padding: 1.05rem 1.25rem 0.9rem;
         border-bottom: 1px solid #eef0f3;
     }
 
     .crm-export-box-header h5 {
         margin: 0;
-        font-size: 1rem;
+        font-size: 1.05rem;
         font-weight: 700;
+        color: #0f172a;
     }
 
     .crm-export-box-close {
@@ -153,107 +167,122 @@
         font-size: 1.4rem;
         line-height: 1;
         cursor: pointer;
-        color: #6b7280;
-        padding: 0;
+        color: #94a3b8;
+        padding: 0.1rem;
     }
 
-
-    /* MODAL BODY */
+    .crm-export-box-close:hover {
+        color: #475569;
+    }
 
     .crm-export-box-body {
-        padding: 1rem 1.25rem;
+        padding: 1.15rem 1.25rem 0.85rem;
     }
 
+    .crm-export-lead {
+        margin: 0 0 1rem;
+        font-size: 0.9rem;
+        color: #475569;
+        line-height: 1.45;
+    }
 
-    /* MODAL FOOTER */
+    .crm-export-date-grid {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        gap: 0.75rem 1rem;
+        margin: 0;
+    }
+
+    .crm-export-date-grid .crm-search-field {
+        flex: 1 1 160px;
+        min-width: 0;
+        margin: 0;
+    }
+
+    .crm-export-date-grid .crm-search-field label {
+        display: block;
+        font-size: 0.78rem;
+        font-weight: 600;
+        color: #334155;
+        margin-bottom: 0.35rem;
+    }
+
+    .crm-export-date-grid .crm-search-field .form-control {
+        height: 40px;
+        border-radius: 8px;
+        border-color: #cbd5e1;
+    }
+
+    .crm-export-date-grid .crm-search-field .form-control:focus {
+        border-color: #86efac;
+        box-shadow: 0 0 0 0.2rem rgba(29, 191, 115, 0.18);
+    }
+
+    .crm-export-hint {
+        font-size: 0.78rem;
+        color: #64748b;
+        line-height: 1.45;
+        margin: 0.85rem 0 0;
+    }
 
     .crm-export-box-footer {
         display: flex;
         justify-content: flex-end;
-        gap: .5rem;
-        padding: 1rem 1.25rem;
+        gap: 0.55rem;
+        padding: 0.95rem 1.25rem 1.15rem;
         border-top: 1px solid #eef0f3;
     }
 
-
-    /* EXPORT FIELD */
-
-    .crm-export-field {
-        margin-bottom: 0;
-    }
-
-    .crm-export-field label {
-        font-weight: 600;
-        font-size: .85rem;
-        margin-bottom: .4rem;
-        display: block;
-    }
-
-
-    /* DATE RANGE */
-
-    .crm-export-daterange {
-        display: flex;
-        align-items: center;
-        gap: .5rem;
-    }
-
-    .crm-export-daterange input {
-        flex: 1;
-        min-width: 0;
-    }
-
-
-    /* HINT */
-
-    .crm-export-hint {
-        font-size: .78rem;
-        color: #6b7280;
-        margin-top: .5rem;
-        margin-bottom: 0;
-    }
-
-
-    /* EXPORT BUTTON */
-
     .crm-export-btn {
         border: 1px solid transparent;
-        border-radius: .375rem;
-        padding: .4rem .9rem;
-        font-size: .875rem;
+        border-radius: 8px;
+        height: 38px;
+        padding: 0 1rem;
+        font-size: 0.875rem;
+        font-weight: 600;
         cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.35rem;
     }
 
     .crm-export-btn-muted {
-        background: #f1f2f4;
-        border-color: #f1f2f4;
-        color: #374151;
+        background: #f1f5f9;
+        border-color: #e2e8f0;
+        color: #334155;
     }
 
     .crm-export-btn-muted:hover {
-        background: #e5e7eb;
+        background: #e2e8f0;
+        color: #0f172a;
     }
 
     .crm-export-btn-success {
-        background: #28a745;
-        border-color: #28a745;
+        background: #e31c23;
+        border-color: #e31c23;
         color: #fff;
     }
 
     .crm-export-btn-success:hover {
-        /* background: #218838; */
+        background: #c4151c;
+        border-color: #c4151c;
+        color: #fff;
     }
 
+    @media (max-width: 480px) {
+        .crm-export-date-grid .crm-search-field {
+            flex: 1 1 100%;
+        }
 
-    /* FLATPICKR OVERRIDES */
-    .flatpickr-calendar {
-        z-index: 2000 !important;
-    }
+        .crm-export-box-footer {
+            flex-direction: column-reverse;
+        }
 
-    /* sembunyikan tanggal yang tidak boleh dipilih */
-    .flatpickr-day.flatpickr-disabled,
-    .flatpickr-day.flatpickr-disabled:hover {
-        visibility: hidden;
+        .crm-export-btn {
+            width: 100%;
+        }
     }
 </style>
 
@@ -309,7 +338,7 @@
 
         defaults: function(extra) {
 
-            return Object.assign({
+            var options = Object.assign({
 
                 pageLength: 10,
 
@@ -327,9 +356,9 @@
                     {
                         extend: 'excelHtml5',
 
-                        text: '<i class="fas fa-file-excel"></i> Excel',
+                        text: '<i class="fas fa-file-export"></i> Generate',
 
-                        className: 'crm-btn crm-btn-sm crm-btn-success',
+                        className: 'crm-btn crm-btn-sm crm-btn-primary',
 
                         title: 'Customer Profile',
 
@@ -667,6 +696,116 @@
                 ]
 
             }, extra || {});
+
+
+            // Chain initComplete: pindahkan Generate ke header card (pola Profile).
+            var userInitComplete = options.initComplete;
+
+            options.initComplete = function(settings, json) {
+
+                var api = new jQuery.fn.dataTable.Api(settings);
+
+                window.CrmDataTable.placeHeaderGenerate(api);
+
+                if (typeof userInitComplete === 'function') {
+                    userInitComplete.call(this, settings, json);
+                }
+
+            };
+
+            return options;
+        },
+
+
+        // Pindahkan tombol Generate tunggal ke .crm-table-toolbar (seperti Profile).
+        // Multi-button (copy/csv/excel/pdf) dibiarkan di baris filter.
+
+        placeHeaderGenerate: function(api) {
+
+            if (!api || !api.table) {
+                return;
+            }
+
+            var buttonCount = 0;
+            var hasExcel = false;
+
+            try {
+                buttonCount = api.buttons().count();
+                hasExcel = api.buttons('.buttons-excel').any();
+            } catch (e) {
+                return;
+            }
+
+            if (buttonCount !== 1 || !hasExcel) {
+                return;
+            }
+
+            var $table = jQuery(api.table().node());
+            var $card = $table.closest('.crm-table-card');
+
+            if (!$card.length) {
+                return;
+            }
+
+            var $toolbar = $card.children('.crm-table-toolbar').first();
+
+            // Tanpa toolbar card (mis. tab detail profil) — biarkan Generate di baris filter.
+            if (!$toolbar.length) {
+                return;
+            }
+
+            // Sembunyikan tombol DT hanya setelah ada tempat di header.
+            $table.closest('.dataTables_wrapper')
+                .find('.crm-dt-buttons')
+                .addClass('is-relocated');
+
+            var $actions = $toolbar.children('.crm-table-toolbar-actions').first();
+
+            if (!$actions.length) {
+                // Toolbar lama pakai .crm-actions — samakan ke pola Profile.
+                var $legacy = $toolbar.children('.crm-actions').first();
+
+                if ($legacy.length) {
+                    $legacy
+                        .removeClass('crm-actions')
+                        .addClass('crm-table-toolbar-actions');
+                    $actions = $legacy;
+                } else {
+                    $actions = jQuery('<div class="crm-table-toolbar-actions"></div>');
+                    $toolbar.children('.crm-badge').appendTo($actions);
+                    $toolbar.append($actions);
+                }
+            }
+
+            var tableId = $table.attr('id') || ('dt' + String(Date.now()));
+            var $btn = $actions.find(
+                '.crm-btn-generate[data-crm-table="' + tableId + '"], #btnProfilGenerate'
+            ).first();
+
+            if (!$btn.length) {
+                // Satu Generate per tabel; jangan dobel jika toolbar sudah punya tombol umum.
+                $btn = $actions.find('.crm-btn-generate, #btnProfilGenerate').first();
+            }
+
+            if (!$btn.length) {
+                $btn = jQuery(
+                    '<button type="button"' +
+                    ' class="crm-btn crm-btn-sm crm-btn-primary crm-btn-generate"' +
+                    ' id="crm-generate-' + tableId + '"' +
+                    ' data-crm-table="' + tableId + '"' +
+                    ' title="Generate Excel">' +
+                    '<i class="fas fa-file-export" aria-hidden="true"></i> Generate' +
+                    '</button>'
+                );
+
+                $actions.append($btn);
+            } else {
+                $btn.attr('data-crm-table', tableId);
+            }
+
+            $btn.off('click.crmGenerate').on('click.crmGenerate', function() {
+                api.button('.buttons-excel').trigger();
+            });
         },
 
 
@@ -728,12 +867,12 @@
 
             <div class="crm-export-overlay" id="crm-export-overlay">
 
-                <div class="crm-export-box">
+                <div class="crm-export-box" role="dialog" aria-modal="true" aria-labelledby="crm-export-title">
 
                     <!-- HEADER -->
                     <div class="crm-export-box-header">
 
-                        <h5>Export Excel</h5>
+                        <h5 id="crm-export-title">Generate Excel</h5>
 
                         <button type="button" class="crm-export-box-close" aria-label="Tutup">
                             &times;
@@ -744,27 +883,39 @@
                     <!-- BODY -->
                     <div class="crm-export-box-body">
 
-                        <div class="crm-export-field" id="crm-export-date-field">
+                        <p class="crm-export-lead">
+                            Pilih periode Lapor, lalu generate file Excel dari hasil pencarian.
+                        </p>
 
-                            <label>Rentang Tanggal Lapor</label>
+                        <div class="crm-export-date-grid" id="crm-export-date-field">
 
-                            <div class="crm-export-daterange">
-
-                                <input type="text" class="form-control" id="crm-export-start" placeholder="mm-dd-yyyy">
-
-                                <span>s/d</span>
-
-                                <input type="text" class="form-control" id="crm-export-end" placeholder="mm-dd-yyyy">
-
+                            <div class="crm-search-field">
+                                <label for="crm-export-start">Start Date</label>
+                                <input
+                                    type="date"
+                                    class="form-control"
+                                    id="crm-export-start"
+                                    name="export_start_date"
+                                >
                             </div>
 
-                            <p class="crm-export-hint">
-                                Kosongkan tanggal jika tidak ingin filter tanggal.
-                                <br>
-                                Hanya data dengan <strong>Lapor</strong> terisi yang akan diekspor.
-                            </p>
+                            <div class="crm-search-field">
+                                <label for="crm-export-end">End Date</label>
+                                <input
+                                    type="date"
+                                    class="form-control"
+                                    id="crm-export-end"
+                                    name="export_end_date"
+                                >
+                            </div>
 
                         </div>
+
+                        <p class="crm-export-hint">
+                            Kosongkan tanggal jika tidak ingin filter tanggal.
+                            <br>
+                            Hanya data dengan <strong>Lapor</strong> terisi yang akan digenerate.
+                        </p>
 
                     </div>
 
@@ -776,7 +927,8 @@
                         </button>
 
                         <button type="button" class="crm-export-btn crm-export-btn-success crm-export-confirm">
-                            Download Excel
+                            <i class="fas fa-file-excel" aria-hidden="true"></i>
+                            Generate Excel
                         </button>
 
                     </div>
@@ -791,35 +943,24 @@
             jQuery('body').append(overlay);
 
 
-            // FLATPICKR: end date tidak boleh di bawah start date
+            // Native date: end date tidak boleh di bawah start date
+            var startInput = overlay.find('#crm-export-start');
+            var endInput = overlay.find('#crm-export-end');
 
-            var endPicker = flatpickr('#crm-export-end', {
-                dateFormat: 'Y-m-d',
-                altInput: true,
-                altFormat: 'm-d-Y'
-            });
-
-            var startPicker = flatpickr('#crm-export-start', {
-                dateFormat: 'Y-m-d',
-                altInput: true,
-                altFormat: 'm-d-Y',
-
-                onChange: function(selectedDates, dateStr) {
-
-                    // tanggal sebelum start disembunyikan di kalender end
-                    endPicker.set('minDate', dateStr || null);
-
-                    var end = endPicker.selectedDates[0];
-
-                    if (end && selectedDates[0] && end < selectedDates[0]) {
-                        endPicker.clear();
-                    }
+            startInput.on('change', function () {
+                var startVal = startInput.val() || '';
+                endInput.attr('min', startVal);
+                if (endInput.val() && startVal && endInput.val() < startVal) {
+                    endInput.val('');
                 }
             });
 
-            overlay.data('pickers', {
-                start: startPicker,
-                end: endPicker
+            endInput.on('change', function () {
+                var endVal = endInput.val() || '';
+                startInput.attr('max', endVal);
+                if (startInput.val() && endVal && endVal < startInput.val()) {
+                    startInput.val(endVal);
+                }
             });
 
 
@@ -1030,13 +1171,12 @@
                 overlay.find('#crm-export-date-field').show();
 
 
-                // Reset tanggal.
+                // Reset tanggal (native date inputs).
 
-                var pickers = overlay.data('pickers');
-
-                pickers.start.clear();
-                pickers.end.clear();
-                pickers.end.set('minDate', null);
+                var startInput = overlay.find('#crm-export-start');
+                var endInput = overlay.find('#crm-export-end');
+                startInput.val('').removeAttr('max');
+                endInput.val('').removeAttr('min');
 
 
                 // Simpan context.

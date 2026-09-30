@@ -32,11 +32,12 @@
                         <h2 class="crm-table-title">Daftar POP</h2>
                         <div class="crm-table-meta">{{ count($data) }} data</div>
                     </div>
-                    <div class="crm-actions">
-                        <form method="post" action="{{ $uploadEntryRoute }}">
+                    <div class="crm-table-toolbar-actions">
+                        <form method="post" action="{{ $uploadEntryRoute }}" class="d-inline m-0">
                             @csrf
-                            <button type="submit" class="crm-btn crm-btn-primary">
-                                <i class="fas fa-upload"></i> Upload POP
+                            <button type="submit" class="crm-btn crm-btn-sm crm-btn-primary">
+                                <i class="fas fa-upload" aria-hidden="true"></i>
+                                Upload POP
                             </button>
                         </form>
                     </div>

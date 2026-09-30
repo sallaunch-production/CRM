@@ -23,6 +23,8 @@
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    min-width: 0;
+    max-width: 100%;
 }
 
 .crm-page-header {
@@ -417,6 +419,8 @@
     border-radius: var(--crm-radius);
     padding: 1rem 1.1rem 1.15rem;
     box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    min-width: 0;
+    max-width: 100%;
 }
 
 .crm-table-card + .crm-table-card {
@@ -430,6 +434,32 @@
     justify-content: space-between;
     gap: 0.5rem;
     margin-bottom: 0.85rem;
+}
+
+.crm-table-toolbar-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    flex-wrap: wrap;
+}
+
+.crm-table-toolbar-actions > form {
+    display: inline-flex;
+    margin: 0;
+}
+
+.crm-table-toolbar-actions .crm-btn {
+    height: 32px;
+    padding: 0 0.7rem;
+    font-size: 0.8rem;
+    border-radius: 6px;
+    line-height: 1;
+}
+
+/* Generate dipindah ke header card — sembunyikan tombol DT bawaan */
+.crm-table-wrap-profil-export .crm-dt-buttons,
+.crm-table-card .crm-dt-buttons.is-relocated {
+    display: none !important;
 }
 
 .crm-table-title {
@@ -1133,18 +1163,55 @@ div.dt-buttons .dt-button:hover {
 }
 
 /* Export / action button grid (Laporan, etc.) */
+.crm-export-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 1.15rem;
+}
+
+.crm-export-section {
+    padding: 0.95rem 1rem;
+    border: 1px solid var(--crm-slate-200);
+    border-radius: var(--crm-radius-sm);
+    background: var(--crm-slate-50);
+}
+
+.crm-export-section-title {
+    margin: 0 0 0.75rem;
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--crm-slate-500);
+}
+
 .crm-export-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 0.75rem;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.65rem;
 }
 
 .crm-export-grid form {
     margin: 0;
+    min-width: 0;
 }
 
 .crm-export-grid .crm-btn {
     width: 100%;
+    min-height: 42px;
+    height: auto;
+    padding: 0.55rem 0.85rem;
+    white-space: nowrap;
+}
+
+@media (max-width: 576px) {
+    .crm-export-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .crm-export-grid .crm-btn {
+        white-space: normal;
+    }
 }
 
 /* =========================================================

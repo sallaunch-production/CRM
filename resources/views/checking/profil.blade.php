@@ -78,10 +78,21 @@
                             <h2 class="crm-table-title">Hasil pencarian</h2>
                             <div class="crm-table-meta">Keyword: <strong>{{ $nama }}</strong></div>
                         </div>
-                        <span class="crm-badge">{{ count($dat) }} customer</span>
+                        <div class="crm-table-toolbar-actions">
+                            <span class="crm-badge">{{ count($dat) }} customer</span>
+                            <button
+                                type="button"
+                                class="crm-btn crm-btn-sm crm-btn-primary crm-btn-generate"
+                                id="btnProfilGenerate"
+                                title="Generate Excel dari hasil pencarian"
+                            >
+                                <i class="fas fa-file-export" aria-hidden="true"></i>
+                                Generate
+                            </button>
+                        </div>
                     </div>
 
-                    <div class="crm-table-wrap">
+                    <div class="crm-table-wrap crm-table-wrap-profil-export" id="profilResultsCard">
                         <table id="example" class="table crm-table table-striped table-bordered" style="width:100%;">
                             <thead>
                                 <tr>

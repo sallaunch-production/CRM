@@ -10,6 +10,7 @@
     $hasResult = !empty($tanggal_sampai);
     $startDate = old('start_date', $start_date ?? '');
     $endDate = old('end_date', $end_date ?? '');
+    $rowCount = (isset($data) && is_countable($data)) ? count($data) : 0;
     $searchRoute = (($levelnya ?? '') === 'operasional')
         ? route('search_newcustomer_operasional')
         : route('search_newcustomer');
@@ -65,13 +66,16 @@
                             {{ date('d-m-Y', strtotime($tanggal_sampai)) }}
                         </div>
                     </div>
-                    <div class="crm-actions">
-                        <span class="crm-badge">{{ is_countable($data) ? count($data) : 0 }} data</span>
+                    <div class="crm-table-toolbar-actions">
+                        <span class="crm-badge">{{ $rowCount }} data</span>
                         <form id="cetakForm" action="{{ route('cetak_new_customer_gabungan') }}" method="POST" class="d-inline m-0">
                             @csrf
                             <input type="hidden" name="tanggal_dari" value="{{ $tanggal_dari ?? '-' }}">
                             <input type="hidden" name="tanggal_sampai" value="{{ $tanggal_sampai ?? '-' }}">
-                            <button type="submit" class="crm-btn crm-btn-sm crm-btn-primary">Cetak Gabungan</button>
+                            <button type="submit" class="crm-btn crm-btn-sm crm-btn-primary" title="Cetak Gabungan">
+                                <i class="fas fa-print" aria-hidden="true"></i>
+                                Cetak Gabungan
+                            </button>
                         </form>
                     </div>
                 </div>
@@ -129,24 +133,17 @@
 @stop
 
 @section('js')
-<script src="https://cdn.datatables.net/buttons/2.2.3/js/dataTables.buttons.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.html5.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.print.min.js"></script>
 @include('partials.crm.datatable-boot')
 <script>
     $(document).ready(function () {
+        if (!$('#example').length) return;
+
         CrmDataTable.mount('#example', {
-            dom: CrmDataTable.domWithButtons,
-            buttons: [
-                { extend: 'copy', text: 'COPY', title: 'TRANSAKSI NEW CUSTOMER' },
-                { extend: 'csv', text: 'CSV', title: 'TRANSAKSI NEW CUSTOMER' },
-                { extend: 'excel', text: 'Excel', title: 'TRANSAKSI NEW CUSTOMER' },
-                { extend: 'pdf', text: 'PDF', title: 'TRANSAKSI NEW CUSTOMER' },
-                { extend: 'print', text: 'Print', title: 'TRANSAKSI NEW CUSTOMER' }
-            ]
+            pageLength: 10,
+            lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
+            paging: true,
+            deferRender: true,
+            order: [[3, 'asc']]
         });
     });
 </script>

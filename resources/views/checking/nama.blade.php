@@ -60,9 +60,12 @@
                             {{ $periode_dari }} s/d {{ $periode_sampai }}
                         </div>
                     </div>
-                    <div class="crm-actions">
+                    <div class="crm-table-toolbar-actions">
                         <span class="crm-badge">{{ count($query) }} data</span>
-                        <a href="#" class="crm-btn crm-btn-sm crm-btn-primary">Cetak</a>
+                        <a href="#" class="crm-btn crm-btn-sm crm-btn-primary" title="Cetak">
+                            <i class="fas fa-print" aria-hidden="true"></i>
+                            Cetak
+                        </a>
                     </div>
                 </div>
                 <div class="crm-table-wrap">

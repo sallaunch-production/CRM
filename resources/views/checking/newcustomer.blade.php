@@ -38,9 +38,6 @@
                     <button type="button" class="crm-btn crm-btn-primary" id="btn-cari">
                         <i class="fas fa-search"></i> Cari
                     </button>
-                    <button type="submit" form="cetakForm" class="crm-btn crm-btn-muted">
-                        Cetak Gabungan
-                    </button>
                 </div>
             </form>
             <form id="cetakForm" action="{{ route('cetak_new_customer_gabungan') }}" method="POST" class="d-none">
@@ -54,7 +51,14 @@
             <div class="crm-table-toolbar">
                 <div>
                     <h2 class="crm-table-title">Hasil New Customer — Receive</h2>
-                    <div class="crm-table-meta">Data dimuat sesuai periode yang dipilih.</div>
+                    <div class="crm-table-meta" id="nc-result-meta">Pilih periode lalu tekan Cari.</div>
+                </div>
+                <div class="crm-table-toolbar-actions">
+                    <span class="crm-badge d-none" id="nc-result-badge">0 data</span>
+                    <button type="submit" form="cetakForm" class="crm-btn crm-btn-sm crm-btn-primary" id="btn-cetak-gabungan" disabled title="Cetak Gabungan">
+                        <i class="fas fa-print" aria-hidden="true"></i>
+                        Cetak Gabungan
+                    </button>
                 </div>
             </div>
             <div class="crm-table-wrap">
@@ -84,16 +88,20 @@
 @stop
 
 @section('js')
-<script src="https://cdn.datatables.net/buttons/2.2.3/js/dataTables.buttons.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.html5.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.print.min.js"></script>
 @include('partials.crm.datatable-boot')
 <script>
 $(document).ready(function () {
     var table;
+
+    function formatMeta(startDate, endDate) {
+        function dmy(iso) {
+            if (!iso) return '-';
+            var p = String(iso).split('-');
+            if (p.length !== 3) return iso;
+            return p[2] + '-' + p[1] + '-' + p[0];
+        }
+        return dmy(startDate) + ' s/d ' + dmy(endDate);
+    }
 
     function initDataTable() {
         if ($.fn.DataTable.isDataTable('#example')) {
@@ -103,6 +111,9 @@ $(document).ready(function () {
         table = $('#example').DataTable(CrmDataTable.defaults({
             processing: true,
             serverSide: true,
+            deferRender: true,
+            pageLength: 10,
+            lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
             ajax: {
                 url: @json($ajaxRoute),
                 type: 'POST',
@@ -144,16 +155,19 @@ $(document).ready(function () {
                 { data: 'local_id', name: 'local_id' }
             ],
             order: [[3, 'asc']],
-            dom: CrmDataTable.domWithButtons,
-            buttons: [
-                { extend: 'copy', text: 'COPY' },
-                { extend: 'csv', text: 'CSV' },
-                { extend: 'excel', text: 'Excel' },
-                { extend: 'pdf', text: 'PDF' },
-                { extend: 'print', text: 'Print' }
-            ],
-            lengthMenu: [[10, 100, 500, 1000], [10, 100, 500, 1000]],
-            pageLength: 10
+            initComplete: function (settings) {
+                var api = new $.fn.dataTable.Api(settings);
+                var info = api.page.info();
+                $('#nc-result-meta').text(formatMeta($('#start_date').val(), $('#end_date').val()));
+                $('#nc-result-badge').text(info.recordsTotal + ' data').removeClass('d-none');
+                $('#btn-cetak-gabungan').prop('disabled', info.recordsTotal < 1);
+            },
+            drawCallback: function (settings) {
+                var api = new $.fn.dataTable.Api(settings);
+                var info = api.page.info();
+                $('#nc-result-badge').text(info.recordsTotal + ' data').removeClass('d-none');
+                $('#btn-cetak-gabungan').prop('disabled', info.recordsTotal < 1);
+            }
         }));
     }
 
@@ -170,7 +184,7 @@ $(document).ready(function () {
         }
 
         if (table) {
-            table.ajax.reload(null, false);
+            table.ajax.reload(null, true);
         } else {
             initDataTable();
         }
