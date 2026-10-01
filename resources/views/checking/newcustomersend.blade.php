@@ -20,7 +20,7 @@
         <div class="crm-page-header">
             <div>
                 <h1 class="crm-page-title">New Customer</h1>
-                <p class="crm-page-sub">Pencarian orang yang baru pertama kali transaksi (Send).</p>
+                <p class="crm-page-sub">Search for first-time transaction customers (Send).</p>
             </div>
             @include('partials.crm.newcustomer-tabs', ['activeTab' => 'send'])
         </div>
@@ -31,13 +31,13 @@
             <form class="crm-search-form" action="{{ $searchRoute }}" method="POST">
                 @csrf
                 @include('partials.crm.date-range-filter', [
-                    'groupLabel' => 'Tanggal Transaksi Send',
+                    'groupLabel' => 'Send Transaction Date',
                     'startDate' => $startDate,
                     'endDate' => $endDate,
                 ])
                 <div class="crm-search-actions">
                     <button type="submit" class="crm-btn crm-btn-primary">
-                        <i class="fas fa-search"></i> Cari
+                        <i class="fas fa-search"></i> Search
                     </button>
                 </div>
             </form>
@@ -48,25 +48,25 @@
                 <div class="crm-empty-icon" aria-hidden="true">
                     <i class="fas fa-paper-plane"></i>
                 </div>
-                <h2 class="crm-empty-title">Mulai dengan periode send</h2>
+                <h2 class="crm-empty-title">Start with a send period</h2>
                 <p class="crm-empty-text">
-                    Pilih <strong>Start Date</strong> dan <strong>End Date</strong>, lalu tekan <strong>Cari</strong>
-                    untuk menampilkan customer baru.
+                    Select a <strong>Start Date</strong> and <strong>End Date</strong>, then click <strong>Search</strong>
+                    to show new customers.
                 </p>
             </div>
         @else
             <div class="crm-table-card">
                 <div class="crm-table-toolbar">
                     <div>
-                        <h2 class="crm-table-title">Hasil New Customer — Send</h2>
+                        <h2 class="crm-table-title">New Customer Results — Send</h2>
                         <div class="crm-table-meta">
                             {{ date('d-m-Y', strtotime($tanggal_dari)) }}
-                            s/d
+                            to
                             {{ date('d-m-Y', strtotime($tanggal_sampai)) }}
                         </div>
                     </div>
                     <div class="crm-table-toolbar-actions">
-                        <span class="crm-badge">{{ count($data) }} data</span>
+                        <span class="crm-badge">{{ count($data) }} records</span>
                     </div>
                 </div>
                 <div class="crm-table-wrap">
@@ -76,12 +76,12 @@
                                 <th>No</th>
                                 <th>IDPJK</th>
                                 <th>Kode Nasabah</th>
-                                <th>Nama Nasabah</th>
+                                <th>Customer Name</th>
                                 <th>Tempat Lahir</th>
-                                <th>Tanggal Lahir</th>
-                                <th>Alamat</th>
+                                <th>Date of Birth</th>
+                                <th>Address</th>
                                 <th>No KTP</th>
-                                <th>Identitas Lain</th>
+                                <th>Other Identity</th>
                                 <th>CIF</th>
                                 <th>NPWP</th>
                                 <th>Local ID</th>
@@ -102,10 +102,10 @@
                                                 try {
                                                     $tanggal = \Carbon\Carbon::createFromFormat('dmY', $rawTgl)->format('d-m-Y');
                                                 } catch (\Exception $e) {
-                                                    $tanggal = 'Format salah';
+                                                    $tanggal = 'Invalid format';
                                                 }
                                             } else {
-                                                $tanggal = 'Tanggal tidak valid';
+                                                $tanggal = 'Invalid date';
                                             }
                                         @endphp
                                         {{ $tanggal }}

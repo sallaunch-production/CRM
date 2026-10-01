@@ -12,8 +12,8 @@
     $endName = $endName ?? 'end_date';
     $startId = $startId ?? $startName;
     $endId = $endId ?? $endName;
-    $startLabel = $startLabel ?? 'Start Date';
-    $endLabel = $endLabel ?? 'End Date';
+    $startLabel = $startLabel ?? __('crm.start_date');
+    $endLabel = $endLabel ?? __('crm.end_date');
     $crmStartDate = old($startName, $startDate ?? '');
     $crmEndDate = old($endName, $endDate ?? '');
 @endphp

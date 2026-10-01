@@ -149,14 +149,14 @@
             alt="Artha Semesta Utama"
         >
 
-        <h1 class="otp-title">Verifikasi Authenticator</h1>
+        <h1 class="otp-title">{{ __('crm.otp_title') }}</h1>
         <p class="otp-subtitle">
-            Masukkan 6 digit kode dari Authenticator App Anda.
+            {{ __('crm.otp_subtitle') }}
         </p>
 
         <form method="POST" action="{{ route('proses.verify') }}" id="otpForm" autocomplete="one-time-code">
             @csrf
-            <div class="otp-inputs" role="group" aria-label="Kode autentikator">
+            <div class="otp-inputs" role="group" aria-label="{{ __('crm.otp_aria_group') }}">
                 <input type="text" name="satu" class="otpInput" maxlength="1" inputmode="numeric" pattern="[0-9]*" autocomplete="one-time-code" required>
                 <input type="text" name="dua" class="otpInput" maxlength="1" inputmode="numeric" pattern="[0-9]*" required>
                 <input type="text" name="tiga" class="otpInput" maxlength="1" inputmode="numeric" pattern="[0-9]*" required>
@@ -166,8 +166,8 @@
             </div>
 
             <div class="otp-actions">
-                <button type="submit" class="btn btn-submit">Submit</button>
-                <a href="{{ url('login') }}" class="btn btn-cancel">Cancel</a>
+                <button type="submit" class="btn btn-submit">{{ __('crm.otp_submit') }}</button>
+                <a href="{{ url('login') }}" class="btn btn-cancel">{{ __('crm.cancel') }}</a>
             </div>
         </form>
     </div>

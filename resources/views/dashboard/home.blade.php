@@ -10,8 +10,8 @@
     $userName = Auth::user()->name ?? Auth::user()->email ?? 'User';
     $userLevel = Auth::user()->level ?? '';
     $levelLabel = $userLevel === 'operasional'
-        ? 'Operasional'
-        : ($userLevel === 'compliance' ? 'Compliance' : ucfirst((string) $userLevel));
+        ? __('crm.role_operasional')
+        : ($userLevel === 'compliance' ? __('crm.role_compliance') : ucfirst((string) $userLevel));
 @endphp
 
 <div class="container-fluid crm-home-wrap">
@@ -20,23 +20,22 @@
 
         <section class="crm-home-card">
             <p class="crm-home-brand">CRM Arsema</p>
-            <h1 class="crm-home-title">Selamat datang, {{ $userName }}</h1>
+            <h1 class="crm-home-title">{{ __('crm.welcome', ['name' => $userName]) }}</h1>
             <p class="crm-home-text">
-                Dashboard Customer Relationship Management untuk operasional ARSEMA —
-                transaksi, screening, flagging, dan reporting dalam satu tempat.
+                {{ __('crm.home_subtitle') }}
             </p>
 
             <div class="crm-home-meta">
                 <div class="crm-home-meta-item">
-                    <span class="crm-home-meta-label">Peran</span>
+                    <span class="crm-home-meta-label">{{ __('crm.role') }}</span>
                     <span class="crm-home-meta-value">{{ $levelLabel }}</span>
                 </div>
                 <div class="crm-home-meta-item">
-                    <span class="crm-home-meta-label">Kontak</span>
+                    <span class="crm-home-meta-label">{{ __('crm.contact') }}</span>
                     <a class="crm-home-meta-value" href="mailto:info@arsema.co.id">info@arsema.co.id</a>
                 </div>
                 <div class="crm-home-meta-item">
-                    <span class="crm-home-meta-label">Website</span>
+                    <span class="crm-home-meta-label">{{ __('crm.website') }}</span>
                     <a
                         class="crm-home-meta-value"
                         href="https://arsema.co.id"
@@ -47,7 +46,7 @@
             </div>
 
             <p class="crm-home-hint">
-                Gunakan menu di sisi kiri untuk membuka fitur yang Anda butuhkan.
+                {{ __('crm.home_hint') }}
             </p>
         </section>
     </div>

@@ -295,8 +295,8 @@ return [
             'topnav_right' => true,
         ],
 
-        // —— Utama ——
-        ['header' => 'UTAMA'],
+        // —— Main ——
+        ['header' => 'MAIN'],
         [
             'text' => 'Home',
             'url'  => 'dashboard',
@@ -310,111 +310,119 @@ return [
             'can'  => ['operasional-only'],
         ],
 
-        // —— Transaksi ——
-        ['header' => 'TRANSAKSI'],
+        // —— Transactions ——
+        ['header' => 'TRANSACTIONS'],
         [
-            'text' => 'Transaksi Pos',
+            'text' => 'POS Transactions',
             'icon' => 'fas fa-fw fa-cash-register',
             'submenu' => [
                 [
-                    'text'   => 'Transaksi Receive',
+                    'text'   => 'Receive',
                     'url'    => 'transaksi_receive_pos',
                     'shift'  => 'ml-3',
                     'can'    => ['compliance-only'],
                     'icon'   => 'fas fa-fw fa-circle',
-                    'active' => ['transaksi_receive_pos'],
+                    'active' => ['transaksi_receive_pos', 'transaksi_receive_pos/*'],
                 ],
                 [
-                    'text'   => 'Transaksi Receive',
+                    'text'   => 'Receive',
                     'url'    => 'transaksi_receive_pos_operasional',
                     'shift'  => 'ml-3',
                     'can'    => ['operasional-only'],
                     'icon'   => 'fas fa-fw fa-circle',
-                    'active' => ['transaksi_receive_pos_operasional'],
+                    'active' => ['transaksi_receive_pos_operasional', 'transaksi_receive_pos_operasional/*'],
                 ],
                 [
-                    'text'   => 'Transaksi Send',
+                    'text'   => 'Send',
                     'url'    => 'transaksi_send_pos',
                     'shift'  => 'ml-3',
                     'can'    => ['compliance-only'],
                     'icon'   => 'fas fa-fw fa-circle',
-                    'active' => ['transaksi_send_pos'],
+                    'active' => ['transaksi_send_pos', 'transaksi_send_pos/*'],
                 ],
                 [
-                    'text'   => 'Transaksi Send',
+                    'text'   => 'Send',
                     'url'    => 'transaksi_send_pos_operasional',
                     'shift'  => 'ml-3',
                     'can'    => ['operasional-only'],
                     'icon'   => 'fas fa-fw fa-circle',
-                    'active' => ['transaksi_send_pos_operasional'],
+                    'active' => ['transaksi_send_pos_operasional', 'transaksi_send_pos_operasional/*'],
                 ],
             ],
         ],
         [
-            'text' => 'Transaksi Branch',
+            'text' => 'Branch Transactions',
             'icon' => 'fas fa-fw fa-code-branch',
             'submenu' => [
                 [
-                    'text'  => 'Transaksi Receive',
+                    'text'  => 'Receive',
                     'url'   => 'transaction_receive_adisena_compliance',
                     'shift' => 'ml-3',
                     'can'   => ['compliance-only'],
                     'icon'  => 'fas fa-fw fa-circle',
+                    'active' => ['transaction_receive_adisena_compliance', 'transaction_receive_adisena_compliance/*'],
                 ],
                 [
-                    'text'  => 'Transaksi Receive',
+                    'text'  => 'Receive',
                     'url'   => 'transaction_receive_adisena_operasional',
                     'shift' => 'ml-3',
                     'can'   => ['operasional-only'],
                     'icon'  => 'fas fa-fw fa-circle',
+                    'active' => ['transaction_receive_adisena_operasional', 'transaction_receive_adisena_operasional/*'],
                 ],
                 [
-                    'text'  => 'Transaksi Send',
+                    'text'  => 'Send',
                     'url'   => 'transaction_send_adisena_compliance',
                     'shift' => 'ml-3',
                     'can'   => ['compliance-only'],
                     'icon'  => 'fas fa-fw fa-circle',
+                    'active' => ['transaction_send_adisena_compliance', 'transaction_send_adisena_compliance/*'],
                 ],
                 [
-                    'text'  => 'Transaksi Send',
+                    'text'  => 'Send',
                     'url'   => 'transaction_send_adisena_operasional',
                     'shift' => 'ml-3',
                     'can'   => ['operasional-only'],
                     'icon'  => 'fas fa-fw fa-circle',
+                    'active' => ['transaction_send_adisena_operasional', 'transaction_send_adisena_operasional/*'],
                 ],
             ],
         ],
         [
-            'text' => 'Transaksi Direct Arsema',
+            'text' => 'Direct Arsema Transactions',
             'icon' => 'fas fa-fw fa-exchange-alt',
             'submenu' => [
                 [
-                    'text'  => 'Transaksi Send',
+                    'text'  => 'Send',
                     'url'   => 'transaction_send_direct_compliance',
                     'shift' => 'ml-3',
                     'can'   => ['compliance-only'],
                     'icon'  => 'fas fa-fw fa-circle',
+                    'active' => ['transaction_send_direct_compliance', 'transaction_send_direct_compliance/*'],
                 ],
                 [
-                    'text'  => 'Transaksi Send',
+                    'text'  => 'Send',
                     'url'   => 'transaction_send_direct_operasional',
                     'shift' => 'ml-3',
                     'can'   => ['operasional-only'],
                     'icon'  => 'fas fa-fw fa-circle',
+                    'active' => ['transaction_send_direct_operasional', 'transaction_send_direct_operasional/*'],
                 ],
                 [
-                    'text'  => 'Transaksi Receive',
+                    'text'  => 'Receive',
                     'url'   => 'transaction_receive_direct_compliance',
                     'shift' => 'ml-3',
                     'can'   => ['compliance-only'],
                     'icon'  => 'fas fa-fw fa-circle',
+                    'active' => ['transaction_receive_direct_compliance', 'transaction_receive_direct_compliance/*'],
                 ],
                 [
-                    'text'  => 'Transaksi Receive',
+                    'text'  => 'Receive',
                     'url'   => 'transaction_receive_direct_operasional',
                     'shift' => 'ml-3',
                     'can'   => ['operasional-only'],
                     'icon'  => 'fas fa-fw fa-circle',
+                    'active' => ['transaction_receive_direct_operasional', 'transaction_receive_direct_operasional/*'],
                 ],
             ],
         ],
@@ -636,7 +644,7 @@ return [
                     ],
                 ],
                 [
-                    'text'   => 'Kota',
+                    'text'   => 'City',
                     'url'    => 'kota',
                     'can'    => ['compliance-only'],
                     'shift'  => 'ml-3',
@@ -644,7 +652,7 @@ return [
                     'active' => ['kota', 'detail_kota', 'tanggal_valid'],
                 ],
                 [
-                    'text'   => 'Kota',
+                    'text'   => 'City',
                     'url'    => 'kota-operasional',
                     'can'    => ['operasional-only'],
                     'shift'  => 'ml-3',
@@ -652,7 +660,7 @@ return [
                     'active' => ['kota-operasional', 'detail_kota_operasional'],
                 ],
                 [
-                    'text'   => 'Negara',
+                    'text'   => 'Country',
                     'url'    => 'negara',
                     'can'    => ['compliance-only'],
                     'shift'  => 'ml-3',
@@ -669,7 +677,7 @@ return [
                     ],
                 ],
                 [
-                    'text'   => 'Negara',
+                    'text'   => 'Country',
                     'url'    => 'negara-operasional',
                     'can'    => ['operasional-only'],
                     'shift'  => 'ml-3',
@@ -709,7 +717,7 @@ return [
         ],
 
         // —— Data & Laporan ——
-        ['header' => 'DATA & LAPORAN'],
+        ['header' => 'DATA & REPORTS'],
         [
             'text' => 'Nopend / Id Pos',
             'url'  => 'nopend',
@@ -735,20 +743,20 @@ return [
             'icon' => 'fas fa-fw fa-id-badge',
         ],
         [
-            'text' => 'Laporan',
+            'text' => 'Reports',
             'url'  => 'laporan',
             'can'  => ['compliance-only'],
             'icon' => 'fas fa-fw fa-chart-line',
         ],
         [
-            'text' => 'Laporan',
+            'text' => 'Reports',
             'url'  => 'laporan_operasional',
             'can'  => ['operasional-only'],
             'icon' => 'fas fa-fw fa-chart-line',
         ],
 
-        // —— Dokumen & Riwayat ——
-        ['header' => 'DOKUMEN & RIWAYAT'],
+        // —— Documents & History ——
+        ['header' => 'DOCUMENTS & HISTORY'],
         [
             'text' => 'Upload Proof Of Payment',
             'url'  => 'popimage',

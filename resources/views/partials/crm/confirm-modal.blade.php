@@ -1,17 +1,17 @@
 {{-- Shared CRM confirm modal (same style as logout) --}}
 @php
     $modalId = $modalId ?? 'crmConfirmModal';
-    $title = $title ?? 'Hapus data?';
-    $subtitle = $subtitle ?? 'Apakah Anda yakin ingin menghapus data ini? Tindakan ini tidak dapat dibatalkan.';
-    $confirmLabel = $confirmLabel ?? 'Hapus';
-    $cancelLabel = $cancelLabel ?? 'Batal';
+    $title = $title ?? __('crm.confirm_delete_title');
+    $subtitle = $subtitle ?? __('crm.confirm_delete_body');
+    $confirmLabel = $confirmLabel ?? __('crm.delete');
+    $cancelLabel = $cancelLabel ?? __('crm.cancel');
     $icon = $icon ?? 'fas fa-trash-alt';
 @endphp
 
 <div class="modal fade crm-confirm-modal" id="{{ $modalId }}" tabindex="-1" role="dialog" aria-labelledby="{{ $modalId }}Label" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content position-relative">
-            <button type="button" class="crm-confirm-close" data-dismiss="modal" aria-label="Tutup">&times;</button>
+            <button type="button" class="crm-confirm-close" data-dismiss="modal" aria-label="{{ __('crm.close') }}">&times;</button>
             <div class="crm-confirm-body">
                 <div class="crm-confirm-icon" aria-hidden="true">
                     <i class="{{ $icon }}"></i>

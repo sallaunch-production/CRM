@@ -21,7 +21,7 @@
         <div class="crm-page-header">
             <div>
                 <h1 class="crm-page-title">New Customer</h1>
-                <p class="crm-page-sub">Pencarian orang yang baru pertama kali transaksi (Receive).</p>
+                <p class="crm-page-sub">Search for first-time transaction customers (Receive).</p>
             </div>
             @include('partials.crm.newcustomer-tabs', ['activeTab' => 'receive'])
         </div>
@@ -32,13 +32,13 @@
             <form class="crm-search-form" action="{{ $searchRoute }}" method="POST">
                 @csrf
                 @include('partials.crm.date-range-filter', [
-                    'groupLabel' => 'Tanggal Transaksi Receive',
+                    'groupLabel' => 'Receive Transaction Date',
                     'startDate' => $startDate,
                     'endDate' => $endDate,
                 ])
                 <div class="crm-search-actions">
                     <button type="submit" class="crm-btn crm-btn-primary" id="btn-cari">
-                        <i class="fas fa-search"></i> Cari
+                        <i class="fas fa-search"></i> Search
                     </button>
                 </div>
             </form>
@@ -49,32 +49,32 @@
                 <div class="crm-empty-icon" aria-hidden="true">
                     <i class="fas fa-user-plus"></i>
                 </div>
-                <h2 class="crm-empty-title">Mulai dengan periode receive</h2>
+                <h2 class="crm-empty-title">Start with a receive period</h2>
                 <p class="crm-empty-text">
-                    Pilih <strong>Start Date</strong> dan <strong>End Date</strong>, lalu tekan <strong>Cari</strong>
-                    untuk menampilkan customer baru.
+                    Select a <strong>Start Date</strong> and <strong>End Date</strong>, then click <strong>Search</strong>
+                    to show new customers.
                 </p>
             </div>
         @else
             <div class="crm-table-card">
                 <div class="crm-table-toolbar">
                     <div>
-                        <h2 class="crm-table-title">Hasil New Customer — Receive</h2>
+                        <h2 class="crm-table-title">New Customer Results — Receive</h2>
                         <div class="crm-table-meta">
                             {{ date('d-m-Y', strtotime($tanggal_dari)) }}
-                            s/d
+                            to
                             {{ date('d-m-Y', strtotime($tanggal_sampai)) }}
                         </div>
                     </div>
                     <div class="crm-table-toolbar-actions">
-                        <span class="crm-badge">{{ $rowCount }} data</span>
+                        <span class="crm-badge">{{ $rowCount }} records</span>
                         <form id="cetakForm" action="{{ route('cetak_new_customer_gabungan') }}" method="POST" class="d-inline m-0">
                             @csrf
                             <input type="hidden" name="tanggal_dari" value="{{ $tanggal_dari ?? '-' }}">
                             <input type="hidden" name="tanggal_sampai" value="{{ $tanggal_sampai ?? '-' }}">
-                            <button type="submit" class="crm-btn crm-btn-sm crm-btn-primary" title="Cetak Gabungan">
+                            <button type="submit" class="crm-btn crm-btn-sm crm-btn-primary" title="Print Combined">
                                 <i class="fas fa-print" aria-hidden="true"></i>
-                                Cetak Gabungan
+                                Print Combined
                             </button>
                         </form>
                     </div>
@@ -86,13 +86,13 @@
                                 <th>No</th>
                                 <th>IDPJK</th>
                                 <th>Kode Nasabah</th>
-                                <th>Nama Penerima</th>
-                                <th>Kota Kelahiran</th>
-                                <th>Tanggal Lahir</th>
-                                <th>Alamat Penerima</th>
-                                <th>Nomor Identitas</th>
-                                <th>Identitas Lain</th>
-                                <th>No Referensi</th>
+                                <th>Recipient Name</th>
+                                <th>Place of Birth</th>
+                                <th>Date of Birth</th>
+                                <th>Recipient Address</th>
+                                <th>ID Number</th>
+                                <th>Other Identity</th>
+                                <th>Reference No</th>
                                 <th>NPWP</th>
                                 <th>Local ID</th>
                             </tr>

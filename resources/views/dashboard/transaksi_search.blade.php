@@ -27,14 +27,14 @@
                                     <span class="glyphicon glyphicon-calendar"></span>
                                     </span>
                                 </div><br>
-                                <button type="submit" class="btn bg-maroon btn-flat margin" >Cari</button>
+                                <button type="submit" class="btn bg-maroon btn-flat margin" >Search</button>
                                 </form>
                             </div>
 
                             <div class="col-md-8"> <br>
                             <table class="table table-condensed" >
                                     <tr>
-                                        <td>Periode </td><td align=right>{{ $periode_dari }} s/d {{$periode_sampai}}</td>
+                                        <td>Period </td><td align=right>{{ $periode_dari }} to {{$periode_sampai}}</td>
                                     </tr>
                                     <tr>
                                         <td colspan=2>Target

@@ -14,7 +14,7 @@
             class="btn btn-secondary"
         >
             <i class="fas fa-arrow-left mr-1"></i>
-            Kembali
+            Back
         </a>
     </div>
 @stop
@@ -25,18 +25,18 @@
             <div class="card-body py-3">
                 <div class="row">
                     <div class="col-md-4 mb-3 mb-md-0 customer-info">
-                        <span class="info-label">Nama Customer</span>
+                        <span class="info-label">Customer Name</span>
                         <strong>{{ $customerName }}</strong>
                     </div>
                     <div class="col-md-4 mb-3 mb-md-0 customer-info">
-                        <span class="info-label">NIK / Nomor Identitas</span>
-                        <strong>{{ $nomorIdentitas }}</strong>
+                        <span class="info-label">NIK / ID Number</span>
+                        <strong>{{ $nomorIdentity }}</strong>
                     </div>
                     <div class="col-md-4 customer-info">
                         <span class="info-label">Periode</span>
                         <strong>
                             {{ \Carbon\Carbon::parse(request('start_date'))->format('d-m-Y') }}
-                            s/d {{ \Carbon\Carbon::parse(request('end_date'))->format('d-m-Y') }}
+                            to {{ \Carbon\Carbon::parse(request('end_date'))->format('d-m-Y') }}
                         </strong>
                     </div>
                 </div>
@@ -47,7 +47,7 @@
             <div class="card-header d-flex align-items-center">
                 <h3 class="card-title">
                     <i class="fas fa-list mr-2"></i>
-                    Daftar Transaksi
+                    Transaction List
                 </h3>
                 <span class="badge badge-primary ml-auto">{{ $transactions->total() }} transaksi</span>
             </div>
@@ -58,10 +58,10 @@
                         <thead>
                             <tr>
                                 <th class="text-center">No.</th>
-                                <th>Nomor Referensi</th>
-                                <th>Tanggal</th>
-                                <th>Nama Penerima</th>
-                                <th>Negara Penerima</th>
+                                <th>Reference No</th>
+                                <th>Date</th>
+                                <th>Recipient Name</th>
+                                <th>Recipient Country</th>
                                 <th class="text-right">Nominal</th>
                             </tr>
                         </thead>
@@ -82,7 +82,7 @@
                             @empty
                                 <tr>
                                     <td colspan="6" class="text-center text-muted py-4">
-                                        Tidak ada transaksi pada periode yang dipilih.
+                                        No transactions for the selected period.
                                     </td>
                                 </tr>
                             @endforelse
@@ -93,7 +93,7 @@
                 @if ($transactions->hasPages())
                     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mt-3">
                         <small class="text-muted mb-2 mb-md-0">
-                            Menampilkan {{ $transactions->firstItem() }}–{{ $transactions->lastItem() }}
+                            Showing {{ $transactions->firstItem() }}–{{ $transactions->lastItem() }}
                             dari {{ $transactions->total() }} transaksi
                         </small>
                         {{ $transactions->links() }}

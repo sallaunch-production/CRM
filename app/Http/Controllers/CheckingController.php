@@ -56,11 +56,11 @@ class CheckingController extends Controller
                     $start = Carbon::createFromFormat('Y-m-d', trim((string) $request->start_date))->startOfDay();
                     $end = Carbon::createFromFormat('Y-m-d', trim((string) $request->end_date))->startOfDay();
                 } catch (\Throwable $e) {
-                    return redirect()->back()->with('error', 'Format tanggal tidak valid.')->withInput();
+                    return redirect()->back()->with('error', __('crm.err_invalid_date'))->withInput();
                 }
 
                 if ($end->lt($start)) {
-                    return redirect()->back()->with('error', 'End date tidak boleh lebih kecil dari start date.')->withInput();
+                    return redirect()->back()->with('error', __('crm.err_end_before_start'))->withInput();
                 }
 
                 $tanggal_dari = $start->toDateString();
@@ -184,8 +184,8 @@ class CheckingController extends Controller
                 'lapor' => ['required', 'string', 'in:LTKM,Monthly Fraud,Sanction'],
                 'remark' => ['nullable', 'string', 'max:255'],
             ], [
-                'lapor.required' => 'Kolom Lapor wajib diisi.',
-                'lapor.in' => 'Pilihan Lapor tidak valid.',
+                'lapor.required' => __('crm.err_lapor_required'),
+                'lapor.in' => __('crm.err_lapor_invalid'),
             ]);
 
             $remark = trim((string) ($validated['remark'] ?? ''));
@@ -202,7 +202,7 @@ class CheckingController extends Controller
 
             return redirect()->back()->with(
                 'success',
-                'Profil customer berhasil diperbarui.'
+                __('crm.msg_profile_updated')
             );
         }
 
@@ -327,7 +327,7 @@ class CheckingController extends Controller
 
                     if ($everEnd->lt($everStart) || $searchEnd->lt($searchStart)) {
                         return redirect()->back()
-                            ->with('error', 'End date tidak boleh lebih kecil dari start date.')
+                            ->with('error', __('crm.err_end_before_start'))
                             ->withInput();
                     }
 
@@ -350,7 +350,7 @@ class CheckingController extends Controller
                 }
             } catch (\Throwable $e) {
                 return redirect()->back()
-                    ->with('error', 'Format tanggal tidak valid.')
+                    ->with('error', __('crm.err_invalid_date'))
                     ->withInput();
             }
 
@@ -1228,11 +1228,11 @@ class CheckingController extends Controller
                 'end_date' => ['required', 'date_format:Y-m-d', 'after_or_equal:start_date'],
             ],
             [
-                'start_date.required' => 'Start date wajib diisi.',
-                'start_date.date_format' => 'Format start date tidak valid.',
-                'end_date.required' => 'End date wajib diisi.',
-                'end_date.date_format' => 'Format end date tidak valid.',
-                'end_date.after_or_equal' => 'End date harus sama dengan atau setelah start date.',
+                'start_date.required' => __('crm.err_start_required'),
+                'start_date.date_format' => __('crm.err_invalid_date'),
+                'end_date.required' => __('crm.err_end_required'),
+                'end_date.date_format' => __('crm.err_invalid_date'),
+                'end_date.after_or_equal' => __('crm.err_end_before_start'),
             ]
         );
     }
@@ -1258,11 +1258,11 @@ class CheckingController extends Controller
                 $start = Carbon::createFromFormat('Y-m-d', trim((string) $request->start_date))->startOfDay();
                 $end = Carbon::createFromFormat('Y-m-d', trim((string) $request->end_date))->startOfDay();
             } catch (\Throwable $e) {
-                throw new InvalidArgumentException('Format tanggal tidak valid.');
+                throw new InvalidArgumentException(__('crm.err_invalid_date'));
             }
 
             if ($end->lt($start)) {
-                throw new InvalidArgumentException('End date tidak boleh lebih kecil dari start date.');
+                throw new InvalidArgumentException(__('crm.err_end_before_start'));
             }
 
             return [$start->toDateString(), $end->toDateString()];
@@ -1270,7 +1270,7 @@ class CheckingController extends Controller
 
         $reservation = str_replace('+-+', ' - ', (string) $request->input('reservation', ''));
         if (!str_contains($reservation, ' - ')) {
-            throw new InvalidArgumentException('Start date dan end date wajib diisi.');
+            throw new InvalidArgumentException(__('crm.err_dates_required'));
         }
 
         try {
@@ -1281,7 +1281,7 @@ class CheckingController extends Controller
                 Carbon::createFromFormat('m/d/Y', trim($sampai))->format('Y-m-d'),
             ];
         } catch (\Throwable $e) {
-            throw new InvalidArgumentException('Format tanggal tidak valid.');
+            throw new InvalidArgumentException(__('crm.err_invalid_date'));
         }
     }
 

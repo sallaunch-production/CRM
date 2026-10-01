@@ -20,7 +20,7 @@
                 <div class="crm-page-header">
                     <div>
                         <h1 class="crm-page-title">Customer Profile</h1>
-                        <p class="crm-page-sub">Cari profil customer, lalu lihat detail atau riwayat transaksi.</p>
+                        <p class="crm-page-sub">Search a customer profile, then view details or transaction history.</p>
                     </div>
                 </div>
             @endif
@@ -33,23 +33,23 @@
                 <div class="crm-search">
                     <form class="crm-search-form" action="{{ route('search_profil') }}" method="GET">
                         <div class="crm-search-field">
-                            <label for="profil_nama">Cari Customer</label>
+                            <label for="profil_nama">Search Customer</label>
                             <input type="text" id="profil_nama" name="nama" class="form-control"
                                 value="{{ $searchValue }}"
-                                placeholder="Ketik nama, telepon, tanggal lahir, atau nomor identitas…" required autofocus>
+                                placeholder="Type name, phone, date of birth, or ID number…" required autofocus>
                         </div>
                         <div class="crm-search-field" style="flex: 0 1 200px;">
-                            <label for="profil_berdasarkan">Berdasarkan</label>
+                            <label for="profil_berdasarkan">Filter By</label>
                             <select id="profil_berdasarkan" name="berdasarkan" class="form-control">
-                                <option value="nama" @selected($filterBy === 'nama')>Nama</option>
-                                <option value="telepon_penerima" @selected($filterBy === 'telepon_penerima')>Nomor Telepon</option>
-                                <option value="tanggal_lahir" @selected($filterBy === 'tanggal_lahir')>Tanggal Lahir</option>
-                                <option value="nomor_identitas" @selected($filterBy === 'nomor_identitas')>Nomor Identitas</option>
+                                <option value="nama" @selected($filterBy === 'nama')>Name</option>
+                                <option value="telepon_penerima" @selected($filterBy === 'telepon_penerima')>Phone Number</option>
+                                <option value="tanggal_lahir" @selected($filterBy === 'tanggal_lahir')>Date of Birth</option>
+                                <option value="nomor_identitas" @selected($filterBy === 'nomor_identitas')>ID Number</option>
                             </select>
                         </div>
                         <div class="crm-search-actions">
                             <button type="submit" class="crm-btn crm-btn-primary">
-                                <i class="fas fa-search"></i> Cari
+                                <i class="fas fa-search"></i> Search
                             </button>
                         </div>
                     </form>
@@ -62,10 +62,10 @@
                     <div class="crm-empty-icon" aria-hidden="true">
                         <i class="fas fa-user-friends"></i>
                     </div>
-                    <h2 class="crm-empty-title">Mulai dengan pencarian</h2>
+                    <h2 class="crm-empty-title">Start with a search</h2>
                     <p class="crm-empty-text">
-                        Masukkan kata kunci di atas, pilih filter (Nama / Telepon / Tanggal Lahir / Nomor Identitas),
-                        lalu tekan <strong>Cari</strong> untuk menampilkan daftar customer.
+                        Enter a keyword above, choose a filter (Name / Phone / Date of Birth / ID Number),
+                        then click <strong>Search</strong> to show the customer list.
                     </p>
                 </div>
             @endif
@@ -75,16 +75,16 @@
                 <div class="crm-table-card">
                     <div class="crm-table-toolbar">
                         <div>
-                            <h2 class="crm-table-title">Hasil pencarian</h2>
+                            <h2 class="crm-table-title">Search results</h2>
                             <div class="crm-table-meta">Keyword: <strong>{{ $nama }}</strong></div>
                         </div>
                         <div class="crm-table-toolbar-actions">
-                            <span class="crm-badge">{{ count($dat) }} customer</span>
+                            <span class="crm-badge">{{ count($dat) }} customers</span>
                             <button
                                 type="button"
                                 class="crm-btn crm-btn-sm crm-btn-primary crm-btn-generate"
                                 id="btnProfilGenerate"
-                                title="Generate Excel dari hasil pencarian"
+                                title="Generate Excel from search results"
                             >
                                 <i class="fas fa-file-export" aria-hidden="true"></i>
                                 Generate
@@ -97,12 +97,12 @@
                             <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>Nama</th>
-                                    <th>Alamat</th>
-                                    <th>Nomor Telepon</th>
-                                    <th>Tanggal Lahir</th>
-                                    <th>Nomor Identitas</th>
-                                    <th>Lapor</th>
+                                    <th>Name</th>
+                                    <th>Address</th>
+                                    <th>Phone Number</th>
+                                    <th>Date of Birth</th>
+                                    <th>ID Number</th>
+                                    <th>Report</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -166,17 +166,17 @@
                                 'wide' => false,
                             ],
                             [
-                                'label' => 'Tanggal Lahir',
+                                'label' => 'Date of Birth',
                                 'value' => $transactions->tanggal_lahir ?? '',
                                 'wide' => false,
                             ],
-                            ['label' => 'Nomor Identitas', 'value' => $idText, 'wide' => false],
-                            ['label' => 'Pekerjaan', 'value' => $transactions->pekerjaan ?? '', 'wide' => false],
-                            ['label' => 'Kota', 'value' => $transactions->kota_penerima ?? '', 'wide' => false],
-                            ['label' => 'Kewarganegaraan', 'value' => $transactions->negara ?? '', 'wide' => false],
-                            ['label' => 'Alamat', 'value' => $transactions->alamat_penerima ?? '', 'wide' => true],
+                            ['label' => 'ID Number', 'value' => $idText, 'wide' => false],
+                            ['label' => 'Occupation', 'value' => $transactions->pekerjaan ?? '', 'wide' => false],
+                            ['label' => 'City', 'value' => $transactions->kota_penerima ?? '', 'wide' => false],
+                            ['label' => 'Nationality', 'value' => $transactions->negara ?? '', 'wide' => false],
+                            ['label' => 'Address', 'value' => $transactions->alamat_penerima ?? '', 'wide' => true],
                             [
-                                'label' => 'Lapor',
+                                'label' => 'Report',
                                 'value' => $transactions->lapor ?? '',
                                 'wide' => false,
                             ],
@@ -186,12 +186,12 @@
                                 'wide' => false,
                             ],
                             [
-                                'label' => 'Lapor Updated At',
+                                'label' => 'Report Updated At',
                                 'value' => $transactions->lapor_updated_at ?? '',
                                 'wide' => false,
                             ],
                             [
-                                'label' => 'Lapor Updated By',
+                                'label' => 'Report Updated By',
                                 'value' => $transactions->lapor_updated_by_name ?? '',
                                 'wide' => false,
                             ],
@@ -202,13 +202,13 @@
                         <div class="modal-dialog modal-dialog-centered" role="document">
                             <div class="modal-content">
                                 <button type="button" class="crm-modal-close" data-dismiss="modal"
-                                    aria-label="Tutup">&times;</button>
+                                    aria-label="{{ __('crm.close') }}">&times;</button>
                                 <div class="crm-modal-shell">
                                     <div class="crm-modal-hero">
                                         <div class="crm-modal-avatar" aria-hidden="true">{{ $initial }}</div>
                                         <div class="crm-modal-hero-text">
                                             <p class="crm-modal-kicker" id="modalLabel{{ $transactions->id }}">Profil
-                                                Identitas</p>
+                                                Identity</p>
                                             <h5 class="crm-modal-name">{{ $namaVal !== '' ? $namaVal : '—' }}</h5>
                                             @if ($idText !== '')
                                                 <p class="crm-modal-id">{{ $idText }}</p>
@@ -230,7 +230,7 @@
 
                                     <div class="crm-modal-actions">
                                         <button type="button" class="crm-btn crm-btn-primary"
-                                            data-dismiss="modal">Tutup</button>
+                                            data-dismiss="modal">{{ __('crm.close') }}</button>
                                     </div>
                                 </div>
                             </div>
@@ -242,7 +242,7 @@
                         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                             <div class="modal-content">
                                 <button type="button" class="crm-modal-close" data-dismiss="modal"
-                                    aria-label="Tutup">&times;</button>
+                                    aria-label="{{ __('crm.close') }}">&times;</button>
                                 <div class="crm-modal-shell">
                                     <div class="crm-modal-hero">
                                         <div class="crm-modal-avatar" aria-hidden="true">{{ $initial }}</div>
@@ -263,12 +263,12 @@
                                             {{-- Lapor (wajib) --}}
                                             <div class="crm-detail-item is-wide">
                                                 <label for="lapor{{ $transactions->id }}">
-                                                    Lapor <span class="text-danger">*</span>
+                                                    Report <span class="text-danger">*</span>
                                                 </label>
 
                                                 <select id="lapor{{ $transactions->id }}" name="lapor"
                                                     class="form-control" required>
-                                                    <option value="">-- Pilih Lapor --</option>
+                                                    <option value="">-- Select Report --</option>
 
                                                     <option value="LTKM" @selected(old('lapor', $transactions->lapor ?? '') === 'LTKM')>
                                                         LTKM
@@ -288,17 +288,17 @@
                                                 <label for="remark{{ $transactions->id }}">Remark</label>
 
                                                 <textarea id="remark{{ $transactions->id }}" name="remark" class="form-control" rows="3"
-                                                    placeholder="Masukkan remark (opsional)...">{{ old('remark', $transactions->remark ?? '') }}</textarea>
+                                                    placeholder="Enter remark (optional)...">{{ old('remark', $transactions->remark ?? '') }}</textarea>
                                             </div>
 
                                         </div>
 
                                         <div class="crm-modal-actions">
                                             <button type="button" class="crm-btn crm-btn-muted" data-dismiss="modal">
-                                                Batal
+                                                Cancel
                                             </button>
                                             <button type="submit" class="crm-btn crm-btn-primary">
-                                                Simpan Perubahan
+                                                Save Changes
                                             </button>
                                         </div>
                                     </form>
@@ -370,17 +370,17 @@
                     $listing = $profilListing ?? [];
                     $listingFields = [
                         ['label' => 'Nama', 'value' => $listing['nama'] ?? $namaVal, 'wide' => false],
-                        ['label' => 'Nomor Telepon', 'value' => $listing['telepon_penerima'] ?? '', 'wide' => false],
-                        ['label' => 'Tanggal Lahir', 'value' => $listing['tanggal_lahir'] ?? '', 'wide' => false],
-                        ['label' => 'Nomor Identitas', 'value' => $listing['nomor_identitas'] ?? '', 'wide' => false],
-                        ['label' => 'Alamat', 'value' => $listing['alamat_penerima'] ?? '', 'wide' => true],
+                        ['label' => 'Phone Number', 'value' => $listing['telepon_penerima'] ?? '', 'wide' => false],
+                        ['label' => 'Date of Birth', 'value' => $listing['tanggal_lahir'] ?? '', 'wide' => false],
+                        ['label' => 'ID Number', 'value' => $listing['nomor_identitas'] ?? '', 'wide' => false],
+                        ['label' => 'Address', 'value' => $listing['alamat_penerima'] ?? '', 'wide' => true],
                     ];
                 @endphp
 
                 <div class="crm-context-wrap">
                     <div class="crm-context-toolbar">
                         <a href="{{ route('profil') }}" class="crm-btn crm-btn-muted">
-                            <i class="fas fa-arrow-left"></i> Kembali ke pencarian
+                            <i class="fas fa-arrow-left"></i> Back to search
                         </a>
                     </div>
 
@@ -388,7 +388,7 @@
                         <div class="crm-context-main">
                             <div class="crm-context-avatar" aria-hidden="true">{{ $namaInitial }}</div>
                             <div class="crm-context-text">
-                                <p class="crm-context-kicker">Customer Profile · Transaksi Penerima</p>
+                                <p class="crm-context-kicker">Customer Profile · Recipient Transactions</p>
                                 <h1 class="crm-context-title">{{ $namaVal !== '' ? $namaVal : '—' }}</h1>
                                 <p class="crm-context-meta">
                                     {{ $txTotal }} transaksi ditemukan di semua kanal
@@ -436,21 +436,21 @@
                                 <thead>
                                     <tr>
                                         <th>No</th>
-                                        <th>No Referensi</th>
-                                        <th>Nama Pengirim</th>
-                                        <th>Negara Pengirim</th>
+                                        <th>Reference No</th>
+                                        <th>Sender Name</th>
+                                        <th>Sender Country</th>
                                         <th>BSU</th>
-                                        <th>Identitas</th>
-                                        <th>Nomor Identitas</th>
-                                        <th>Tanggal lahir</th>
-                                        <th>Alamat pengirim</th>
-                                        <th>Telepon Penerima</th>
-                                        <th>Pekerjaan</th>
-                                        <th>Tujuan Penggunaan Dana</th>
-                                        <th>Hubungan</th>
-                                        <th>Kewarganegaraan</th>
+                                        <th>Identity</th>
+                                        <th>ID Number</th>
+                                        <th>Date lahir</th>
+                                        <th>Address pengirim</th>
+                                        <th>Recipient Phone</th>
+                                        <th>Occupation</th>
+                                        <th>Purpose of Funds</th>
+                                        <th>Relationship</th>
+                                        <th>Nationality</th>
                                         <th>Kode Pos</th>
-                                        <th>Tanggal</th>
+                                        <th>Date</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -493,21 +493,21 @@
                                 <thead>
                                     <tr>
                                         <th>No</th>
-                                        <th>No Referensi</th>
-                                        <th>Nama Penerima</th>
-                                        <th>Negara Penerima</th>
+                                        <th>Reference No</th>
+                                        <th>Recipient Name</th>
+                                        <th>Recipient Country</th>
                                         <th>BSU</th>
-                                        <th>Identitas</th>
-                                        <th>Nomor Identitas</th>
-                                        <th>Tanggal lahir</th>
-                                        <th>Alamat penerima</th>
-                                        <th>Telepon Penerima</th>
-                                        <th>Pekerjaan</th>
-                                        <th>Tujuan Penggunaan Dana</th>
-                                        <th>Hubungan</th>
-                                        <th>Kewarganegaraan</th>
+                                        <th>Identity</th>
+                                        <th>ID Number</th>
+                                        <th>Date lahir</th>
+                                        <th>Address penerima</th>
+                                        <th>Recipient Phone</th>
+                                        <th>Occupation</th>
+                                        <th>Purpose of Funds</th>
+                                        <th>Relationship</th>
+                                        <th>Nationality</th>
                                         <th>Kode Pos</th>
-                                        <th>Tanggal</th>
+                                        <th>Date</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -549,21 +549,21 @@
                                 <thead>
                                     <tr>
                                         <th>No</th>
-                                        <th>No Referensi</th>
-                                        <th>Nama Pengirim</th>
-                                        <th>Negara Pengirim</th>
+                                        <th>Reference No</th>
+                                        <th>Sender Name</th>
+                                        <th>Sender Country</th>
                                         <th>BSU</th>
-                                        <th>Identitas</th>
-                                        <th>Nomor Identitas</th>
-                                        <th>Tanggal lahir</th>
-                                        <th>Alamat penerima</th>
-                                        <th>Telepon Penerima</th>
-                                        <th>Pekerjaan</th>
-                                        <th>Tujuan Penggunaan Dana</th>
-                                        <th>Hubungan</th>
-                                        <th>Kewarganegaraan</th>
+                                        <th>Identity</th>
+                                        <th>ID Number</th>
+                                        <th>Date lahir</th>
+                                        <th>Address penerima</th>
+                                        <th>Recipient Phone</th>
+                                        <th>Occupation</th>
+                                        <th>Purpose of Funds</th>
+                                        <th>Relationship</th>
+                                        <th>Nationality</th>
                                         <th>Kode Pos</th>
-                                        <th>Tanggal</th>
+                                        <th>Date</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -605,21 +605,21 @@
                                 <thead>
                                     <tr>
                                         <th>No</th>
-                                        <th>No Referensi</th>
-                                        <th>Nama Penerima</th>
-                                        <th>Negara Penerima</th>
+                                        <th>Reference No</th>
+                                        <th>Recipient Name</th>
+                                        <th>Recipient Country</th>
                                         <th>BSU</th>
-                                        <th>Identitas</th>
-                                        <th>Nomor Identitas</th>
-                                        <th>Tanggal lahir</th>
-                                        <th>Alamat pengirim</th>
-                                        <th>Telepon Pengirim</th>
-                                        <th>Pekerjaan</th>
-                                        <th>Tujuan Penggunaan Dana</th>
-                                        <th>Hubungan</th>
-                                        <th>Kewarganegaraan</th>
+                                        <th>Identity</th>
+                                        <th>ID Number</th>
+                                        <th>Date lahir</th>
+                                        <th>Address pengirim</th>
+                                        <th>Sender Phone</th>
+                                        <th>Occupation</th>
+                                        <th>Purpose of Funds</th>
+                                        <th>Relationship</th>
+                                        <th>Nationality</th>
                                         <th>Kode Pos</th>
-                                        <th>Tanggal</th>
+                                        <th>Date</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -661,21 +661,21 @@
                                 <thead>
                                     <tr>
                                         <th>No</th>
-                                        <th>No Referensi</th>
-                                        <th>Nama Pengirim</th>
-                                        <th>Negara Pengirim</th>
+                                        <th>Reference No</th>
+                                        <th>Sender Name</th>
+                                        <th>Sender Country</th>
                                         <th>BSU</th>
-                                        <th>Identitas</th>
-                                        <th>Nomor Identitas</th>
-                                        <th>Tanggal lahir</th>
-                                        <th>Alamat penerima</th>
-                                        <th>Telepon Penerima</th>
-                                        <th>Pekerjaan</th>
-                                        <th>Tujuan Penggunaan Dana</th>
-                                        <th>Hubungan</th>
-                                        <th>Kewarganegaraan</th>
+                                        <th>Identity</th>
+                                        <th>ID Number</th>
+                                        <th>Date lahir</th>
+                                        <th>Address penerima</th>
+                                        <th>Recipient Phone</th>
+                                        <th>Occupation</th>
+                                        <th>Purpose of Funds</th>
+                                        <th>Relationship</th>
+                                        <th>Nationality</th>
                                         <th>Kode Pos</th>
-                                        <th>Tanggal</th>
+                                        <th>Date</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -717,21 +717,21 @@
                                 <thead>
                                     <tr>
                                         <th>No</th>
-                                        <th>No Referensi</th>
-                                        <th>Nama Penerima</th>
-                                        <th>Negara Penerima</th>
+                                        <th>Reference No</th>
+                                        <th>Recipient Name</th>
+                                        <th>Recipient Country</th>
                                         <th>BSU</th>
-                                        <th>Identitas</th>
-                                        <th>Nomor Identitas</th>
-                                        <th>Tanggal lahir</th>
-                                        <th>Alamat pengirim</th>
-                                        <th>Telepon Pengirim</th>
-                                        <th>Pekerjaan</th>
-                                        <th>Tujuan Penggunaan Dana</th>
-                                        <th>Hubungan</th>
-                                        <th>Kewarganegaraan</th>
+                                        <th>Identity</th>
+                                        <th>ID Number</th>
+                                        <th>Date lahir</th>
+                                        <th>Address pengirim</th>
+                                        <th>Sender Phone</th>
+                                        <th>Occupation</th>
+                                        <th>Purpose of Funds</th>
+                                        <th>Relationship</th>
+                                        <th>Nationality</th>
                                         <th>Kode Pos</th>
-                                        <th>Tanggal</th>
+                                        <th>Date</th>
                                     </tr>
                                 </thead>
                                 <tbody>

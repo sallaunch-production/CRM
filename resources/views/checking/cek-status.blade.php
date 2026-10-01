@@ -11,7 +11,7 @@
         <div class="crm-page-header">
             <div>
                 <h1 class="crm-page-title">Server Connection</h1>
-                <p class="crm-page-sub">Status koneksi jaringan dengan PT POS Indonesia.</p>
+                <p class="crm-page-sub">Network connection status with PT POS Indonesia.</p>
             </div>
         </div>
 

@@ -41,7 +41,9 @@ Route::post('verify', [App\Http\Controllers\AuthController::class, 'verify'])->n
 Route::group(['middleware' => ['compliance']], function () {  //HomeController
     Route::get('dashboard', [App\Http\Controllers\HomeController::class, 'dashboard'])->name('dashboard')->middleware('auth');
     Route::get('transaksi_receive_pos', [App\Http\Controllers\TransactionalController::class, 'transaksi_receive_pos'])->name('transaksi_receive_pos')->middleware('auth');
+    Route::get('transaksi_receive_pos/{no}', [App\Http\Controllers\TransactionalController::class, 'transaksi_receive_pos_detail'])->name('transaksi_receive_pos.detail')->middleware('auth')->whereNumber('no');
     Route::get('transaksi_send_pos', [App\Http\Controllers\TransactionalController::class, 'transaksi_send_pos'])->name('transaksi_send_pos')->middleware('auth');
+    Route::get('transaksi_send_pos/{no}', [App\Http\Controllers\TransactionalController::class, 'transaksi_send_pos_detail'])->name('transaksi_send_pos.detail')->middleware('auth')->whereNumber('no');
     Route::get('nopend', [App\Http\Controllers\NopendController::class, 'nopend'])->name('nopend')->middleware('auth');
     Route::get('agent_sort', [App\Http\Controllers\NopendController::class, 'agent_sort'])->name('agent_sort')->middleware('auth');
     Route::post('cari_nopend', [App\Http\Controllers\NopendController::class, 'cari_nopend'])->name('cari_nopend')->middleware('auth');
@@ -144,9 +146,13 @@ Route::group(['middleware' => ['compliance']], function () {  //HomeController
     Route::post('tambah_sanction', [App\Http\Controllers\CheckingController::class, 'tambah_sanction'])->name('tambah_sanction')->middleware('auth');
     Route::post('act_tambah_sanction', [App\Http\Controllers\CheckingController::class, 'act_tambah_sanction'])->name('act_tambah_sanction')->middleware('auth');
     Route::get('transaction_receive_adisena_compliance', [App\Http\Controllers\ReportingController::class, 'transaction_receive_adisena'])->name('transaction_receive_adisena_compliance')->middleware('auth');
+    Route::get('transaction_receive_adisena_compliance/{no}', [App\Http\Controllers\ReportingController::class, 'transaction_receive_adisena_detail'])->name('transaction_receive_adisena_compliance.detail')->middleware('auth')->whereNumber('no');
     Route::get('transaction_send_adisena_compliance', [App\Http\Controllers\ReportingController::class, 'transaction_send_adisena'])->name('transaction_send_adisena_compliance')->middleware('auth');
+    Route::get('transaction_send_adisena_compliance/{no}', [App\Http\Controllers\ReportingController::class, 'transaction_send_adisena_detail'])->name('transaction_send_adisena_compliance.detail')->middleware('auth')->whereNumber('no');
     Route::get('transaction_receive_direct_compliance', [App\Http\Controllers\ReportingController::class, 'transaction_receive_direct'])->name('transaction_receive_direct_compliance')->middleware('auth');
+    Route::get('transaction_receive_direct_compliance/{no}', [App\Http\Controllers\ReportingController::class, 'transaction_receive_direct_detail'])->name('transaction_receive_direct_compliance.detail')->middleware('auth')->whereNumber('no');
     Route::get('transaction_send_direct_compliance', [App\Http\Controllers\ReportingController::class, 'transaction_send_direct'])->name('transaction_send_direct_compliance')->middleware('auth');
+    Route::get('transaction_send_direct_compliance/{no}', [App\Http\Controllers\ReportingController::class, 'transaction_send_direct_detail'])->name('transaction_send_direct_compliance.detail')->middleware('auth')->whereNumber('no');
     Route::post('cetak_new_customer_gabungan', [App\Http\Controllers\ImportExportController::class, 'cetak_new_customer_gabungan'])->name('cetak_new_customer_gabungan')->middleware('auth');
     Route::get('newcustomer_receive_export', [App\Http\Controllers\ImportExportController::class, 'exportNewCustomer'])->name('newcustomer_receive_export')->middleware('auth');
 
@@ -213,13 +219,19 @@ Route::group(['middleware' => ['operasional']], function () {
 
     Route::get('popimage-operasional', [App\Http\Controllers\ReportingController::class, 'popimage'])->name('popimage')->middleware('auth');
     Route::get('transaksi_send_pos_operasional', [App\Http\Controllers\TransactionalController::class, 'transaksi_send_pos_operasional'])->name('transaksi_send_pos_operasional')->middleware('auth');
+    Route::get('transaksi_send_pos_operasional/{no}', [App\Http\Controllers\TransactionalController::class, 'transaksi_send_pos_detail_operasional'])->name('transaksi_send_pos_operasional.detail')->middleware('auth')->whereNumber('no');
     Route::get('transaksi_receive_pos_operasional', [App\Http\Controllers\TransactionalController::class, 'transaksi_receive_pos_operasional'])->name('transaksi_receive_pos_operasional')->middleware('auth');
+    Route::get('transaksi_receive_pos_operasional/{no}', [App\Http\Controllers\TransactionalController::class, 'transaksi_receive_pos_detail_operasional'])->name('transaksi_receive_pos_operasional.detail')->middleware('auth')->whereNumber('no');
     Route::get('screening_transaksi_operasional', [App\Http\Controllers\ReportingController::class, 'screening_transaksi'])->name('screening_transaksi')->middleware('auth');
     Route::post('cari_screening_transaksi_oprasional', [App\Http\Controllers\ReportingController::class, 'cari_screening_transaksi'])->name('cari_screening_transaksi_oprasional')->middleware('auth');
     Route::get('transaction_receive_adisena_operasional', [App\Http\Controllers\ReportingController::class, 'transaction_receive_adisena'])->name('transaction_receive_adisena_operasional')->middleware('auth');
+    Route::get('transaction_receive_adisena_operasional/{no}', [App\Http\Controllers\ReportingController::class, 'transaction_receive_adisena_detail'])->name('transaction_receive_adisena_operasional.detail')->middleware('auth')->whereNumber('no');
     Route::get('transaction_send_adisena_operasional', [App\Http\Controllers\ReportingController::class, 'transaction_send_adisena'])->name('transaction_send_adisena_operasional')->middleware('auth');
+    Route::get('transaction_send_adisena_operasional/{no}', [App\Http\Controllers\ReportingController::class, 'transaction_send_adisena_detail'])->name('transaction_send_adisena_operasional.detail')->middleware('auth')->whereNumber('no');
     Route::get('transaction_receive_direct_operasional', [App\Http\Controllers\ReportingController::class, 'transaction_receive_direct'])->name('transaction_receive_direct_operasional')->middleware('auth');
+    Route::get('transaction_receive_direct_operasional/{no}', [App\Http\Controllers\ReportingController::class, 'transaction_receive_direct_detail'])->name('transaction_receive_direct_operasional.detail')->middleware('auth')->whereNumber('no');
     Route::get('transaction_send_direct_operasional', [App\Http\Controllers\ReportingController::class, 'transaction_send_direct'])->name('transaction_send_direct_operasional')->middleware('auth');
+    Route::get('transaction_send_direct_operasional/{no}', [App\Http\Controllers\ReportingController::class, 'transaction_send_direct_detail'])->name('transaction_send_direct_operasional.detail')->middleware('auth')->whereNumber('no');
     Route::post('delete_popimages_operasional', [App\Http\Controllers\ReportingController::class, 'delete_popimages'])->name('delete_popimages_operasional')->middleware('auth');
     Route::post('edit_popimages_operasional', [App\Http\Controllers\ReportingController::class, 'edit_popimages'])->name('edit_popimages_operasional')->middleware('auth');
 

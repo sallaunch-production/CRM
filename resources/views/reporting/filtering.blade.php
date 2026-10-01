@@ -8,13 +8,13 @@
 @section('content')
 @php
     $isCompliance = ($levelnya ?? '') === 'compliance';
-    $isOperasional = ($levelnya ?? '') === 'operasional';
+    $isOperations = ($levelnya ?? '') === 'operasional';
     $searchRoute = $isCompliance
         ? route('cari_filtering')
-        : ($isOperasional ? route('cari_filtering_operasional') : route('cari_filtering'));
+        : ($isOperations ? route('cari_filtering_operasional') : route('cari_filtering'));
     $listRoute = $isCompliance
         ? route('list_country')
-        : ($isOperasional ? route('list_country_operasional') : route('list_country'));
+        : ($isOperations ? route('list_country_operasional') : route('list_country'));
     $hasList = !empty($list_country);
     $hasSearch = !empty($cari_s);
     $hasAdd = !empty($tambah_data);
@@ -26,9 +26,9 @@
     <div class="crm-page">
         <div class="crm-page-header">
             <div>
-                <h1 class="crm-page-title">Transaksi Negara Beresiko Tinggi</h1>
+                <h1 class="crm-page-title">High-Risk Country Transactions</h1>
                 <p class="crm-page-sub">
-                    Cari transaksi berdasarkan periode, atau kelola daftar negara berisiko tinggi.
+                    Search transactions by period, or manage the high-risk country list.
                 </p>
             </div>
         </div>
@@ -39,15 +39,15 @@
             <form class="crm-search-form" action="{{ $searchRoute }}" method="POST">
                 @csrf
                 @include('partials.crm.date-range-filter', [
-                    'groupLabel' => 'Periode Transaksi',
+                    'groupLabel' => 'Transaction Period',
                     'startDate' => $startDate,
                     'endDate' => $endDate,
                 ])
                 <div class="crm-search-actions">
                     <button type="submit" class="crm-btn crm-btn-primary">
-                        <i class="fas fa-search"></i> Cari
+                        <i class="fas fa-search"></i> Search
                     </button>
-                    <a href="{{ $listRoute }}" class="crm-btn crm-btn-ghost">Lihat Daftar</a>
+                    <a href="{{ $listRoute }}" class="crm-btn crm-btn-ghost">View List</a>
                 </div>
             </form>
         </div>
@@ -57,17 +57,17 @@
                 <div class="crm-table-toolbar">
                     <div>
                         <h2 class="crm-table-title">List Risk Country</h2>
-                        <div class="crm-table-meta">Daftar negara berisiko tinggi</div>
+                        <div class="crm-table-meta">High-risk country list</div>
                     </div>
                     <div class="crm-actions">
-                        <span class="crm-badge">{{ count($data) }} data</span>
+                        <span class="crm-badge">{{ count($data) }} records</span>
                         @if($isCompliance)
                             <a href="{{ route('tambah_list_country') }}" class="crm-btn crm-btn-sm crm-btn-primary">
-                                Tambah Data
+                                Add Data
                             </a>
-                        @elseif($isOperasional)
+                        @elseif($isOperations)
                             <button type="button" class="crm-btn crm-btn-sm crm-btn-primary" disabled>
-                                Tambah Data
+                                Add Data
                             </button>
                         @endif
                     </div>
@@ -77,14 +77,14 @@
                         <thead>
                             <tr>
                                 <th>No</th>
-                                <th>Negara Pengirim</th>
+                                <th>Sender Country</th>
                                 <th></th>
                             </tr>
                         </thead>
                         <tfoot>
                             <tr>
                                 <th>No</th>
-                                <th>Negara Pengirim</th>
+                                <th>Sender Country</th>
                                 <th></th>
                             </tr>
                         </tfoot>
@@ -101,7 +101,7 @@
                                                 <button type="submit" class="btn btn-xs btn-warning show_confirm" data-toggle="tooltip" title="Delete">
                                                     Delete
                                                 </button>
-                                            @elseif($isOperasional)
+                                            @elseif($isOperations)
                                                 <button disabled type="submit" class="btn btn-xs btn-warning show_confirm" data-toggle="tooltip" title="Delete">
                                                     Delete
                                                 </button>
@@ -118,13 +118,13 @@
             <div class="crm-table-card">
                 <div class="crm-table-toolbar">
                     <div>
-                        <h2 class="crm-table-title">Hasil Pencarian</h2>
+                        <h2 class="crm-table-title">Search Results</h2>
                         <div class="crm-table-meta">
-                            Periode {{ $tanggal_dari ?? '-' }} s/d {{ $tanggal_sampai ?? '-' }}
+                            Period {{ $tanggal_dari ?? '-' }} to {{ $tanggal_sampai ?? '-' }}
                             · Transaksi negara beresiko tinggi
                         </div>
                     </div>
-                    <span class="crm-badge">{{ count($data) }} data</span>
+                    <span class="crm-badge">{{ count($data) }} records</span>
                 </div>
                 <div class="crm-table-wrap">
                     <table id="example" class="table crm-table table-striped table-bordered" style="width:100%;">
@@ -132,19 +132,19 @@
                             <tr>
                                 <th>No</th>
                                 <th>Id Transaksi</th>
-                                <th>Nama Penerima</th>
-                                <th>Nama Pengirim</th>
-                                <th>Negara Pengirim</th>
-                                <th>No Refrensi</th>
-                                <th>Identitas</th>
-                                <th>Nomor Identitas</th>
-                                <th>Tanggal Lahir</th>
-                                <th>Alamat Penerima</th>
-                                <th>Telepon Penerima</th>
-                                <th>Kota Penerima</th>
-                                <th>Pekerjaan</th>
+                                <th>Recipient Name</th>
+                                <th>Sender Name</th>
+                                <th>Sender Country</th>
+                                <th>Reference No</th>
+                                <th>Identity</th>
+                                <th>ID Number</th>
+                                <th>Date of Birth</th>
+                                <th>Recipient Address</th>
+                                <th>Recipient Phone</th>
+                                <th>Recipient City</th>
+                                <th>Occupation</th>
                                 <th>Id Pos</th>
-                                <th>Tanggal</th>
+                                <th>Date</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -176,14 +176,14 @@
                 <div class="crm-table-toolbar">
                     <div>
                         <h2 class="crm-table-title">Tambah High Risk Country</h2>
-                        <div class="crm-table-meta">Pilih negara pengirim untuk ditambahkan ke daftar risiko</div>
+                        <div class="crm-table-meta">Select a sender country to add to the risk list</div>
                     </div>
                 </div>
                 <div class="p-3">
                     <form class="crm-search-form" action="{{ route('add_list_country') }}" method="POST" style="max-width:420px;">
                         @csrf
                         <div class="crm-search-field">
-                            <label for="negara_pengirim">Negara Pengirim</label>
+                            <label for="negara_pengirim">Sender Country</label>
                             <select name="negara_pengirim" id="negara_pengirim" class="form-control">
                                 @foreach($data as $datqu)
                                     <option value="{{ $datqu->countryname }}">{{ $datqu->countryname }}</option>
@@ -191,7 +191,7 @@
                             </select>
                         </div>
                         <div class="crm-search-actions">
-                            <button type="submit" class="crm-btn crm-btn-primary">Simpan</button>
+                            <button type="submit" class="crm-btn crm-btn-primary">Save</button>
                         </div>
                     </form>
                 </div>

@@ -29,7 +29,7 @@
         <div class="crm-page-header">
             <div>
                 <h1 class="crm-page-title">Flagging Transaction</h1>
-                <p class="crm-page-sub">Telephone — transaksi terflag berdasarkan nomor telepon penerima.</p>
+                <p class="crm-page-sub">Telephone — transaksi flagged by nomor telepon penerima.</p>
             </div>
         </div>
 
@@ -46,7 +46,7 @@
                 ])
                 <div class="crm-search-actions">
                     <button type="submit" class="crm-btn crm-btn-primary">
-                        <i class="fas fa-search"></i> Cari
+                        <i class="fas fa-search"></i> Search
                     </button>
                 </div>
             </form>
@@ -58,18 +58,18 @@
                     <div>
                         <h2 class="crm-table-title">Filtering by Phone Number</h2>
                         <div class="crm-table-meta">
-                            Periode {{ $tanggal_dari }} s/d {{ $tanggal_sampai }}
-                            · Ambang &gt; 5 nomor telepon penerima
+                            Period {{ $tanggal_dari }} to {{ $tanggal_sampai }}
+                            · Threshold &gt; 5 nomor telepon penerima
                         </div>
                     </div>
-                    <span class="crm-badge">{{ $listCount }} data</span>
+                    <span class="crm-badge">{{ $listCount }} records</span>
                 </div>
                 <div class="crm-table-wrap">
                     <table id="example" class="table crm-table table-striped table-bordered" style="width:100%;">
                         <thead>
                             <tr>
                                 <th>No</th>
-                                <th>No Telepon</th>
+                                <th>No Phone</th>
                                 <th>Perbuatan</th>
                             </tr>
                         </thead>
@@ -84,7 +84,7 @@
                                                 <input type="hidden" name="dari" value="{{ $tanggal_dari }}">
                                                 <input type="hidden" name="sampai" value="{{ $tanggal_sampai }}">
                                                 <input type="hidden" name="telpon" value="{{ $transactions->telepon_penerima }}">
-                                                <button type="submit" class="flag-id-link" title="Lihat detail transaksi">
+                                                <button type="submit" class="flag-id-link" title="View transaction details">
                                                     {{ $transactions->telepon_penerima }}
                                                 </button>
                                             </form>
@@ -106,16 +106,16 @@
             <div class="crm-table-card">
                 <div class="crm-table-toolbar">
                     <div>
-                        <h2 class="crm-table-title">Detail Filtering Telepon</h2>
+                        <h2 class="crm-table-title">Detail Filtering Phone</h2>
                         <div class="crm-table-meta">
-                            Periode {{ $tanggal_dari_s }} s/d {{ $tanggal_sampai_s }}
-                            · Nomor Telepon {{ $telpon }}
+                            Period {{ $tanggal_dari_s }} to {{ $tanggal_sampai_s }}
+                            · Phone Number {{ $telpon }}
                         </div>
                     </div>
                     <div class="crm-actions">
-                        <span class="crm-badge">{{ count($data) }} data</span>
+                        <span class="crm-badge">{{ count($data) }} records</span>
                         <a href="{{ $backRoute }}" class="crm-btn crm-btn-sm crm-btn-primary">
-                            <i class="fas fa-arrow-left"></i> Kembali
+                            <i class="fas fa-arrow-left"></i> Back
                         </a>
                     </div>
                 </div>
@@ -126,19 +126,19 @@
                                 <th>No</th>
                                 <th>Id Transaksi</th>
                                 <th>BSU</th>
-                                <th>Nama Penerima</th>
-                                <th>Nama Pengirim</th>
-                                <th>Negara Pengirim</th>
-                                <th>No Refrensi</th>
-                                <th>Identitas</th>
-                                <th>Telepon Penerima</th>
-                                <th>Nomor Identitas</th>
-                                <th>Tanggal Lahir</th>
-                                <th>Alamat Penerima</th>
-                                <th>Kota Penerima</th>
-                                <th>Pekerjaan</th>
+                                <th>Recipient Name</th>
+                                <th>Sender Name</th>
+                                <th>Sender Country</th>
+                                <th>Reference No</th>
+                                <th>Identity</th>
+                                <th>Recipient Phone</th>
+                                <th>ID Number</th>
+                                <th>Date of Birth</th>
+                                <th>Recipient Address</th>
+                                <th>Recipient City</th>
+                                <th>Occupation</th>
                                 <th>Id Pos</th>
-                                <th>Tanggal</th>
+                                <th>Date</th>
                             </tr>
                         </thead>
                         <tbody>

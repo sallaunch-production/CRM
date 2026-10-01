@@ -40,7 +40,7 @@ class EnsurePasswordIsFresh
             ->route($route)
             ->with(
                 'password_expired',
-                'Password Anda telah kedaluwarsa (lebih dari '.PasswordExpiryService::MAX_AGE_DAYS.' hari). Silakan perbarui password untuk melanjutkan.'
+                __('crm.password_expired_flash', ['days' => PasswordExpiryService::MAX_AGE_DAYS])
             );
     }
 

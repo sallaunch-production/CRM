@@ -19,7 +19,7 @@
         <div class="crm-page-header">
             <div>
                 <h1 class="crm-page-title">New Customer</h1>
-                <p class="crm-page-sub">Pencarian orang yang baru pertama kali transaksi (Receive).</p>
+                <p class="crm-page-sub">Search for first-time transaction customers (Receive).</p>
             </div>
             @include('partials.crm.newcustomer-tabs', ['activeTab' => 'receive'])
         </div>
@@ -30,13 +30,13 @@
             <form id="filter-form" class="crm-search-form" onsubmit="return false;">
                 @csrf
                 @include('partials.crm.date-range-filter', [
-                    'groupLabel' => 'Tanggal Transaksi Receive',
+                    'groupLabel' => 'Receive Transaction Date',
                     'startDate' => $startDate,
                     'endDate' => $endDate,
                 ])
                 <div class="crm-search-actions">
                     <button type="button" class="crm-btn crm-btn-primary" id="btn-cari">
-                        <i class="fas fa-search"></i> Cari
+                        <i class="fas fa-search"></i> Search
                     </button>
                 </div>
             </form>
@@ -50,14 +50,14 @@
         <div class="crm-table-card">
             <div class="crm-table-toolbar">
                 <div>
-                    <h2 class="crm-table-title">Hasil New Customer — Receive</h2>
-                    <div class="crm-table-meta" id="nc-result-meta">Pilih periode lalu tekan Cari.</div>
+                    <h2 class="crm-table-title">New Customer Results — Receive</h2>
+                    <div class="crm-table-meta" id="nc-result-meta">Select a period, then click Search.</div>
                 </div>
                 <div class="crm-table-toolbar-actions">
-                    <span class="crm-badge d-none" id="nc-result-badge">0 data</span>
-                    <button type="submit" form="cetakForm" class="crm-btn crm-btn-sm crm-btn-primary" id="btn-cetak-gabungan" disabled title="Cetak Gabungan">
+                    <span class="crm-badge d-none" id="nc-result-badge">0 records</span>
+                    <button type="submit" form="cetakForm" class="crm-btn crm-btn-sm crm-btn-primary" id="btn-cetak-gabungan" disabled title="Print Combined">
                         <i class="fas fa-print" aria-hidden="true"></i>
-                        Cetak Gabungan
+                        Print Combined
                     </button>
                 </div>
             </div>
@@ -68,13 +68,13 @@
                             <th>No</th>
                             <th>IDPJK</th>
                             <th>Kode Nasabah</th>
-                            <th>Nama Penerima</th>
-                            <th>Kota Kelahiran</th>
-                            <th>Tanggal Lahir</th>
-                            <th>Alamat Penerima</th>
-                            <th>Nomor Identitas</th>
-                            <th>Identitas Lain</th>
-                            <th>No Referensi</th>
+                            <th>Recipient Name</th>
+                            <th>Place of Birth</th>
+                            <th>Date of Birth</th>
+                            <th>Recipient Address</th>
+                            <th>ID Number</th>
+                            <th>Other Identity</th>
+                            <th>Reference No</th>
                             <th>NPWP</th>
                             <th>Local ID</th>
                         </tr>
@@ -100,7 +100,7 @@ $(document).ready(function () {
             if (p.length !== 3) return iso;
             return p[2] + '-' + p[1] + '-' + p[0];
         }
-        return dmy(startDate) + ' s/d ' + dmy(endDate);
+        return dmy(startDate) + ' to ' + dmy(endDate);
     }
 
     function initDataTable() {
@@ -159,13 +159,13 @@ $(document).ready(function () {
                 var api = new $.fn.dataTable.Api(settings);
                 var info = api.page.info();
                 $('#nc-result-meta').text(formatMeta($('#start_date').val(), $('#end_date').val()));
-                $('#nc-result-badge').text(info.recordsTotal + ' data').removeClass('d-none');
+                $('#nc-result-badge').text(info.recordsTotal + ' records').removeClass('d-none');
                 $('#btn-cetak-gabungan').prop('disabled', info.recordsTotal < 1);
             },
             drawCallback: function (settings) {
                 var api = new $.fn.dataTable.Api(settings);
                 var info = api.page.info();
-                $('#nc-result-badge').text(info.recordsTotal + ' data').removeClass('d-none');
+                $('#nc-result-badge').text(info.recordsTotal + ' records').removeClass('d-none');
                 $('#btn-cetak-gabungan').prop('disabled', info.recordsTotal < 1);
             }
         }));
@@ -175,11 +175,11 @@ $(document).ready(function () {
         var startDate = $('#start_date').val();
         var endDate = $('#end_date').val();
         if (!startDate || !endDate) {
-            alert('Start date dan end date wajib diisi.');
+            alert(@json(__('crm.err_dates_required')));
             return;
         }
         if (endDate < startDate) {
-            alert('End date tidak boleh lebih kecil dari start date.');
+            alert(@json(__('crm.err_end_before_start')));
             return;
         }
 

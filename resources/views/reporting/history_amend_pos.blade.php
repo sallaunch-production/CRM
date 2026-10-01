@@ -11,7 +11,7 @@
         <div class="crm-page-header">
             <div>
                 <h1 class="crm-page-title">Amend History</h1>
-                <p class="crm-page-sub">Riwayat amend nama penerima transaksi PT POS.</p>
+                <p class="crm-page-sub">Amend history nama penerima transaksi PT POS.</p>
             </div>
         </div>
 
@@ -21,7 +21,7 @@
             <div class="crm-table-toolbar">
                 <div>
                     <h2 class="crm-table-title">Amend History PT POS</h2>
-                    <div class="crm-table-meta">{{ count($data) }} data</div>
+                    <div class="crm-table-meta">{{ count($data) }} records</div>
                 </div>
             </div>
             <div class="crm-table-wrap">
@@ -29,7 +29,7 @@
                     <thead>
                         <tr>
                             <th>No</th>
-                            <th>No Referensi</th>
+                            <th>Reference No</th>
                             <th>First Name</th>
                             <th>Middle Name</th>
                             <th>Last Name</th>
@@ -38,8 +38,8 @@
                             <th>Checker</th>
                             <th>Approval</th>
                             <th>Status</th>
-                            <th>Tanggal Transaksi</th>
-                            <th>Tanggal Amend</th>
+                            <th>Transaction Date</th>
+                            <th>Amend Date</th>
                         </tr>
                     </thead>
                     <tbody>

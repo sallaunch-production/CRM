@@ -9,7 +9,8 @@ class PosDatatableSearch
     /**
      * Single DataTables search input filters:
      * NOPEND, ID, NOREF, NAMA PENGIRIM/PENERIMA, NOMINAL/BSU,
-     * NOMOR IDENTITAS, TELEPON PENERIMA (+ telpon_pengirim for send).
+     * NOMOR IDENTITAS, TELEPON (+ telpon_pengirim for send),
+     * ALAMAT (listing-hidden fields remain searchable).
      *
      * @param  Builder  $query
      * @param  string|null  $searchTerm  DataTables search.value
@@ -38,11 +39,19 @@ class PosDatatableSearch
                 ->orWhereRaw('CAST(nama_penerima AS TEXT) ILIKE ?', [$like])
                 ->orWhereRaw('CAST(nomor_identitas AS TEXT) ILIKE ?', [$like])
                 ->orWhereRaw('CAST(telepon_penerima AS TEXT) ILIKE ?', [$like])
-                ->orWhereRaw("CAST({$amountColumn} AS TEXT) ILIKE ?", [$like]);
+                ->orWhereRaw("CAST({$amountColumn} AS TEXT) ILIKE ?", [$like])
+                ->orWhereRaw('CAST(alamat_penerima AS TEXT) ILIKE ?', [$like]);
 
-            // Send POS also stores sender phone as telpon_pengirim
+            // Receive POS: domicile address
+            if ($amountColumn === 'bsubanyak') {
+                $q->orWhereRaw('CAST(alamat_domisili_penerima AS TEXT) ILIKE ?', [$like]);
+            }
+
+            // Send POS also stores sender phone / addresses
             if ($amountColumn === 'amount') {
-                $q->orWhereRaw('CAST(telpon_pengirim AS TEXT) ILIKE ?', [$like]);
+                $q->orWhereRaw('CAST(telpon_pengirim AS TEXT) ILIKE ?', [$like])
+                    ->orWhereRaw('CAST(alamat_pengirim AS TEXT) ILIKE ?', [$like])
+                    ->orWhereRaw('CAST(alamat_domisili_pengirim AS TEXT) ILIKE ?', [$like]);
             }
 
             if ($digitsOnly !== '') {

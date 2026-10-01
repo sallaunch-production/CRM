@@ -20,8 +20,8 @@
             <div>
                 <h1 class="crm-page-title">Sales</h1>
                 <p class="crm-page-sub">
-                    Cari customer yang pernah bertransaksi pada periode tertentu,
-                    namun tidak bertransaksi lagi di periode pencarian berikutnya.
+                    Find customers who transacted in a given period,
+                    but did not transact again di periode pencarian berikutnya.
                 </p>
             </div>
         </div>
@@ -32,7 +32,7 @@
             <form class="crm-search-form" action="{{ route('search_sales') }}" method="POST">
                 @csrf
                 @include('partials.crm.date-range-filter', [
-                    'groupLabel' => 'Tanggal Pernah Bertransaksi',
+                    'groupLabel' => 'Previous Transaction Date',
                     'startName' => 'ever_start_date',
                     'endName' => 'ever_end_date',
                     'startId' => 'ever_start_date',
@@ -41,7 +41,7 @@
                     'endDate' => $everEnd,
                 ])
                 @include('partials.crm.date-range-filter', [
-                    'groupLabel' => 'Tanggal Pencarian Transaksi',
+                    'groupLabel' => 'Search Date Transaksi',
                     'startName' => 'search_start_date',
                     'endName' => 'search_end_date',
                     'startId' => 'search_start_date',
@@ -51,7 +51,7 @@
                 ])
                 <div class="crm-search-actions">
                     <button type="submit" class="crm-btn crm-btn-primary">
-                        <i class="fas fa-search"></i> Cari
+                        <i class="fas fa-search"></i> Search
                     </button>
                 </div>
             </form>
@@ -62,36 +62,36 @@
                 <div class="crm-empty-icon" aria-hidden="true">
                     <i class="fas fa-chart-line"></i>
                 </div>
-                <h2 class="crm-empty-title">Mulai dengan dua periode</h2>
+                <h2 class="crm-empty-title">Start with two periods</h2>
                 <p class="crm-empty-text">
-                    Isi Start/End Date untuk periode pernah bertransaksi dan periode pencarian,
-                    lalu tekan <strong>Cari</strong> untuk melihat customer yang tidak aktif di periode kedua.
+                    Fill Start/End Date for the period pernah bertransaksi dan periode pencarian,
+                    then click <strong>Search</strong> to see customers inactive in the second period.
                 </p>
             </div>
         @else
             <div class="crm-table-card">
                 <div class="crm-table-toolbar">
                     <div>
-                        <h2 class="crm-table-title">Hasil Sales</h2>
+                        <h2 class="crm-table-title">Sales Results</h2>
                         <div class="crm-table-meta">
-                            Pernah transaksi: {{ $tanggal_dari }} s/d {{ $tanggal_sampai }}
-                            · Pencarian: {{ $tanggal_dari_2 }} s/d {{ $tanggal_sampai_2 ?? '' }}
+                            Pernah transaksi: {{ $tanggal_dari }} to {{ $tanggal_sampai }}
+                            · Pencarian: {{ $tanggal_dari_2 }} to {{ $tanggal_sampai_2 ?? '' }}
                         </div>
                     </div>
-                    <span class="crm-badge">{{ count($data) }} customer</span>
+                    <span class="crm-badge">{{ count($data) }} customers</span>
                 </div>
                 <div class="crm-table-wrap">
                     <table id="example" class="table crm-table table-striped table-bordered" style="width:100%;">
                         <thead>
                             <tr>
                                 <th>No</th>
-                                <th>Nama</th>
-                                <th>Alamat</th>
-                                <th>Nomor Telepon</th>
-                                <th>Tanggal Lahir</th>
-                                <th>Nomor Identitas</th>
+                                <th>Name</th>
+                                <th>Address</th>
+                                <th>Phone Number</th>
+                                <th>Date of Birth</th>
+                                <th>ID Number</th>
                                 <th>Id Pos</th>
-                                <th>Tanggal</th>
+                                <th>Date</th>
                                 <th>Action</th>
                             </tr>
                         </thead>

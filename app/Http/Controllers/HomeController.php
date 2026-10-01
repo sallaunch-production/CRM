@@ -30,7 +30,7 @@ class HomeController extends Controller
             $remaining = $passwordExpiry->daysRemaining(Auth::user());
             session()->flash(
                 'warning',
-                'Password Anda akan kedaluwarsa dalam '.$remaining.' hari. Segera perbarui di Setting Password.'
+                __('crm.password_expiring_soon', ['days' => $remaining])
             );
         }
 
@@ -62,15 +62,15 @@ class HomeController extends Controller
         $username = Auth::user()->email;
 
         if (! Hash::check($current_password, Auth::user()->password)) {
-            return redirect()->back()->with('error', 'Password lama tidak sesuai.');
+            return redirect()->back()->with('error', __('crm.password_old_mismatch'));
         }
 
         if ($new_pass !== $conf_pass) {
-            return redirect()->back()->with('error', 'Konfirmasi password tidak sama.');
+            return redirect()->back()->with('error', __('crm.password_confirm_mismatch'));
         }
 
         if (strlen($new_pass) < 8) {
-            return redirect()->back()->with('error', 'Password baru minimal 8 karakter.');
+            return redirect()->back()->with('error', __('crm.password_min_length'));
         }
 
         // Wajib kombinasi huruf + angka + simbol
@@ -81,7 +81,7 @@ class HomeController extends Controller
         ) {
             return redirect()->back()->with(
                 'error',
-                'Password baru wajib kombinasi huruf, angka, dan simbol.'
+                __('crm.password_complexity')
             );
         }
 
@@ -89,7 +89,7 @@ class HomeController extends Controller
         if (Hash::check($new_pass, Auth::user()->password)) {
             return redirect()->back()->with(
                 'error',
-                'Password baru harus berbeda dari password lama.'
+                __('crm.password_must_differ')
             );
         }
 
@@ -109,6 +109,6 @@ class HomeController extends Controller
 
         return redirect()
             ->route($passwordExpiry->homeRouteName(Auth::user()))
-            ->with('success', 'Password berhasil diperbarui. Anda dapat menggunakan CRM kembali.');
+            ->with('success', __('crm.password_updated'));
     }
 }

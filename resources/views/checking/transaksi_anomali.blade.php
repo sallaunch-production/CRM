@@ -11,7 +11,7 @@
         <div class="crm-page-header">
             <div>
                 <h1 class="crm-page-title">Transaksi Error</h1>
-                <p class="crm-page-sub">Daftar transaksi anomali / error. Hapus baris yang sudah ditindaklanjuti.</p>
+                <p class="crm-page-sub">Anomaly / error transaction list. Delete rows that have been handled.</p>
             </div>
         </div>
 
@@ -20,8 +20,8 @@
         <div class="crm-table-card">
             <div class="crm-table-toolbar">
                 <div>
-                    <h2 class="crm-table-title">Daftar Transaksi Error</h2>
-                    <div class="crm-table-meta">{{ count($transaction) }} data</div>
+                    <h2 class="crm-table-title">Transaction List Error</h2>
+                    <div class="crm-table-meta">{{ count($transaction) }} records</div>
                 </div>
             </div>
             <div class="crm-table-wrap">
@@ -31,17 +31,17 @@
                             <th>#</th>
                             <th>Error</th>
                             <th>Nopend</th>
-                            <th>Nama Penerima</th>
+                            <th>Recipient Name</th>
                             <th>Negara</th>
                             <th>BSU</th>
-                            <th>Identitas</th>
-                            <th>Nomor Identitas</th>
-                            <th>Alamat Penerima</th>
-                            <th>Kota Penerima</th>
-                            <th>Telepon Penerima</th>
-                            <th>Tanggal Lahir</th>
-                            <th>Pekerjaan</th>
-                            <th>Nama Pengirim</th>
+                            <th>Identity</th>
+                            <th>ID Number</th>
+                            <th>Recipient Address</th>
+                            <th>Recipient City</th>
+                            <th>Recipient Phone</th>
+                            <th>Date of Birth</th>
+                            <th>Occupation</th>
+                            <th>Sender Name</th>
                             <th>Sumber Dana</th>
                             <th>Id Transaksi</th>
                             <th>Waktu</th>

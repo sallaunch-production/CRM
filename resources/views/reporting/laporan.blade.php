@@ -17,8 +17,8 @@
     <div class="crm-page">
         <div class="crm-page-header">
             <div>
-                <h1 class="crm-page-title">Laporan</h1>
-                <p class="crm-page-sub">Pilih periode, lalu unduh laporan BI atau PPATK.</p>
+                <h1 class="crm-page-title">Reports</h1>
+                <p class="crm-page-sub">Choose a period, then download BI or PPATK reports.</p>
             </div>
         </div>
 
@@ -32,13 +32,13 @@
             >
                 @csrf
                 @include('partials.crm.date-range-filter', [
-                    'groupLabel' => 'Periode Laporan',
+                    'groupLabel' => 'Report Period',
                     'startDate' => $startDate,
                     'endDate' => $endDate,
                 ])
                 <div class="crm-search-actions">
                     <button type="submit" class="crm-btn crm-btn-primary">
-                        <i class="fas fa-search"></i> Cari
+                        <i class="fas fa-search"></i> Search
                     </button>
                 </div>
             </form>
@@ -49,26 +49,26 @@
                 <div class="crm-empty-icon" aria-hidden="true">
                     <i class="fas fa-file-export"></i>
                 </div>
-                <h2 class="crm-empty-title">Mulai dengan periode</h2>
+                <h2 class="crm-empty-title">Start with a period</h2>
                 <p class="crm-empty-text">
-                    Pilih <strong>Start Date</strong> dan <strong>End Date</strong>, lalu tekan <strong>Cari</strong>
-                    untuk menampilkan tombol unduh laporan.
+                    Select a <strong>Start Date</strong> and <strong>End Date</strong>, then click <strong>Search</strong>
+                    to show report download buttons.
                 </p>
             </div>
         @else
             <div class="crm-table-card">
                 <div class="crm-table-toolbar">
                     <div>
-                        <h2 class="crm-table-title">Export Laporan</h2>
+                        <h2 class="crm-table-title">Export Reports</h2>
                         <div class="crm-table-meta">
-                            Periode {{ $tanggal_dari }} s/d {{ $tanggal_sampai }}
+                            Period {{ $tanggal_dari }} to {{ $tanggal_sampai }}
                         </div>
                     </div>
                 </div>
 
                 <div class="crm-export-sections">
                     <section class="crm-export-section" aria-labelledby="export-bi-title">
-                        <h3 id="export-bi-title" class="crm-export-section-title">Laporan BI</h3>
+                        <h3 id="export-bi-title" class="crm-export-section-title">BI Reports</h3>
                         <div class="crm-export-grid">
                             <form
                                 action="{{ $isOps ? route('cetak_laporan_bi_baru_operasional') : route('cetak_laporan_bi_baru') }}"
@@ -79,7 +79,7 @@
                                 <input type="hidden" name="tanggal_sampai" value="{{ $tanggal_sampai }}">
                                 <button type="submit" class="crm-btn crm-btn-primary">
                                     <i class="fas fa-print" aria-hidden="true"></i>
-                                    Cetak Laporan BI
+                                    Print BI Report
                                 </button>
                             </form>
                             <form
@@ -122,7 +122,7 @@
                     </section>
 
                     <section class="crm-export-section" aria-labelledby="export-ppatk-title">
-                        <h3 id="export-ppatk-title" class="crm-export-section-title">Laporan PPATK</h3>
+                        <h3 id="export-ppatk-title" class="crm-export-section-title">PPATK Reports</h3>
                         <div class="crm-export-grid">
                             <form
                                 action="{{ $isOps ? route('cetak_laporan_ppatk_baru_operasional') : route('cetak_laporan_ppatk_baru') }}"
@@ -133,7 +133,7 @@
                                 <input type="hidden" name="tanggal_sampai" value="{{ $tanggal_sampai }}">
                                 <button type="submit" class="crm-btn crm-btn-warn">
                                     <i class="fas fa-file-alt" aria-hidden="true"></i>
-                                    Cetak Laporan PPATK
+                                    Print PPATK Report
                                 </button>
                             </form>
                             <form
@@ -145,7 +145,7 @@
                                 <input type="hidden" name="tanggal_sampai" value="{{ $tanggal_sampai }}">
                                 <button type="submit" class="crm-btn crm-btn-warn">
                                     <i class="fas fa-file-alt" aria-hidden="true"></i>
-                                    Cetak Laporan PPATK C2A
+                                    Print PPATK C2A Report
                                 </button>
                             </form>
                         </div>

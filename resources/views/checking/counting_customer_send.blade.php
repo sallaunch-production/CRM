@@ -12,7 +12,7 @@
             <div class="card-header">
                 <h3 class="card-title">
                     <i class="far fa-calendar-alt mr-2"></i>
-                    Periode Transaksi Send
+                    Send Transaction Period
                 </h3>
             </div>
 
@@ -71,23 +71,23 @@
                 <div class="card-header d-flex align-items-center">
                     <h3 class="card-title">
                         <i class="fas fa-users mr-2"></i>
-                        Daftar Customer Transactions
+                        Customer Transactions List
                     </h3>
-                    <span class="badge badge-primary ml-auto">{{ $data->total() }} customer</span>
+                    <span class="badge badge-primary ml-auto">{{ $data->total() }} customers</span>
                 </div>
 
                 <div class="card-body">
                     <p class="text-muted mb-3">
-                        Periode {{ \Carbon\Carbon::parse(request('start_date'))->format('d-m-Y') }}
-                        sampai {{ \Carbon\Carbon::parse(request('end_date'))->format('d-m-Y') }}
+                        Period {{ \Carbon\Carbon::parse(request('start_date'))->format('d-m-Y') }}
+                        to {{ \Carbon\Carbon::parse(request('end_date'))->format('d-m-Y') }}
                     </p>
 
                     <div class="table-responsive">
                         <table id="countingCustomerSendTable" class="table table-striped table-bordered">
                             <thead>
                                 <tr>
-                                    <th>Nama Pengirim</th>
-                                    <th>Nomor Identitas</th>
+                                    <th>Sender Name</th>
+                                    <th>ID Number</th>
                                     <th class="text-center">Jumlah Transaksi</th>
                                     <th class="text-center">Action</th>
                                 </tr>
@@ -106,8 +106,8 @@
                                                     'end_date' => request('end_date'),
                                                 ]) }}"
                                                 class="btn btn-sm btn-warning px-2"
-                                                title="Lihat detail transaksi"
-                                                aria-label="Lihat detail transaksi"
+                                                title="View transaction details"
+                                                aria-label="View transaction details"
                                             >
                                                 <i class="fas fa-search"></i>
                                             </a>
@@ -116,7 +116,7 @@
                                 @empty
                                     <tr>
                                         <td colspan="4" class="text-center text-muted py-4">
-                                            Tidak ada data pada periode yang dipilih.
+                                            No data for the selected period.
                                         </td>
                                     </tr>
                                 @endforelse
@@ -127,7 +127,7 @@
                     @if ($data->hasPages())
                         <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mt-3">
                             <small class="text-muted mb-2 mb-md-0">
-                                Menampilkan {{ $data->firstItem() }}–{{ $data->lastItem() }}
+                                Showing {{ $data->firstItem() }}–{{ $data->lastItem() }}
                                 dari {{ $data->total() }} customer
                             </small>
                             {{ $data->links() }}

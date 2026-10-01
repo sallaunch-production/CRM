@@ -15,7 +15,7 @@
         <div class="crm-page-header">
             <div>
                 <h1 class="crm-page-title">Report Pos</h1>
-                <p class="crm-page-sub">Rekapitulasi transaksi per regional berdasarkan periode.</p>
+                <p class="crm-page-sub">Recap transaksi per regional by period.</p>
             </div>
         </div>
 
@@ -25,12 +25,12 @@
             <form class="crm-search-form" action="{{ route('report_pos_search') }}" method="POST">
                 @csrf
                 <div class="crm-search-field">
-                    <label for="daterange">Tanggal Pencarian</label>
+                    <label for="daterange">Search Date</label>
                     <input type="text" class="form-control" id="daterange" name="reservation">
                 </div>
                 <div class="crm-search-actions">
                     <button type="submit" class="crm-btn crm-btn-primary">
-                        <i class="fas fa-search"></i> Cari
+                        <i class="fas fa-search"></i> Search
                     </button>
                 </div>
             </form>
@@ -41,19 +41,19 @@
                 <div class="crm-empty-icon" aria-hidden="true">
                     <i class="fas fa-chart-bar"></i>
                 </div>
-                <h2 class="crm-empty-title">Mulai dengan periode</h2>
+                <h2 class="crm-empty-title">Start with a period</h2>
                 <p class="crm-empty-text">
-                    Pilih <strong>Tanggal Pencarian</strong>, lalu tekan <strong>Cari</strong>
-                    untuk menampilkan rekapitulasi per regional.
+                    Select a <strong>Search Date</strong>, then click <strong>Search</strong>
+                    to show the regional recap.
                 </p>
             </div>
         @else
             <div class="crm-table-card">
                 <div class="crm-table-toolbar">
                     <div>
-                        <h2 class="crm-table-title">Rekapitulasi Transaksi Per - Regional</h2>
+                        <h2 class="crm-table-title">Recap Transaksi Per - Regional</h2>
                         <div class="crm-table-meta">
-                            Periode {{ $periode_dari }} sampai {{ $periode_sampai }}
+                            Period {{ $periode_dari }} to {{ $periode_sampai }}
                         </div>
                     </div>
                     <div class="crm-actions">

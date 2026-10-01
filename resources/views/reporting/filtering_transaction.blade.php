@@ -28,7 +28,7 @@
         <div class="crm-page-header">
             <div>
                 <h1 class="crm-page-title">Flagging Transaction</h1>
-                <p class="crm-page-sub">Semua — transaksi terflag berdasarkan frekuensi atau total BSU.</p>
+                <p class="crm-page-sub">All — transactions flagged by frequency or total BSU.</p>
             </div>
         </div>
 
@@ -40,13 +40,13 @@
                 @csrf
                 <input type="hidden" name="act" value="">
                 @include('partials.crm.date-range-filter', [
-                    'groupLabel' => 'Periode Transaksi',
+                    'groupLabel' => 'Transaction Period',
                     'startDate' => $startDate,
                     'endDate' => $endDate,
                 ])
                 <div class="crm-search-actions">
                     <button type="submit" class="crm-btn crm-btn-primary">
-                        <i class="fas fa-search"></i> Cari
+                        <i class="fas fa-search"></i> Search
                     </button>
                 </div>
             </form>
@@ -57,10 +57,10 @@
                 <div class="crm-empty-icon" aria-hidden="true">
                     <i class="fas fa-filter"></i>
                 </div>
-                <h2 class="crm-empty-title">Mulai dengan periode</h2>
+                <h2 class="crm-empty-title">Start with a period</h2>
                 <p class="crm-empty-text">
-                    Pilih <strong>Start Date</strong> dan <strong>End Date</strong>, lalu tekan <strong>Cari</strong>
-                    untuk menampilkan transaksi yang terflag.
+                    Select a <strong>Start Date</strong> and <strong>End Date</strong>, then click <strong>Search</strong>
+                    to show flagged transactions.
                 </p>
             </div>
         @endif
@@ -71,11 +71,11 @@
                     <div>
                         <h2 class="crm-table-title">Transaction Filtering</h2>
                         <div class="crm-table-meta">
-                            Periode {{ $tanggal_dari }} s/d {{ $tanggal_sampai }}
-                            · Ambang &gt; 5 transaksi/bulan atau BSU &gt; Rp 100.000.000
+                            Period {{ $tanggal_dari }} to {{ $tanggal_sampai }}
+                            · Threshold &gt; 5 transaksi/bulan atau BSU &gt; Rp 100.000.000
                         </div>
                     </div>
-                    <span class="crm-badge">{{ $listCount }} data</span>
+                    <span class="crm-badge">{{ $listCount }} records</span>
                 </div>
                 <div class="crm-table-wrap">
                     <table id="example" class="table crm-table table-striped table-bordered" style="width:100%;">
@@ -85,19 +85,19 @@
                                 <th>Id Transaksi</th>
                                 <th>Perbuatan</th>
                                 <th>BSU Total</th>
-                                <th>Nama Penerima</th>
-                                <th>Nama Pengirim</th>
-                                <th>Negara Pengirim</th>
-                                <th>No Refrensi</th>
-                                <th>Identitas</th>
-                                <th>Nomor Identitas</th>
-                                <th>Tanggal Lahir</th>
-                                <th>Alamat Penerima</th>
-                                <th>Telepon Penerima</th>
-                                <th>Kota Penerima</th>
-                                <th>Pekerjaan</th>
+                                <th>Recipient Name</th>
+                                <th>Sender Name</th>
+                                <th>Sender Country</th>
+                                <th>Reference No</th>
+                                <th>Identity</th>
+                                <th>ID Number</th>
+                                <th>Date of Birth</th>
+                                <th>Recipient Address</th>
+                                <th>Recipient Phone</th>
+                                <th>Recipient City</th>
+                                <th>Occupation</th>
                                 <th>Id Pos</th>
-                                <th>Tanggal</th>
+                                <th>Date</th>
                             </tr>
                         </thead>
                         <tbody>

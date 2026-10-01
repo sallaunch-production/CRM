@@ -21,7 +21,7 @@
                 <div>
                     <h1 class="crm-page-title">Setting Password</h1>
                     <p class="crm-page-sub">
-                        Perbarui password akun Anda. Password wajib diganti setiap {{ $maxAge }} hari.
+                        Update your account password. Passwords must be changed every {{ $maxAge }} days.
                     </p>
                 </div>
             </div>
@@ -51,10 +51,10 @@
                 <div class="crm-password-alert is-danger" role="alert">
                     <i class="fas fa-lock" aria-hidden="true"></i>
                     <div>
-                        <strong>Password kedaluwarsa</strong>
+                        <strong>Password expired</strong>
                         <p>
-                            {{ session('password_expired') ?: ('Password Anda berumur '.($days ?? '—').' hari (batas '.$maxAge.' hari).') }}
-                            Silakan ganti password di bawah ini, atau logout. Akses menu lain dikunci sampai password diperbarui.
+                            {{ session('password_expired') ?: ('Your password is '.($days ?? '—').' days old (limit '.$maxAge.' days).') }}
+                            Please change your password below, or log out. Other menu access is locked until the password is updated.
                         </p>
                     </div>
                 </div>
@@ -62,10 +62,10 @@
 
             <div class="crm-password-card">
                 <div class="crm-password-card-head">
-                    <h2>Ubah Password</h2>
+                    <h2>Change Password</h2>
                     <p>
-                        Minimal 8 karakter, wajib kombinasi <strong>huruf</strong>, <strong>angka</strong>, dan
-                        <strong>simbol</strong>, serta harus berbeda dari password lama.
+                        At least 8 characters, must combine <strong>letters</strong>, <strong>numbers</strong>, and
+                        <strong>symbols</strong>, and must differ from the old password.
                     </p>
                 </div>
 
@@ -82,9 +82,9 @@
                                 id="old_password"
                                 required
                                 autocomplete="current-password"
-                                placeholder="Masukkan password lama"
+                                placeholder="Enter old password"
                             >
-                            <button type="button" class="crm-password-toggle" data-target="#old_password" aria-label="Tampilkan password">
+                            <button type="button" class="crm-password-toggle" data-target="#old_password" aria-label="Show password">
                                 <i class="fas fa-eye"></i>
                             </button>
                         </div>
@@ -101,11 +101,11 @@
                                 required
                                 minlength="8"
                                 autocomplete="new-password"
-                                placeholder="Huruf, angka, dan simbol"
+                                placeholder="Letters, numbers, and symbols"
                                 pattern="(?=.*[A-Za-z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}"
-                                title="Minimal 8 karakter, wajib huruf, angka, dan simbol"
+                                title="At least 8 characters; letters, numbers, and symbols required"
                             >
-                            <button type="button" class="crm-password-toggle" data-target="#password" aria-label="Tampilkan password">
+                            <button type="button" class="crm-password-toggle" data-target="#password" aria-label="Show password">
                                 <i class="fas fa-eye"></i>
                             </button>
                         </div>
@@ -122,9 +122,9 @@
                                 required
                                 minlength="8"
                                 autocomplete="new-password"
-                                placeholder="Ulangi password baru"
+                                placeholder="Repeat new password"
                             >
-                            <button type="button" class="crm-password-toggle" data-target="#conf_password" aria-label="Tampilkan password">
+                            <button type="button" class="crm-password-toggle" data-target="#conf_password" aria-label="Show password">
                                 <i class="fas fa-eye"></i>
                             </button>
                         </div>
@@ -132,7 +132,7 @@
 
                     <div class="crm-password-actions">
                         <button type="submit" class="crm-btn crm-btn-primary">
-                            <i class="fas fa-save"></i> Simpan Password
+                            <i class="fas fa-save"></i> Save Password
                         </button>
                         <button type="button" class="crm-btn crm-btn-muted" id="btnLogoutFromSettings">
                             <i class="fas fa-sign-out-alt"></i> Logout

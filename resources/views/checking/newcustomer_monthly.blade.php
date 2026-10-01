@@ -94,13 +94,13 @@
                                 <thead>
                                     <tr>
                                         <th class="text-center" style="width: 50px;">No.</th>
-                                        <th>Nomor Referensi</th>
-                                        <th>Nama Pengirim</th>
-                                        <th>Nomor Identitas</th>
-                                        <th>Nomor Telepon</th>
-                                        <th>Negara Tujuan</th>
+                                        <th>Reference No</th>
+                                        <th>Sender Name</th>
+                                        <th>ID Number</th>
+                                        <th>Phone Number</th>
+                                        <th>Destination Country</th>
                                         <th>Nominal Transaksi</th>
-                                        <th>Tanggal Transaksi</th>
+                                        <th>Transaction Date</th>
                                         <th class="text-center">Nopend</th>
                                     </tr>
                                 </thead>
@@ -208,7 +208,7 @@
                 const bulan = $('#bulan').val();
 
                 if (!bulan) {
-                    alert('Silakan pilih bulan terlebih dahulu.');
+                    alert(@json(__('crm.err_select_month')));
                     return;
                 }
 
@@ -221,7 +221,7 @@
                 const bulan = $('#bulan').val();
 
                 if (!bulan) {
-                    alert('Silakan pilih bulan terlebih dahulu.');
+                    alert(@json(__('crm.err_select_month')));
                     return;
                 }
 

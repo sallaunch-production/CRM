@@ -29,7 +29,7 @@
         <div class="crm-page-header">
             <div>
                 <h1 class="crm-page-title">Flagging Transaction</h1>
-                <p class="crm-page-sub">Pengirim — transaksi terflag berdasarkan banyak pengirim ke satu penerima.</p>
+                <p class="crm-page-sub">Sender — transactions flagged for many senders to one recipient.</p>
             </div>
         </div>
 
@@ -46,7 +46,7 @@
                 ])
                 <div class="crm-search-actions">
                     <button type="submit" class="crm-btn crm-btn-primary">
-                        <i class="fas fa-search"></i> Cari
+                        <i class="fas fa-search"></i> Search
                     </button>
                 </div>
             </form>
@@ -56,22 +56,22 @@
             <div class="crm-table-card">
                 <div class="crm-table-toolbar">
                     <div>
-                        <h2 class="crm-table-title">Filtering by Pengirim</h2>
+                        <h2 class="crm-table-title">Filtering by Sender</h2>
                         <div class="crm-table-meta">
-                            Periode {{ $tanggal_dari }} s/d {{ $tanggal_sampai }}
-                            · Ambang &gt; 5 pengirim per periode
+                            Period {{ $tanggal_dari }} to {{ $tanggal_sampai }}
+                            · Threshold &gt; 5 pengirim per periode
                         </div>
                     </div>
-                    <span class="crm-badge">{{ $listCount }} data</span>
+                    <span class="crm-badge">{{ $listCount }} records</span>
                 </div>
                 <div class="crm-table-wrap">
                     <table id="example" class="table crm-table table-striped table-bordered" style="width:100%;">
                         <thead>
                             <tr>
                                 <th>No</th>
-                                <th>Nama Penerima</th>
+                                <th>Recipient Name</th>
                                 <th>Total BSU</th>
-                                <th>Banyak Pengirim</th>
+                                <th>Sender Count</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -85,7 +85,7 @@
                                                 <input type="hidden" name="dari" value="{{ $tanggal_dari }}">
                                                 <input type="hidden" name="sampai" value="{{ $tanggal_sampai }}">
                                                 <input type="hidden" name="nama_penerima" value="{{ $transactions->nama_penerima }}">
-                                                <button type="submit" class="flag-id-link" title="Lihat detail transaksi">
+                                                <button type="submit" class="flag-id-link" title="View transaction details">
                                                     {{ $transactions->nama_penerima }}
                                                 </button>
                                             </form>
@@ -108,16 +108,16 @@
             <div class="crm-table-card">
                 <div class="crm-table-toolbar">
                     <div>
-                        <h2 class="crm-table-title">Detail Filtering Pengirim</h2>
+                        <h2 class="crm-table-title">Sender Filtering Detail</h2>
                         <div class="crm-table-meta">
-                            Periode {{ $dari }} s/d {{ $sampai }}
-                            · Nama Penerima {{ $nama_penerima }}
+                            Period {{ $dari }} to {{ $sampai }}
+                            · Recipient Name {{ $nama_penerima }}
                         </div>
                     </div>
                     <div class="crm-actions">
-                        <span class="crm-badge">{{ count($data) }} data</span>
+                        <span class="crm-badge">{{ count($data) }} records</span>
                         <a href="{{ $backRoute }}" class="crm-btn crm-btn-sm crm-btn-primary">
-                            <i class="fas fa-arrow-left"></i> Kembali
+                            <i class="fas fa-arrow-left"></i> Back
                         </a>
                     </div>
                 </div>
@@ -128,19 +128,19 @@
                                 <th>No</th>
                                 <th>Id Transaksi</th>
                                 <th>BSU</th>
-                                <th>Nama Penerima</th>
-                                <th>Nama Pengirim</th>
-                                <th>Negara Pengirim</th>
-                                <th>No Refrensi</th>
-                                <th>Identitas</th>
-                                <th>Nomor Identitas</th>
-                                <th>Tanggal Lahir</th>
-                                <th>Alamat Penerima</th>
-                                <th>Telepon Penerima</th>
-                                <th>Kota Penerima</th>
-                                <th>Pekerjaan</th>
+                                <th>Recipient Name</th>
+                                <th>Sender Name</th>
+                                <th>Sender Country</th>
+                                <th>Reference No</th>
+                                <th>Identity</th>
+                                <th>ID Number</th>
+                                <th>Date of Birth</th>
+                                <th>Recipient Address</th>
+                                <th>Recipient Phone</th>
+                                <th>Recipient City</th>
+                                <th>Occupation</th>
                                 <th>Id Pos</th>
-                                <th>Tanggal</th>
+                                <th>Date</th>
                             </tr>
                         </thead>
                         <tbody>

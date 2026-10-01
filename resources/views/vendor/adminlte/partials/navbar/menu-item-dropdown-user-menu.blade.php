@@ -17,8 +17,8 @@
     $userName = Auth::user()->name ?? 'User';
     $userLevel = Auth::user()->level ?? '';
     $levelLabel = $userLevel === 'operasional'
-        ? 'Operasional'
-        : ($userLevel === 'compliance' ? 'Compliance' : ucfirst((string) $userLevel));
+        ? __('crm.role_operasional')
+        : ($userLevel === 'compliance' ? __('crm.role_compliance') : ucfirst((string) $userLevel));
 @endphp
 
 <li class="nav-item dropdown user-menu crm-user-menu">
@@ -167,21 +167,21 @@
 <div class="modal fade" id="logoutConfirmModal" tabindex="-1" role="dialog" aria-labelledby="logoutConfirmModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content position-relative">
-            <button type="button" class="btn-logout-close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Tutup">&times;</button>
+            <button type="button" class="btn-logout-close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="{{ __('crm.close') }}">&times;</button>
             <div class="logout-modal-body">
                 <div class="logout-modal-icon" aria-hidden="true">
                     <i class="fas fa-sign-out-alt"></i>
                 </div>
-                <h5 class="logout-modal-title" id="logoutConfirmModalLabel">Keluar dari CRM?</h5>
+                <h5 class="logout-modal-title" id="logoutConfirmModalLabel">{{ __('crm.logout_title') }}</h5>
                 <p class="logout-modal-subtitle">
-                    Apakah anda yakin untuk keluar dari sesi saat ini ?
+                    {{ __('crm.logout_body') }}
                 </p>
                 <div class="logout-modal-actions">
-                    <button type="button" class="btn btn-logout-cancel" data-dismiss="modal" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-logout-cancel" data-dismiss="modal" data-bs-dismiss="modal">{{ __('crm.cancel') }}</button>
                     <button type="button"
                             class="btn btn-logout-confirm"
                             id="btnLogoutConfirmSubmit">
-                        Logout
+                        {{ __('crm.logout') }}
                     </button>
                 </div>
             </div>

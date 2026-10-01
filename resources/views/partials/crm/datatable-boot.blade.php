@@ -1,5 +1,9 @@
-<!-- jQuery -->
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<!-- jQuery (only if AdminLTE has not loaded one — preserve Bootstrap plugins) -->
+<script>
+    if (!window.jQuery) {
+        document.write('<script src="https:\/\/code.jquery.com\/jquery-3.7.1.min.js"><\/script>');
+    }
+</script>
 
 <!-- DataTables Core -->
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
@@ -295,14 +299,14 @@
 
         language: {
             search: '',
-            searchPlaceholder: 'Filter tabel…',
-            lengthMenu: '_MENU_ per halaman',
-            info: 'Menampilkan _START_–_END_ dari _TOTAL_',
-            infoEmpty: 'Tidak ada data',
-            zeroRecords: 'Tidak ada hasil yang cocok',
+            searchPlaceholder: @json(__('crm.dt_filter_placeholder')),
+            lengthMenu: @json(__('crm.dt_length_menu')),
+            info: @json(__('crm.dt_info')),
+            infoEmpty: @json(__('crm.dt_info_empty')),
+            zeroRecords: @json(__('crm.dt_zero_records')),
             paginate: {
-                previous: 'Sebelumnya',
-                next: 'Berikutnya'
+                previous: @json(__('crm.dt_previous')),
+                next: @json(__('crm.dt_next'))
             }
         },
 
@@ -356,7 +360,7 @@
                     {
                         extend: 'excelHtml5',
 
-                        text: '<i class="fas fa-file-export"></i> Generate',
+                        text: '<i class="fas fa-file-export"></i> ' + @json(__('crm.generate')),
 
                         className: 'crm-btn crm-btn-sm crm-btn-primary',
 
@@ -513,8 +517,8 @@
 
                             data.header.push(
                                 'Remark',
-                                'Lapor Updated At',
-                                'Lapor Updated By'
+                                'Report Updated At',
+                                'Report Updated By'
                             );
 
 
@@ -574,12 +578,12 @@
 
                                     modalValue(
                                         modalId,
-                                        'Lapor Updated At'
+                                        'Report Updated At'
                                     ),
 
                                     modalValue(
                                         modalId,
-                                        'Lapor Updated By'
+                                        'Report Updated By'
                                     )
 
                                 );
@@ -793,8 +797,8 @@
                     ' class="crm-btn crm-btn-sm crm-btn-primary crm-btn-generate"' +
                     ' id="crm-generate-' + tableId + '"' +
                     ' data-crm-table="' + tableId + '"' +
-                    ' title="Generate Excel">' +
-                    '<i class="fas fa-file-export" aria-hidden="true"></i> Generate' +
+                    ' title="' + @json(__('crm.generate_excel')) + '">' +
+                    '<i class="fas fa-file-export" aria-hidden="true"></i> ' + @json(__('crm.generate')) +
                     '</button>'
                 );
 
@@ -872,9 +876,9 @@
                     <!-- HEADER -->
                     <div class="crm-export-box-header">
 
-                        <h5 id="crm-export-title">Generate Excel</h5>
+                        <h5 id="crm-export-title">{{ __('crm.generate_excel') }}</h5>
 
-                        <button type="button" class="crm-export-box-close" aria-label="Tutup">
+                        <button type="button" class="crm-export-box-close" aria-label="{{ __('crm.close') }}">
                             &times;
                         </button>
 
@@ -884,13 +888,13 @@
                     <div class="crm-export-box-body">
 
                         <p class="crm-export-lead">
-                            Pilih periode Lapor, lalu generate file Excel dari hasil pencarian.
+                            {{ __('crm.export_help') }}
                         </p>
 
                         <div class="crm-export-date-grid" id="crm-export-date-field">
 
                             <div class="crm-search-field">
-                                <label for="crm-export-start">Start Date</label>
+                                <label for="crm-export-start">{{ __('crm.start_date') }}</label>
                                 <input
                                     type="date"
                                     class="form-control"
@@ -900,7 +904,7 @@
                             </div>
 
                             <div class="crm-search-field">
-                                <label for="crm-export-end">End Date</label>
+                                <label for="crm-export-end">{{ __('crm.end_date') }}</label>
                                 <input
                                     type="date"
                                     class="form-control"
@@ -912,9 +916,9 @@
                         </div>
 
                         <p class="crm-export-hint">
-                            Kosongkan tanggal jika tidak ingin filter tanggal.
+                            {{ __('crm.export_date_hint') }}
                             <br>
-                            Hanya data dengan <strong>Lapor</strong> terisi yang akan digenerate.
+                            Only rows with a filled <strong>Report</strong> field will be exported.
                         </p>
 
                     </div>
@@ -923,12 +927,12 @@
                     <div class="crm-export-box-footer">
 
                         <button type="button" class="crm-export-btn crm-export-btn-muted crm-export-cancel">
-                            Batal
+                            {{ __('crm.cancel') }}
                         </button>
 
                         <button type="button" class="crm-export-btn crm-export-btn-success crm-export-confirm">
                             <i class="fas fa-file-excel" aria-hidden="true"></i>
-                            Generate Excel
+                            {{ __('crm.generate_excel') }}
                         </button>
 
                     </div>
@@ -1012,7 +1016,7 @@
 
                 // Validation : end date cannot be < start date
                 if (startValue && endValue && endValue < startValue) {
-                    alert('Tanggal akhir tidak boleh lebih kecil dari tanggal mulai.');
+                    alert(@json(__('crm.export_end_before_start')));
                     return;
                 }
 
@@ -1044,8 +1048,8 @@
                         // Lapor berada di kolom 6.
                         laporCol: 6,
 
-                        // Tanggal diambil dari tr[data-export-date],
-                        // bukan dari kolom Tanggal Lahir.
+                        // Date diambil dari tr[data-export-date],
+                        // bukan dari kolom Date of Birth.
                         start: startDate,
 
                         end: endDate

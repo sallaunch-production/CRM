@@ -258,6 +258,16 @@
 .main-sidebar .sidebar {
     padding-top: 0.65rem;
     padding-bottom: 1.25rem;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+/* Keep wide POS tables from expanding the whole layout / blocking sidebar scroll */
+.content-wrapper,
+.content-wrapper > .content,
+.content-wrapper > .content > .container-fluid {
+    max-width: 100%;
+    min-width: 0;
 }
 
 .nav-sidebar > .nav-header {

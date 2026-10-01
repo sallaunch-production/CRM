@@ -18,7 +18,7 @@
             <div>
                 <h1 class="crm-page-title">Screening Customer</h1>
                 <p class="crm-page-sub">
-                    Cari customer yang cocok dengan OFAC SDN List &amp; UK Sanction List berdasarkan periode transaksi.
+                    Find customers matching the OFAC SDN List &amp; UK Sanction List by transaction period.
                 </p>
             </div>
         </div>
@@ -39,7 +39,7 @@
                 ])
                 <div class="crm-search-actions">
                     <button type="submit" class="crm-btn crm-btn-primary">
-                        <i class="fas fa-search"></i> Cari
+                        <i class="fas fa-search"></i> Search
                     </button>
                 </div>
             </form>
@@ -54,20 +54,20 @@
                 <div class="crm-empty-icon" aria-hidden="true">
                     <i class="fas fa-user-shield"></i>
                 </div>
-                <h2 class="crm-empty-title">Mulai dengan periode</h2>
+                <h2 class="crm-empty-title">Start with a period</h2>
                 <p class="crm-empty-text">
-                    Pilih <strong>Start Date</strong> dan <strong>End Date</strong>, lalu tekan <strong>Cari</strong>
-                    untuk menampilkan hasil screening customer.
+                    Select a <strong>Start Date</strong> and <strong>End Date</strong>, then click <strong>Search</strong>
+                    to show customer screening results.
                 </p>
             </div>
         @else
             <div class="crm-table-card">
                 <div class="crm-table-toolbar">
                     <div>
-                        <h2 class="crm-table-title">Hasil Screening</h2>
+                        <h2 class="crm-table-title">Screening Results</h2>
                         <div class="crm-table-meta">
-                            Periode {{ date('d-m-Y', strtotime($tanggal_dari)) }}
-                            s/d {{ date('d-m-Y', strtotime($tanggal_sampai)) }}
+                            Period {{ date('d-m-Y', strtotime($tanggal_dari)) }}
+                            to {{ date('d-m-Y', strtotime($tanggal_sampai)) }}
                         </div>
                     </div>
                 </div>
@@ -76,11 +76,11 @@
                         <thead>
                             <tr>
                                 <th>No</th>
-                                <th>No Referensi</th>
-                                <th>Nama Pengirim</th>
-                                <th>Nama Penerima</th>
-                                <th>Tanggal Lahir</th>
-                                <th>Negara Pengirim</th>
+                                <th>Reference No</th>
+                                <th>Sender Name</th>
+                                <th>Recipient Name</th>
+                                <th>Date of Birth</th>
+                                <th>Sender Country</th>
                             </tr>
                         </thead>
                         <tbody>

@@ -18,7 +18,7 @@
         <div class="crm-page-header">
             <div>
                 <h1 class="crm-page-title">Refund History PT POS</h1>
-                <p class="crm-page-sub">Riwayat refund PT POS. Upload dokumen, edit, atau hapus sesuai peran Anda.</p>
+                <p class="crm-page-sub">Refund history PT POS. Upload dokumen, edit, or delete based on your role.</p>
             </div>
         </div>
 
@@ -28,8 +28,8 @@
             <div class="crm-table-card">
                 <div class="crm-table-toolbar">
                     <div>
-                        <h2 class="crm-table-title">Daftar Refund POS</h2>
-                        <div class="crm-table-meta">{{ count($data) }} data</div>
+                        <h2 class="crm-table-title">Refund List POS</h2>
+                        <div class="crm-table-meta">{{ count($data) }} records</div>
                     </div>
                 </div>
                 <div class="crm-table-wrap">
@@ -37,18 +37,18 @@
                         <thead>
                             <tr>
                                 <th>No</th>
-                                <th>No Referensi</th>
-                                <th>Tanggal Transaksi</th>
-                                <th>Tanggal Refund</th>
-                                <th>Nama Pengirim</th>
-                                <th>Nama Penerima</th>
+                                <th>Reference No</th>
+                                <th>Transaction Date</th>
+                                <th>Date Refund</th>
+                                <th>Sender Name</th>
+                                <th>Recipient Name</th>
                                 <th>BSU</th>
-                                <th>Negara Tujuan</th>
+                                <th>Destination Country</th>
                                 <th>Nopend</th>
                                 <th>Alasan</th>
                                 <th>Komentar</th>
-                                <th>Dokumen</th>
-                                <th>Aksi</th>
+                                <th>Document</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -90,7 +90,7 @@
                                                     class="crm-btn crm-btn-sm crm-btn-ghost"
                                                 >View Image</a>
                                             @else
-                                                <span class="crm-badge">File tidak tersedia</span>
+                                                <span class="crm-badge">File not available</span>
                                             @endif
                                         </td>
                                         <td>
@@ -121,7 +121,7 @@
                 <div class="crm-table-toolbar">
                     <div>
                         <h2 class="crm-table-title">Upload Refund POS</h2>
-                        <div class="crm-table-meta">No Referensi : {{ $data->no_referensi }}</div>
+                        <div class="crm-table-meta">Reference No : {{ $data->no_referensi }}</div>
                     </div>
                 </div>
 
@@ -150,7 +150,7 @@
 
                     <div class="crm-form-block">
                         <label class="crm-form-label" for="refund_ip">Komentar</label>
-                        <input type="text" id="refund_ip" name="ip" required class="form-control" placeholder="Masukkan komentar">
+                        <input type="text" id="refund_ip" name="ip" required class="form-control" placeholder="Enter comment">
                     </div>
 
                     <div class="crm-form-actions">
@@ -170,7 +170,7 @@
                 <div class="crm-table-toolbar">
                     <div>
                         <h2 class="crm-table-title">Edit Refund POS</h2>
-                        <div class="crm-table-meta">No Referensi : {{ $datas->no_referensi }}</div>
+                        <div class="crm-table-meta">Reference No : {{ $datas->no_referensi }}</div>
                     </div>
                 </div>
 
@@ -204,7 +204,7 @@
 
                     <div class="crm-form-actions">
                         <button type="submit" class="crm-btn crm-btn-primary">
-                            <i class="fas fa-save"></i> Simpan
+                            <i class="fas fa-save"></i> Save
                         </button>
                     </div>
                 </form>
