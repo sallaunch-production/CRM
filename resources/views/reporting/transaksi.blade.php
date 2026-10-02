@@ -93,10 +93,8 @@
             if (!id) return '';
             return '' +
                 '<a href="' + detailUrl(id) + '"' +
-                ' class="crm-btn crm-btn-sm crm-btn-ghost crm-btn-icon-detail"' +
-                ' title="' + @json(__('crm.tx_detail_title')) + '">' +
-                '<i class="fas fa-search" aria-hidden="true"></i>' +
-                '<span class="sr-only">' + @json(__('crm.tx_detail')) + '</span>' +
+                ' class="crm-btn crm-btn-sm crm-btn-ghost crm-btn-detail">' +
+                @json(__('crm.btn_detail')) +
                 '</a>';
         }
 
@@ -116,7 +114,7 @@
                 type: 'GET'
             },
             columns: [
-                { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false, width: '48px', className: 'crm-cell-nowrap text-center' },
+                { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false, width: '48px', className: 'crm-cell-nowrap' },
                 { data: 'no_referensi', name: 'no_referensi', width: '120px', className: 'crm-cell-nowrap' },
                 { data: 'nama_penerima', name: 'nama_penerima', width: '180px', className: 'crm-cell-name' },
                 { data: 'nama_pengirim', name: 'nama_pengirim', width: '220px', className: 'crm-cell-name' },
@@ -139,8 +137,8 @@
                     name: 'action',
                     orderable: false,
                     searchable: false,
-                    width: '56px',
-                    className: 'text-center crm-cell-nowrap',
+                    width: '88px',
+                    className: 'crm-cell-nowrap',
                     defaultContent: '',
                     render: function (data, type, row) {
                         return detailButton(row);
@@ -152,14 +150,4 @@
         PosDatatableUi.bindLoadingOverlay(table);
     });
 </script>
-<style>
-    .crm-btn-icon-detail {
-        width: 32px;
-        height: 32px;
-        padding: 0;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-    }
-</style>
 @stop

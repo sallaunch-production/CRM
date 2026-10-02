@@ -766,6 +766,7 @@ table.crm-table {
     white-space: nowrap;
     vertical-align: middle;
     padding: 0.7rem 0.75rem !important;
+    text-align: left !important;
 }
 
 .crm-table tbody td,
@@ -776,6 +777,30 @@ table.crm-table {
     padding: 0.65rem 0.75rem !important;
     font-size: 0.875rem;
     font-weight: 400;
+    text-align: left;
+}
+
+/* Override Bootstrap / DataTables centering on CRM tables */
+.crm-table thead th.text-center,
+.crm-table tbody td.text-center,
+.crm-table th.sorting_asc,
+.crm-table th.sorting_desc,
+.crm-table th.sorting {
+    text-align: left !important;
+}
+
+/* Compact text action used in list tables */
+.crm-btn-detail,
+.crm-table .crm-btn-detail,
+.crm-actions .crm-btn-detail {
+    height: 26px;
+    min-width: 0;
+    padding: 0 0.55rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    line-height: 1;
+    border-radius: 5px;
+    letter-spacing: 0.01em;
 }
 
 /* POS list: keep key cells on one line; table scrolls horizontally inside card only */
@@ -816,7 +841,11 @@ table.crm-table {
 }
 
 .crm-table-pos .text-right {
-    text-align: right;
+    text-align: right !important;
+}
+
+.crm-table thead th.text-right {
+    text-align: left !important;
 }
 
 /* Expand table for readable columns, but never stretch the page/sidebar */

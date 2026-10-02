@@ -89,7 +89,7 @@
                                     <th>Sender Name</th>
                                     <th>ID Number</th>
                                     <th class="text-center">Jumlah Transaksi</th>
-                                    <th class="text-center">Action</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -98,18 +98,16 @@
                                         <td>{{ $row->nama_pengirim }}</td>
                                         <td>{{ $row->nomor_identitas }}</td>
                                         <td class="text-center font-weight-bold">{{ $row->jumlah_transaksi }}</td>
-                                        <td class="text-center">
+                                        <td>
                                             <a
                                                 href="{{ route('counting_customer_send.detail', [
                                                     'nomor_identitas' => $row->nomor_identitas,
                                                     'start_date' => request('start_date'),
                                                     'end_date' => request('end_date'),
                                                 ]) }}"
-                                                class="btn btn-sm btn-warning px-2"
-                                                title="View transaction details"
-                                                aria-label="View transaction details"
+                                                class="crm-btn crm-btn-sm crm-btn-ghost crm-btn-detail"
                                             >
-                                                <i class="fas fa-search"></i>
+                                                {{ __('crm.btn_detail') }}
                                             </a>
                                         </td>
                                     </tr>

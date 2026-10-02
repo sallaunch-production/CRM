@@ -8,14 +8,6 @@
         overflow-y: auto;
         padding-right: 0.25rem;
     }
-    .crm-btn-icon-detail {
-        width: 32px;
-        height: 32px;
-        padding: 0;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-    }
 </style>
 
 <div class="modal fade crm-modal" id="posTxDetailModal" tabindex="-1" role="dialog"
@@ -192,10 +184,8 @@ window.PosTxDetail = window.PosTxDetail || {
     },
     actionButton: function () {
         return '' +
-            '<button type="button" class="crm-btn crm-btn-sm crm-btn-ghost crm-btn-icon-detail js-pos-tx-detail"' +
-            ' title="' + @json(__('crm.tx_detail_title')) + '">' +
-            '<i class="fas fa-search" aria-hidden="true"></i>' +
-            '<span class="sr-only">' + @json(__('crm.tx_detail')) + '</span>' +
+            '<button type="button" class="crm-btn crm-btn-sm crm-btn-ghost crm-btn-detail js-pos-tx-detail">' +
+            @json(__('crm.btn_detail')) +
             '</button>';
     }
 };
