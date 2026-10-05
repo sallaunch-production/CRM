@@ -7,12 +7,18 @@
 
 @section('content')
 @php
+    use App\Support\CrmTransactionDetail;
+
     $hasResult = !empty($tanggal_sampai);
     $startDate = old('start_date', $start_date ?? '');
     $endDate = old('end_date', $end_date ?? '');
-    $searchRoute = (($levelnya ?? '') === 'operasional')
+    $isOperasional = (($levelnya ?? '') === 'operasional');
+    $searchRoute = $isOperasional
         ? route('search_newcustomer_send_operasional')
         : route('search_newcustomer_send');
+    $detailRoute = $isOperasional
+        ? 'transaksi_send_pos_operasional.detail'
+        : 'transaksi_send_pos.detail';
 @endphp
 
 <div class="container-fluid">
@@ -74,48 +80,48 @@
                         <thead>
                             <tr>
                                 <th>No</th>
-                                <th>IDPJK</th>
-                                <th>Kode Nasabah</th>
+                                <th>Reference No</th>
+                                <th>Transaction Time</th>
+                                <th>ID POS</th>
                                 <th>Customer Name</th>
-                                <th>Tempat Lahir</th>
+                                <th>ID Number</th>
+                                <th>Gender</th>
+                                <th>Place of Birth</th>
                                 <th>Date of Birth</th>
-                                <th>Address</th>
-                                <th>No KTP</th>
-                                <th>Other Identity</th>
-                                <th>CIF</th>
-                                <th>NPWP</th>
-                                <th>Local ID</th>
+                                <th>Phone</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($data as $key => $transactions)
+                                @php
+                                    $rawTgl = preg_replace('/[^0-9]/', '', (string) $transactions->tanggal_lahir);
+                                    if (strlen($rawTgl) === 8) {
+                                        try {
+                                            $tanggalLahir = \Carbon\Carbon::createFromFormat('dmY', $rawTgl)->format('d-m-Y');
+                                        } catch (\Exception $e) {
+                                            $tanggalLahir = $transactions->tanggal_lahir;
+                                        }
+                                    } else {
+                                        $tanggalLahir = CrmTransactionDetail::formatDateOnly($transactions->tanggal_lahir);
+                                    }
+                                @endphp
                                 <tr>
                                     <td>{{ $key + 1 }}</td>
-                                    <td>1003780</td>
-                                    <td>1</td>
-                                    <td>{{ $transactions->nama_pengirim }}</td>
-                                    <td>{{ $transactions->kota_lahir_pengirim }}</td>
-                                    <td>
-                                        @php
-                                            $rawTgl = preg_replace('/[^0-9]/', '', $transactions->tanggal_lahir);
-                                            if (strlen($rawTgl) === 8) {
-                                                try {
-                                                    $tanggal = \Carbon\Carbon::createFromFormat('dmY', $rawTgl)->format('d-m-Y');
-                                                } catch (\Exception $e) {
-                                                    $tanggal = 'Invalid format';
-                                                }
-                                            } else {
-                                                $tanggal = 'Invalid date';
-                                            }
-                                        @endphp
-                                        {{ $tanggal }}
-                                    </td>
-                                    <td>{{ $transactions->alamat_pengirim }}</td>
-                                    <td>{{ $transactions->nomor_identitas }}</td>
-                                    <td></td>
                                     <td>{{ $transactions->no_referensi }}</td>
-                                    <td></td>
-                                    <td></td>
+                                    <td>{{ CrmTransactionDetail::formatDateMinute($transactions->tanggal) }}</td>
+                                    <td>{{ $transactions->id_pos }}</td>
+                                    <td>{{ $transactions->nama_pengirim }}</td>
+                                    <td>{{ $transactions->nomor_identitas }}</td>
+                                    <td>{{ CrmTransactionDetail::formatGender($transactions->jenis_kelamin) }}</td>
+                                    <td>{{ $transactions->kota_lahir_pengirim }}</td>
+                                    <td>{{ $tanggalLahir }}</td>
+                                    <td>{{ $transactions->telpon_pengirim }}</td>
+                                    <td class="crm-cell-actions">
+                                        <div class="crm-actions">
+                                            <a href="{{ route($detailRoute, $transactions->no) }}" class="crm-btn crm-btn-sm crm-btn-ghost crm-btn-detail">{{ __('crm.btn_detail') }}</a>
+                                        </div>
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -137,7 +143,8 @@
             pageLength: 10,
             lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
             paging: true,
-            deferRender: true
+            deferRender: true,
+            order: [[4, 'asc']]
         });
     });
 </script>

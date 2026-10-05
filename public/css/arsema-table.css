@@ -897,6 +897,21 @@ table.crm-table {
     white-space: nowrap;
 }
 
+.crm-table td.crm-cell-actions,
+.crm-table th.crm-cell-actions {
+    white-space: nowrap;
+    vertical-align: middle;
+}
+
+.crm-actions .crm-btn-sm {
+    min-width: 32px;
+}
+
+.crm-actions .js-copy-ref {
+    width: 32px;
+    padding: 0;
+}
+
 /* DataTables controls */
 .dataTables_wrapper .crm-dt-top {
     display: flex;

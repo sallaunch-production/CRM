@@ -7,13 +7,19 @@
 
 @section('content')
 @php
+    use App\Support\CrmTransactionDetail;
+
     $hasResult = !empty($tanggal_sampai);
     $startDate = old('start_date', $start_date ?? '');
     $endDate = old('end_date', $end_date ?? '');
     $rowCount = (isset($data) && is_countable($data)) ? count($data) : 0;
-    $searchRoute = (($levelnya ?? '') === 'operasional')
+    $isOperasional = (($levelnya ?? '') === 'operasional');
+    $searchRoute = $isOperasional
         ? route('search_newcustomer_operasional')
         : route('search_newcustomer');
+    $detailRoute = $isOperasional
+        ? 'transaksi_receive_pos_operasional.detail'
+        : 'transaksi_receive_pos.detail';
 @endphp
 
 <div class="container-fluid">
@@ -84,43 +90,41 @@
                         <thead>
                             <tr>
                                 <th>No</th>
-                                <th>IDPJK</th>
-                                <th>Kode Nasabah</th>
-                                <th>Recipient Name</th>
+                                <th>Reference No</th>
+                                <th>Transaction Time</th>
+                                <th>ID POS</th>
+                                <th>Customer Name</th>
+                                <th>ID Number</th>
+                                <th>Gender</th>
                                 <th>Place of Birth</th>
                                 <th>Date of Birth</th>
-                                <th>Recipient Address</th>
-                                <th>ID Number</th>
-                                <th>Other Identity</th>
-                                <th>Reference No</th>
-                                <th>NPWP</th>
-                                <th>Local ID</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($data as $key => $transactions)
+                                @php
+                                    try {
+                                        $tglLahir = \Carbon\Carbon::createFromFormat('m/d/Y', $transactions->tanggal_lahir)->format('d-m-Y');
+                                    } catch (\Throwable $e) {
+                                        $tglLahir = $transactions->tanggal_lahir;
+                                    }
+                                @endphp
                                 <tr>
                                     <td>{{ $key + 1 }}</td>
-                                    <td>1003780</td>
-                                    <td>1</td>
-                                    <td>{{ $transactions->nama_penerima }}</td>
-                                    <td>{{ $transactions->kota_kelahiran }}</td>
-                                    <td>
-                                        @php
-                                            try {
-                                                $tglLahir = \Carbon\Carbon::createFromFormat('m/d/Y', $transactions->tanggal_lahir)->format('d-m-Y');
-                                            } catch (\Throwable $e) {
-                                                $tglLahir = $transactions->tanggal_lahir;
-                                            }
-                                        @endphp
-                                        {{ $tglLahir }}
-                                    </td>
-                                    <td>{{ $transactions->alamat_penerima }}</td>
-                                    <td>{{ $transactions->nomor_identitas }}</td>
-                                    <td></td>
                                     <td>{{ $transactions->no_referensi }}</td>
-                                    <td></td>
-                                    <td></td>
+                                    <td>{{ CrmTransactionDetail::formatDateMinute($transactions->tanggal) }}</td>
+                                    <td>{{ $transactions->id_pos }}</td>
+                                    <td>{{ $transactions->nama_penerima }}</td>
+                                    <td>{{ $transactions->nomor_identitas }}</td>
+                                    <td>{{ CrmTransactionDetail::formatGender($transactions->jenis_kelamin) }}</td>
+                                    <td>{{ $transactions->kota_kelahiran }}</td>
+                                    <td>{{ $tglLahir }}</td>
+                                    <td class="crm-cell-actions">
+                                        <div class="crm-actions">
+                                            <a href="{{ route($detailRoute, $transactions->no) }}" class="crm-btn crm-btn-sm crm-btn-ghost crm-btn-detail">{{ __('crm.btn_detail') }}</a>
+                                        </div>
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -143,7 +147,7 @@
             lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
             paging: true,
             deferRender: true,
-            order: [[3, 'asc']]
+            order: [[4, 'asc']]
         });
     });
 </script>

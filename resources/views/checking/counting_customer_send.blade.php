@@ -89,7 +89,7 @@
                                     <th>Sender Name</th>
                                     <th>ID Number</th>
                                     <th class="text-center">Jumlah Transaksi</th>
-                                    <th>Action</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
