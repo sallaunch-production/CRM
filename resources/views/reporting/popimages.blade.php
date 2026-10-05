@@ -19,7 +19,7 @@
         <div class="crm-page-header">
             <div>
                 <h1 class="crm-page-title">Proof of Payment</h1>
-                <p class="crm-page-sub">Kelola dokumen proof of payment. Upload, lihat, edit, atau hapus sesuai peran Anda.</p>
+                <p class="crm-page-sub">Manage proof of payment documents. Upload, view, edit, or delete based on your role.</p>
             </div>
         </div>
 
@@ -29,14 +29,15 @@
             <div class="crm-table-card">
                 <div class="crm-table-toolbar">
                     <div>
-                        <h2 class="crm-table-title">Daftar POP</h2>
-                        <div class="crm-table-meta">{{ count($data) }} data</div>
+                        <h2 class="crm-table-title">POP List</h2>
+                        <div class="crm-table-meta">{{ count($data) }} records</div>
                     </div>
-                    <div class="crm-actions">
-                        <form method="post" action="{{ $uploadEntryRoute }}">
+                    <div class="crm-table-toolbar-actions">
+                        <form method="post" action="{{ $uploadEntryRoute }}" class="d-inline m-0">
                             @csrf
-                            <button type="submit" class="crm-btn crm-btn-primary">
-                                <i class="fas fa-upload"></i> Upload POP
+                            <button type="submit" class="crm-btn crm-btn-sm crm-btn-primary">
+                                <i class="fas fa-upload" aria-hidden="true"></i>
+                                Upload POP
                             </button>
                         </form>
                     </div>
@@ -46,15 +47,15 @@
                         <thead>
                             <tr>
                                 <th>No</th>
-                                <th>No Referensi</th>
-                                <th>Tanggal Transaksi</th>
-                                <th>Nama Client</th>
-                                <th>Jenis Transaksi</th>
+                                <th>Reference No</th>
+                                <th>Transaction Date</th>
+                                <th>Client Name</th>
+                                <th>Transaction Type</th>
                                 <th>Submitted LTKL</th>
                                 <th>Submitted LTKM</th>
-                                <th>Tanggal Upload</th>
-                                <th>Dokumen</th>
-                                <th>Aksi</th>
+                                <th>Upload Date</th>
+                                <th>Document</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -76,7 +77,7 @@
                                                 class="crm-btn crm-btn-sm crm-btn-ghost"
                                             >View Image</a>
                                         @else
-                                            <span class="crm-badge">File tidak tersedia</span>
+                                            <span class="crm-badge">File not available</span>
                                         @endif
                                     </td>
                                     <td>
@@ -106,7 +107,7 @@
                 <div class="crm-table-toolbar">
                     <div>
                         <h2 class="crm-table-title">Upload POP</h2>
-                        <div class="crm-table-meta">Isi data transaksi dan unggah dokumen</div>
+                        <div class="crm-table-meta">Enter transaction details and upload the document</div>
                     </div>
                 </div>
 
@@ -114,21 +115,21 @@
                     @csrf
                     <div class="crm-form-grid">
                         <div class="crm-search-field">
-                            <label for="pop_noref">No Referensi</label>
-                            <input type="text" id="pop_noref" name="noref" required class="form-control" placeholder="Masukkan no referensi">
+                            <label for="pop_noref">Reference No</label>
+                            <input type="text" id="pop_noref" name="noref" required class="form-control" placeholder="Enter reference number">
                         </div>
                         <div class="crm-search-field">
-                            <label for="dari">Tanggal Transaksi</label>
+                            <label for="dari">Transaction Date</label>
                             <input type="date" name="tgl" required class="form-control" id="dari">
                         </div>
                         <div class="crm-search-field crm-form-span-2">
-                            <label for="pop_nama">Nama Client</label>
-                            <input type="text" id="pop_nama" name="nama" required class="form-control" placeholder="Masukkan nama client">
+                            <label for="pop_nama">Client Name</label>
+                            <input type="text" id="pop_nama" name="nama" required class="form-control" placeholder="Enter client name">
                         </div>
                     </div>
 
                     <div class="crm-form-block">
-                        <span class="crm-form-label">Jenis Transaksi</span>
+                        <span class="crm-form-label">Transaction Type</span>
                         <div class="crm-radio-row">
                             <label class="crm-radio">
                                 <input type="radio" name="optradio" value="SEND">
@@ -198,7 +199,7 @@
                 <div class="crm-table-toolbar">
                     <div>
                         <h2 class="crm-table-title">Edit POP</h2>
-                        <div class="crm-table-meta">Perbarui data atau ganti dokumen jika diperlukan</div>
+                        <div class="crm-table-meta">Update the data or replace the document if needed</div>
                     </div>
                 </div>
 
@@ -208,21 +209,21 @@
 
                     <div class="crm-form-grid">
                         <div class="crm-search-field">
-                            <label for="edit_noref">No Referensi</label>
+                            <label for="edit_noref">Reference No</label>
                             <input type="text" id="edit_noref" name="noref" required class="form-control" value="{{ $data->no_referensi }}">
                         </div>
                         <div class="crm-search-field">
-                            <label for="dari">Tanggal Transaksi</label>
+                            <label for="dari">Transaction Date</label>
                             <input type="text" name="tgl" required class="form-control" id="dari" value="{{ $data->tanggal_transaksi }}">
                         </div>
                         <div class="crm-search-field crm-form-span-2">
-                            <label for="edit_nama">Nama Client</label>
+                            <label for="edit_nama">Client Name</label>
                             <input type="text" id="edit_nama" name="nama" required class="form-control" value="{{ trim($data->nama_client) }}">
                         </div>
                     </div>
 
                     <div class="crm-form-block">
-                        <span class="crm-form-label">Jenis Transaksi</span>
+                        <span class="crm-form-label">Transaction Type</span>
                         <div class="crm-radio-row">
                             <label class="crm-radio">
                                 <input type="radio" name="optradio" value="SEND" @checked($jenis === 'SEND')>
@@ -275,7 +276,7 @@
 
                     <div class="crm-form-actions">
                         <button type="submit" class="crm-btn crm-btn-primary">
-                            <i class="fas fa-save"></i> Simpan
+                            <i class="fas fa-save"></i> Save
                         </button>
                     </div>
                 </form>

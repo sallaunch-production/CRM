@@ -11,7 +11,7 @@
         <div class="crm-page-header">
             <div>
                 <h1 class="crm-page-title">Direct Receive</h1>
-                <p class="crm-page-sub">Daftar transaksi direct receive.</p>
+                <p class="crm-page-sub">Direct receive transaction list.</p>
             </div>
         </div>
 
@@ -21,7 +21,7 @@
             <div class="crm-table-toolbar">
                 <div>
                     <h2 class="crm-table-title">Direct Receive Transaction</h2>
-                    <div class="crm-table-meta">{{ count($transaction) }} data</div>
+                    <div class="crm-table-meta">{{ count($transaction) }} records</div>
                 </div>
             </div>
             <div class="crm-table-wrap">
@@ -29,19 +29,19 @@
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>No Referensi</th>
-                            <th>Nama Pengirim</th>
-                            <th>Negara Pengirim</th>
+                            <th>Reference No</th>
+                            <th>Sender Name</th>
+                            <th>Sender Country</th>
                             <th>BSU</th>
-                            <th>Nama Penerima</th>
-                            <th>Identitas</th>
-                            <th>Nomor Identitas</th>
-                            <th>Tanggal Lahir</th>
-                            <th>Alamat Penerima</th>
-                            <th>Telepon Penerima</th>
-                            <th>Kota Penerima</th>
-                            <th>Pekerjaan</th>
-                            <th>Tanggal</th>
+                            <th>Recipient Name</th>
+                            <th>Identity</th>
+                            <th>ID Number</th>
+                            <th>Date of Birth</th>
+                            <th>Recipient Address</th>
+                            <th>Recipient Phone</th>
+                            <th>Recipient City</th>
+                            <th>Occupation</th>
+                            <th>Date</th>
                         </tr>
                     </thead>
                     <tbody>

@@ -1,22 +1,22 @@
 @extends('layouts.app')
 
+@section('title', 'CRM Arsema')
+
 @section('content')
 <div class="container">
     <div class="row">
-    <div class="col-md-12 col-md-offset-2" align="center" style="padding:5%;">
+        <div class="col-md-12 col-md-offset-2" align="center" style="padding:5%;">
             <div class="panel panel-default">
-                <div class="panel-heading">Google Authenticator</div>
+                <div class="panel-heading">{{ __('crm.otp_register_title') }}</div>
 
                 <div class="panel-body" style="text-align: center;">
-                    <p>Anda dapat menggunakan two factor authentication dengan melakukan scan pada barcode dibawah. Alternatif lainnya, anda dapat menggunakan code berikut: {{ $secret }}</p>
+                    <p>{{ __('crm.otp_register_help', ['secret' => $secret]) }}</p>
                     <div>
-                    <img src={!! $QR_Image !!}>
-
-
+                        <img src={!! $QR_Image !!} alt="{{ __('crm.otp_register_title') }}">
                     </div>
-                    <p>Anda harus mengatur Google Authenticator app sebelum melanjutkan.</p>
+                    <p>{{ __('crm.otp_register_setup') }}</p>
                     <div>
-                        <a href="/validation"><button class="btn btn-success">Selesaikan Pendaftaran</button></a>
+                        <a href="/validation"><button class="btn btn-success" type="button">{{ __('crm.otp_register_finish') }}</button></a>
                     </div>
                 </div>
             </div>

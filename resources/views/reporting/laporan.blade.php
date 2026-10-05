@@ -17,8 +17,8 @@
     <div class="crm-page">
         <div class="crm-page-header">
             <div>
-                <h1 class="crm-page-title">Laporan</h1>
-                <p class="crm-page-sub">Pilih periode, lalu unduh laporan BI atau PPATK.</p>
+                <h1 class="crm-page-title">Reports</h1>
+                <p class="crm-page-sub">Choose a period, then download BI or PPATK reports.</p>
             </div>
         </div>
 
@@ -32,13 +32,13 @@
             >
                 @csrf
                 @include('partials.crm.date-range-filter', [
-                    'groupLabel' => 'Periode Laporan',
+                    'groupLabel' => 'Report Period',
                     'startDate' => $startDate,
                     'endDate' => $endDate,
                 ])
                 <div class="crm-search-actions">
                     <button type="submit" class="crm-btn crm-btn-primary">
-                        <i class="fas fa-search"></i> Cari
+                        <i class="fas fa-search"></i> Search
                     </button>
                 </div>
             </form>
@@ -49,77 +49,107 @@
                 <div class="crm-empty-icon" aria-hidden="true">
                     <i class="fas fa-file-export"></i>
                 </div>
-                <h2 class="crm-empty-title">Mulai dengan periode</h2>
+                <h2 class="crm-empty-title">Start with a period</h2>
                 <p class="crm-empty-text">
-                    Pilih <strong>Start Date</strong> dan <strong>End Date</strong>, lalu tekan <strong>Cari</strong>
-                    untuk menampilkan tombol unduh laporan.
+                    Select a <strong>Start Date</strong> and <strong>End Date</strong>, then click <strong>Search</strong>
+                    to show report download buttons.
                 </p>
             </div>
         @else
             <div class="crm-table-card">
                 <div class="crm-table-toolbar">
                     <div>
-                        <h2 class="crm-table-title">Export Laporan</h2>
+                        <h2 class="crm-table-title">Export Reports</h2>
                         <div class="crm-table-meta">
-                            Periode {{ $tanggal_dari }} s/d {{ $tanggal_sampai }}
+                            Period {{ $tanggal_dari }} to {{ $tanggal_sampai }}
                         </div>
                     </div>
                 </div>
-                <div class="crm-export-grid">
-                    <form
-                        action="{{ $isOps ? route('cetak_laporan_bi_baru_operasional') : route('cetak_laporan_bi_baru') }}"
-                        method="POST"
-                    >
-                        @csrf
-                        <input type="hidden" name="tanggal_dari" value="{{ $tanggal_dari }}">
-                        <input type="hidden" name="tanggal_sampai" value="{{ $tanggal_sampai }}">
-                        <button type="submit" class="crm-btn crm-btn-primary">Cetak Laporan BI</button>
-                    </form>
-                    <form
-                        action="{{ $isOps ? route('cetak_laporan_bi_g0001_operasional') : route('cetak_laporan_bi_g0001') }}"
-                        method="POST"
-                    >
-                        @csrf
-                        <input type="hidden" name="tanggal_dari" value="{{ $tanggal_dari }}">
-                        <input type="hidden" name="tanggal_sampai" value="{{ $tanggal_sampai }}">
-                        <button type="submit" class="crm-btn crm-btn-primary">Download G0001 Laporan BI</button>
-                    </form>
-                    <form
-                        action="{{ $isOps ? route('cetak_laporan_bi_baru_txt_operasional') : route('cetak_laporan_bi_baru_txt') }}"
-                        method="POST"
-                    >
-                        @csrf
-                        <input type="hidden" name="tanggal_dari" value="{{ $tanggal_dari }}">
-                        <input type="hidden" name="tanggal_sampai" value="{{ $tanggal_sampai }}">
-                        <button type="submit" class="crm-btn crm-btn-primary">Download G0002 Laporan BI</button>
-                    </form>
-                    <form
-                        action="{{ $isOps ? route('cetak_laporan_bi_g0003_operasional') : route('cetak_laporan_bi_g0003') }}"
-                        method="POST"
-                    >
-                        @csrf
-                        <input type="hidden" name="tanggal_dari" value="{{ $tanggal_dari }}">
-                        <input type="hidden" name="tanggal_sampai" value="{{ $tanggal_sampai }}">
-                        <button type="submit" class="crm-btn crm-btn-primary">Download G0003 Laporan BI</button>
-                    </form>
-                    <form
-                        action="{{ $isOps ? route('cetak_laporan_ppatk_baru_operasional') : route('cetak_laporan_ppatk_baru') }}"
-                        method="POST"
-                    >
-                        @csrf
-                        <input type="hidden" name="tanggal_dari" value="{{ $tanggal_dari }}">
-                        <input type="hidden" name="tanggal_sampai" value="{{ $tanggal_sampai }}">
-                        <button type="submit" class="crm-btn crm-btn-warn">Cetak Laporan PPATK</button>
-                    </form>
-                    <form
-                        action="{{ $isOps ? route('cetak_laporan_ppatk_baru_c2a_operasional') : route('cetak_laporan_ppatk_baru_c2a') }}"
-                        method="POST"
-                    >
-                        @csrf
-                        <input type="hidden" name="tanggal_dari" value="{{ $tanggal_dari }}">
-                        <input type="hidden" name="tanggal_sampai" value="{{ $tanggal_sampai }}">
-                        <button type="submit" class="crm-btn crm-btn-warn">Cetak Laporan PPATK C2A</button>
-                    </form>
+
+                <div class="crm-export-sections">
+                    <section class="crm-export-section" aria-labelledby="export-bi-title">
+                        <h3 id="export-bi-title" class="crm-export-section-title">BI Reports</h3>
+                        <div class="crm-export-grid">
+                            <form
+                                action="{{ $isOps ? route('cetak_laporan_bi_baru_operasional') : route('cetak_laporan_bi_baru') }}"
+                                method="POST"
+                            >
+                                @csrf
+                                <input type="hidden" name="tanggal_dari" value="{{ $tanggal_dari }}">
+                                <input type="hidden" name="tanggal_sampai" value="{{ $tanggal_sampai }}">
+                                <button type="submit" class="crm-btn crm-btn-primary">
+                                    <i class="fas fa-print" aria-hidden="true"></i>
+                                    Print BI Report
+                                </button>
+                            </form>
+                            <form
+                                action="{{ $isOps ? route('cetak_laporan_bi_g0001_operasional') : route('cetak_laporan_bi_g0001') }}"
+                                method="POST"
+                            >
+                                @csrf
+                                <input type="hidden" name="tanggal_dari" value="{{ $tanggal_dari }}">
+                                <input type="hidden" name="tanggal_sampai" value="{{ $tanggal_sampai }}">
+                                <button type="submit" class="crm-btn crm-btn-primary">
+                                    <i class="fas fa-download" aria-hidden="true"></i>
+                                    Download G0001
+                                </button>
+                            </form>
+                            <form
+                                action="{{ $isOps ? route('cetak_laporan_bi_baru_txt_operasional') : route('cetak_laporan_bi_baru_txt') }}"
+                                method="POST"
+                            >
+                                @csrf
+                                <input type="hidden" name="tanggal_dari" value="{{ $tanggal_dari }}">
+                                <input type="hidden" name="tanggal_sampai" value="{{ $tanggal_sampai }}">
+                                <button type="submit" class="crm-btn crm-btn-primary">
+                                    <i class="fas fa-download" aria-hidden="true"></i>
+                                    Download G0002
+                                </button>
+                            </form>
+                            <form
+                                action="{{ $isOps ? route('cetak_laporan_bi_g0003_operasional') : route('cetak_laporan_bi_g0003') }}"
+                                method="POST"
+                            >
+                                @csrf
+                                <input type="hidden" name="tanggal_dari" value="{{ $tanggal_dari }}">
+                                <input type="hidden" name="tanggal_sampai" value="{{ $tanggal_sampai }}">
+                                <button type="submit" class="crm-btn crm-btn-primary">
+                                    <i class="fas fa-download" aria-hidden="true"></i>
+                                    Download G0003
+                                </button>
+                            </form>
+                        </div>
+                    </section>
+
+                    <section class="crm-export-section" aria-labelledby="export-ppatk-title">
+                        <h3 id="export-ppatk-title" class="crm-export-section-title">PPATK Reports</h3>
+                        <div class="crm-export-grid">
+                            <form
+                                action="{{ $isOps ? route('cetak_laporan_ppatk_baru_operasional') : route('cetak_laporan_ppatk_baru') }}"
+                                method="POST"
+                            >
+                                @csrf
+                                <input type="hidden" name="tanggal_dari" value="{{ $tanggal_dari }}">
+                                <input type="hidden" name="tanggal_sampai" value="{{ $tanggal_sampai }}">
+                                <button type="submit" class="crm-btn crm-btn-warn">
+                                    <i class="fas fa-file-alt" aria-hidden="true"></i>
+                                    Print PPATK Report
+                                </button>
+                            </form>
+                            <form
+                                action="{{ $isOps ? route('cetak_laporan_ppatk_baru_c2a_operasional') : route('cetak_laporan_ppatk_baru_c2a') }}"
+                                method="POST"
+                            >
+                                @csrf
+                                <input type="hidden" name="tanggal_dari" value="{{ $tanggal_dari }}">
+                                <input type="hidden" name="tanggal_sampai" value="{{ $tanggal_sampai }}">
+                                <button type="submit" class="crm-btn crm-btn-warn">
+                                    <i class="fas fa-file-alt" aria-hidden="true"></i>
+                                    Print PPATK C2A Report
+                                </button>
+                            </form>
+                        </div>
+                    </section>
                 </div>
             </div>
         @endif

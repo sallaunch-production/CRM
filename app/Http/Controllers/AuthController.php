@@ -63,7 +63,7 @@ class AuthController extends Controller
             ]);
             }
              
-            return redirect()->back()->with('status', 'Username was blocked!');
+            return redirect()->back()->with('status', __('crm.login_user_blocked'));
          } else {
              RateLimiter::hit($key,$decay);
          }
@@ -72,7 +72,7 @@ class AuthController extends Controller
 
         // Skip reCAPTCHA validation in local development environment
         if (!app()->isLocal() && is_null($recaptcha_response)) {
-            return redirect()->back()->with('status', 'Please Complete the Recaptcha to proceed');
+            return redirect()->back()->with('status', __('crm.login_recaptcha_required'));
         }
 
        
@@ -80,7 +80,7 @@ class AuthController extends Controller
         Session::put('user_password', $password);
 
         if(count($stmt)>0){
-            return redirect()->back()->with('status', 'Maaf, User anda terblokir.');
+            return redirect()->back()->with('status', __('crm.login_blocked'));
         }else{
             $cek_email = User::where('email','=',$user_email)->get();
             if(count($cek_email)>0){
@@ -96,26 +96,26 @@ class AuthController extends Controller
                         // Local: tetap ke halaman authenticator (kode di-bypass di verify).
                         // Non-local: register barcode dulu jika belum ada.
                         if (app()->isLocal()) {
-                            return redirect('validation')->with('success','Silahkan masukan code dari perangakat seluler anda.');
+                            return redirect('validation')->with('success', __('crm.otp_enter_code'));
                         }
 
                         $cek_google =  DB::table('auth_google')->where('username','=',$cek_email[0]['email'] ?? '')->get();
                         if(count($cek_google)>0){
-                            return redirect('validation')->with('success','Silahkan masukan code dari perangakat seluler anda.');
+                            return redirect('validation')->with('success', __('crm.otp_enter_code'));
                         }else{
-                            return redirect('register_barcode')->with('success','Silahkan masukan code dari perangakat seluler anda.');
+                            return redirect('register_barcode')->with('success', __('crm.otp_enter_code'));
                         }
                    }else{
-                    return redirect()->back()->with('status', 'You don'."'".'t have access!');
+                    return redirect()->back()->with('status', __('crm.login_no_access'));
                    }
                    
                     
                }else{
-                return redirect()->back()->with('status', 'Username or password are wrong!');
+                return redirect()->back()->with('status', __('crm.login_invalid_credentials'));
                }
             }else{
                     
-                return redirect()->back()->with('status', 'Username or password are wrong!');
+                return redirect()->back()->with('status', __('crm.login_invalid_credentials'));
             }
         }
       }
@@ -167,9 +167,9 @@ class AuthController extends Controller
                 ]);
                 // 2FA code is valid, proceed with login
                if($level=="compliance"){
-                    return redirect()->intended('dashboard')->with('success','Successfully Login.');
+                    return redirect()->intended('dashboard')->with('success', __('crm.login_success'));
                }elseif($level=="operasional"){
-                    return redirect()->intended('dashboard_operasional')->with('success','Successfully Login.');
+                    return redirect()->intended('dashboard_operasional')->with('success', __('crm.login_success'));
                }else{
                     Session::flush();
                     Auth::logout();
@@ -178,7 +178,7 @@ class AuthController extends Controller
                  
             } else {
                 // Invalid 2FA code, redirect back with an error message
-                return redirect()->back()->with('login_error', 'Code is wrong!');
+                return redirect()->back()->with('login_error', __('crm.otp_wrong_code'));
             }
       }
 

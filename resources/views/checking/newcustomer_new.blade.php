@@ -10,6 +10,7 @@
     $hasResult = !empty($tanggal_sampai);
     $startDate = old('start_date', $start_date ?? '');
     $endDate = old('end_date', $end_date ?? '');
+    $rowCount = (isset($data) && is_countable($data)) ? count($data) : 0;
     $searchRoute = (($levelnya ?? '') === 'operasional')
         ? route('search_newcustomer_operasional')
         : route('search_newcustomer');
@@ -20,7 +21,7 @@
         <div class="crm-page-header">
             <div>
                 <h1 class="crm-page-title">New Customer</h1>
-                <p class="crm-page-sub">Pencarian orang yang baru pertama kali transaksi (Receive).</p>
+                <p class="crm-page-sub">Search for first-time transaction customers (Receive).</p>
             </div>
             @include('partials.crm.newcustomer-tabs', ['activeTab' => 'receive'])
         </div>
@@ -31,13 +32,13 @@
             <form class="crm-search-form" action="{{ $searchRoute }}" method="POST">
                 @csrf
                 @include('partials.crm.date-range-filter', [
-                    'groupLabel' => 'Tanggal Transaksi Receive',
+                    'groupLabel' => 'Receive Transaction Date',
                     'startDate' => $startDate,
                     'endDate' => $endDate,
                 ])
                 <div class="crm-search-actions">
                     <button type="submit" class="crm-btn crm-btn-primary" id="btn-cari">
-                        <i class="fas fa-search"></i> Cari
+                        <i class="fas fa-search"></i> Search
                     </button>
                 </div>
             </form>
@@ -48,30 +49,33 @@
                 <div class="crm-empty-icon" aria-hidden="true">
                     <i class="fas fa-user-plus"></i>
                 </div>
-                <h2 class="crm-empty-title">Mulai dengan periode receive</h2>
+                <h2 class="crm-empty-title">Start with a receive period</h2>
                 <p class="crm-empty-text">
-                    Pilih <strong>Start Date</strong> dan <strong>End Date</strong>, lalu tekan <strong>Cari</strong>
-                    untuk menampilkan customer baru.
+                    Select a <strong>Start Date</strong> and <strong>End Date</strong>, then click <strong>Search</strong>
+                    to show new customers.
                 </p>
             </div>
         @else
             <div class="crm-table-card">
                 <div class="crm-table-toolbar">
                     <div>
-                        <h2 class="crm-table-title">Hasil New Customer — Receive</h2>
+                        <h2 class="crm-table-title">New Customer Results — Receive</h2>
                         <div class="crm-table-meta">
                             {{ date('d-m-Y', strtotime($tanggal_dari)) }}
-                            s/d
+                            to
                             {{ date('d-m-Y', strtotime($tanggal_sampai)) }}
                         </div>
                     </div>
-                    <div class="crm-actions">
-                        <span class="crm-badge">{{ is_countable($data) ? count($data) : 0 }} data</span>
+                    <div class="crm-table-toolbar-actions">
+                        <span class="crm-badge">{{ $rowCount }} records</span>
                         <form id="cetakForm" action="{{ route('cetak_new_customer_gabungan') }}" method="POST" class="d-inline m-0">
                             @csrf
                             <input type="hidden" name="tanggal_dari" value="{{ $tanggal_dari ?? '-' }}">
                             <input type="hidden" name="tanggal_sampai" value="{{ $tanggal_sampai ?? '-' }}">
-                            <button type="submit" class="crm-btn crm-btn-sm crm-btn-primary">Cetak Gabungan</button>
+                            <button type="submit" class="crm-btn crm-btn-sm crm-btn-primary" title="Print Combined">
+                                <i class="fas fa-print" aria-hidden="true"></i>
+                                Print Combined
+                            </button>
                         </form>
                     </div>
                 </div>
@@ -82,13 +86,13 @@
                                 <th>No</th>
                                 <th>IDPJK</th>
                                 <th>Kode Nasabah</th>
-                                <th>Nama Penerima</th>
-                                <th>Kota Kelahiran</th>
-                                <th>Tanggal Lahir</th>
-                                <th>Alamat Penerima</th>
-                                <th>Nomor Identitas</th>
-                                <th>Identitas Lain</th>
-                                <th>No Referensi</th>
+                                <th>Recipient Name</th>
+                                <th>Place of Birth</th>
+                                <th>Date of Birth</th>
+                                <th>Recipient Address</th>
+                                <th>ID Number</th>
+                                <th>Other Identity</th>
+                                <th>Reference No</th>
                                 <th>NPWP</th>
                                 <th>Local ID</th>
                             </tr>
@@ -129,24 +133,17 @@
 @stop
 
 @section('js')
-<script src="https://cdn.datatables.net/buttons/2.2.3/js/dataTables.buttons.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.html5.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.print.min.js"></script>
 @include('partials.crm.datatable-boot')
 <script>
     $(document).ready(function () {
+        if (!$('#example').length) return;
+
         CrmDataTable.mount('#example', {
-            dom: CrmDataTable.domWithButtons,
-            buttons: [
-                { extend: 'copy', text: 'COPY', title: 'TRANSAKSI NEW CUSTOMER' },
-                { extend: 'csv', text: 'CSV', title: 'TRANSAKSI NEW CUSTOMER' },
-                { extend: 'excel', text: 'Excel', title: 'TRANSAKSI NEW CUSTOMER' },
-                { extend: 'pdf', text: 'PDF', title: 'TRANSAKSI NEW CUSTOMER' },
-                { extend: 'print', text: 'Print', title: 'TRANSAKSI NEW CUSTOMER' }
-            ]
+            pageLength: 10,
+            lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
+            paging: true,
+            deferRender: true,
+            order: [[3, 'asc']]
         });
     });
 </script>

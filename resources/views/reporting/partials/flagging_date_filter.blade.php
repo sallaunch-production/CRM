@@ -30,8 +30,7 @@
 </div>
 
 <button type="submit" class="btn btn-arsema">
-    <i class="fas fa-search mr-1"></i> Cari
-</button>
+    <i class="fas fa-search mr-1"></i>Search</button>
 
 @once
 <script>

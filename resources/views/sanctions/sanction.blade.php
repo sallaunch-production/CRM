@@ -11,7 +11,7 @@
         <div class="crm-page-header">
             <div>
                 <h1 class="crm-page-title">Data Sanction List</h1>
-                <p class="crm-page-sub">Kelola daftar sanction list. Gunakan filter tabel untuk mencari nama, alias, atau identitas.</p>
+                <p class="crm-page-sub">Manage the sanction list. Use the table filter to search by name, alias, or identity.</p>
             </div>
         </div>
 
@@ -21,14 +21,14 @@
             <div class="crm-table-card">
                 <div class="crm-table-toolbar">
                     <div>
-                        <h2 class="crm-table-title">Daftar Sanction</h2>
+                        <h2 class="crm-table-title">Sanction List</h2>
                         <div class="crm-table-meta">Server-side DataTables</div>
                     </div>
                     <div class="crm-actions">
                         <form action="{{ route('tambah_sanction') }}" method="post">
                             @csrf
                             <button type="submit" class="crm-btn crm-btn-primary">
-                                <i class="fas fa-plus"></i> Tambah Data
+                                <i class="fas fa-plus"></i> Add Data
                             </button>
                         </form>
                     </div>
@@ -38,14 +38,14 @@
                         <thead>
                             <tr>
                                 <th>No</th>
-                                <th>Nama</th>
+                                <th>Name</th>
                                 <th>Alias</th>
-                                <th>Tanggal Lahir</th>
+                                <th>Date of Birth</th>
                                 <th>Negara</th>
-                                <th>Nomor Identitas</th>
-                                <th>Telepon</th>
+                                <th>ID Number</th>
+                                <th>Phone</th>
                                 <th>Keterangan</th>
-                                <th>Alamat</th>
+                                <th>Address</th>
                                 <th>Type</th>
                             </tr>
                         </thead>
@@ -59,8 +59,8 @@
             <div class="crm-table-card">
                 <div class="crm-table-toolbar">
                     <div>
-                        <h2 class="crm-table-title">Tambah Sanction List</h2>
-                        <div class="crm-table-meta">Lengkapi data sanction, lalu tekan Submit</div>
+                        <h2 class="crm-table-title">Add Sanction List</h2>
+                        <div class="crm-table-meta">Complete the sanction data, then click Submit</div>
                     </div>
                 </div>
 
@@ -84,32 +84,32 @@
                             <input type="text" class="form-control" id="sanction_alias" name="alias">
                         </div>
                         <div class="crm-search-field">
-                            <label for="sanction_tgl">Tanggal Lahir</label>
+                            <label for="sanction_tgl">Date of Birth</label>
                             <input type="date" class="form-control" id="sanction_tgl" name="tgl_lahir">
                         </div>
                         <div class="crm-search-field">
-                            <label for="sanction_negara">Asal Negara</label>
+                            <label for="sanction_negara">Country of Origin</label>
                             <input type="text" class="form-control" id="sanction_negara" name="asalnegara">
                         </div>
                         <div class="crm-search-field">
-                            <label for="sanction_identitas">Nomor Identitas</label>
+                            <label for="sanction_identitas">ID Number</label>
                             <input type="text" class="form-control" id="sanction_identitas" name="nomor_identitas">
                         </div>
                         <div class="crm-search-field">
-                            <label for="sanction_telepon">Telepon</label>
+                            <label for="sanction_telepon">Phone</label>
                             <input type="text" class="form-control" id="sanction_telepon" name="telepon_penerima">
                         </div>
                         <div class="crm-search-field">
                             <label for="sanction_kategori">Kategori</label>
                             <select name="kategori" class="form-control" id="sanction_kategori">
-                                <option value="">Pilih Kategori</option>
+                                <option value="">Select Category</option>
                                 <option value="Individu">Individu</option>
                                 <option value="Korporasi">Korporasi</option>
                                 <option value="Organisasi">Organisasi</option>
                             </select>
                         </div>
                         <div class="crm-search-field crm-form-span-2">
-                            <label for="sanction_alamat">Alamat</label>
+                            <label for="sanction_alamat">Address</label>
                             <input type="text" class="form-control" id="sanction_alamat" name="alamat">
                         </div>
                         <div class="crm-search-field crm-form-span-3">

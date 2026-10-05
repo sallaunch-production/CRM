@@ -39,7 +39,7 @@
                 ])
                 <div class="crm-search-actions">
                     <button type="submit" class="crm-btn crm-btn-primary">
-                        <i class="fas fa-search"></i> Cari
+                        <i class="fas fa-search"></i> Search
                     </button>
                 </div>
             </form>
@@ -49,9 +49,9 @@
             <div class="crm-table-card">
                 <div class="crm-table-toolbar">
                     <div>
-                        <h2 class="crm-table-title">Hasil Many to One</h2>
+                        <h2 class="crm-table-title">Many to One Results</h2>
                         <div class="crm-table-meta">
-                            Periode {{ $tanggal_dari }} s/d {{ $tanggal_sampai }}
+                            Period {{ $tanggal_dari }} to {{ $tanggal_sampai }}
                             · Sumber: Pos / Branch / Direct (send &amp; receive)
                             · Ambang &gt; {{ $threshold ?? 5 }} pengirim berbeda
                         </div>
@@ -63,10 +63,10 @@
                         <thead>
                             <tr>
                                 <th>No</th>
-                                <th>Nama Penerima</th>
+                                <th>Recipient Name</th>
                                 <th>Total BSU</th>
-                                <th>Banyak Pengirim</th>
-                                <th>Banyak NIK Pengirim</th>
+                                <th>Sender Count</th>
+                                <th>Sender NIK Count</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -84,7 +84,7 @@
                                             <input type="hidden" name="dari" value="{{ $tanggal_dari }}">
                                             <input type="hidden" name="sampai" value="{{ $tanggal_sampai }}">
                                             <input type="hidden" name="nama_penerima" value="{{ $row->nama_penerima }}">
-                                            <button type="submit" class="flag-id-link" title="Lihat detail transaksi">
+                                            <button type="submit" class="flag-id-link" title="View transaction details">
                                                 {{ $row->nama_penerima }}
                                             </button>
                                         </form>
@@ -109,13 +109,13 @@
                     <div>
                         <h2 class="crm-table-title">Detail Many to One</h2>
                         <div class="crm-table-meta">
-                            Penerima {{ $nama_penerima }} · {{ $dari }} s/d {{ $sampai }}
+                            Recipient {{ $nama_penerima }} · {{ $dari }} to {{ $sampai }}
                         </div>
                     </div>
                     <div class="crm-actions">
-                        <span class="crm-badge">{{ count($data) }} data</span>
+                        <span class="crm-badge">{{ count($data) }} records</span>
                         <a href="{{ $backRoute }}" class="crm-btn crm-btn-sm crm-btn-primary">
-                            <i class="fas fa-arrow-left"></i> Kembali
+                            <i class="fas fa-arrow-left"></i> Back
                         </a>
                     </div>
                 </div>
@@ -128,19 +128,19 @@
                                 <th>Kanal</th>
                                 <th>Arah</th>
                                 <th>BSU</th>
-                                <th>Nama Penerima</th>
-                                <th>Nama Pengirim</th>
-                                <th>Negara Pengirim</th>
-                                <th>No Referensi</th>
-                                <th>Identitas</th>
-                                <th>Nomor Identitas</th>
-                                <th>Tanggal Lahir</th>
-                                <th>Alamat Penerima</th>
-                                <th>Telepon Penerima</th>
-                                <th>Kota Penerima</th>
-                                <th>Pekerjaan</th>
+                                <th>Recipient Name</th>
+                                <th>Sender Name</th>
+                                <th>Sender Country</th>
+                                <th>Reference No</th>
+                                <th>Identity</th>
+                                <th>ID Number</th>
+                                <th>Date of Birth</th>
+                                <th>Recipient Address</th>
+                                <th>Recipient Phone</th>
+                                <th>Recipient City</th>
+                                <th>Occupation</th>
                                 <th>Id Pos</th>
-                                <th>Tanggal</th>
+                                <th>Date</th>
                             </tr>
                         </thead>
                         <tbody>

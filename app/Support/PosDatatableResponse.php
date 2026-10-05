@@ -5,14 +5,23 @@ namespace App\Support;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 
+/**
+ * Reusable server-side DataTables response for large POS (and similar) lists.
+ *
+ * Pattern:
+ * - Always page with limit/offset (UI shows N rows per page).
+ * - Always return real recordsTotal / recordsFiltered so Info + pager are correct.
+ * - Search applies to the full table, not the current page.
+ * - Unfiltered totals are cached briefly to avoid COUNT(*) on every draw.
+ */
 class PosDatatableResponse
 {
+    /** Seconds to cache the unfiltered table total. */
+    public const TOTAL_CACHE_SECONDS = 60;
+
     /**
-     * Fast page response for large POS tables.
-     * - Initial browse: skip expensive COUNT(*), use has-more paging.
-     * - Search/filter: COUNT only filtered rows.
-     *
      * @param  class-string  $modelClass
      * @param  string  $amountColumn  receive: bsubanyak, send: amount
      */
@@ -31,34 +40,43 @@ class PosDatatableResponse
         $searchTerm = trim((string) $request->input('search.value', ''));
         $hasSearch = $searchTerm !== '';
 
+        $recordsTotal = self::cachedTotal($modelClass);
+
         /** @var Builder $query */
-        $query = $modelClass::query()->orderBy($orderColumn, 'desc');
+        $query = $modelClass::query();
 
         if ($hasSearch) {
             PosDatatableSearch::apply($query, $searchTerm, $amountColumn);
-        }
-
-        if ($hasSearch) {
             $recordsFiltered = (clone $query)->count();
-            $recordsTotal = $recordsFiltered;
-            $rows = $query->offset($start)->limit($length)->get();
         } else {
-            // Browse mode: fetch one extra row instead of COUNT(*) on millions of rows.
-            $rows = $query->offset($start)->limit($length + 1)->get();
-            $hasMore = $rows->count() > $length;
-            $rows = $rows->take($length)->values();
-            $recordsFiltered = $start + $rows->count() + ($hasMore ? 1 : 0);
-            $recordsTotal = $recordsFiltered;
+            $recordsFiltered = $recordsTotal;
         }
 
-        $data = self::withRowIndex($rows, $start);
+        $rows = $query
+            ->orderBy($orderColumn, 'desc')
+            ->offset($start)
+            ->limit($length)
+            ->get();
 
         return [
             'draw' => (int) $request->input('draw'),
             'recordsTotal' => $recordsTotal,
             'recordsFiltered' => $recordsFiltered,
-            'data' => $data,
+            'data' => self::withRowIndex($rows, $start),
         ];
+    }
+
+    /**
+     * @param  class-string  $modelClass
+     */
+    protected static function cachedTotal(string $modelClass): int
+    {
+        $table = (new $modelClass)->getTable();
+        $cacheKey = 'crm.datatable.total.'.$table;
+
+        return (int) Cache::remember($cacheKey, self::TOTAL_CACHE_SECONDS, function () use ($modelClass) {
+            return (int) $modelClass::query()->count();
+        });
     }
 
     protected static function withRowIndex(Collection $rows, int $start): Collection

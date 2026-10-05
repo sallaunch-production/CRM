@@ -42,7 +42,7 @@ class Kernel extends HttpKernel
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
-           
+            \App\Http\Middleware\EnsurePasswordIsFresh::class,
         ],
 
         'api' => [
@@ -78,5 +78,6 @@ class Kernel extends HttpKernel
         'compliance' => \App\Http\Middleware\Compliance::class,
         'finance' => \App\Http\Middleware\Finance::class,
         'it' => \App\Http\Middleware\It::class,
+        'password.fresh' => \App\Http\Middleware\EnsurePasswordIsFresh::class,
     ];
 }

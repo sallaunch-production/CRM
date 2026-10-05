@@ -17,7 +17,7 @@
         <div class="crm-page-header">
             <div>
                 <h1 class="crm-page-title">Cek Nopend</h1>
-                <p class="crm-page-sub">Cari kantor pos / agent berdasarkan awalan Nopend atau Id Pos.</p>
+                <p class="crm-page-sub">Search post offices / agents by Nopend or Id Pos prefix.</p>
             </div>
         </div>
 
@@ -40,12 +40,12 @@
                         required
                         maxlength="7"
                         minlength="2"
-                        placeholder="Masukkan 2 sampai 5 karakter awal nopend"
+                        placeholder="Enter 2 to 5 karakter awal nopend"
                     >
                 </div>
                 <div class="crm-search-actions">
                     <button type="submit" class="crm-btn crm-btn-primary">
-                        <i class="fas fa-search"></i> Cari
+                        <i class="fas fa-search"></i> Search
                     </button>
                 </div>
             </form>
@@ -56,17 +56,17 @@
                 <div class="crm-empty-icon" aria-hidden="true">
                     <i class="fas fa-map-marker-alt"></i>
                 </div>
-                <h2 class="crm-empty-title">Mulai dengan Nopend</h2>
+                <h2 class="crm-empty-title">Start with Nopend</h2>
                 <p class="crm-empty-text">
-                    Masukkan 2–5 karakter awal Nopend, lalu tekan <strong>Cari</strong>
-                    untuk menampilkan data kantor pos.
+                    Enter the first 2–5 Nopend characters, then click <strong>Search</strong>
+                    to show post office data.
                 </p>
             </div>
         @elseif($hasPrimary)
             <div class="crm-table-card">
                 <div class="crm-table-toolbar">
                     <div>
-                        <h2 class="crm-table-title">Hasil Nopend</h2>
+                        <h2 class="crm-table-title">Nopend Results</h2>
                         <div class="crm-table-meta">Nopend <strong>{{ $nopend }}</strong> ada</div>
                     </div>
                 </div>
@@ -79,8 +79,8 @@
                                 <th>Agent ID</th>
                                 <th>Nama Kantor Pos</th>
                                 <th>Legacy</th>
-                                <th>Alamat</th>
-                                <th>Tanggal</th>
+                                <th>Address</th>
+                                <th>Date</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -103,7 +103,7 @@
             <div class="crm-table-card">
                 <div class="crm-table-toolbar">
                     <div>
-                        <h2 class="crm-table-title">Hasil Nopend (KPRK)</h2>
+                        <h2 class="crm-table-title">Nopend Results (KPRK)</h2>
                         <div class="crm-table-meta">Pencarian terkait KPRK</div>
                     </div>
                 </div>
@@ -116,8 +116,8 @@
                                 <th>Agent ID</th>
                                 <th>Nama Kantor Pos</th>
                                 <th>Legacy</th>
-                                <th>Alamat</th>
-                                <th>Tanggal</th>
+                                <th>Address</th>
+                                <th>Date</th>
                             </tr>
                         </thead>
                         <tbody>

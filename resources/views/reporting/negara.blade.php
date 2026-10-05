@@ -8,20 +8,20 @@
 @section('content')
 @php
     $isCompliance = ($levelnya ?? '') === 'compliance';
-    $isOperasional = ($levelnya ?? '') === 'operasional';
+    $isOperations = ($levelnya ?? '') === 'operasional';
     $isReceive = !empty($receive);
     $isSend = !empty($send);
     $pageTitle = $isReceive ? 'List Receive' : ($isSend ? 'List Send' : 'List Negara');
 
-    $receiveSearchRoute = $isOperasional
+    $receiveSearchRoute = $isOperations
         ? route('cari_negara_operasional')
         : route('cari_negara');
     $sendSearchRoute = $isCompliance
         ? route('cari_negara_send')
         : route('cari_negara_send_operasional');
 
-    $sendTabUrl = $isOperasional ? url('negara_send_operasional') : url('negara_send');
-    $receiveTabUrl = $isOperasional ? url('negara_receive_operasional') : url('negara_receive');
+    $sendTabUrl = $isOperations ? url('negara_send_operasional') : url('negara_send');
+    $receiveTabUrl = $isOperations ? url('negara_receive_operasional') : url('negara_receive');
 @endphp
 
 <div class="container-fluid">
@@ -30,14 +30,14 @@
             <div>
                 <h1 class="crm-page-title">{{ $pageTitle }}</h1>
                 <p class="crm-page-sub">
-                    Ringkasan negara Send / Receive dengan drill-down ke detail transaksi.
+                    Send / Receive country summary with drill-down into transaction details.
                 </p>
             </div>
         </div>
 
         @include('partials.crm.alerts')
 
-        <nav class="crm-tabs" aria-label="Negara Send Receive tabs">
+        <nav class="crm-tabs" aria-label="Country Send Receive tabs">
             <a href="{{ $sendTabUrl }}" class="crm-tab {{ $isSend ? 'is-active' : '' }}">Send</a>
             <a href="{{ $receiveTabUrl }}" class="crm-tab {{ $isReceive ? 'is-active' : '' }}">Receive</a>
         </nav>
@@ -47,12 +47,12 @@
                 <form class="crm-search-form" action="{{ $receiveSearchRoute }}" method="POST">
                     @csrf
                     <div class="crm-search-field">
-                        <label for="daterange">Tanggal Dari</label>
+                        <label for="daterange">Date Dari</label>
                         <input type="text" class="form-control" id="daterange" name="reservation">
                     </div>
                     <div class="crm-search-actions">
                         <button type="submit" class="crm-btn crm-btn-primary">
-                            <i class="fas fa-search"></i> Cari
+                            <i class="fas fa-search"></i> Search
                         </button>
                     </div>
                 </form>
@@ -62,17 +62,17 @@
                 <div class="crm-table-card">
                     <div class="crm-table-toolbar">
                         <div>
-                            <h2 class="crm-table-title">Nama Negara</h2>
-                            <div class="crm-table-meta">Receive — daftar negara pengirim</div>
+                            <h2 class="crm-table-title">Country Name</h2>
+                            <div class="crm-table-meta">Receive — country list pengirim</div>
                         </div>
-                        <span class="crm-badge">{{ count($data) }} data</span>
+                        <span class="crm-badge">{{ count($data) }} records</span>
                     </div>
                     <div class="crm-table-wrap">
                         <table id="example" class="table crm-table table-striped table-bordered" style="width:100%;">
                             <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>Nama Negara</th>
+                                    <th>Country Name</th>
                                     <th>BSU</th>
                                     <th>Perbuatan</th>
                                 </tr>
@@ -84,7 +84,7 @@
                                         <td>
                                             @if($isCompliance)
                                                 <form action="{{ route('proses_detail_negara') }}" method="POST" class="d-inline m-0">
-                                            @elseif($isOperasional)
+                                            @elseif($isOperations)
                                                 <form action="{{ route('proses_detail_negara_operasional') }}" method="POST" class="d-inline m-0">
                                             @endif
                                                 @csrf
@@ -106,29 +106,29 @@
                 <div class="crm-table-card">
                     <div class="crm-table-toolbar">
                         <div>
-                            <h2 class="crm-table-title">Nama Negara : {{ $negara_pengirim }}</h2>
+                            <h2 class="crm-table-title">Country Name : {{ $negara_pengirim }}</h2>
                             <div class="crm-table-meta">Receive — detail per negara</div>
                         </div>
-                        <span class="crm-badge">{{ count($data) }} data</span>
+                        <span class="crm-badge">{{ count($data) }} records</span>
                     </div>
                     <div class="crm-table-wrap">
                         <table id="example" class="table crm-table table-striped table-bordered" style="width:100%;">
                             <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>Nama Negara</th>
-                                    <th>No Referensi</th>
+                                    <th>Country Name</th>
+                                    <th>Reference No</th>
                                     <th>BSU</th>
-                                    <th>Tanggal</th>
+                                    <th>Date</th>
                                 </tr>
                             </thead>
                             <tfoot>
                                 <tr>
                                     <th>No</th>
-                                    <th>Nama Negara</th>
-                                    <th>No Referensi</th>
+                                    <th>Country Name</th>
+                                    <th>Reference No</th>
                                     <th>BSU</th>
-                                    <th>Tanggal</th>
+                                    <th>Date</th>
                                 </tr>
                             </tfoot>
                             <tbody>
@@ -149,15 +149,15 @@
                 <div class="crm-table-card">
                     <div class="crm-table-toolbar">
                         <div>
-                            <h2 class="crm-table-title">Hasil Pencarian Negara</h2>
+                            <h2 class="crm-table-title">Country Search Results</h2>
                             <div class="crm-table-meta">
-                                Tanggal Dari : {{ $tanggal_dari }} dan Sampai {{ $tanggal_sampai }}
+                                Date Dari : {{ $tanggal_dari }} dan Sampai {{ $tanggal_sampai }}
                                 · Total BSU : {{ $totalbsu }}
                                 · Total perbuatan : {{ $jumlah }}
                             </div>
                         </div>
                         <div class="crm-actions">
-                            <span class="crm-badge">{{ count($data) }} data</span>
+                            <span class="crm-badge">{{ count($data) }} records</span>
                             <input type="button" value="CETAK" class="crm-btn crm-btn-sm crm-btn-primary">
                         </div>
                     </div>
@@ -166,7 +166,7 @@
                             <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>Nama Negara</th>
+                                    <th>Country Name</th>
                                     <th>BSU</th>
                                     <th>Perbuatan</th>
                                 </tr>
@@ -178,7 +178,7 @@
                                         <td>
                                             @if($isCompliance)
                                                 <form action="{{ route('pencarian_detail_negara') }}" method="POST" class="d-inline m-0">
-                                            @elseif($isOperasional)
+                                            @elseif($isOperations)
                                                 <form action="{{ route('pencarian_detail_negara_operasional') }}" method="POST" class="d-inline m-0">
                                             @endif
                                                 @csrf
@@ -202,14 +202,14 @@
                 <div class="crm-table-card">
                     <div class="crm-table-toolbar">
                         <div>
-                            <h2 class="crm-table-title">Nama Kota : {{ $datakotas->nama ?? '-' }}</h2>
+                            <h2 class="crm-table-title">City Name : {{ $datakotas->nama ?? '-' }}</h2>
                             <div class="crm-table-meta">
-                                Tanggal Dari : {{ $tanggal_dari }} dan Sampai {{ $tanggal_sampai }}
+                                Date Dari : {{ $tanggal_dari }} dan Sampai {{ $tanggal_sampai }}
                                 · Total BSU : {{ $totalbsu }}
                                 · Total perbuatan : {{ $jumlah }}
                             </div>
                         </div>
-                        <span class="crm-badge">{{ count($data) }} data</span>
+                        <span class="crm-badge">{{ count($data) }} records</span>
                     </div>
                     <div class="crm-table-wrap">
                         <table id="example" class="table crm-table table-striped table-bordered" style="width:100%;">
@@ -217,12 +217,12 @@
                                 <tr>
                                     <th>No</th>
                                     <th>Nopend</th>
-                                    <th>Nama Penerima</th>
-                                    <th>Nama Pengirim</th>
-                                    <th>Negara Pengirim</th>
-                                    <th>No Referensi</th>
+                                    <th>Recipient Name</th>
+                                    <th>Sender Name</th>
+                                    <th>Sender Country</th>
+                                    <th>Reference No</th>
                                     <th>BSU</th>
-                                    <th>Tanggal</th>
+                                    <th>Date</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -252,12 +252,12 @@
                 <form class="crm-search-form" action="{{ $sendSearchRoute }}" method="POST">
                     @csrf
                     <div class="crm-search-field">
-                        <label for="daterange">Tanggal Dari</label>
+                        <label for="daterange">Date Dari</label>
                         <input type="text" class="form-control" id="daterange" name="reservation">
                     </div>
                     <div class="crm-search-actions">
                         <button type="submit" class="crm-btn crm-btn-primary">
-                            <i class="fas fa-search"></i> Cari
+                            <i class="fas fa-search"></i> Search
                         </button>
                     </div>
                 </form>
@@ -267,17 +267,17 @@
                 <div class="crm-table-card">
                     <div class="crm-table-toolbar">
                         <div>
-                            <h2 class="crm-table-title">Nama Negara</h2>
-                            <div class="crm-table-meta">Send — daftar negara penerima</div>
+                            <h2 class="crm-table-title">Country Name</h2>
+                            <div class="crm-table-meta">Send — country list penerima</div>
                         </div>
-                        <span class="crm-badge">{{ count($data) }} data</span>
+                        <span class="crm-badge">{{ count($data) }} records</span>
                     </div>
                     <div class="crm-table-wrap">
                         <table id="example" class="table crm-table table-striped table-bordered" style="width:100%;">
                             <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>Nama Negara Penerima</th>
+                                    <th>Recipient Country Name</th>
                                     <th>BSU</th>
                                     <th>Perbuatan</th>
                                 </tr>
@@ -289,7 +289,7 @@
                                         <td>
                                             @if($isCompliance)
                                                 <form action="{{ route('proses_detail_negara_send') }}" method="POST" class="d-inline m-0">
-                                            @elseif($isOperasional)
+                                            @elseif($isOperations)
                                                 <form action="{{ route('proses_detail_negara_operasional_send') }}" method="POST" class="d-inline m-0">
                                             @endif
                                                 @csrf
@@ -311,29 +311,29 @@
                 <div class="crm-table-card">
                     <div class="crm-table-toolbar">
                         <div>
-                            <h2 class="crm-table-title">Nama Negara : {{ $negara_penerima }}</h2>
+                            <h2 class="crm-table-title">Country Name : {{ $negara_penerima }}</h2>
                             <div class="crm-table-meta">Send — detail per negara</div>
                         </div>
-                        <span class="crm-badge">{{ count($data) }} data</span>
+                        <span class="crm-badge">{{ count($data) }} records</span>
                     </div>
                     <div class="crm-table-wrap">
                         <table id="example" class="table crm-table table-striped table-bordered" style="width:100%;">
                             <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>Nama Negara</th>
-                                    <th>No Referensi</th>
+                                    <th>Country Name</th>
+                                    <th>Reference No</th>
                                     <th>BSU</th>
-                                    <th>Tanggal</th>
+                                    <th>Date</th>
                                 </tr>
                             </thead>
                             <tfoot>
                                 <tr>
                                     <th>No</th>
-                                    <th>Nama Negara</th>
-                                    <th>No Referensi</th>
+                                    <th>Country Name</th>
+                                    <th>Reference No</th>
                                     <th>BSU</th>
-                                    <th>Tanggal</th>
+                                    <th>Date</th>
                                 </tr>
                             </tfoot>
                             <tbody>
@@ -354,15 +354,15 @@
                 <div class="crm-table-card">
                     <div class="crm-table-toolbar">
                         <div>
-                            <h2 class="crm-table-title">Hasil Pencarian Negara</h2>
+                            <h2 class="crm-table-title">Country Search Results</h2>
                             <div class="crm-table-meta">
-                                Tanggal Dari : {{ $tanggal_dari }} dan Sampai {{ $tanggal_sampai }}
+                                Date Dari : {{ $tanggal_dari }} dan Sampai {{ $tanggal_sampai }}
                                 · Total BSU : {{ $totalbsu }}
                                 · Total perbuatan : {{ $jumlah }}
                             </div>
                         </div>
                         <div class="crm-actions">
-                            <span class="crm-badge">{{ count($data) }} data</span>
+                            <span class="crm-badge">{{ count($data) }} records</span>
                             <input type="button" value="CETAK" class="crm-btn crm-btn-sm crm-btn-primary">
                         </div>
                     </div>
@@ -371,7 +371,7 @@
                             <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>Nama Negara</th>
+                                    <th>Country Name</th>
                                     <th>BSU</th>
                                     <th>Perbuatan</th>
                                 </tr>
@@ -383,7 +383,7 @@
                                         <td>
                                             @if($isCompliance)
                                                 <form action="{{ route('pencarian_detail_negara_send') }}" method="POST" class="d-inline m-0">
-                                            @elseif($isOperasional)
+                                            @elseif($isOperations)
                                                 <form action="{{ route('pencarian_detail_negara_send_operasional') }}" method="POST" class="d-inline m-0">
                                             @endif
                                                 @csrf
@@ -408,14 +408,14 @@
                 <div class="crm-table-card">
                     <div class="crm-table-toolbar">
                         <div>
-                            <h2 class="crm-table-title">Nama Kota : {{ $datakotas->nama ?? '-' }}</h2>
+                            <h2 class="crm-table-title">City Name : {{ $datakotas->nama ?? '-' }}</h2>
                             <div class="crm-table-meta">
-                                Tanggal Dari : {{ $tanggal_dari }} dan Sampai {{ $tanggal_sampai }}
+                                Date Dari : {{ $tanggal_dari }} dan Sampai {{ $tanggal_sampai }}
                                 · Total BSU : {{ $totalbsu }}
                                 · Total perbuatan : {{ $jumlah }}
                             </div>
                         </div>
-                        <span class="crm-badge">{{ count($data) }} data</span>
+                        <span class="crm-badge">{{ count($data) }} records</span>
                     </div>
                     <div class="crm-table-wrap">
                         <table id="example" class="table crm-table table-striped table-bordered" style="width:100%;">
@@ -423,12 +423,12 @@
                                 <tr>
                                     <th>No</th>
                                     <th>Nopend</th>
-                                    <th>Nama Penerima</th>
-                                    <th>Nama Pengirim</th>
-                                    <th>Negara Pengirim</th>
-                                    <th>No Referensi</th>
+                                    <th>Recipient Name</th>
+                                    <th>Sender Name</th>
+                                    <th>Sender Country</th>
+                                    <th>Reference No</th>
                                     <th>BSU</th>
-                                    <th>Tanggal</th>
+                                    <th>Date</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -456,14 +456,14 @@
                 <div class="crm-table-card">
                     <div class="crm-table-toolbar">
                         <div>
-                            <h2 class="crm-table-title">Nama Kota : {{ $datakotas->nama ?? '-' }}</h2>
+                            <h2 class="crm-table-title">City Name : {{ $datakotas->nama ?? '-' }}</h2>
                             <div class="crm-table-meta">
-                                Tanggal Dari : {{ $tanggal_dari }} dan Sampai {{ $tanggal_sampai }}
+                                Date Dari : {{ $tanggal_dari }} dan Sampai {{ $tanggal_sampai }}
                                 · Total BSU : {{ $totalbsu }}
                                 · Total perbuatansss : {{ $jumlah }}
                             </div>
                         </div>
-                        <span class="crm-badge">{{ count($data) }} data</span>
+                        <span class="crm-badge">{{ count($data) }} records</span>
                     </div>
                     <div class="crm-table-wrap">
                         <table id="example" class="table crm-table table-striped table-bordered" style="width:100%;">
@@ -471,12 +471,12 @@
                                 <tr>
                                     <th>No</th>
                                     <th>Nopend</th>
-                                    <th>Nama Penerima</th>
-                                    <th>Nama Pengirim</th>
-                                    <th>Negara Penerima</th>
-                                    <th>No Referensi</th>
+                                    <th>Recipient Name</th>
+                                    <th>Sender Name</th>
+                                    <th>Recipient Country</th>
+                                    <th>Reference No</th>
                                     <th>BSU</th>
-                                    <th>Tanggal</th>
+                                    <th>Date</th>
                                 </tr>
                             </thead>
                             <tbody>

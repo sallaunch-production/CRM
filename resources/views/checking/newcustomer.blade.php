@@ -19,7 +19,7 @@
         <div class="crm-page-header">
             <div>
                 <h1 class="crm-page-title">New Customer</h1>
-                <p class="crm-page-sub">Pencarian orang yang baru pertama kali transaksi (Receive).</p>
+                <p class="crm-page-sub">Search for first-time transaction customers (Receive).</p>
             </div>
             @include('partials.crm.newcustomer-tabs', ['activeTab' => 'receive'])
         </div>
@@ -30,16 +30,13 @@
             <form id="filter-form" class="crm-search-form" onsubmit="return false;">
                 @csrf
                 @include('partials.crm.date-range-filter', [
-                    'groupLabel' => 'Tanggal Transaksi Receive',
+                    'groupLabel' => 'Receive Transaction Date',
                     'startDate' => $startDate,
                     'endDate' => $endDate,
                 ])
                 <div class="crm-search-actions">
                     <button type="button" class="crm-btn crm-btn-primary" id="btn-cari">
-                        <i class="fas fa-search"></i> Cari
-                    </button>
-                    <button type="submit" form="cetakForm" class="crm-btn crm-btn-muted">
-                        Cetak Gabungan
+                        <i class="fas fa-search"></i> Search
                     </button>
                 </div>
             </form>
@@ -53,8 +50,15 @@
         <div class="crm-table-card">
             <div class="crm-table-toolbar">
                 <div>
-                    <h2 class="crm-table-title">Hasil New Customer — Receive</h2>
-                    <div class="crm-table-meta">Data dimuat sesuai periode yang dipilih.</div>
+                    <h2 class="crm-table-title">New Customer Results — Receive</h2>
+                    <div class="crm-table-meta" id="nc-result-meta">Select a period, then click Search.</div>
+                </div>
+                <div class="crm-table-toolbar-actions">
+                    <span class="crm-badge d-none" id="nc-result-badge">0 records</span>
+                    <button type="submit" form="cetakForm" class="crm-btn crm-btn-sm crm-btn-primary" id="btn-cetak-gabungan" disabled title="Print Combined">
+                        <i class="fas fa-print" aria-hidden="true"></i>
+                        Print Combined
+                    </button>
                 </div>
             </div>
             <div class="crm-table-wrap">
@@ -64,13 +68,13 @@
                             <th>No</th>
                             <th>IDPJK</th>
                             <th>Kode Nasabah</th>
-                            <th>Nama Penerima</th>
-                            <th>Kota Kelahiran</th>
-                            <th>Tanggal Lahir</th>
-                            <th>Alamat Penerima</th>
-                            <th>Nomor Identitas</th>
-                            <th>Identitas Lain</th>
-                            <th>No Referensi</th>
+                            <th>Recipient Name</th>
+                            <th>Place of Birth</th>
+                            <th>Date of Birth</th>
+                            <th>Recipient Address</th>
+                            <th>ID Number</th>
+                            <th>Other Identity</th>
+                            <th>Reference No</th>
                             <th>NPWP</th>
                             <th>Local ID</th>
                         </tr>
@@ -84,16 +88,20 @@
 @stop
 
 @section('js')
-<script src="https://cdn.datatables.net/buttons/2.2.3/js/dataTables.buttons.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.html5.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.print.min.js"></script>
 @include('partials.crm.datatable-boot')
 <script>
 $(document).ready(function () {
     var table;
+
+    function formatMeta(startDate, endDate) {
+        function dmy(iso) {
+            if (!iso) return '-';
+            var p = String(iso).split('-');
+            if (p.length !== 3) return iso;
+            return p[2] + '-' + p[1] + '-' + p[0];
+        }
+        return dmy(startDate) + ' to ' + dmy(endDate);
+    }
 
     function initDataTable() {
         if ($.fn.DataTable.isDataTable('#example')) {
@@ -103,6 +111,9 @@ $(document).ready(function () {
         table = $('#example').DataTable(CrmDataTable.defaults({
             processing: true,
             serverSide: true,
+            deferRender: true,
+            pageLength: 10,
+            lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
             ajax: {
                 url: @json($ajaxRoute),
                 type: 'POST',
@@ -144,16 +155,19 @@ $(document).ready(function () {
                 { data: 'local_id', name: 'local_id' }
             ],
             order: [[3, 'asc']],
-            dom: CrmDataTable.domWithButtons,
-            buttons: [
-                { extend: 'copy', text: 'COPY' },
-                { extend: 'csv', text: 'CSV' },
-                { extend: 'excel', text: 'Excel' },
-                { extend: 'pdf', text: 'PDF' },
-                { extend: 'print', text: 'Print' }
-            ],
-            lengthMenu: [[10, 100, 500, 1000], [10, 100, 500, 1000]],
-            pageLength: 10
+            initComplete: function (settings) {
+                var api = new $.fn.dataTable.Api(settings);
+                var info = api.page.info();
+                $('#nc-result-meta').text(formatMeta($('#start_date').val(), $('#end_date').val()));
+                $('#nc-result-badge').text(info.recordsTotal + ' records').removeClass('d-none');
+                $('#btn-cetak-gabungan').prop('disabled', info.recordsTotal < 1);
+            },
+            drawCallback: function (settings) {
+                var api = new $.fn.dataTable.Api(settings);
+                var info = api.page.info();
+                $('#nc-result-badge').text(info.recordsTotal + ' records').removeClass('d-none');
+                $('#btn-cetak-gabungan').prop('disabled', info.recordsTotal < 1);
+            }
         }));
     }
 
@@ -161,16 +175,16 @@ $(document).ready(function () {
         var startDate = $('#start_date').val();
         var endDate = $('#end_date').val();
         if (!startDate || !endDate) {
-            alert('Start date dan end date wajib diisi.');
+            alert(@json(__('crm.err_dates_required')));
             return;
         }
         if (endDate < startDate) {
-            alert('End date tidak boleh lebih kecil dari start date.');
+            alert(@json(__('crm.err_end_before_start')));
             return;
         }
 
         if (table) {
-            table.ajax.reload(null, false);
+            table.ajax.reload(null, true);
         } else {
             initDataTable();
         }

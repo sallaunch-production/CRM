@@ -27,7 +27,7 @@
             <div>
                 <h1 class="crm-page-title">Flagging Transaction</h1>
                 <p class="crm-page-sub">
-                    High Nominal — grouping NIK dengan total BSU di atas ambang (Pos / Branch / Direct · send &amp; receive).
+                    High Nominal — NIK grouping with total BSU above the threshold (Pos / Branch / Direct · send &amp; receive).
                 </p>
             </div>
         </div>
@@ -71,7 +71,7 @@
                         >
                     </div>
                     <div class="crm-search-field crm-search-field-nominal">
-                        <label for="flag_nominal_display">Nominal Ambang <span class="text-danger">*</span></label>
+                        <label for="flag_nominal_display">Threshold Amount <span class="text-danger">*</span></label>
                         <div class="crm-rupiah-input">
                             <span class="crm-rupiah-prefix" aria-hidden="true">Rp</span>
                             <input
@@ -89,7 +89,7 @@
                     </div>
                     <div class="crm-search-actions">
                         <button type="submit" class="crm-btn crm-btn-primary">
-                            <i class="fas fa-search"></i> Cari
+                            <i class="fas fa-search"></i> Search
                         </button>
                     </div>
                 </form>
@@ -101,11 +101,11 @@
                 <div class="crm-empty-icon" aria-hidden="true">
                     <i class="fas fa-id-card"></i>
                 </div>
-                <h2 class="crm-empty-title">Mulai dengan periode &amp; nominal</h2>
+                <h2 class="crm-empty-title">Start with a period &amp; threshold</h2>
                 <p class="crm-empty-text">
-                    Pilih <strong>Start Date</strong>, <strong>End Date</strong>, dan isi
-                    <strong>Nominal Ambang</strong> (wajib), lalu tekan <strong>Cari</strong>
-                    untuk menampilkan NIK dengan total BSU di atas ambang.
+                    Select a <strong>Start Date</strong>, <strong>End Date</strong>, and enter a
+                    <strong>Threshold Amount</strong> (required), then click <strong>Search</strong>
+                    to show NIKs with total BSU above the threshold.
                 </p>
             </div>
         @endif
@@ -114,9 +114,9 @@
             <div class="crm-table-card">
                 <div class="crm-table-toolbar">
                     <div>
-                        <h2 class="crm-table-title">Hasil High Nominal</h2>
+                        <h2 class="crm-table-title">High Nominal Results</h2>
                         <div class="crm-table-meta">
-                            Periode {{ $tanggal_dari }} s/d {{ $tanggal_sampai }}
+                            Period {{ $tanggal_dari }} to {{ $tanggal_sampai }}
                             · Sumber: Pos / Branch / Direct (send &amp; receive)
                             · Ambang total BSU &gt; Rp {{ number_format((float) $nominalValue, 0, ',', '.') }}
                         </div>
@@ -129,8 +129,8 @@
                             <tr>
                                 <th>No</th>
                                 <th>NIK</th>
-                                <th>Nama Penerima</th>
-                                <th>Telepon</th>
+                                <th>Recipient Name</th>
+                                <th>Phone</th>
                                 <th>Jumlah Transaksi</th>
                                 <th>Total BSU</th>
                             </tr>
@@ -151,7 +151,7 @@
                                             <input type="hidden" name="sampai" value="{{ $tanggal_sampai }}">
                                             <input type="hidden" name="nominal" value="{{ $nominalValue }}">
                                             <input type="hidden" name="nomor_identitas" value="{{ $row->nomor_identitas }}">
-                                            <button type="submit" class="flag-id-link" title="Lihat detail transaksi">
+                                            <button type="submit" class="flag-id-link" title="View transaction details">
                                                 {{ $row->nomor_identitas }}
                                             </button>
                                         </form>
@@ -181,13 +181,13 @@
                             @if(!empty($nama_penerima))
                                 · {{ $nama_penerima }}
                             @endif
-                            · {{ $dari }} s/d {{ $sampai }}
+                            · {{ $dari }} to {{ $sampai }}
                         </div>
                     </div>
                     <div class="crm-actions">
-                        <span class="crm-badge">{{ count($data) }} data</span>
+                        <span class="crm-badge">{{ count($data) }} records</span>
                         <a href="{{ $backRoute }}" class="crm-btn crm-btn-sm crm-btn-primary">
-                            <i class="fas fa-arrow-left"></i> Kembali
+                            <i class="fas fa-arrow-left"></i> Back
                         </a>
                     </div>
                 </div>
@@ -200,19 +200,19 @@
                                 <th>Kanal</th>
                                 <th>Arah</th>
                                 <th>BSU</th>
-                                <th>Nama Penerima</th>
-                                <th>Nama Pengirim</th>
-                                <th>Negara Pengirim</th>
-                                <th>No Referensi</th>
-                                <th>Identitas</th>
+                                <th>Recipient Name</th>
+                                <th>Sender Name</th>
+                                <th>Sender Country</th>
+                                <th>Reference No</th>
+                                <th>Identity</th>
                                 <th>NIK</th>
-                                <th>Tanggal Lahir</th>
-                                <th>Alamat Penerima</th>
-                                <th>Telepon Penerima</th>
-                                <th>Kota Penerima</th>
-                                <th>Pekerjaan</th>
+                                <th>Date of Birth</th>
+                                <th>Recipient Address</th>
+                                <th>Recipient Phone</th>
+                                <th>Recipient City</th>
+                                <th>Occupation</th>
                                 <th>Id Pos</th>
-                                <th>Tanggal</th>
+                                <th>Date</th>
                             </tr>
                         </thead>
                         <tbody>

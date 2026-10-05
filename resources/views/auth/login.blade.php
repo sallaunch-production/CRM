@@ -160,21 +160,21 @@
                 </div>
             @enderror
 
-            <h1 class="login-title">Sign in</h1>
-            <p class="login-subtitle">Masuk untuk memulai sesi CRM Arsema</p>
+            <h1 class="login-title">{{ __('crm.login_title') }}</h1>
+            <p class="login-subtitle">{{ __('crm.login_subtitle') }}</p>
 
             <form method="POST" action="{{ route('proses.login') }}">
                 @csrf
 
                 <div class="login-field">
-                    <label for="email">Email</label>
+                    <label for="email">{{ __('crm.login_email') }}</label>
                     <input
                         id="email"
                         type="email"
                         class="form-control @error('email') is-invalid @enderror"
                         name="email"
                         value="{{ old('email') }}"
-                        placeholder="nama@arsema.co.id"
+                        placeholder="{{ __('crm.login_email_placeholder') }}"
                         required
                         autocomplete="email"
                         autofocus
@@ -187,13 +187,13 @@
                 </div>
 
                 <div class="login-field">
-                    <label for="password">Password</label>
+                    <label for="password">{{ __('crm.login_password') }}</label>
                     <input
                         id="password"
                         type="password"
                         class="form-control @error('password') is-invalid @enderror"
                         name="password"
-                        placeholder="Password"
+                        placeholder="{{ __('crm.login_password') }}"
                         required
                         autocomplete="current-password"
                     >
@@ -206,7 +206,7 @@
 
                 @unless(app()->isLocal())
                 <div class="login-captcha">
-                    <label>Verifikasi keamanan</label>
+                    <label>{{ __('crm.login_captcha_label') }}</label>
                     <div class="login-captcha-box">
                         {!! app('captcha')->display() !!}
                     </div>
@@ -219,7 +219,7 @@
                 @endunless
 
                 <div class="login-actions">
-                    <button type="submit" class="btn btn-signin">Sign In</button>
+                    <button type="submit" class="btn btn-signin">{{ __('crm.login_submit') }}</button>
                 </div>
             </form>
         </div>

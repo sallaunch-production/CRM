@@ -755,7 +755,7 @@ class ImportExportController extends Controller
     public function excel_NewCustomerMonthly(Request $request)
     {
         if (!$request->filled('bulan')) {
-            return back()->with('error', 'Silakan pilih bulan terlebih dahulu.');
+            return back()->with('error', __('crm.err_select_month'));
         }
 
         $bulanTerpilih = Carbon::createFromFormat('Y-m', $request->input('bulan'));
@@ -772,7 +772,7 @@ class ImportExportController extends Controller
     public function pdf_NewCustomerMonthly(Request $request)
     {
         if (!$request->filled('bulan')) {
-            return back()->with('error', 'Silakan pilih bulan terlebih dahulu.');
+            return back()->with('error', __('crm.err_select_month'));
         }
 
         $bulanTerpilih = Carbon::createFromFormat('Y-m', $request->input('bulan'));
@@ -836,7 +836,7 @@ class ImportExportController extends Controller
 
             if (count($parts) !== 2) {
                 throw ValidationException::withMessages([
-                    'start_date' => 'Periode tanggal tidak valid.',
+                    'start_date' => __('crm.err_invalid_period'),
                 ]);
             }
 
@@ -846,7 +846,7 @@ class ImportExportController extends Controller
                 ->format('Y-m-d');
         } else {
             throw ValidationException::withMessages([
-                'start_date' => 'Start date dan end date wajib diisi.',
+                'start_date' => __('crm.err_dates_required'),
             ]);
         }
 

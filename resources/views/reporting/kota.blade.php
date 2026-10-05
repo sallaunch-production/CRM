@@ -8,14 +8,14 @@
 @section('content')
 @php
     $isCompliance = ($levelnya ?? '') === 'compliance';
-    $isOperasional = ($levelnya ?? '') === 'operasional';
+    $isOperations = ($levelnya ?? '') === 'operasional';
     $modeKosong = ($cari ?? '') === 'kosong';
     $modeNopends = !empty($nopends);
     $modeTotalBsu = !empty($totalbsu) && empty($tanggal_valid);
-    $modeTanggalValid = !empty($tanggal_valid);
+    $modeDateValid = !empty($tanggal_valid);
     $startDate = old('start_date', $tanggal_dari ?? '');
     $endDate = old('end_date', $tanggal_sampai ?? '');
-    $detailAjaxUrl = $isOperasional
+    $detailAjaxUrl = $isOperations
         ? route('detail_kota_operasional')
         : route('detail_kota');
     $tanggalAjaxUrl = route('tanggal_valid');
@@ -27,9 +27,9 @@
     <div class="crm-page">
         <div class="crm-page-header">
             <div>
-                <h1 class="crm-page-title">Filter Kota Berisiko Tinggi</h1>
+                <h1 class="crm-page-title">High-Risk City Filter</h1>
                 <p class="crm-page-sub">
-                    Cari kota berisiko tinggi berdasarkan periode, lalu drill-down ke detail transaksi.
+                    Search high-risk cities by period, then drill down into transaction details.
                 </p>
             </div>
         </div>
@@ -41,13 +41,13 @@
                 @csrf
                 <input type="hidden" name="cari" value="ya">
                 @include('partials.crm.date-range-filter', [
-                    'groupLabel' => 'Tanggal Pencarian',
+                    'groupLabel' => 'Search Date',
                     'startDate' => $startDate,
                     'endDate' => $endDate,
                 ])
                 <div class="crm-search-actions">
                     <button type="submit" class="crm-btn crm-btn-primary">
-                        <i class="fas fa-search"></i> Cari
+                        <i class="fas fa-search"></i> Search
                     </button>
                 </div>
             </form>
@@ -57,17 +57,17 @@
             <div class="crm-table-card">
                 <div class="crm-table-toolbar">
                     <div>
-                        <h2 class="crm-table-title">Nama Kota</h2>
-                        <div class="crm-table-meta">Daftar kota berisiko tinggi</div>
+                        <h2 class="crm-table-title">City Name</h2>
+                        <div class="crm-table-meta">High-risk city list</div>
                     </div>
-                    <span class="crm-badge">{{ count($data) }} data</span>
+                    <span class="crm-badge">{{ count($data) }} records</span>
                 </div>
                 <div class="crm-table-wrap">
                     <table id="example" class="table crm-table table-striped table-bordered" style="width:100%;">
                         <thead>
                             <tr>
                                 <th>No</th>
-                                <th>Nama Kota</th>
+                                <th>City Name</th>
                                 <th>BSU</th>
                                 <th>Perbuatan</th>
                             </tr>
@@ -83,7 +83,7 @@
                                     <td>
                                         @if($isCompliance)
                                             <form action="{{ route('detail_kota') }}" method="POST" class="d-inline m-0">
-                                        @elseif($isOperasional)
+                                        @elseif($isOperations)
                                             <form action="{{ route('detail_kota_operasional') }}" method="POST" class="d-inline m-0">
                                         @endif
                                             @csrf
@@ -105,10 +105,10 @@
             <div class="crm-table-card">
                 <div class="crm-table-toolbar">
                     <div>
-                        <h2 class="crm-table-title">Nama Kota : {{ $datakotas->nama ?? '-' }}</h2>
-                        <div class="crm-table-meta">Detail transaksi per kota · dimuat per halaman (server-side)</div>
+                        <h2 class="crm-table-title">City Name : {{ $datakotas->nama ?? '-' }}</h2>
+                        <div class="crm-table-meta">Detail transaksi per kota · loaded per page (server-side)</div>
                     </div>
-                    <span class="crm-badge">{{ number_format($detailTotal) }} data</span>
+                    <span class="crm-badge">{{ number_format($detailTotal) }} records</span>
                 </div>
                 <div class="crm-table-wrap">
                     <table id="example-detail" class="table crm-table table-striped table-bordered" style="width:100%;">
@@ -116,11 +116,11 @@
                             <tr>
                                 <th>No</th>
                                 <th>Nopend</th>
-                                <th>Nama Penerima</th>
-                                <th>Nama Pengirim</th>
-                                <th>Negara Pengirim</th>
-                                <th>No Referensi</th>
-                                <th>Tanggal</th>
+                                <th>Recipient Name</th>
+                                <th>Sender Name</th>
+                                <th>Sender Country</th>
+                                <th>Reference No</th>
+                                <th>Date</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -131,15 +131,15 @@
             <div class="crm-table-card">
                 <div class="crm-table-toolbar">
                     <div>
-                        <h2 class="crm-table-title">Nama Kota</h2>
+                        <h2 class="crm-table-title">City Name</h2>
                         <div class="crm-table-meta">
-                            Tanggal Dari : {{ $tanggal_dari }} dan Sampai {{ $tanggal_sampai }}
+                            Date Dari : {{ $tanggal_dari }} dan Sampai {{ $tanggal_sampai }}
                             · Total BSU : {{ $totalbsu }}
                             · Total perbuatan : {{ $jumlah }}
                         </div>
                     </div>
                     <div class="crm-actions">
-                        <span class="crm-badge">{{ count($data) }} data</span>
+                        <span class="crm-badge">{{ count($data) }} records</span>
                         <input type="button" value="CETAK" class="crm-btn crm-btn-sm crm-btn-primary">
                     </div>
                 </div>
@@ -148,7 +148,7 @@
                         <thead>
                             <tr>
                                 <th>No</th>
-                                <th>Nama Kota</th>
+                                <th>City Name</th>
                                 <th>Perbuatan</th>
                                 <th>BSU</th>
                             </tr>
@@ -180,20 +180,20 @@
                     </table>
                 </div>
             </div>
-        @elseif($modeTanggalValid)
+        @elseif($modeDateValid)
             <div class="crm-table-card">
                 <div class="crm-table-toolbar">
                     <div>
-                        <h2 class="crm-table-title">Nama Kota</h2>
+                        <h2 class="crm-table-title">City Name</h2>
                         <div class="crm-table-meta">
-                            Tanggal Dari : {{ $tanggal_dari }} dan Sampai {{ $tanggal_sampai }}
+                            Date Dari : {{ $tanggal_dari }} dan Sampai {{ $tanggal_sampai }}
                             · Total BSU : {{ $totalbsu }}
                             · Total perbuatan : {{ $jumlah }}
-                            · dimuat per halaman (server-side)
+                            · loaded per page (server-side)
                         </div>
                     </div>
                     <div class="crm-actions">
-                        <span class="crm-badge">{{ number_format($detailTotal) }} data</span>
+                        <span class="crm-badge">{{ number_format($detailTotal) }} records</span>
                         <input type="button" value="CETAK" class="crm-btn crm-btn-sm crm-btn-primary">
                     </div>
                 </div>
@@ -202,13 +202,13 @@
                         <thead>
                             <tr>
                                 <th>No</th>
-                                <th>Nama Kota</th>
-                                <th>Nama Penerima</th>
-                                <th>Nama Pengirim</th>
-                                <th>Negara Pengirim</th>
-                                <th>No Referensi</th>
+                                <th>City Name</th>
+                                <th>Recipient Name</th>
+                                <th>Sender Name</th>
+                                <th>Sender Country</th>
+                                <th>Reference No</th>
                                 <th>BSU</th>
-                                <th>Tanggal</th>
+                                <th>Date</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -249,7 +249,7 @@
                 ],
                 order: [[6, 'desc']]
             });
-        @elseif($modeTanggalValid)
+        @elseif($modeDateValid)
             CrmDataTable.mount('#example-tanggal', {
                 processing: true,
                 serverSide: true,

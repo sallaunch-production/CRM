@@ -18,8 +18,10 @@ use App\Models\TransaksiSendPos;
 use App\Models\TransaksiReceiveAdisena;
 use App\Models\TransaksiSendAdisena;
 use App\Services\FlaggingRelationService;
+use App\Support\CrmTransactionDetail;
 use DB;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use InvalidArgumentException;
 
@@ -221,7 +223,7 @@ class ReportingController extends Controller
           ]);
             return redirect('list_country')->with('success','Successfully add data.');
           }else{
-            return redirect('list_country')->with('error','Negara sudah ada.');
+            return redirect('list_country')->with('error',__('crm.err_country_exists'));
           }
         
         }
@@ -1555,14 +1557,18 @@ class ReportingController extends Controller
             $recordsFiltered = $query->count();
 
             // Apply pagination
-            $data = $query->offset($request->input('start'))
+            $start = max(0, (int) $request->input('start', 0));
+            $data = $query->offset($start)
                       ->limit($request->input('length'))
                       ->get();
                    
                       
              // Transform data to include DT_RowIndex
-              $data = $data->map(function($item, $index) {
-                $item->DT_RowIndex = $index + 1; // Add DT_RowIndex based on position
+              $data = $data->map(function($item, $index) use ($start) {
+                $item->DT_RowIndex = $start + $index + 1;
+                if (!isset($item->amount) || $item->amount === null || $item->amount === '') {
+                    $item->amount = $item->bsubanyak ?? null;
+                }
                 return $item;
             });
 
@@ -1573,7 +1579,11 @@ class ReportingController extends Controller
                           'data' => $data
                       ]);
             }
-          return view('reporting.transaksi-adisena');
+          return view('reporting.transaksi-adisena', [
+            'pageTitle' => __('crm.tx_branch_receive_title'),
+            'pageSub' => __('crm.tx_branch_receive_sub'),
+            'showBranch' => true,
+          ]);
         }
 
         return redirect('login')->with('You dont have access');
@@ -1649,8 +1659,9 @@ class ReportingController extends Controller
                 ->get();
 
          // Transform data to include DT_RowIndex
-      $data = $data->map(function($item, $index) {
-         $item->DT_RowIndex = $index + 1; // Add DT_RowIndex based on position
+      $data = $data->map(function($item, $index) use ($request) {
+         $start = max(0, (int) $request->input('start', 0));
+         $item->DT_RowIndex = $start + $index + 1;
           return $item;
       });   
 
@@ -1718,8 +1729,9 @@ class ReportingController extends Controller
                
                   
          // Transform data to include DT_RowIndex
-          $data = $data->map(function($item, $index) {
-            $item->DT_RowIndex = $index + 1; // Add DT_RowIndex based on position
+          $data = $data->map(function($item, $index) use ($request) {
+            $start = max(0, (int) $request->input('start', 0));
+            $item->DT_RowIndex = $start + $index + 1;
             return $item;
         });
         
@@ -1730,7 +1742,11 @@ class ReportingController extends Controller
                       'data' => $data
                   ]);
         }
-               return view('reporting.transaksi_send_adisena');
+               return view('reporting.transaksi_send_adisena', [
+                 'pageTitle' => __('crm.tx_branch_send_title'),
+                 'pageSub' => __('crm.tx_branch_send_sub'),
+                 'showBranch' => true,
+               ]);
 
 
         }
@@ -1788,8 +1804,12 @@ class ReportingController extends Controller
             $data = $query->offset($request->input('start'))
                           ->limit($request->input('length'))
                           ->get();
-            $data = $data->map(function($item, $index) {
-              $item->DT_RowIndex = $index + 1;
+            $data = $data->map(function($item, $index) use ($request) {
+              $start = max(0, (int) $request->input('start', 0));
+              $item->DT_RowIndex = $start + $index + 1;
+              if (!isset($item->amount) || $item->amount === null || $item->amount === '') {
+                  $item->amount = $item->bsubanyak ?? null;
+              }
               return $item;
             });
 
@@ -1803,7 +1823,9 @@ class ReportingController extends Controller
 
           return view('reporting.transaksi-adisena', [
             'ajaxUrl' => url()->current(),
-            'pageTitle' => 'Transaksi Direct Arsema - Receive'
+            'pageTitle' => __('crm.tx_direct_receive_title'),
+            'pageSub' => __('crm.tx_direct_receive_sub'),
+            'showBranch' => false,
           ]);
         }
 
@@ -1860,8 +1882,12 @@ class ReportingController extends Controller
             $data = $query->offset($request->input('start'))
                           ->limit($request->input('length'))
                           ->get();
-            $data = $data->map(function($item, $index) {
-              $item->DT_RowIndex = $index + 1;
+            $data = $data->map(function($item, $index) use ($request) {
+              $start = max(0, (int) $request->input('start', 0));
+              $item->DT_RowIndex = $start + $index + 1;
+              if (!isset($item->amount) || $item->amount === null || $item->amount === '') {
+                  $item->amount = $item->bsubanyak ?? null;
+              }
               return $item;
             });
 
@@ -1875,11 +1901,157 @@ class ReportingController extends Controller
 
           return view('reporting.transaksi_send_adisena', [
             'ajaxUrl' => url()->current(),
-            'pageTitle' => 'Transaksi Direct Arsema - Send'
+            'pageTitle' => __('crm.tx_direct_send_title'),
+            'pageSub' => __('crm.tx_direct_send_sub'),
+            'showBranch' => false,
           ]);
         }
 
         return redirect('login')->with('You dont have access');
       }
+
+    public function transaction_receive_adisena_detail($no)
+    {
+        return $this->showReceiveDetail(
+            $no,
+            'transaksi_receive_clients',
+            true,
+            __('crm.tx_branch_receive_detail_title'),
+            __('crm.tx_branch_receive_detail_sub')
+        );
+    }
+
+    public function transaction_send_adisena_detail($no)
+    {
+        return $this->showSendDetail(
+            $no,
+            'transaksi_send_clients',
+            true,
+            __('crm.tx_branch_send_detail_title'),
+            __('crm.tx_branch_send_detail_sub')
+        );
+    }
+
+    public function transaction_receive_direct_detail($no)
+    {
+        return $this->showReceiveDetail(
+            $no,
+            'transaksi_receive',
+            false,
+            __('crm.tx_direct_receive_detail_title'),
+            __('crm.tx_direct_receive_detail_sub')
+        );
+    }
+
+    public function transaction_send_direct_detail($no)
+    {
+        return $this->showSendDetail(
+            $no,
+            'transaksi_send',
+            false,
+            __('crm.tx_direct_send_detail_title'),
+            __('crm.tx_direct_send_detail_sub')
+        );
+    }
+
+    protected function showReceiveDetail(
+        $no,
+        string $table,
+        bool $withAgent,
+        string $pageTitle,
+        string $pageSub
+    ) {
+        if (! Auth::check()) {
+            return redirect('login')->with('You dont have access');
+        }
+
+        $query = DB::table($table)->where('no', $no);
+        if ($withAgent) {
+            $query = DB::table($table)
+                ->leftJoin('agent_id', $table.'.agent_id', '=', 'agent_id.agent_id')
+                ->select($table.'.*', 'agent_id.nama as agent_nama')
+                ->where($table.'.no', $no);
+        }
+
+        $tx = $query->first();
+        if (! $tx) {
+            abort(404);
+        }
+
+        $backRoute = Route::currentRouteName();
+        $backRoute = preg_replace('/\.detail$/', '', (string) $backRoute) ?: url()->previous();
+
+        DB::table('audit_trail_crm')->insert([
+            'username' => Auth::user()->email,
+            'url' => url()->current(),
+            'action' => 'Transaction Receive Detail',
+            'tanggal' => Carbon::now()->toDateTimeString(),
+            'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
+            'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+            'created_at' => Carbon::now()->toDateTimeString(),
+            'updated_at' => Carbon::now()->toDateTimeString(),
+        ]);
+
+        return view('reporting.transaksi_pos_detail', [
+            'channel' => 'receive',
+            'backRoute' => $backRoute,
+            'pageTitle' => $pageTitle,
+            'pageSub' => $pageSub,
+            'heroName' => $tx->nama_penerima ?: ($tx->no_referensi ?: '—'),
+            'heroMeta' => $tx->no_referensi ?: '',
+            'highlights' => CrmTransactionDetail::receiveHighlights($tx),
+            'sections' => CrmTransactionDetail::receiveSections($tx),
+        ]);
+    }
+
+    protected function showSendDetail(
+        $no,
+        string $table,
+        bool $withAgent,
+        string $pageTitle,
+        string $pageSub
+    ) {
+        if (! Auth::check()) {
+            return redirect('login')->with('You dont have access');
+        }
+
+        $query = DB::table($table)->where('no', $no);
+        if ($withAgent) {
+            $query = DB::table($table)
+                ->leftJoin('agent_id', $table.'.agent_id', '=', 'agent_id.agent_id')
+                ->select($table.'.*', 'agent_id.nama as agent_nama')
+                ->where($table.'.no', $no);
+        }
+
+        $tx = $query->first();
+        if (! $tx) {
+            abort(404);
+        }
+
+        $backRoute = Route::currentRouteName();
+        $backRoute = preg_replace('/\.detail$/', '', (string) $backRoute) ?: url()->previous();
+
+        DB::table('audit_trail_crm')->insert([
+            'username' => Auth::user()->email,
+            'url' => url()->current(),
+            'action' => 'Transaction Send Detail',
+            'tanggal' => Carbon::now()->toDateTimeString(),
+            'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
+            'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+            'created_at' => Carbon::now()->toDateTimeString(),
+            'updated_at' => Carbon::now()->toDateTimeString(),
+        ]);
+
+        return view('reporting.transaksi_pos_detail', [
+            'channel' => 'send',
+            'backRoute' => $backRoute,
+            'pageTitle' => $pageTitle,
+            'pageSub' => $pageSub,
+            'heroName' => $tx->nama_pengirim ?: ($tx->no_referensi ?: '—'),
+            'heroMeta' => $tx->no_referensi ?: '',
+            'highlights' => CrmTransactionDetail::sendHighlights($tx),
+            'sections' => CrmTransactionDetail::sendSections($tx),
+        ]);
+    }
 
 }

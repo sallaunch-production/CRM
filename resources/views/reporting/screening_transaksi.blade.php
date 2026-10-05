@@ -14,9 +14,9 @@
     <div class="crm-page">
         <div class="crm-page-header">
             <div>
-                <h1 class="crm-page-title">Filter Transaksi</h1>
+                <h1 class="crm-page-title">Transaction Filter</h1>
                 <p class="crm-page-sub">
-                    Filter pengirim dengan frekuensi transaksi tinggi berdasarkan periode.
+                    Filter senders with high transaction frequency by period.
                 </p>
             </div>
         </div>
@@ -32,12 +32,12 @@
                 @csrf
                 <input type="hidden" name="cari" value="ya">
                 <div class="crm-search-field">
-                    <label for="daterange">Tanggal Pencarian</label>
+                    <label for="daterange">Search Date</label>
                     <input type="text" class="form-control" id="daterange" name="reservation">
                 </div>
                 <div class="crm-search-actions">
                     <button type="submit" class="crm-btn crm-btn-primary">
-                        <i class="fas fa-search"></i> Cari
+                        <i class="fas fa-search"></i> Search
                     </button>
                 </div>
             </form>
@@ -48,19 +48,19 @@
                 <div class="crm-empty-icon" aria-hidden="true">
                     <i class="fas fa-filter"></i>
                 </div>
-                <h2 class="crm-empty-title">Mulai dengan periode</h2>
+                <h2 class="crm-empty-title">Start with a period</h2>
                 <p class="crm-empty-text">
-                    Pilih <strong>Tanggal Pencarian</strong>, lalu tekan <strong>Cari</strong>
-                    untuk menampilkan filter transaksi.
+                    Select a <strong>Search Date</strong>, then click <strong>Search</strong>
+                    to show the transaction filter.
                 </p>
             </div>
         @else
             <div class="crm-table-card">
                 <div class="crm-table-toolbar">
                     <div>
-                        <h2 class="crm-table-title">Hasil Filter</h2>
+                        <h2 class="crm-table-title">Filter Results</h2>
                         <div class="crm-table-meta">
-                            Tanggal mulai
+                            Date mulai
                             {{ \Carbon\Carbon::createFromTimestamp(strtotime($tanggal_dari))->format('d-m-Y') }}
                             sampai
                             {{ \Carbon\Carbon::createFromTimestamp(strtotime($tanggal_sampai))->format('d-m-Y') }}
@@ -72,9 +72,9 @@
                         <thead>
                             <tr>
                                 <th>No</th>
-                                <th>Nama Pengirim</th>
+                                <th>Sender Name</th>
                                 <th>Total BSU</th>
-                                <th>Banyak Pengirim</th>
+                                <th>Sender Count</th>
                             </tr>
                         </thead>
                         <tbody>

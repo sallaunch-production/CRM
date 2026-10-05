@@ -17,7 +17,7 @@
         <div class="crm-page-header">
             <div>
                 <h1 class="crm-page-title">Customer</h1>
-                <p class="crm-page-sub">Lihat daftar nama customer berdasarkan periode transaksi.</p>
+                <p class="crm-page-sub">View customer names by transaction period.</p>
             </div>
         </div>
 
@@ -34,7 +34,7 @@
                 ])
                 <div class="crm-search-actions">
                     <button type="submit" class="crm-btn crm-btn-primary">
-                        <i class="fas fa-search"></i> Cari
+                        <i class="fas fa-search"></i> Search
                     </button>
                 </div>
             </form>
@@ -45,24 +45,25 @@
                 <div class="crm-empty-icon" aria-hidden="true">
                     <i class="fas fa-users"></i>
                 </div>
-                <h2 class="crm-empty-title">Mulai dengan periode</h2>
+                <h2 class="crm-empty-title">Start with a period</h2>
                 <p class="crm-empty-text">
-                    Pilih <strong>Start Date</strong> dan <strong>End Date</strong>, lalu tekan <strong>Cari</strong>
-                    untuk menampilkan nama customer pada periode tersebut.
+                    Select a <strong>Start Date</strong> and <strong>End Date</strong>, then click <strong>Search</strong>
+                    to show customer names for that period.
                 </p>
             </div>
         @else
             <div class="crm-table-card">
                 <div class="crm-table-toolbar">
                     <div>
-                        <h2 class="crm-table-title">Nama Customer</h2>
+                        <h2 class="crm-table-title">Customer Name</h2>
                         <div class="crm-table-meta">
-                            {{ $periode_dari }} s/d {{ $periode_sampai }}
+                            {{ $periode_dari }} to {{ $periode_sampai }}
                         </div>
                     </div>
-                    <div class="crm-actions">
-                        <span class="crm-badge">{{ count($query) }} data</span>
-                        <a href="#" class="crm-btn crm-btn-sm crm-btn-primary">Cetak</a>
+                    <div class="crm-table-toolbar-actions">
+                        <span class="crm-badge">{{ count($query) }} records</span>
+                        <a href="#" class="crm-btn crm-btn-sm crm-btn-primary" title="Print">
+                            <i class="fas fa-print" aria-hidden="true"></i>Print</a>
                     </div>
                 </div>
                 <div class="crm-table-wrap">
@@ -70,8 +71,8 @@
                         <thead>
                             <tr>
                                 <th>No</th>
-                                <th>Nama Penerima</th>
-                                <th>Nama Pengirim</th>
+                                <th>Recipient Name</th>
+                                <th>Sender Name</th>
                                 <th>BSU</th>
                             </tr>
                         </thead>
