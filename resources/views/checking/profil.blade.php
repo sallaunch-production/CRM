@@ -103,7 +103,7 @@
                                     <th>Date of Birth</th>
                                     <th>ID Number</th>
                                     <th>Report</th>
-                                    <th>Action</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>

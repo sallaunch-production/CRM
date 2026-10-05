@@ -9,7 +9,8 @@
 @php
     $startDate = old('start_date', $start_date ?? '');
     $endDate = old('end_date', $end_date ?? '');
-    $ajaxRoute = (($levelnya ?? '') === 'operasional')
+    $isOperasional = (($levelnya ?? '') === 'operasional');
+    $ajaxRoute = $isOperasional
         ? route('search_newcustomer_operasional')
         : route('search_newcustomer');
 @endphp
@@ -66,17 +67,15 @@
                     <thead>
                         <tr>
                             <th>No</th>
-                            <th>IDPJK</th>
-                            <th>Kode Nasabah</th>
-                            <th>Recipient Name</th>
+                            <th>Reference No</th>
+                            <th>Transaction Time</th>
+                            <th>ID POS</th>
+                            <th>Customer Name</th>
+                            <th>ID Number</th>
+                            <th>Gender</th>
                             <th>Place of Birth</th>
                             <th>Date of Birth</th>
-                            <th>Recipient Address</th>
-                            <th>ID Number</th>
-                            <th>Other Identity</th>
-                            <th>Reference No</th>
-                            <th>NPWP</th>
-                            <th>Local ID</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -130,9 +129,12 @@ $(document).ready(function () {
             },
             columns: [
                 { data: 'DT_RowIndex', orderable: false, searchable: false },
-                { data: 'idpjk', name: 'idpjk' },
-                { data: 'kode_nasabah', name: 'kode_nasabah' },
+                { data: 'no_referensi', name: 'no_referensi' },
+                { data: 'tanggal_fmt', name: 'tanggal', orderable: false, searchable: false },
+                { data: 'id_pos', name: 'id_pos' },
                 { data: 'nama_penerima', name: 'nama_penerima' },
+                { data: 'nomor_identitas', name: 'nomor_identitas' },
+                { data: 'jenis_kelamin_fmt', name: 'jenis_kelamin', orderable: false, searchable: false },
                 { data: 'kota_kelahiran', name: 'kota_kelahiran' },
                 {
                     data: 'tanggal_lahir',
@@ -147,14 +149,9 @@ $(document).ready(function () {
                         return day + '-' + month + '-' + year;
                     }
                 },
-                { data: 'alamat_penerima', name: 'alamat_penerima' },
-                { data: 'nomor_identitas', name: 'nomor_identitas' },
-                { data: 'identitas_lain', name: 'identitas_lain' },
-                { data: 'no_referensi', name: 'no_referensi' },
-                { data: 'npwp', name: 'npwp' },
-                { data: 'local_id', name: 'local_id' }
+                { data: 'action', name: 'action', orderable: false, searchable: false, className: 'crm-cell-actions' }
             ],
-            order: [[3, 'asc']],
+            order: [[4, 'asc']],
             initComplete: function (settings) {
                 var api = new $.fn.dataTable.Api(settings);
                 var info = api.page.info();

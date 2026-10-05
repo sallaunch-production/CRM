@@ -92,7 +92,7 @@
                                 <th>ID Number</th>
                                 <th>Id Pos</th>
                                 <th>Date</th>
-                                <th>Action</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>

@@ -16,6 +16,7 @@ use App\Models\TransaksiSend;
 use App\Models\TransaksiSendPos;
 use App\Models\TransaksiValid;
 use App\Services\CustomerAnalyticsService;
+use App\Support\CrmTransactionDetail;
 use DB;
 use Carbon\Carbon;
 use InvalidArgumentException;
@@ -457,6 +458,8 @@ class CheckingController extends Controller
                 't1.nama_penerima',
                 DB::raw('MIN(t1.no_referensi) AS no_referensi'),
                 DB::raw('MIN(t1.tanggal) AS tanggal'),
+                DB::raw('MIN(t1.id_pos) AS id_pos'),
+                DB::raw('MIN(t1.jenis_kelamin) AS jenis_kelamin'),
                 DB::raw('MIN(t1.nomor_identitas) AS nomor_identitas'),
                 DB::raw('MIN(t1.tanggal_lahir) AS tanggal_lahir'),
                 DB::raw('MIN(t1.tempat_lahir) AS tempat_lahir'),
@@ -477,13 +480,23 @@ class CheckingController extends Controller
             ->get();
 
         if ($request->ajax()) {
+            $isOps = $request->routeIs('*operasional*');
+            $detailRoute = $isOps
+                ? 'transaksi_receive_pos_operasional.detail'
+                : 'transaksi_receive_pos.detail';
+
             return DataTables::of($query)
                 ->addIndexColumn()
-                ->addColumn('idpjk', fn() => '1003780')
-                ->addColumn('kode_nasabah', fn() => '1')
-                ->addColumn('identitas_lain', fn() => '-')
-                ->addColumn('npwp', fn() => '-')
-                ->addColumn('local_id', fn() => '-')
+                ->addColumn('tanggal_fmt', fn ($row) => CrmTransactionDetail::formatDateMinute($row->tanggal ?? null))
+                ->addColumn('jenis_kelamin_fmt', fn ($row) => CrmTransactionDetail::formatGender($row->jenis_kelamin ?? null))
+                ->addColumn('action', function ($row) use ($detailRoute) {
+                    $url = route($detailRoute, $row->no);
+
+                    return '<div class="crm-actions">'
+                        .'<a href="'.e($url).'" class="crm-btn crm-btn-sm crm-btn-ghost crm-btn-detail">'.e(__('crm.btn_detail')).'</a>'
+                        .'</div>';
+                })
+                ->rawColumns(['action'])
                 ->make(true);
         }
 
@@ -517,6 +530,8 @@ class CheckingController extends Controller
                     't1.nama_pengirim',
                     DB::raw('MIN(t1.no_referensi) AS no_referensi'),
                     DB::raw('MIN(t1.tanggal) AS tanggal'),
+                    DB::raw('MIN(t1.id_pos) AS id_pos'),
+                    DB::raw('MIN(t1.jenis_kelamin) AS jenis_kelamin'),
                     DB::raw('MIN(t1.nomor_identitas) AS nomor_identitas'),
                     DB::raw('MIN(t1.tanggal_lahir) AS tanggal_lahir'),
                     DB::raw('MIN(t1.tempat_lahir) AS tempat_lahir'),
@@ -543,6 +558,8 @@ class CheckingController extends Controller
                     't1.nama_penerima',
                     DB::raw('MIN(t1.no_referensi) AS no_referensi'),
                     DB::raw('MIN(t1.tanggal) AS tanggal'),
+                    DB::raw('MIN(t1.id_pos) AS id_pos'),
+                    DB::raw('MIN(t1.jenis_kelamin) AS jenis_kelamin'),
                     DB::raw('MIN(t1.nomor_identitas) AS nomor_identitas'),
                     DB::raw('MIN(t1.tanggal_lahir) AS tanggal_lahir'),
                     DB::raw('MIN(t1.tempat_lahir) AS tempat_lahir'),
@@ -647,6 +664,8 @@ class CheckingController extends Controller
                     't1.nama_pengirim',
                     DB::raw('MIN(t1.no_referensi) AS no_referensi'),
                     DB::raw('MIN(t1.tanggal) AS tanggal'),
+                    DB::raw('MIN(t1.id_pos) AS id_pos'),
+                    DB::raw('MIN(t1.jenis_kelamin) AS jenis_kelamin'),
                     DB::raw('MIN(t1.nomor_identitas) AS nomor_identitas'),
                     DB::raw('MIN(t1.tanggal_lahir) AS tanggal_lahir'),
                     DB::raw('MIN(t1.tempat_lahir) AS tempat_lahir'),
@@ -674,7 +693,7 @@ class CheckingController extends Controller
                 'start_date' => $tanggal_dari,
                 'end_date' => $tanggal_sampai,
                 'data' => $quer,
-                'send' => $send
+                'send' => $send,
             ]);
 
 
