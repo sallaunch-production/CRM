@@ -16,6 +16,7 @@ use App\Models\TransaksiSend;
 use App\Models\TransaksiSendPos;
 use App\Models\TransaksiValid;
 use App\Services\CustomerAnalyticsService;
+use App\Services\NewCustomerQueryService;
 use App\Support\CrmTransactionDetail;
 use DB;
 use Carbon\Carbon;
@@ -376,68 +377,50 @@ class CheckingController extends Controller
     }
 
 
-    public function newcustomer()
+    public function newcustomer(Request $request)
     {
-        //  cek berhasil login 
-        if (Auth::check()) {
-            $send = " ";
-            $data = " ";
-            $qur = DB::table('audit_trail_crm')->insertGetId([
-                'username' => Auth::user()->email,
-                'url' => url()->current(),
-                'action' => "Menu New Customer",
-                'tanggal' => Carbon::now()->toDateTimeString(),
-                'ip_address' => $_SERVER['REMOTE_ADDR'],
-                'user_agent' => $_SERVER['HTTP_USER_AGENT'],
-                'created_at' => Carbon::now()->toDateTimeString(),
-                'updated_at' => Carbon::now()->toDateTimeString(),
-            ]);
-            return view('checking.newcustomer', ['send' => $send, 'data' => $data]);
+        if (! Auth::check()) {
+            return redirect('login')->with('You dont have access');
         }
 
-        return redirect('login')->with('You dont have access');
+        DB::table('audit_trail_crm')->insertGetId([
+            'username' => Auth::user()->email,
+            'url' => url()->current(),
+            'action' => 'Menu New Customer',
+            'tanggal' => Carbon::now()->toDateTimeString(),
+            'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
+            'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+            'created_at' => Carbon::now()->toDateTimeString(),
+            'updated_at' => Carbon::now()->toDateTimeString(),
+        ]);
+
+        $service = app(NewCustomerQueryService::class);
+
+        return view('checking.newcustomer', [
+            'channel' => $service->normalizeChannel($request->query('channel', 'all')),
+            'direction' => $service->normalizeDirection($request->query('direction', 'all')),
+            'start_date' => old('start_date', $request->query('start_date', '')),
+            'end_date' => old('end_date', $request->query('end_date', '')),
+        ]);
     }
 
-    public function newcustomer_send()
+    public function newcustomer_send(Request $request)
     {
-        //  cek berhasil login 
-        if (Auth::check()) {
-            $send = "ya";
-            $qur = DB::table('audit_trail_crm')->insertGetId([
-                'username' => Auth::user()->email,
-                'url' => url()->current(),
-                'action' => "Menu New Customer Send",
-                'tanggal' => Carbon::now()->toDateTimeString(),
-                'ip_address' => $_SERVER['REMOTE_ADDR'],
-                'user_agent' => $_SERVER['HTTP_USER_AGENT'],
-                'created_at' => Carbon::now()->toDateTimeString(),
-                'updated_at' => Carbon::now()->toDateTimeString(),
-            ]);
-            return view('checking.newcustomersend', ['send' => $send]);
-        }
-
-        return redirect('login')->with('You dont have access');
+        return redirect()->route(
+            $request->routeIs('*operasional*') ? 'newcustomer_operasional' : 'newcustomer',
+            [
+                'channel' => $request->query('channel', 'pos'),
+                'direction' => 'send',
+            ]
+        );
     }
 
-    public function newcustomer_all()
+    public function newcustomer_all(Request $request)
     {
-        //  cek berhasil login 
-        if (Auth::check()) {
-            $send = "ya";
-            $qur = DB::table('audit_trail_crm')->insertGetId([
-                'username' => Auth::user()->email,
-                'url' => url()->current(),
-                'action' => "Menu New Customer All",
-                'tanggal' => Carbon::now()->toDateTimeString(),
-                'ip_address' => $_SERVER['REMOTE_ADDR'],
-                'user_agent' => $_SERVER['HTTP_USER_AGENT'],
-                'created_at' => Carbon::now()->toDateTimeString(),
-                'updated_at' => Carbon::now()->toDateTimeString(),
-            ]);
-            return view('checking.newcustomerall', ['send' => $send]);
-        }
-
-        return redirect('login')->with('You dont have access');
+        return redirect()->route('newcustomer', [
+            'channel' => $request->query('channel', 'pos'),
+            'direction' => 'all',
+        ]);
     }
 
     public function search_newcustomer(Request $request)
@@ -452,258 +435,91 @@ class CheckingController extends Controller
             return redirect()->back()->with('error', $e->getMessage())->withInput();
         }
 
-        $query = DB::table('transaksi_valid as t1')
-            ->select(
-                DB::raw('MIN(t1.no) AS no'),
-                't1.nama_penerima',
-                DB::raw('MIN(t1.no_referensi) AS no_referensi'),
-                DB::raw('MIN(t1.tanggal) AS tanggal'),
-                DB::raw('MIN(t1.id_pos) AS id_pos'),
-                DB::raw('MIN(t1.jenis_kelamin) AS jenis_kelamin'),
-                DB::raw('MIN(t1.nomor_identitas) AS nomor_identitas'),
-                DB::raw('MIN(t1.tanggal_lahir) AS tanggal_lahir'),
-                DB::raw('MIN(t1.tempat_lahir) AS tempat_lahir'),
-                DB::raw('MIN(t1.kota_kelahiran) AS kota_kelahiran'),
-                DB::raw('MIN(t1.alamat_penerima) AS alamat_penerima'),
-                DB::raw('MIN(t1.telepon_penerima) AS telepon_penerima'),
-                DB::raw('MIN(t1.negara_pengirim) AS negara_pengirim'),
-                DB::raw('MIN(t1.kode_pos_penerima) AS kode_pos_penerima')
-            )
-            ->leftJoin('transaksi_valid as t2', function ($join) use ($tanggal_dari) {
-                $join->on('t1.nama_penerima', '=', 't2.nama_penerima')
-                    ->where('t2.tanggal', '<=', $tanggal_dari . ' 23:59:59');
-            })
-            ->where('t1.tanggal', '>=', $tanggal_dari . ' 00:00:00')
-            ->where('t1.tanggal', '<=', $tanggal_sampai . ' 23:59:59')
-            ->whereNull('t2.nama_penerima')
-            ->groupBy('t1.nama_penerima')
-            ->get();
+        $service = app(NewCustomerQueryService::class);
+        $channel = $service->normalizeChannel($request->input('channel', 'all'));
+        $direction = $service->normalizeDirection($request->input('direction', 'all'));
+        $isOps = $request->routeIs('*operasional*');
+
+        $rows = $service->fetch($channel, $direction, $tanggal_dari, $tanggal_sampai);
 
         if ($request->ajax()) {
-            $isOps = $request->routeIs('*operasional*');
-            $detailRoute = $isOps
-                ? 'transaksi_receive_pos_operasional.detail'
-                : 'transaksi_receive_pos.detail';
-
-            return DataTables::of($query)
+            return DataTables::of($rows)
                 ->addIndexColumn()
+                ->addColumn('channel_label', fn ($row) => $row->channel_label ?? '')
+                ->addColumn('direction_label', fn ($row) => $row->direction_label ?? '')
                 ->addColumn('tanggal_fmt', fn ($row) => CrmTransactionDetail::formatDateMinute($row->tanggal ?? null))
                 ->addColumn('jenis_kelamin_fmt', fn ($row) => CrmTransactionDetail::formatGender($row->jenis_kelamin ?? null))
-                ->addColumn('action', function ($row) use ($detailRoute) {
-                    $url = route($detailRoute, $row->no);
+                ->addColumn('tanggal_lahir_fmt', function ($row) {
+                    $raw = (string) ($row->tanggal_lahir ?? '');
+                    $digits = preg_replace('/[^0-9]/', '', $raw);
+                    if (strlen($digits) === 8) {
+                        try {
+                            return Carbon::createFromFormat('dmY', $digits)->format('d-m-Y');
+                        } catch (\Throwable $e) {
+                            // fall through
+                        }
+                    }
+                    try {
+                        return Carbon::createFromFormat('m/d/Y', $raw)->format('d-m-Y');
+                    } catch (\Throwable $e) {
+                        return CrmTransactionDetail::formatDateOnly($raw);
+                    }
+                })
+                ->addColumn('action', function ($row) use ($isOps) {
+                    $routeName = $isOps
+                        ? ($row->detail_operasional ?? null)
+                        : ($row->detail_compliance ?? null);
+
+                    if (! $routeName || empty($row->no)) {
+                        return '';
+                    }
+
+                    try {
+                        $url = route($routeName, $row->no);
+                    } catch (\Throwable $e) {
+                        return '';
+                    }
 
                     return '<div class="crm-actions">'
-                        .'<a href="'.e($url).'" class="crm-btn crm-btn-sm crm-btn-ghost crm-btn-detail">'.e(__('crm.btn_detail')).'</a>'
+                        .'<a href="'.e($url).'" class="crm-btn crm-btn-sm crm-btn-ghost crm-btn-detail" target="_blank" rel="noopener">'
+                        .e(__('crm.btn_detail'))
+                        .'</a>'
                         .'</div>';
                 })
                 ->rawColumns(['action'])
                 ->make(true);
         }
 
-        return view('checking.newcustomer_new', [
-            'tanggal_sampai' => $tanggal_sampai,
-            'tanggal_dari' => $tanggal_dari,
-            'start_date' => $tanggal_dari,
-            'end_date' => $tanggal_sampai,
-            'data' => $query,
-            'send' => ' ',
-        ]);
+        return redirect()->route(
+            $isOps ? 'newcustomer_operasional' : 'newcustomer',
+            [
+                'channel' => $channel,
+                'direction' => $direction,
+                'start_date' => $tanggal_dari,
+                'end_date' => $tanggal_sampai,
+            ]
+        );
     }
 
     public function search_newcustomer_all(Request $request)
     {
-        //  cek berhasil login 
-        if (Auth::check()) {
-            $send = "ya";
-            try {
-                [$tanggal_dari, $tanggal_sampai] = $this->resolveStartEndDates($request);
-            } catch (InvalidArgumentException $e) {
-                return redirect()->back()->with('error', $e->getMessage())->withInput();
-            }
+        $request->merge([
+            'channel' => $request->input('channel', 'pos'),
+            'direction' => $request->input('direction', 'all'),
+        ]);
 
-            // Ambil tahun dari tanggal_sampai
-            $tahun_sampai = Carbon::createFromFormat('Y-m-d', $tanggal_sampai)->year;
-
-            $quer = DB::table('transaksi_send_pos as t1')
-                ->select(
-                    DB::raw('MIN(t1.no) AS no'),
-                    't1.nama_pengirim',
-                    DB::raw('MIN(t1.no_referensi) AS no_referensi'),
-                    DB::raw('MIN(t1.tanggal) AS tanggal'),
-                    DB::raw('MIN(t1.id_pos) AS id_pos'),
-                    DB::raw('MIN(t1.jenis_kelamin) AS jenis_kelamin'),
-                    DB::raw('MIN(t1.nomor_identitas) AS nomor_identitas'),
-                    DB::raw('MIN(t1.tanggal_lahir) AS tanggal_lahir'),
-                    DB::raw('MIN(t1.tempat_lahir) AS tempat_lahir'),
-                    DB::raw('MIN(t1.kota_lahir_pengirim) AS kota_lahir_pengirim'),
-                    DB::raw('MIN(t1.alamat_pengirim) AS alamat_pengirim'),
-                    DB::raw('MIN(t1.telpon_pengirim) AS telpon_pengirim'),
-                    DB::raw('MIN(t1.negara_penerima) AS negara_penerima'),
-                    DB::raw('MIN(t1.kode_pos_domisili_pengirim) AS kode_pos_domisili_pengirim')
-                )
-                ->leftJoin('transaksi_send_pos as t2', function ($join) use ($tanggal_dari) {
-                    $join->on('t1.nama_pengirim', '=', 't2.nama_pengirim')
-                        ->where('t2.tanggal', '<=', $tanggal_dari . ' 23:59:59');
-                })
-                ->where('t1.tanggal', '>=', $tanggal_dari . ' 00:00:00')
-                ->where('t1.tanggal', '<=', $tanggal_sampai . ' 23:59:59')
-                ->whereNull('t2.nama_pengirim') // Filter nama_pengirim yang tidak ada di t2
-                ->groupBy('t1.nama_pengirim')
-                ->get();
-
-
-            $query = DB::table('transaksi_valid as t1')
-                ->select(
-                    DB::raw('MIN(t1.no) AS no'),
-                    't1.nama_penerima',
-                    DB::raw('MIN(t1.no_referensi) AS no_referensi'),
-                    DB::raw('MIN(t1.tanggal) AS tanggal'),
-                    DB::raw('MIN(t1.id_pos) AS id_pos'),
-                    DB::raw('MIN(t1.jenis_kelamin) AS jenis_kelamin'),
-                    DB::raw('MIN(t1.nomor_identitas) AS nomor_identitas'),
-                    DB::raw('MIN(t1.tanggal_lahir) AS tanggal_lahir'),
-                    DB::raw('MIN(t1.tempat_lahir) AS tempat_lahir'),
-                    DB::raw('MIN(t1.kota_kelahiran) AS kota_kelahiran'),
-                    DB::raw('MIN(t1.alamat_penerima) AS alamat_penerima'),
-                    DB::raw('MIN(t1.telepon_penerima) AS telepon_penerima'),
-                    DB::raw('MIN(t1.negara_pengirim) AS negara_pengirim'),
-                    DB::raw('MIN(t1.kode_pos_penerima) AS kode_pos_penerima')
-                )
-                ->leftJoin('transaksi_valid as t2', function ($join) use ($tanggal_dari) {
-                    $join->on('t1.nama_penerima', '=', 't2.nama_penerima')
-                        ->where('t2.tanggal', '<=', $tanggal_dari . ' 23:59:59');
-                })
-                ->where('t1.tanggal', '>=', $tanggal_dari . ' 00:00:00')
-                ->where('t1.tanggal', '<=', $tanggal_sampai . ' 23:59:59')
-                ->whereNull('t2.nama_penerima') // Filter nama_pengirim yang tidak ada di t2
-                ->groupBy('t1.nama_penerima')
-                ->get();
-            return view('checking.newcustomerall', [
-                'tanggal_sampai' => $tanggal_sampai,
-                'tanggal_dari' => $tanggal_dari,
-                'start_date' => $tanggal_dari,
-                'end_date' => $tanggal_sampai,
-                'data' => $quer,
-                'datarcv' => $query,
-                'send' => $send
-            ]);
-
-
-        }
-
-        return redirect('login')->with('You dont have access');
+        return $this->search_newcustomer($request);
     }
-
-    /*
-    public function search_newcustomer(Request $request)
-    {
-        if(Auth::check()){
-              $send="ya";
-              $tanggal = $request->reservation; // Misalnya "09/01/2024 - 09/30/2024"
-              $dari = explode(' - ', $tanggal);
-              $tanggal_dari = Carbon::createFromFormat('m/d/Y', trim($dari[0]))->format('Y-m-d');
-              $tanggal_sampai = Carbon::createFromFormat('m/d/Y', trim($dari[1]))->format('Y-m-d');
-
-              // Ambil tahun dari tanggal_sampai
-              $tahun_sampai = Carbon::createFromFormat('Y-m-d', $tanggal_sampai)->year;
-
-             $quer = DB::table('transaksi_valid as t1')
-              ->select(
-                  DB::raw('MIN(t1.no) AS no'),
-                  't1.nama_penerima',
-                  DB::raw('MIN(t1.no_referensi) AS no_referensi'),
-                  DB::raw('MIN(t1.tanggal) AS tanggal'),
-                  DB::raw('MIN(t1.nomor_identitas) AS nomor_identitas'),
-                  DB::raw('MIN(t1.tanggal_lahir) AS tanggal_lahir'),
-                  DB::raw('MIN(t1.tempat_lahir) AS tempat_lahir'),
-                  DB::raw('MIN(t1.kota_kelahiran) AS kota_kelahiran'),
-                  DB::raw('MIN(t1.alamat_penerima) AS alamat_penerima'),
-                  DB::raw('MIN(t1.telepon_penerima) AS telepon_penerima'),
-                  DB::raw('MIN(t1.negara_pengirim) AS negara_pengirim'),
-                  DB::raw('MIN(t1.kode_pos_penerima) AS kode_pos_penerima')
-              )
-              ->leftJoin('transaksi_send_pos as t2', function($join) use ($tanggal_dari) {
-                  $join->on('t1.nama_penerima', '=', 't2.nama_penerima')
-                        ->where('t2.tanggal', '<=', $tanggal_dari . ' 23:59:59');
-              })
-              ->where('t1.tanggal', '>=', $tanggal_dari . ' 00:00:00')
-              ->where('t1.tanggal', '<=', $tanggal_sampai . ' 23:59:59')
-              ->whereNull('t2.nama_penerima') // Filter nama_pengirim yang tidak ada di t2
-              ->groupBy('t1.nama_penerima')
-              ->get();
-
-
-              return view('checking.newcustomer_new',[
-                'tanggal_sampai'=>$tanggal_sampai,'tanggal_dari'=>$tanggal_dari,'data'=>$quer
-              ]);
-
-
-            }
-
-            return redirect('login')->with('You dont have access');
-    }
-    */
 
     public function search_newcustomer_send(Request $request)
     {
-        //  cek berhasil login 
-        if (Auth::check()) {
-            $send = "ya";
-            try {
-                [$tanggal_dari, $tanggal_sampai] = $this->resolveStartEndDates($request);
-            } catch (InvalidArgumentException $e) {
-                return redirect()->back()->with('error', $e->getMessage())->withInput();
-            }
+        $request->merge([
+            'channel' => $request->input('channel', 'pos'),
+            'direction' => 'send',
+        ]);
 
-            // Ambil tahun dari tanggal_sampai
-            $tahun_sampai = Carbon::createFromFormat('Y-m-d', $tanggal_sampai)->year;
-
-            $quer = DB::table('transaksi_send_pos as t1')
-                ->select(
-                    DB::raw('MIN(t1.no) AS no'),
-                    't1.nama_pengirim',
-                    DB::raw('MIN(t1.no_referensi) AS no_referensi'),
-                    DB::raw('MIN(t1.tanggal) AS tanggal'),
-                    DB::raw('MIN(t1.id_pos) AS id_pos'),
-                    DB::raw('MIN(t1.jenis_kelamin) AS jenis_kelamin'),
-                    DB::raw('MIN(t1.nomor_identitas) AS nomor_identitas'),
-                    DB::raw('MIN(t1.tanggal_lahir) AS tanggal_lahir'),
-                    DB::raw('MIN(t1.tempat_lahir) AS tempat_lahir'),
-                    DB::raw('MIN(t1.kota_lahir_pengirim) AS kota_lahir_pengirim'),
-                    DB::raw('MIN(t1.alamat_pengirim) AS alamat_pengirim'),
-                    DB::raw('MIN(t1.telpon_pengirim) AS telpon_pengirim'),
-                    DB::raw('MIN(t1.negara_penerima) AS negara_penerima'),
-                    DB::raw('MIN(t1.kode_pos_domisili_pengirim) AS kode_pos_domisili_pengirim')
-                )
-                ->leftJoin('transaksi_send_pos as t2', function ($join) use ($tanggal_dari) {
-                    $join->on('t1.nama_pengirim', '=', 't2.nama_pengirim')
-                        ->where('t2.tanggal', '<=', $tanggal_dari . ' 23:59:59');
-                })
-                ->where('t1.tanggal', '>=', $tanggal_dari . ' 00:00:00')
-                ->where('t1.tanggal', '<=', $tanggal_sampai . ' 23:59:59')
-                ->whereNull('t2.nama_pengirim') // Filter nama_pengirim yang tidak ada di t2
-                ->groupBy('t1.nama_pengirim')
-                ->get();
-
-
-
-            return view('checking.newcustomersend', [
-                'tanggal_sampai' => $tanggal_sampai,
-                'tanggal_dari' => $tanggal_dari,
-                'start_date' => $tanggal_dari,
-                'end_date' => $tanggal_sampai,
-                'data' => $quer,
-                'send' => $send,
-            ]);
-
-
-        }
-
-        return redirect('login')->with('You dont have access');
+        return $this->search_newcustomer($request);
     }
-
-
-
 
     public function screening(Request $request)
     {
