@@ -1376,6 +1376,152 @@ table.crm-table {
     color: #fff;
 }
 
+/* New Customer search panel — full-width, left-aligned rows */
+.crm-search-nc {
+    padding: 1.15rem 1.25rem 1.25rem;
+}
+
+.crm-nc-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin: 0;
+    width: 100%;
+}
+
+.crm-nc-row {
+    display: grid;
+    grid-template-columns: 88px minmax(0, 1fr);
+    gap: 0.85rem;
+    align-items: center;
+    width: 100%;
+}
+
+.crm-nc-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--crm-slate-500);
+    line-height: 1.2;
+}
+
+.crm-nc-seg {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.3rem;
+    width: 100%;
+    max-width: 560px;
+    padding: 0.28rem;
+    background: var(--crm-slate-50);
+    border: 1px solid var(--crm-slate-200);
+    border-radius: 10px;
+}
+
+.crm-nc-seg-sm {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    max-width: 420px;
+}
+
+.crm-nc-seg-btn {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    color: var(--crm-slate-700);
+    font: inherit;
+    font-size: 0.84rem;
+    font-weight: 600;
+    line-height: 1.2;
+    min-height: 38px;
+    padding: 0.45rem 0.55rem;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: center;
+    white-space: nowrap;
+    transition: background .15s ease, color .15s ease, box-shadow .15s ease;
+}
+
+.crm-nc-seg-btn:hover {
+    background: #fff;
+    color: var(--crm-slate-900);
+}
+
+.crm-nc-seg-btn.is-active {
+    background: #fff;
+    color: var(--crm-red);
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(220, 38, 38, 0.2);
+}
+
+.crm-nc-seg-btn:focus-visible {
+    outline: 2px solid rgba(220, 38, 38, 0.35);
+    outline-offset: 2px;
+}
+
+.crm-nc-period {
+    display: grid;
+    grid-template-columns: minmax(0, 200px) minmax(0, 200px) auto;
+    gap: 0.75rem;
+    align-items: end;
+    width: 100%;
+    max-width: 560px;
+}
+
+.crm-nc-date-field {
+    min-width: 0;
+}
+
+.crm-nc-date-field label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--crm-slate-700);
+    margin-bottom: 0.35rem;
+}
+
+.crm-nc-date-field .form-control {
+    height: 40px;
+    border-radius: var(--crm-radius-sm);
+    border-color: var(--crm-slate-300);
+}
+
+.crm-nc-date-field .form-control:focus {
+    border-color: #f1a3a6;
+    box-shadow: 0 0 0 0.2rem var(--crm-red-soft);
+}
+
+.crm-nc-period-action {
+    display: flex;
+    align-items: flex-end;
+    padding-bottom: 0;
+}
+
+@media (max-width: 768px) {
+    .crm-nc-row {
+        grid-template-columns: 1fr;
+        gap: 0.4rem;
+        align-items: stretch;
+    }
+
+    .crm-nc-seg,
+    .crm-nc-seg-sm,
+    .crm-nc-period {
+        max-width: none;
+    }
+
+    .crm-nc-period {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .crm-nc-period-action {
+        grid-column: 1 / -1;
+    }
+
+    .crm-nc-period-action .crm-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
 /* Transaction detail tabs (Customer Profile) */
 .crm-tx-tabs {
     display: flex;
