@@ -1457,42 +1457,12 @@ table.crm-table {
     outline-offset: 2px;
 }
 
-.crm-nc-period {
-    display: grid;
-    grid-template-columns: minmax(0, 200px) minmax(0, 200px) auto;
-    gap: 0.75rem;
-    align-items: end;
+/* Same horizontal Start/End/Search bar as Screening Customer */
+.crm-nc-datebar {
     width: 100%;
-    max-width: 560px;
-}
-
-.crm-nc-date-field {
-    min-width: 0;
-}
-
-.crm-nc-date-field label {
-    display: block;
-    font-size: 0.78rem;
-    font-weight: 600;
-    color: var(--crm-slate-700);
-    margin-bottom: 0.35rem;
-}
-
-.crm-nc-date-field .form-control {
-    height: 40px;
-    border-radius: var(--crm-radius-sm);
-    border-color: var(--crm-slate-300);
-}
-
-.crm-nc-date-field .form-control:focus {
-    border-color: #f1a3a6;
-    box-shadow: 0 0 0 0.2rem var(--crm-red-soft);
-}
-
-.crm-nc-period-action {
-    display: flex;
-    align-items: flex-end;
-    padding-bottom: 0;
+    margin: 0;
+    padding-top: 0.15rem;
+    border-top: 1px solid var(--crm-slate-200);
 }
 
 @media (max-width: 768px) {
@@ -1503,22 +1473,8 @@ table.crm-table {
     }
 
     .crm-nc-seg,
-    .crm-nc-seg-sm,
-    .crm-nc-period {
+    .crm-nc-seg-sm {
         max-width: none;
-    }
-
-    .crm-nc-period {
-        grid-template-columns: 1fr 1fr;
-    }
-
-    .crm-nc-period-action {
-        grid-column: 1 / -1;
-    }
-
-    .crm-nc-period-action .crm-btn {
-        width: 100%;
-        justify-content: center;
     }
 }
 

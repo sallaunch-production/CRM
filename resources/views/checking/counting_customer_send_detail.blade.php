@@ -30,7 +30,7 @@
                     </div>
                     <div class="col-md-4 mb-3 mb-md-0 customer-info">
                         <span class="info-label">NIK / ID Number</span>
-                        <strong>{{ $nomorIdentity }}</strong>
+                        <strong>{{ $nomorIdentitas }}</strong>
                     </div>
                     <div class="col-md-4 customer-info">
                         <span class="info-label">Periode</span>

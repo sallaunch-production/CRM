@@ -76,38 +76,15 @@
                     </div>
                 </div>
 
-                <div class="crm-nc-row crm-nc-row-period">
-                    <div class="crm-nc-label">Period</div>
-                    <div class="crm-nc-period">
-                        <div class="crm-nc-date-field">
-                            <label for="start_date">{{ __('crm.start_date') }}</label>
-                            <input
-                                type="date"
-                                name="start_date"
-                                id="start_date"
-                                class="form-control"
-                                value="{{ $startDate }}"
-                                @if($endDate) max="{{ $endDate }}" @endif
-                                required
-                            >
-                        </div>
-                        <div class="crm-nc-date-field">
-                            <label for="end_date">{{ __('crm.end_date') }}</label>
-                            <input
-                                type="date"
-                                name="end_date"
-                                id="end_date"
-                                class="form-control"
-                                value="{{ $endDate }}"
-                                @if($startDate) min="{{ $startDate }}" @endif
-                                required
-                            >
-                        </div>
-                        <div class="crm-nc-period-action">
-                            <button type="button" class="crm-btn crm-btn-primary" id="btn-cari">
-                                <i class="fas fa-search"></i> Search
-                            </button>
-                        </div>
+                <div class="crm-search-form crm-nc-datebar">
+                    @include('partials.crm.date-range-filter', [
+                        'startDate' => $startDate,
+                        'endDate' => $endDate,
+                    ])
+                    <div class="crm-search-actions">
+                        <button type="button" class="crm-btn crm-btn-primary" id="btn-cari">
+                            <i class="fas fa-search"></i> Search
+                        </button>
                     </div>
                 </div>
             </form>
