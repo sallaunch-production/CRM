@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 
 /**
  * First-time (new) customer lookup across POS / Branch / Direct channels.
- * Keeps each source's "first transaction in period" logic isolated so listings stay scalable.
+ * Uniqueness is keyed by ID number (nomor_identitas) within each source table.
  */
 class NewCustomerQueryService
 {
@@ -152,6 +152,10 @@ class NewCustomerQueryService
     }
 
     /**
+     * New customer = first transaction for this ID number (nomor_identitas)
+     * in the selected source table falls inside [startDate, endDate]
+     * (no prior tx with the same ID before start of period).
+     *
      * @param  array{
      *   channel:string,
      *   direction:string,
@@ -174,34 +178,37 @@ class NewCustomerQueryService
         $phone = $source['phone_column'];
         $from = $startDate.' 00:00:00';
         $to = $endDate.' 23:59:59';
-        $before = $startDate.' 23:59:59';
 
-        $phoneSelect = $phone
-            ? DB::raw("MIN(t1.{$phone}) AS phone")
-            : DB::raw('NULL AS phone');
+        // Columns are whitelist-controlled by $this->sources(); safe for interpolation.
+        $phoneSelect = $phone ? "t.{$phone}" : 'NULL';
 
-        $rows = DB::table("{$table} as t1")
-            ->select(
-                DB::raw('MIN(t1.no) AS no'),
-                "t1.{$name} as customer_name",
-                DB::raw('MIN(t1.no_referensi) AS no_referensi'),
-                DB::raw('MIN(t1.tanggal) AS tanggal'),
-                DB::raw('MIN(t1.id_pos) AS id_pos'),
-                DB::raw('MIN(t1.jenis_kelamin) AS jenis_kelamin'),
-                DB::raw('MIN(t1.nomor_identitas) AS nomor_identitas'),
-                DB::raw('MIN(t1.tanggal_lahir) AS tanggal_lahir'),
-                DB::raw("MIN(t1.{$place}) AS place_of_birth"),
-                $phoneSelect
-            )
-            ->leftJoin("{$table} as t2", function ($join) use ($name, $before) {
-                $join->on("t1.{$name}", '=', "t2.{$name}")
-                    ->where("t2.tanggal", '<=', $before);
-            })
-            ->where("t1.tanggal", '>=', $from)
-            ->where("t1.tanggal", '<=', $to)
-            ->whereNull("t2.{$name}")
-            ->groupBy("t1.{$name}")
-            ->get();
+        $sql = <<<SQL
+            SELECT DISTINCT ON (TRIM(CAST(t.nomor_identitas AS TEXT)))
+                t.no,
+                t.{$name} AS customer_name,
+                t.no_referensi,
+                t.tanggal,
+                t.id_pos,
+                t.jenis_kelamin,
+                t.nomor_identitas,
+                t.tanggal_lahir,
+                t.{$place} AS place_of_birth,
+                {$phoneSelect} AS phone
+            FROM {$table} AS t
+            WHERE t.tanggal >= ?
+              AND t.tanggal <= ?
+              AND t.nomor_identitas IS NOT NULL
+              AND TRIM(CAST(t.nomor_identitas AS TEXT)) <> ''
+              AND NOT EXISTS (
+                  SELECT 1
+                  FROM {$table} AS prior
+                  WHERE TRIM(CAST(prior.nomor_identitas AS TEXT)) = TRIM(CAST(t.nomor_identitas AS TEXT))
+                    AND prior.tanggal < ?
+              )
+            ORDER BY TRIM(CAST(t.nomor_identitas AS TEXT)) ASC, t.tanggal ASC, t.no ASC
+        SQL;
+
+        $rows = collect(DB::select($sql, [$from, $to, $from]));
 
         return $rows->map(function ($row) use ($source) {
             $row->channel = $source['channel'];
