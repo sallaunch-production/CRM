@@ -32,7 +32,6 @@
             >
                 @csrf
                 @include('partials.crm.date-range-filter', [
-                    'groupLabel' => 'Report Period',
                     'startDate' => $startDate,
                     'endDate' => $endDate,
                 ])

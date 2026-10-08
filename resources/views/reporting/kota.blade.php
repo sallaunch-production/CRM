@@ -41,7 +41,6 @@
                 @csrf
                 <input type="hidden" name="cari" value="ya">
                 @include('partials.crm.date-range-filter', [
-                    'groupLabel' => 'Search Date',
                     'startDate' => $startDate,
                     'endDate' => $endDate,
                 ])

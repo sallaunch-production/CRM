@@ -1114,26 +1114,58 @@ class ReportingController extends Controller
 
     public function cari_screening_transaksi(Request $request)
     {
-      if(Auth::check()){
-
-        $tanggal = $request->reservation;
-        $dari = explode('/',$tanggal);
-  
-        $tahunini = date('Y');
-        
-        $tahun_dari = $dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3];
-        $periode_dari = $dari[1].'-'.$dari[0].'-'.$dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3];
-        $periode_sampai = $dari[3].'-'.$dari[2][7].$dari[2][8].'-'.$dari[4];
-  
-        $tanggal_dari = $dari[2][0].$dari[2][1].$dari[2][2].$dari[2][3].'-'.$dari[0].'-'.$dari[1];
-        $tanggal_sampai =  $dari[4].'-'.$dari[2][7].$dari[2][8].'-'.$dari[3];
-        $query= DB::table('transaksi_send_pos')->select(DB::raw("sum(cast(replace(amount, ',','') as float))"),'nama_penerima','nama_pengirim',DB::raw('COUNT(nama_pengirim) as perbuatan'),DB::raw('COUNT(nomor_identitas) as noden'))->where('mgisession','<>','')->where('id_transaksi','<>','')->where('tanggal','>=',$tanggal_dari." 00:00:00")->where('tanggal','<=',$tanggal_sampai." 23:59:59")->groupBy('nama_pengirim','nomor_identitas','nama_penerima')->orderBy('perbuatan','desc')->get();
-        
-        return view('reporting.screening_transaksi', [
-          'data'=>$query,'tanggal_dari'=>$tanggal_dari,'tanggal_sampai'=>$tanggal_sampai
-          ]);
+      if (! Auth::check()) {
+        return redirect('login')->with('You dont have access');
       }
-      return redirect('login')->with('You dont have access');
+
+      try {
+        if ($request->filled('start_date') && $request->filled('end_date')) {
+          $tanggal_dari = Carbon::createFromFormat('Y-m-d', trim((string) $request->start_date))->format('Y-m-d');
+          $tanggal_sampai = Carbon::createFromFormat('Y-m-d', trim((string) $request->end_date))->format('Y-m-d');
+        } elseif ($request->filled('reservation')) {
+          // Legacy daterangepicker fallback: "mm/dd/YYYY - mm/dd/YYYY"
+          $parts = explode(' - ', str_replace('+-+', ' - ', (string) $request->reservation), 2);
+          if (count($parts) !== 2) {
+            throw new InvalidArgumentException(__('crm.err_dates_required'));
+          }
+          $tanggal_dari = Carbon::createFromFormat('m/d/Y', trim($parts[0]))->format('Y-m-d');
+          $tanggal_sampai = Carbon::createFromFormat('m/d/Y', trim($parts[1]))->format('Y-m-d');
+        } else {
+          throw new InvalidArgumentException(__('crm.err_dates_required'));
+        }
+
+        if ($tanggal_sampai < $tanggal_dari) {
+          throw new InvalidArgumentException(__('crm.err_end_before_start'));
+        }
+      } catch (InvalidArgumentException $e) {
+        return redirect()->back()->with('error', $e->getMessage())->withInput();
+      } catch (\Throwable $e) {
+        return redirect()->back()->with('error', __('crm.err_invalid_date'))->withInput();
+      }
+
+      $query = DB::table('transaksi_send_pos')
+        ->select(
+          DB::raw("sum(cast(replace(amount, ',','') as float))"),
+          'nama_penerima',
+          'nama_pengirim',
+          DB::raw('COUNT(nama_pengirim) as perbuatan'),
+          DB::raw('COUNT(nomor_identitas) as noden')
+        )
+        ->where('mgisession', '<>', '')
+        ->where('id_transaksi', '<>', '')
+        ->where('tanggal', '>=', $tanggal_dari.' 00:00:00')
+        ->where('tanggal', '<=', $tanggal_sampai.' 23:59:59')
+        ->groupBy('nama_pengirim', 'nomor_identitas', 'nama_penerima')
+        ->orderBy('perbuatan', 'desc')
+        ->get();
+
+      return view('reporting.screening_transaksi', [
+        'data' => $query,
+        'tanggal_dari' => $tanggal_dari,
+        'tanggal_sampai' => $tanggal_sampai,
+        'start_date' => $tanggal_dari,
+        'end_date' => $tanggal_sampai,
+      ]);
     }
 
     public function page_history_refund(Request $request)

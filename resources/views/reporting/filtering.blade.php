@@ -39,7 +39,6 @@
             <form class="crm-search-form" action="{{ $searchRoute }}" method="POST">
                 @csrf
                 @include('partials.crm.date-range-filter', [
-                    'groupLabel' => 'Transaction Period',
                     'startDate' => $startDate,
                     'endDate' => $endDate,
                 ])

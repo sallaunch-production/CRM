@@ -8,6 +8,11 @@
 @section('content')
 @php
     $hasResult = !empty($tanggal_dari);
+    $startDate = old('start_date', $start_date ?? $tanggal_dari ?? '');
+    $endDate = old('end_date', $end_date ?? $tanggal_sampai ?? '');
+    $searchRoute = (($levelnya ?? '') === 'operasional')
+        ? route('cari_screening_transaksi_oprasional')
+        : route('cari_screening_transaksi');
 @endphp
 
 <div class="container-fluid">
@@ -24,17 +29,13 @@
         @include('partials.crm.alerts')
 
         <div class="crm-search">
-            @if($levelnya == 'operasional')
-                <form class="crm-search-form" action="{{ route('cari_screening_transaksi_oprasional') }}" method="POST">
-            @elseif($levelnya == 'compliance')
-                <form class="crm-search-form" action="{{ route('cari_screening_transaksi') }}" method="POST">
-            @endif
+            <form class="crm-search-form" action="{{ $searchRoute }}" method="POST">
                 @csrf
                 <input type="hidden" name="cari" value="ya">
-                <div class="crm-search-field">
-                    <label for="daterange">Search Date</label>
-                    <input type="text" class="form-control" id="daterange" name="reservation">
-                </div>
+                @include('partials.crm.date-range-filter', [
+                    'startDate' => $startDate,
+                    'endDate' => $endDate,
+                ])
                 <div class="crm-search-actions">
                     <button type="submit" class="crm-btn crm-btn-primary">
                         <i class="fas fa-search"></i> Search
@@ -50,7 +51,7 @@
                 </div>
                 <h2 class="crm-empty-title">Start with a period</h2>
                 <p class="crm-empty-text">
-                    Select a <strong>Search Date</strong>, then click <strong>Search</strong>
+                    Select a <strong>Start Date</strong> and <strong>End Date</strong>, then click <strong>Search</strong>
                     to show the transaction filter.
                 </p>
             </div>
@@ -60,10 +61,9 @@
                     <div>
                         <h2 class="crm-table-title">Filter Results</h2>
                         <div class="crm-table-meta">
-                            Date mulai
-                            {{ \Carbon\Carbon::createFromTimestamp(strtotime($tanggal_dari))->format('d-m-Y') }}
-                            sampai
-                            {{ \Carbon\Carbon::createFromTimestamp(strtotime($tanggal_sampai))->format('d-m-Y') }}
+                            {{ \Carbon\Carbon::parse($tanggal_dari)->format('d-m-Y') }}
+                            to
+                            {{ \Carbon\Carbon::parse($tanggal_sampai)->format('d-m-Y') }}
                         </div>
                     </div>
                 </div>
@@ -101,7 +101,7 @@
 @include('partials.crm.datatable-boot')
 <script>
     $(document).ready(function () {
-        $('#daterange').daterangepicker();
+        if (!$('#example').length) return;
         CrmDataTable.mount('#example');
     });
 </script>

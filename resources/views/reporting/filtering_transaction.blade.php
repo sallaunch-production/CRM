@@ -40,7 +40,6 @@
                 @csrf
                 <input type="hidden" name="act" value="">
                 @include('partials.crm.date-range-filter', [
-                    'groupLabel' => 'Transaction Period',
                     'startDate' => $startDate,
                     'endDate' => $endDate,
                 ])
