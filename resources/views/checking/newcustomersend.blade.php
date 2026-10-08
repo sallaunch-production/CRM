@@ -94,16 +94,7 @@
                         <tbody>
                             @foreach($data as $key => $transactions)
                                 @php
-                                    $rawTgl = preg_replace('/[^0-9]/', '', (string) $transactions->tanggal_lahir);
-                                    if (strlen($rawTgl) === 8) {
-                                        try {
-                                            $tanggalLahir = \Carbon\Carbon::createFromFormat('dmY', $rawTgl)->format('d-m-Y');
-                                        } catch (\Exception $e) {
-                                            $tanggalLahir = $transactions->tanggal_lahir;
-                                        }
-                                    } else {
-                                        $tanggalLahir = CrmTransactionDetail::formatDateOnly($transactions->tanggal_lahir);
-                                    }
+                                    $tanggalLahir = CrmTransactionDetail::formatDateOfBirth($transactions->tanggal_lahir);
                                 @endphp
                                 <tr>
                                     <td>{{ $key + 1 }}</td>

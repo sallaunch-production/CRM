@@ -19,21 +19,7 @@
     $sendDetailRoute = $isOps ? 'transaksi_send_pos_operasional.detail' : 'transaksi_send_pos.detail';
     $recvDetailRoute = $isOps ? 'transaksi_receive_pos_operasional.detail' : 'transaksi_receive_pos.detail';
 
-    $formatDob = function ($raw) {
-        $digits = preg_replace('/[^0-9]/', '', (string) $raw);
-        if (strlen($digits) === 8) {
-            try {
-                return \Carbon\Carbon::createFromFormat('dmY', $digits)->format('d-m-Y');
-            } catch (\Throwable $e) {
-                // fall through
-            }
-        }
-        try {
-            return \Carbon\Carbon::createFromFormat('m/d/Y', (string) $raw)->format('d-m-Y');
-        } catch (\Throwable $e) {
-            return CrmTransactionDetail::formatDateOnly($raw);
-        }
-    };
+    $formatDob = fn ($raw) => CrmTransactionDetail::formatDateOfBirth($raw);
 @endphp
 
 <div class="container-fluid">

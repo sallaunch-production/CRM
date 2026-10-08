@@ -9,21 +9,7 @@
 @php
     use App\Support\CrmTransactionDetail;
 
-    $rawDob = preg_replace('/[^0-9]/', '', (string) ($customerDateOfBirth ?? ''));
-    if (strlen($rawDob) === 8) {
-        try {
-            $headerDob = \Carbon\Carbon::createFromFormat('dmY', $rawDob)->format('d-m-Y');
-        } catch (\Exception $e) {
-            $headerDob = $customerDateOfBirth ?: '';
-        }
-    } else {
-        $headerDob = $customerDateOfBirth
-            ? CrmTransactionDetail::formatDateOnly($customerDateOfBirth)
-            : '';
-        if (preg_match('/^(\d{4})-(\d{2})-(\d{2})$/', (string) $headerDob, $m)) {
-            $headerDob = $m[3].'-'.$m[2].'-'.$m[1];
-        }
-    }
+    $headerDob = CrmTransactionDetail::formatDateOfBirth($customerDateOfBirth ?? null);
 
     $periodLabel = \Carbon\Carbon::parse(request('start_date'))->format('d-m-Y')
         .' - '.\Carbon\Carbon::parse(request('end_date'))->format('d-m-Y');
@@ -114,23 +100,6 @@
                     </thead>
                     <tbody>
                         @forelse ($transactions as $transaction)
-                            @php
-                                $rawTgl = preg_replace('/[^0-9]/', '', (string) $transaction->tanggal_lahir);
-                                if (strlen($rawTgl) === 8) {
-                                    try {
-                                        $tanggalLahir = \Carbon\Carbon::createFromFormat('dmY', $rawTgl)->format('d-m-Y');
-                                    } catch (\Exception $e) {
-                                        $tanggalLahir = $transaction->tanggal_lahir ?: '';
-                                    }
-                                } else {
-                                    $tanggalLahir = $transaction->tanggal_lahir
-                                        ? CrmTransactionDetail::formatDateOnly($transaction->tanggal_lahir)
-                                        : '';
-                                    if (preg_match('/^(\d{4})-(\d{2})-(\d{2})$/', (string) $tanggalLahir, $m)) {
-                                        $tanggalLahir = $m[3].'-'.$m[2].'-'.$m[1];
-                                    }
-                                }
-                            @endphp
                             <tr>
                                 <td class="text-center">
                                     {{ $transactions->firstItem() + $loop->index }}
@@ -142,7 +111,7 @@
                                 <td class="text-nowrap">{{ $transaction->nomor_identitas ?: '—' }}</td>
                                 <td>{{ CrmTransactionDetail::formatGender($transaction->jenis_kelamin) ?: '—' }}</td>
                                 <td class="text-nowrap">{{ $transaction->kota_lahir_pengirim ?: '—' }}</td>
-                                <td class="text-nowrap">{{ $tanggalLahir !== '' ? $tanggalLahir : '—' }}</td>
+                                <td class="text-nowrap">{{ CrmTransactionDetail::formatDateOfBirth($transaction->tanggal_lahir) ?: '—' }}</td>
                                 <td class="text-nowrap">{{ $transaction->telpon_pengirim ?: '—' }}</td>
                                 <td class="text-nowrap">{{ $transaction->nama_penerima ?: '—' }}</td>
                                 <td class="text-nowrap">{{ $transaction->negara_penerima ?: '—' }}</td>

@@ -66,6 +66,81 @@ class CrmTransactionDetail
         }
     }
 
+    /**
+     * Format date of birth for display (d-m-Y).
+     * Supports POS packed dmY (24011986), ISO Y-m-d (1978-03-17), Ymd, and m/d/Y.
+     */
+    public static function formatDateOfBirth($value): string
+    {
+        if ($value === null || $value === '') {
+            return '';
+        }
+
+        $text = trim((string) $value);
+        if ($text === '') {
+            return '';
+        }
+
+        // Already ISO / SQL date — never strip to digits first (1978-03-17 → 19780317 breaks dmY).
+        if (preg_match('/^(\d{4})-(\d{2})-(\d{2})/', $text, $m)) {
+            return $m[3].'-'.$m[2].'-'.$m[1];
+        }
+
+        try {
+            return Carbon::createFromFormat('m/d/Y', $text)->format('d-m-Y');
+        } catch (\Throwable $e) {
+            // continue
+        }
+
+        $digits = preg_replace('/[^0-9]/', '', $text);
+        if (strlen($digits) === 8) {
+            $asYmdYear = (int) substr($digits, 0, 4);
+            $asDmYYear = (int) substr($digits, 4, 4);
+
+            // Prefer Ymd when leading 4 digits look like a real year (Direct / ISO stripped).
+            if ($asYmdYear >= 1900 && $asYmdYear <= 2100) {
+                try {
+                    return Carbon::createFromFormat('Ymd', $digits)->format('d-m-Y');
+                } catch (\Throwable $e) {
+                    // continue
+                }
+            }
+
+            // POS legacy: ddmmyyyy e.g. 24011986
+            if ($asDmYYear >= 1900 && $asDmYYear <= 2100) {
+                try {
+                    return Carbon::createFromFormat('dmY', $digits)->format('d-m-Y');
+                } catch (\Throwable $e) {
+                    // continue
+                }
+            }
+
+            foreach (['dmY', 'Ymd', 'mdY'] as $format) {
+                try {
+                    $parsed = Carbon::createFromFormat($format, $digits);
+                    $year = (int) $parsed->format('Y');
+                    if ($year >= 1900 && $year <= 2100) {
+                        return $parsed->format('d-m-Y');
+                    }
+                } catch (\Throwable $e) {
+                    // try next
+                }
+            }
+        }
+
+        try {
+            $parsed = Carbon::parse($text);
+            $year = (int) $parsed->format('Y');
+            if ($year >= 1900 && $year <= 2100) {
+                return $parsed->format('d-m-Y');
+            }
+        } catch (\Throwable $e) {
+            // fall through
+        }
+
+        return $text;
+    }
+
     public static function formatDateMinute($value): string
     {
         if ($value === null || $value === '') {

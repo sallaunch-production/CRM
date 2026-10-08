@@ -450,20 +450,7 @@ class CheckingController extends Controller
                 ->addColumn('tanggal_fmt', fn ($row) => CrmTransactionDetail::formatDateMinute($row->tanggal ?? null))
                 ->addColumn('jenis_kelamin_fmt', fn ($row) => CrmTransactionDetail::formatGender($row->jenis_kelamin ?? null))
                 ->addColumn('tanggal_lahir_fmt', function ($row) {
-                    $raw = (string) ($row->tanggal_lahir ?? '');
-                    $digits = preg_replace('/[^0-9]/', '', $raw);
-                    if (strlen($digits) === 8) {
-                        try {
-                            return Carbon::createFromFormat('dmY', $digits)->format('d-m-Y');
-                        } catch (\Throwable $e) {
-                            // fall through
-                        }
-                    }
-                    try {
-                        return Carbon::createFromFormat('m/d/Y', $raw)->format('d-m-Y');
-                    } catch (\Throwable $e) {
-                        return CrmTransactionDetail::formatDateOnly($raw);
-                    }
+                    return CrmTransactionDetail::formatDateOfBirth($row->tanggal_lahir ?? null);
                 })
                 ->addColumn('action', function ($row) use ($isOps) {
                     $routeName = $isOps
