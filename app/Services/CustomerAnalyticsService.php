@@ -112,13 +112,19 @@ class CustomerAnalyticsService
     ): Builder {
         return DB::table('transaksi_send_pos as transaction')
             ->select(
+                'transaction.no',
                 'transaction.no_referensi',
+                'transaction.tanggal',
+                'transaction.id_pos',
                 'transaction.nama_pengirim',
-                'transaction.nama_penerima',
                 'transaction.nomor_identitas',
+                'transaction.jenis_kelamin',
+                'transaction.kota_lahir_pengirim',
+                'transaction.tanggal_lahir',
+                'transaction.telpon_pengirim',
+                'transaction.nama_penerima',
                 'transaction.negara_penerima',
-                'transaction.amount',
-                'transaction.tanggal'
+                'transaction.amount'
             )
             ->whereRaw('TRIM(transaction.nomor_identitas) = ?', [trim($identityNumber)])
             ->where('transaction.tanggal', '>=', $startDate)

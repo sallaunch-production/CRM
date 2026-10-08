@@ -960,12 +960,25 @@ class CheckingController extends Controller
             ->paginate(10)
             ->withQueryString();
 
-        $customerName = $transactions->first()?->nama_pengirim ?? '-';
+        $first = $transactions->first();
+        $customerName = $first->nama_pengirim ?? '-';
+        $customerGender = $first->jenis_kelamin ?? null;
+        $customerPlaceOfBirth = $first->kota_lahir_pengirim ?? null;
+        $customerDateOfBirth = $first->tanggal_lahir ?? null;
+        $customerPhone = $first->telpon_pengirim ?? null;
+        $detailRoute = Auth::user()->level === 'operasional'
+            ? 'transaksi_send_pos_operasional.detail'
+            : 'transaksi_send_pos.detail';
 
         return view('checking.counting_customer_send_detail', compact(
             'transactions',
             'nomorIdentitas',
-            'customerName'
+            'customerName',
+            'customerGender',
+            'customerPlaceOfBirth',
+            'customerDateOfBirth',
+            'customerPhone',
+            'detailRoute'
         ));
     }
 
