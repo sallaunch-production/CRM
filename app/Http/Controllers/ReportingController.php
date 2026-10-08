@@ -288,7 +288,10 @@ class ReportingController extends Controller
           return DataTables::of($query)
               ->addIndexColumn()
               ->addColumn('nopend_label', function ($row) use ($kotaNama) {
-                  return trim(($row->id_pos ?? '').' '.$kotaNama);
+                  return trim(($row->id_pos ?? '').' - '.$kotaNama, ' -');
+              })
+              ->editColumn('tanggal', function ($row) {
+                  return CrmTransactionDetail::formatDateMinute($row->tanggal ?? null);
               })
               ->filter(function ($query) use ($request) {
                   $search = trim((string) $request->input('search.value', ''));
@@ -408,7 +411,10 @@ class ReportingController extends Controller
           return DataTables::of($query)
               ->addIndexColumn()
               ->addColumn('nopend_label', function ($row) use ($kotaNama) {
-                  return trim(($row->id_pos ?? '').' ('.$kotaNama.')');
+                  return trim(($row->id_pos ?? '').' - '.$kotaNama, ' -');
+              })
+              ->editColumn('tanggal', function ($row) {
+                  return CrmTransactionDetail::formatDateMinute($row->tanggal ?? null);
               })
               ->filter(function ($query) use ($request) {
                   $search = trim((string) $request->input('search.value', ''));
