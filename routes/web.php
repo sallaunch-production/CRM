@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ImportExportController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ReportingController;
 use App\Http\Controllers\HomeController;
@@ -160,108 +161,123 @@ Route::group(['middleware' => ['compliance']], function () {  //HomeController
 
 
 
-Route::group(['middleware' => ['operasional']], function () {
+Route::middleware('operasional')->group(function () {
 
-    Route::get('dashboard_operasional', [App\Http\Controllers\HomeController::class, 'dashboard'])->name('dashboard_operasional')->middleware('auth');
-    Route::get('nopend_operasional', [App\Http\Controllers\NopendController::class, 'nopend'])->name('nopend_operasional')->middleware('auth');
-    Route::post('cari_nopend_operasional', [App\Http\Controllers\NopendController::class, 'cari_nopend'])->name('cari_nopend_operasional')->middleware('auth');
-    Route::get('agent_sort_operasional', [App\Http\Controllers\NopendController::class, 'agent_sort'])->name('agent_sort_operasional')->middleware('auth');
-    Route::post('cari_agent_operasional', [App\Http\Controllers\NopendController::class, 'cari_agent'])->name('cari_agent_operasional')->middleware('auth');
-    Route::post('liat_agent_belum_aktif_operasional', [App\Http\Controllers\NopendController::class, 'liat_agent_belum_aktif'])->name('liat_agent_belum_aktif_operasional')->middleware('auth');
-    Route::get('list_country_operasional', [App\Http\Controllers\ReportingController::class, 'list_country'])->name('list_country_operasional')->middleware('auth');
-    Route::post('search_filtering_transaction_operasional', [App\Http\Controllers\ReportingController::class, 'search_filtering_transaction'])->name('search_filtering_transaction_operasional')->middleware('auth');
-    Route::post('search_filtering_identitas_operasional', [App\Http\Controllers\ReportingController::class, 'search_filtering_identitas'])->name('search_filtering_identitas_operasional')->middleware('auth');
-    Route::post('search_filtering_sender_operasional', [App\Http\Controllers\ReportingController::class, 'search_filtering_sender'])->name('search_filtering_sender_operasional')->middleware('auth');
-    Route::post('search_filtering_negara_operasional', [App\Http\Controllers\ReportingController::class, 'search_filtering_negara'])->name('search_filtering_negara_operasional')->middleware('auth');
-    Route::post('proses_detail_negara_operasional', [App\Http\Controllers\ReportingController::class, 'proses_detail_negara'])->name('proses_detail_negara_operasional')->middleware('auth');
-    Route::post('proses_detail_negara_operasional_send', [App\Http\Controllers\ReportingController::class, 'proses_detail_negara'])->name('proses_detail_negara_operasional_send')->middleware('auth');
-    Route::post('detail_kota_operasional', [App\Http\Controllers\ReportingController::class, 'detail_kota'])->name('detail_kota_operasional')->middleware('auth');
-    Route::post('detail_identitas_operasional', [App\Http\Controllers\ReportingController::class, 'detail_identitas'])->name('detail_identitas_operasional')->middleware('auth');
-    Route::get('settings', [App\Http\Controllers\HomeController::class, 'settings_user'])->name('settings')->middleware('auth');
-    Route::get('kota-operasional', [App\Http\Controllers\ReportingController::class, 'kota'])->name('kota-operasional')->middleware('auth');
-    Route::get('negara-operasional', [App\Http\Controllers\ReportingController::class, 'negara'])->name('negara-operasional')->middleware('auth');
-    Route::post('search_filtering_telepon_operasional', [App\Http\Controllers\ReportingController::class, 'search_filtering_telepon'])->name('search_filtering_telepon_operasional')->middleware('auth');
-    Route::get('negara_send_operasional', [App\Http\Controllers\ReportingController::class, 'negara_send'])->name('negara_send_operasional')->middleware('auth');
-    Route::get('negara_receive_operasional', [App\Http\Controllers\ReportingController::class, 'negara_receive'])->name('negara_receive_operasional')->middleware('auth');
-    Route::post('cari_negara_operasional', [App\Http\Controllers\ReportingController::class, 'cari_negara'])->name('cari_negara_operasional')->middleware('auth');
-    Route::post('cari_negara_send_operasional', [App\Http\Controllers\ReportingController::class, 'cari_negara_send'])->name('cari_negara_send_operasional')->middleware('auth');
-    Route::post('pencarian_detail_negara_send_operasional', [App\Http\Controllers\ReportingController::class, 'pencarian_detail_negara_send'])->name('pencarian_detail_negara_send_operasional')->middleware('auth');
-    Route::post('pencarian_detail_negara_operasional', [App\Http\Controllers\ReportingController::class, 'pencarian_detail_negara'])->name('pencarian_detail_negara_operasional')->middleware('auth');
-    Route::post('detail_negara_operasional', [App\Http\Controllers\ReportingController::class, 'detail_negara'])->name('detail_negara_operasional')->middleware('auth');
-    Route::post('page_history_refund_operasional', [App\Http\Controllers\ReportingController::class, 'page_history_refund'])->name('page_history_refund_operasional')->middleware('auth');
+    Route::get('dashboard_operasional', [App\Http\Controllers\HomeController::class, 'dashboard'])->name('dashboard_operasional');
+    Route::get('nopend_operasional', [App\Http\Controllers\NopendController::class, 'nopend'])->name('nopend_operasional');
+    Route::post('cari_nopend_operasional', [App\Http\Controllers\NopendController::class, 'cari_nopend'])->name('cari_nopend_operasional');
+    Route::get('agent_sort_operasional', [App\Http\Controllers\NopendController::class, 'agent_sort'])->name('agent_sort_operasional');
+    Route::post('cari_agent_operasional', [App\Http\Controllers\NopendController::class, 'cari_agent'])->name('cari_agent_operasional');
+    Route::post('liat_agent_belum_aktif_operasional', [App\Http\Controllers\NopendController::class, 'liat_agent_belum_aktif'])->name('liat_agent_belum_aktif_operasional');
+    Route::get('list_country_operasional', [App\Http\Controllers\ReportingController::class, 'list_country'])->name('list_country_operasional');
+    Route::post('search_filtering_transaction_operasional', [App\Http\Controllers\ReportingController::class, 'search_filtering_transaction'])->name('search_filtering_transaction_operasional');
+    Route::post('search_filtering_identitas_operasional', [App\Http\Controllers\ReportingController::class, 'search_filtering_identitas'])->name('search_filtering_identitas_operasional');
+    Route::post('search_filtering_sender_operasional', [App\Http\Controllers\ReportingController::class, 'search_filtering_sender'])->name('search_filtering_sender_operasional');
+    Route::post('search_filtering_negara_operasional', [App\Http\Controllers\ReportingController::class, 'search_filtering_negara'])->name('search_filtering_negara_operasional');
+    Route::post('proses_detail_negara_operasional', [App\Http\Controllers\ReportingController::class, 'proses_detail_negara'])->name('proses_detail_negara_operasional');
+    Route::post('proses_detail_negara_operasional_send', [App\Http\Controllers\ReportingController::class, 'proses_detail_negara'])->name('proses_detail_negara_operasional_send');
+    Route::post('detail_kota_operasional', [App\Http\Controllers\ReportingController::class, 'detail_kota'])->name('detail_kota_operasional');
+    Route::post('detail_identitas_operasional', [App\Http\Controllers\ReportingController::class, 'detail_identitas'])->name('detail_identitas_operasional');
+    Route::get('settings', [App\Http\Controllers\HomeController::class, 'settings_user'])->name('settings');
+    Route::get('kota-operasional', [App\Http\Controllers\ReportingController::class, 'kota'])->name('kota-operasional');
+    Route::get('negara-operasional', [App\Http\Controllers\ReportingController::class, 'negara'])->name('negara-operasional');
+    Route::post('search_filtering_telepon_operasional', [App\Http\Controllers\ReportingController::class, 'search_filtering_telepon'])->name('search_filtering_telepon_operasional');
+    Route::get('negara_send_operasional', [App\Http\Controllers\ReportingController::class, 'negara_send'])->name('negara_send_operasional');
+    Route::get('negara_receive_operasional', [App\Http\Controllers\ReportingController::class, 'negara_receive'])->name('negara_receive_operasional');
+    Route::post('cari_negara_operasional', [App\Http\Controllers\ReportingController::class, 'cari_negara'])->name('cari_negara_operasional');
+    Route::post('cari_negara_send_operasional', [App\Http\Controllers\ReportingController::class, 'cari_negara_send'])->name('cari_negara_send_operasional');
+    Route::post('pencarian_detail_negara_send_operasional', [App\Http\Controllers\ReportingController::class, 'pencarian_detail_negara_send'])->name('pencarian_detail_negara_send_operasional');
+    Route::post('pencarian_detail_negara_operasional', [App\Http\Controllers\ReportingController::class, 'pencarian_detail_negara'])->name('pencarian_detail_negara_operasional');
+    Route::post('detail_negara_operasional', [App\Http\Controllers\ReportingController::class, 'detail_negara'])->name('detail_negara_operasional');
+    Route::post('page_history_refund_operasional', [App\Http\Controllers\ReportingController::class, 'page_history_refund'])->name('page_history_refund_operasional');
 
-    Route::post('upload_pop_operasional', [App\Http\Controllers\ReportingController::class, 'upload_pop'])->name('upload_pop_operasional')->middleware('auth');
-    Route::post('act_upload_pop_operasional', [App\Http\Controllers\ReportingController::class, 'act_upload_pop'])->name('act_upload_pop_operasional')->middleware('auth');
+    Route::post('upload_pop_operasional', [App\Http\Controllers\ReportingController::class, 'upload_pop'])->name('upload_pop_operasional');
+    Route::post('act_upload_pop_operasional', [App\Http\Controllers\ReportingController::class, 'act_upload_pop'])->name('act_upload_pop_operasional');
 
-    Route::post('upload_history_refund_operasional', [App\Http\Controllers\ReportingController::class, 'upload_history_refund'])->name('upload_history_refund_operasional')->middleware('auth');
-    Route::post('ubah_password_operasional', [App\Http\Controllers\HomeController::class, 'ubah_password'])->name('ubah_password_operasional')->middleware('auth');
-    Route::get('filtering_transaction_operasional', [App\Http\Controllers\ReportingController::class, 'filtering_transaction'])->name('filtering_transaction_operasional')->middleware('auth');
-    Route::get('filtering_identitas_operasional', [App\Http\Controllers\ReportingController::class, 'filtering_identitas'])->name('filtering_identitas_operasional')->middleware('auth');
-    Route::get('filter_telepon_operasional', [App\Http\Controllers\ReportingController::class, 'filter_telepon'])->name('filter_telepon_operasional')->middleware('auth');
-    Route::get('filter_negara_operasional', [App\Http\Controllers\ReportingController::class, 'filter_negara'])->name('filter_negara_operasional')->middleware('auth');
-    Route::get('filter_sender_operasional', [App\Http\Controllers\ReportingController::class, 'filter_sender'])->name('filter_sender_operasional')->middleware('auth');
-    Route::get('filter_one_to_many_operasional', [App\Http\Controllers\ReportingController::class, 'filter_one_to_many'])->name('filter_one_to_many_operasional')->middleware('auth');
-    Route::get('filter_many_to_one_operasional', [App\Http\Controllers\ReportingController::class, 'filter_many_to_one'])->name('filter_many_to_one_operasional')->middleware('auth');
-    Route::get('filter_nik_amount_operasional', [App\Http\Controllers\ReportingController::class, 'filter_nik_amount'])->name('filter_nik_amount_operasional')->middleware('auth');
-    Route::post('search_filtering_one_to_many_operasional', [App\Http\Controllers\ReportingController::class, 'search_filtering_one_to_many'])->name('search_filtering_one_to_many_operasional')->middleware('auth');
-    Route::post('detail_one_to_many_operasional', [App\Http\Controllers\ReportingController::class, 'detail_one_to_many'])->name('detail_one_to_many_operasional')->middleware('auth');
-    Route::post('search_filtering_many_to_one_operasional', [App\Http\Controllers\ReportingController::class, 'search_filtering_many_to_one'])->name('search_filtering_many_to_one_operasional')->middleware('auth');
-    Route::post('detail_many_to_one_operasional', [App\Http\Controllers\ReportingController::class, 'detail_many_to_one'])->name('detail_many_to_one_operasional')->middleware('auth');
-    Route::post('search_filtering_nik_amount_operasional', [App\Http\Controllers\ReportingController::class, 'search_filtering_nik_amount'])->name('search_filtering_nik_amount_operasional')->middleware('auth');
-    Route::post('detail_nik_amount_operasional', [App\Http\Controllers\ReportingController::class, 'detail_nik_amount'])->name('detail_nik_amount_operasional')->middleware('auth');
+    Route::post('upload_history_refund_operasional', [App\Http\Controllers\ReportingController::class, 'upload_history_refund'])->name('upload_history_refund_operasional');
+    Route::post('ubah_password_operasional', [App\Http\Controllers\HomeController::class, 'ubah_password'])->name('ubah_password_operasional');
+    Route::get('filtering_transaction_operasional', [App\Http\Controllers\ReportingController::class, 'filtering_transaction'])->name('filtering_transaction_operasional');
+    Route::get('filtering_identitas_operasional', [App\Http\Controllers\ReportingController::class, 'filtering_identitas'])->name('filtering_identitas_operasional');
+    Route::get('filter_telepon_operasional', [App\Http\Controllers\ReportingController::class, 'filter_telepon'])->name('filter_telepon_operasional');
+    Route::get('filter_negara_operasional', [App\Http\Controllers\ReportingController::class, 'filter_negara'])->name('filter_negara_operasional');
+    Route::get('filter_sender_operasional', [App\Http\Controllers\ReportingController::class, 'filter_sender'])->name('filter_sender_operasional');
+    Route::get('filter_one_to_many_operasional', [App\Http\Controllers\ReportingController::class, 'filter_one_to_many'])->name('filter_one_to_many_operasional');
+    Route::get('filter_many_to_one_operasional', [App\Http\Controllers\ReportingController::class, 'filter_many_to_one'])->name('filter_many_to_one_operasional');
+    Route::get('filter_nik_amount_operasional', [App\Http\Controllers\ReportingController::class, 'filter_nik_amount'])->name('filter_nik_amount_operasional');
+    Route::post('search_filtering_one_to_many_operasional', [App\Http\Controllers\ReportingController::class, 'search_filtering_one_to_many'])->name('search_filtering_one_to_many_operasional');
+    Route::post('detail_one_to_many_operasional', [App\Http\Controllers\ReportingController::class, 'detail_one_to_many'])->name('detail_one_to_many_operasional');
+    Route::post('search_filtering_many_to_one_operasional', [App\Http\Controllers\ReportingController::class, 'search_filtering_many_to_one'])->name('search_filtering_many_to_one_operasional');
+    Route::post('detail_many_to_one_operasional', [App\Http\Controllers\ReportingController::class, 'detail_many_to_one'])->name('detail_many_to_one_operasional');
+    Route::post('search_filtering_nik_amount_operasional', [App\Http\Controllers\ReportingController::class, 'search_filtering_nik_amount'])->name('search_filtering_nik_amount_operasional');
+    Route::post('detail_nik_amount_operasional', [App\Http\Controllers\ReportingController::class, 'detail_nik_amount'])->name('detail_nik_amount_operasional');
 
-    Route::get('filtering-operasional', [App\Http\Controllers\CheckingController::class, 'filtering'])->name('filtering')->middleware('auth');
-    Route::post('cari_filtering_operasional', [App\Http\Controllers\CheckingController::class, 'cari_filtering'])->name('cari_filtering_operasional')->middleware('auth');
+    Route::get('filtering-operasional', [App\Http\Controllers\CheckingController::class, 'filtering'])->name('filtering');
+    Route::post('cari_filtering_operasional', [App\Http\Controllers\CheckingController::class, 'cari_filtering'])->name('cari_filtering_operasional');
 
-    Route::get('history_refund_operasional', [App\Http\Controllers\ReportingController::class, 'history_refund'])->name('history_refund')->middleware('auth');
-    Route::get('history_refund_pos_operasional', [App\Http\Controllers\ReportingController::class, 'history_refund_pos'])->name('history_refund_pos_operasional')->middleware('auth');
-    Route::get('history_amend_pos_operasional', [App\Http\Controllers\ReportingController::class, 'history_amend_pos'])->name('history_amend_pos')->middleware('auth');
+    Route::get('history_refund_operasional', [App\Http\Controllers\ReportingController::class, 'history_refund'])->name('history_refund');
+    Route::get('history_refund_pos_operasional', [App\Http\Controllers\ReportingController::class, 'history_refund_pos'])->name('history_refund_pos_operasional');
+    Route::get('history_amend_pos_operasional', [App\Http\Controllers\ReportingController::class, 'history_amend_pos'])->name('history_amend_pos');
 
-    Route::get('popimage-operasional', [App\Http\Controllers\ReportingController::class, 'popimage'])->name('popimage')->middleware('auth');
-    Route::get('transaksi_send_pos_operasional', [App\Http\Controllers\TransactionalController::class, 'transaksi_send_pos_operasional'])->name('transaksi_send_pos_operasional')->middleware('auth');
-    Route::get('transaksi_send_pos_operasional/{no}', [App\Http\Controllers\TransactionalController::class, 'transaksi_send_pos_detail_operasional'])->name('transaksi_send_pos_operasional.detail')->middleware('auth')->whereNumber('no');
-    Route::get('transaksi_receive_pos_operasional', [App\Http\Controllers\TransactionalController::class, 'transaksi_receive_pos_operasional'])->name('transaksi_receive_pos_operasional')->middleware('auth');
-    Route::get('transaksi_receive_pos_operasional/{no}', [App\Http\Controllers\TransactionalController::class, 'transaksi_receive_pos_detail_operasional'])->name('transaksi_receive_pos_operasional.detail')->middleware('auth')->whereNumber('no');
-    Route::get('screening_transaksi_operasional', [App\Http\Controllers\ReportingController::class, 'screening_transaksi'])->name('screening_transaksi')->middleware('auth');
-    Route::post('cari_screening_transaksi_oprasional', [App\Http\Controllers\ReportingController::class, 'cari_screening_transaksi'])->name('cari_screening_transaksi_oprasional')->middleware('auth');
-    Route::get('transaction_receive_adisena_operasional', [App\Http\Controllers\ReportingController::class, 'transaction_receive_adisena'])->name('transaction_receive_adisena_operasional')->middleware('auth');
-    Route::get('transaction_receive_adisena_operasional/{no}', [App\Http\Controllers\ReportingController::class, 'transaction_receive_adisena_detail'])->name('transaction_receive_adisena_operasional.detail')->middleware('auth')->whereNumber('no');
-    Route::get('transaction_send_adisena_operasional', [App\Http\Controllers\ReportingController::class, 'transaction_send_adisena'])->name('transaction_send_adisena_operasional')->middleware('auth');
-    Route::get('transaction_send_adisena_operasional/{no}', [App\Http\Controllers\ReportingController::class, 'transaction_send_adisena_detail'])->name('transaction_send_adisena_operasional.detail')->middleware('auth')->whereNumber('no');
-    Route::get('transaction_receive_direct_operasional', [App\Http\Controllers\ReportingController::class, 'transaction_receive_direct'])->name('transaction_receive_direct_operasional')->middleware('auth');
-    Route::get('transaction_receive_direct_operasional/{no}', [App\Http\Controllers\ReportingController::class, 'transaction_receive_direct_detail'])->name('transaction_receive_direct_operasional.detail')->middleware('auth')->whereNumber('no');
-    Route::get('transaction_send_direct_operasional', [App\Http\Controllers\ReportingController::class, 'transaction_send_direct'])->name('transaction_send_direct_operasional')->middleware('auth');
-    Route::get('transaction_send_direct_operasional/{no}', [App\Http\Controllers\ReportingController::class, 'transaction_send_direct_detail'])->name('transaction_send_direct_operasional.detail')->middleware('auth')->whereNumber('no');
-    Route::post('delete_popimages_operasional', [App\Http\Controllers\ReportingController::class, 'delete_popimages'])->name('delete_popimages_operasional')->middleware('auth');
-    Route::post('edit_popimages_operasional', [App\Http\Controllers\ReportingController::class, 'edit_popimages'])->name('edit_popimages_operasional')->middleware('auth');
+    Route::get('popimage-operasional', [App\Http\Controllers\ReportingController::class, 'popimage'])->name('popimage');
+    Route::get('transaksi_send_pos_operasional', [App\Http\Controllers\TransactionalController::class, 'transaksi_send_pos_operasional'])->name('transaksi_send_pos_operasional');
+    Route::get('transaksi_send_pos_operasional/{no}', [App\Http\Controllers\TransactionalController::class, 'transaksi_send_pos_detail_operasional'])->name('transaksi_send_pos_operasional.detail')->whereNumber('no');
+    Route::get('transaksi_receive_pos_operasional', [App\Http\Controllers\TransactionalController::class, 'transaksi_receive_pos_operasional'])->name('transaksi_receive_pos_operasional');
+    Route::get('transaksi_receive_pos_operasional/{no}', [App\Http\Controllers\TransactionalController::class, 'transaksi_receive_pos_detail_operasional'])->name('transaksi_receive_pos_operasional.detail')->whereNumber('no');
+    Route::get('screening_transaksi_operasional', [App\Http\Controllers\ReportingController::class, 'screening_transaksi'])->name('screening_transaksi');
+    Route::post('cari_screening_transaksi_oprasional', [App\Http\Controllers\ReportingController::class, 'cari_screening_transaksi'])->name('cari_screening_transaksi_oprasional');
+    Route::get('transaction_receive_adisena_operasional', [App\Http\Controllers\ReportingController::class, 'transaction_receive_adisena'])->name('transaction_receive_adisena_operasional');
+    Route::get('transaction_receive_adisena_operasional/{no}', [App\Http\Controllers\ReportingController::class, 'transaction_receive_adisena_detail'])->name('transaction_receive_adisena_operasional.detail')->whereNumber('no');
+    Route::get('transaction_send_adisena_operasional', [App\Http\Controllers\ReportingController::class, 'transaction_send_adisena'])->name('transaction_send_adisena_operasional');
+    Route::get('transaction_send_adisena_operasional/{no}', [App\Http\Controllers\ReportingController::class, 'transaction_send_adisena_detail'])->name('transaction_send_adisena_operasional.detail')->whereNumber('no');
+    Route::get('transaction_receive_direct_operasional', [App\Http\Controllers\ReportingController::class, 'transaction_receive_direct'])->name('transaction_receive_direct_operasional');
+    Route::get('transaction_receive_direct_operasional/{no}', [App\Http\Controllers\ReportingController::class, 'transaction_receive_direct_detail'])->name('transaction_receive_direct_operasional.detail')->whereNumber('no');
+    Route::get('transaction_send_direct_operasional', [App\Http\Controllers\ReportingController::class, 'transaction_send_direct'])->name('transaction_send_direct_operasional');
+    Route::get('transaction_send_direct_operasional/{no}', [App\Http\Controllers\ReportingController::class, 'transaction_send_direct_detail'])->name('transaction_send_direct_operasional.detail')->whereNumber('no');
+    Route::post('delete_popimages_operasional', [App\Http\Controllers\ReportingController::class, 'delete_popimages'])->name('delete_popimages_operasional');
+    Route::post('edit_popimages_operasional', [App\Http\Controllers\ReportingController::class, 'edit_popimages'])->name('edit_popimages_operasional');
 
     // Customer Analytics
-    Route::get('customer-analytics/new-customer-receive', [App\Http\Controllers\CheckingController::class, 'newcustomer_receive_analytics'])->name('customer_analytics.new_customer_receive')->middleware('auth');
-    Route::get('customer-analytics/new-customer-receive/export/excel', [App\Http\Controllers\ImportExportController::class, 'excel_NewCustomerReceive'])->name('customer_analytics.new_customer_receive.excel')->middleware('auth');
-    Route::get('customer-analytics/new-customer-receive/export/pdf', [App\Http\Controllers\ImportExportController::class, 'pdf_NewCustomerReceive'])->name('customer_analytics.new_customer_receive.pdf')->middleware('auth');
-    Route::get('newcustomer_daily', [App\Http\Controllers\CheckingController::class, 'newcustomer_daily'])->name('newcustomer_daily')->middleware('auth');
-    Route::get('newcustomer_daily/export/excel', [App\Http\Controllers\ImportExportController::class, 'excel_NewCustomer'])->name('newcustomer_daily.excel')->middleware('auth');
-    Route::get('newcustomer_daily/export/pdf', [App\Http\Controllers\ImportExportController::class, 'pdf_NewCustomer'])->name('newcustomer_daily.pdf')->middleware('auth');
-    Route::get('counting_customer_send', [App\Http\Controllers\CheckingController::class, 'counting_customer_send'])->name('counting_customer_send')->middleware('auth');
-    Route::get('counting_customer_send/detail', [App\Http\Controllers\CheckingController::class, 'counting_customer_send_detail'])->name('counting_customer_send.detail')->middleware('auth');
-    Route::get('newcustomer_monthly', [App\Http\Controllers\CheckingController::class, 'newcustomer_monthly'])->name('newcustomer_monthly')->middleware('auth');
-    Route::get('newcustomer_monthly/export/excel', [App\Http\Controllers\ImportExportController::class, 'excel_NewCustomerMonthly'])->name('newcustomer_monthly.excel')->middleware('auth');
-    Route::get('newcustomer_monthly/export/pdf', [App\Http\Controllers\ImportExportController::class, 'pdf_NewCustomerMonthly'])->name('newcustomer_monthly.pdf')->middleware('auth');
+    Route::get('customer-analytics/new-customer-receive', [App\Http\Controllers\CheckingController::class, 'newcustomer_receive_analytics'])->name('customer_analytics.new_customer_receive');
+    Route::get('customer-analytics/new-customer-receive/export/excel', [App\Http\Controllers\ImportExportController::class, 'excel_NewCustomerReceive'])->name('customer_analytics.new_customer_receive.excel');
+    Route::get('customer-analytics/new-customer-receive/export/pdf', [App\Http\Controllers\ImportExportController::class, 'pdf_NewCustomerReceive'])->name('customer_analytics.new_customer_receive.pdf');
+    Route::get('counting_customer_send', [App\Http\Controllers\CheckingController::class, 'counting_customer_send'])->name('counting_customer_send');
+    Route::get('counting_customer_send/detail', [App\Http\Controllers\CheckingController::class, 'counting_customer_send_detail'])->name('counting_customer_send.detail');
 
-    Route::get('newcustomer_operasional', [App\Http\Controllers\CheckingController::class, 'newcustomer'])->name('newcustomer_operasional')->middleware('auth');
-    Route::get('newcustomer-send-operasional', [App\Http\Controllers\CheckingController::class, 'newcustomer_send'])->name('newcustomer_send_operasional')->middleware('auth');
-    Route::post('search_newcustomer_operasional', [App\Http\Controllers\CheckingController::class, 'search_newcustomer'])->name('search_newcustomer_operasional')->middleware('auth');
-    Route::post('search_newcustomer_send_operasional', [App\Http\Controllers\CheckingController::class, 'search_newcustomer_send'])->name('search_newcustomer_send_operasional')->middleware('auth');
-    Route::post('upload_refund_pos_operasional', [App\Http\Controllers\ReportingController::class, 'upload_refund_pos'])->name('upload_refund_pos_operasional')->middleware('auth');
-    Route::post('act_upload_refund_pos_operasional', [App\Http\Controllers\ReportingController::class, 'act_upload_refund_pos'])->name('act_upload_refund_pos_operasional')->middleware('auth');
-    Route::post('cetak_laporan_bi_baru_operasional', [App\Http\Controllers\ImportExportController::class, 'cetak_laporan_bi_baru'])->name('cetak_laporan_bi_baru_operasional')->middleware('auth');
-    Route::post('cetak_laporan_bi_g0001_operasional', [App\Http\Controllers\ImportExportController::class, 'cetak_laporan_bi_g0001'])->name('cetak_laporan_bi_g0001_operasional')->middleware('auth');
-    Route::post('cetak_laporan_bi_g0003_operasional', [App\Http\Controllers\ImportExportController::class, 'cetak_laporan_bi_g0003'])->name('cetak_laporan_bi_g0003_operasional')->middleware('auth');
-    Route::post('cetak_laporan_bi_baru_txt_operasional', [App\Http\Controllers\ImportExportController::class, 'cetak_laporan_bi_baru_txt'])->name('cetak_laporan_bi_baru_txt_operasional')->middleware('auth');
-    Route::post('cetak_laporan_ppatk_baru_operasional', [App\Http\Controllers\ImportExportController::class, 'cetak_laporan_ppatk_baru'])->name('cetak_laporan_ppatk_baru_operasional')->middleware('auth');
-    Route::post('cetak_laporan_ppatk_baru_c2a_operasional', [App\Http\Controllers\ImportExportController::class, 'cetak_laporan_ppatk_baru_c2a'])->name('cetak_laporan_ppatk_baru_c2a_operasional')->middleware('auth');
 
-    Route::post('cari_laporan_operasional', [App\Http\Controllers\ReportingController::class, 'cari_laporan'])->name('cari_laporan_operasional')->middleware('auth');
-    Route::get('laporan_operasional', [App\Http\Controllers\ReportingController::class, 'laporan'])->name('laporan_operasional')->middleware('auth');
+    // New Customer Receive
+    Route::get('newcustomer_operasional', [App\Http\Controllers\CheckingController::class, 'newcustomer'])->name('newcustomer_operasional');
+    Route::get('newcustomer-send-operasional', [App\Http\Controllers\CheckingController::class, 'newcustomer_send'])->name('newcustomer_send_operasional');
+    Route::post('search_newcustomer_operasional', [App\Http\Controllers\CheckingController::class, 'search_newcustomer'])->name('search_newcustomer_operasional');
+    Route::post('search_newcustomer_send_operasional', [App\Http\Controllers\CheckingController::class, 'search_newcustomer_send'])->name('search_newcustomer_send_operasional');
+
+
+    // New Customer Send
+    Route::get('newcustomer_daily', [App\Http\Controllers\CheckingController::class, 'newcustomer_daily'])->name('newcustomer_daily');
+    Route::get('newcustomer_daily/export/excel', [App\Http\Controllers\ImportExportController::class, 'excel_NewCustomer'])->name('newcustomer_daily.excel');
+    Route::get('newcustomer_daily/export/pdf', [App\Http\Controllers\ImportExportController::class, 'pdf_NewCustomer'])->name('newcustomer_daily.pdf');
+    Route::get('newcustomer_monthly', [App\Http\Controllers\CheckingController::class, 'newcustomer_monthly'])->name('newcustomer_monthly');
+    Route::get('newcustomer_monthly/export/excel', [App\Http\Controllers\ImportExportController::class, 'excel_NewCustomerMonthly'])->name('newcustomer_monthly.excel');
+    Route::get('newcustomer_monthly/export/pdf', [App\Http\Controllers\ImportExportController::class, 'pdf_NewCustomerMonthly'])->name('newcustomer_monthly.pdf');
+
+
+
+    // Return Customer
+    Route::get('return_customer', [App\Http\Controllers\CheckingController::class, 'returnCustomer'])->name('return_customer');
+    Route::get('search_returncustomer', [App\Http\Controllers\CheckingController::class, 'search_returncustomer'])->name('search_returncustomer');
+    Route::get('/detail_transaction_return_customer', [App\Http\Controllers\CheckingController::class, 'detail_transaction_return_customer'])->name('detail_transaction_return_customer');
+    Route::get('excel_returncustomer', [App\Http\Controllers\ImportExportController::class, 'excel_ReturnCustomer'])->name('excel_returncustomer');
+
+
+    Route::post('upload_refund_pos_operasional', [App\Http\Controllers\ReportingController::class, 'upload_refund_pos'])->name('upload_refund_pos_operasional');
+    Route::post('act_upload_refund_pos_operasional', [App\Http\Controllers\ReportingController::class, 'act_upload_refund_pos'])->name('act_upload_refund_pos_operasional');
+    Route::post('cetak_laporan_bi_baru_operasional', [App\Http\Controllers\ImportExportController::class, 'cetak_laporan_bi_baru'])->name('cetak_laporan_bi_baru_operasional');
+    Route::post('cetak_laporan_bi_g0001_operasional', [App\Http\Controllers\ImportExportController::class, 'cetak_laporan_bi_g0001'])->name('cetak_laporan_bi_g0001_operasional');
+    Route::post('cetak_laporan_bi_g0003_operasional', [App\Http\Controllers\ImportExportController::class, 'cetak_laporan_bi_g0003'])->name('cetak_laporan_bi_g0003_operasional');
+    Route::post('cetak_laporan_bi_baru_txt_operasional', [App\Http\Controllers\ImportExportController::class, 'cetak_laporan_bi_baru_txt'])->name('cetak_laporan_bi_baru_txt_operasional');
+    Route::post('cetak_laporan_ppatk_baru_operasional', [App\Http\Controllers\ImportExportController::class, 'cetak_laporan_ppatk_baru'])->name('cetak_laporan_ppatk_baru_operasional');
+    Route::post('cetak_laporan_ppatk_baru_c2a_operasional', [App\Http\Controllers\ImportExportController::class, 'cetak_laporan_ppatk_baru_c2a'])->name('cetak_laporan_ppatk_baru_c2a_operasional');
+
+    Route::post('cari_laporan_operasional', [App\Http\Controllers\ReportingController::class, 'cari_laporan'])->name('cari_laporan_operasional');
+    Route::get('laporan_operasional', [App\Http\Controllers\ReportingController::class, 'laporan'])->name('laporan_operasional');
 
 });

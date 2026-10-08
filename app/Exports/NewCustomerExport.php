@@ -36,7 +36,7 @@ class NewCustomerExport implements FromQuery, WithHeadings, ShouldAutoSize
             )
             ->leftJoin('transaksi_valid as t2', function ($join) {
                 $join->on('t1.nama_penerima', '=', 't2.nama_penerima')
-                     ->where('t2.tanggal', '<=', $this->tanggal_dari . ' 23:59:59');
+                    ->where('t2.tanggal', '<=', $this->tanggal_dari . ' 23:59:59');
             })
             ->whereBetween('t1.tanggal', [
                 $this->tanggal_dari . ' 00:00:00',

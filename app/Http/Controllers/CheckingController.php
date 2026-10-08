@@ -21,6 +21,7 @@ use App\Support\CrmTransactionDetail;
 use DB;
 use Carbon\Carbon;
 use InvalidArgumentException;
+use Illuminate\Support\Collection;
 
 class CheckingController extends Controller
 {
@@ -120,7 +121,6 @@ class CheckingController extends Controller
 
     public function search_profil(Request $request)
     {
-        //  cek berhasil login 
         if (Auth::check()) {
 
             $nama = trim((string) $request->nama);
@@ -498,6 +498,10 @@ class CheckingController extends Controller
         return $this->search_newcustomer($request);
     }
 
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
     public function search_newcustomer_send(Request $request)
     {
         $request->merge([
@@ -1120,6 +1124,623 @@ class CheckingController extends Controller
         }
     }
 
+
+
+    // public function returnCustomer(Request $request)
+    // {
+    //     // Receive POS #1
+    //     $receivePos = DB::table('transaksi_valid')
+    //         ->where('transaksi_valid.deltawork', 'ya')
+    //         ->whereNotNull('transaksi_valid.id_transaksi')
+    //         ->whereNotNull('transaksi_valid.nomor_identitas')
+    //         ->whereRaw("trim(transaksi_valid.nomor_identitas) <> ''")
+    //         ->select(
+    //             DB::raw("trim(transaksi_valid.nomor_identitas) as nomor_identitas"),
+    //             'transaksi_valid.nama_penerima as nama'
+    //         );
+
+    //     // Send POS #2
+    //     $sendPos = DB::table('transaksi_send_pos')
+    //         ->whereNotNull('transaksi_send_pos.nomor_identitas')
+    //         ->whereRaw("trim(transaksi_send_pos.nomor_identitas) <> ''")
+    //         ->select(
+    //             DB::raw("trim(transaksi_send_pos.nomor_identitas) as nomor_identitas"),
+    //             'transaksi_send_pos.nama_pengirim as nama'
+    //         );
+
+    //     // Send Branch #3
+    //     $sendBranch = DB::table('transaksi_send')
+    //         ->whereNotNull('transaksi_send.nomor_identitas')
+    //         ->whereRaw("trim(transaksi_send.nomor_identitas) <> ''")
+    //         ->select(
+    //             DB::raw("trim(transaksi_send.nomor_identitas) as nomor_identitas"),
+    //             'transaksi_send.nama_pengirim as nama'
+    //         );
+
+    //     // Receive Branch #4
+    //     $receiveBranch = DB::table('transaksi_receive')
+    //         ->whereNotNull('transaksi_receive.nomor_identitas')
+    //         ->whereRaw("trim(transaksi_receive.nomor_identitas) <> ''")
+    //         ->select(
+    //             DB::raw("trim(transaksi_receive.nomor_identitas) as nomor_identitas"),
+    //             'transaksi_receive.nama_penerima as nama'
+    //         );
+
+    //     // Receive Direct #5
+    //     $receiveDirect = DB::table('transaksi_receive_clients')
+    //         ->whereNotNull('transaksi_receive_clients.nomor_identitas')
+    //         ->whereRaw("trim(transaksi_receive_clients.nomor_identitas) <> ''")
+    //         ->select(
+    //             DB::raw("trim(transaksi_receive_clients.nomor_identitas) as nomor_identitas"),
+    //             'transaksi_receive_clients.nama_penerima as nama'
+    //         );
+
+    //     // Send Direct #6
+    //     $sendDirect = DB::table('transaksi_send_clients')
+    //         ->whereNotNull('transaksi_send_clients.nomor_identitas')
+    //         ->whereRaw("trim(transaksi_send_clients.nomor_identitas) <> ''")
+    //         ->select(
+    //             DB::raw("trim(transaksi_send_clients.nomor_identitas) as nomor_identitas"),
+    //             'transaksi_send_clients.nama_pengirim as nama'
+    //         );
+
+    //     // Merge all transactions with UNION ALL
+    //     $allTransactions = $receivePos
+    //         ->unionAll($sendPos)
+    //         ->unionAll($sendBranch)
+    //         ->unionAll($receiveBranch)
+    //         ->unionAll($receiveDirect)
+    //         ->unionAll($sendDirect);
+
+    //     // Count transaction by nomor_identitas
+    //     $customers = DB::query()
+    //         ->fromSub($allTransactions, 'transactions')
+    //         ->selectRaw("
+    //             nomor_identitas,
+    //             MAX(nama) AS nama,
+    //             COUNT(*) AS count_transaction
+    //         ")
+    //         ->groupBy('nomor_identitas')
+    //         ->orderByDesc('count_transaction')
+    //         ->get();
+
+    //     return view('checking.return_customer', [
+    //         'customers' => $customers,
+    //     ]);
+    // }
+
+
+    public function returnCustomer(Request $request)
+    {
+        return view('checking.return_customer');
+    }
+
+
+    public function search_returncustomer(Request $request)
+    {
+
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+
+        $filterBy = $request->input('filter_by', 'nama');
+        $search = trim((string) $request->input('nama', ''));
+
+        $allowedFilters = ['nama', 'nomor_identitas'];
+
+        if (!in_array($filterBy, $allowedFilters, true)) {
+            abort(422, 'Invalid search filter.');
+        }
+
+        // VALIDATE SEARCH INPUT
+        if ($search !== '') {
+            $containsDigit = preg_match('/\d/', $search) === 1;
+
+            if ($filterBy === 'nama' && $containsDigit) {
+                abort(
+                    422,
+                    'Your search input looks like an ID number. Please select ID Number.'
+                );
+            }
+
+            if ($filterBy === 'nomor_identitas' && !$containsDigit) {
+                abort(
+                    422,
+                    'Your search input looks like a customer name. Please select Name.'
+                );
+            }
+        }
+
+        // Receive POS
+        $receivePos = DB::table('transaksi_valid')
+            ->where('transaksi_valid.deltawork', 'ya')
+            ->whereNotNull('transaksi_valid.id_transaksi')
+            ->whereNotNull('transaksi_valid.nomor_identitas')
+            ->whereRaw("trim(transaksi_valid.nomor_identitas) <> ''")
+
+            ->when($startDate, function ($query) use ($startDate) {
+                $query->where(
+                    'transaksi_valid.tanggal',
+                    '>=',
+                    $startDate
+                )
+                ;
+            })
+            ->when($endDate, function ($query) use ($endDate) {
+                $query->where(
+                    'transaksi_valid.tanggal',
+                    '<',
+                    Carbon::parse($endDate)->addDay()
+                );
+            })
+
+            ->select(
+                DB::raw("trim(transaksi_valid.nomor_identitas) as nomor_identitas"),
+                'transaksi_valid.nama_penerima as nama'
+            );
+
+
+        // Send POS
+        $sendPos = DB::table('transaksi_send_pos')
+            ->whereNotNull('transaksi_send_pos.nomor_identitas')
+            ->whereRaw("trim(transaksi_send_pos.nomor_identitas) <> ''")
+
+            ->when($startDate, function ($query) use ($startDate) {
+                $query->where(
+                    'transaksi_send_pos.tanggal',
+                    '>=',
+                    $startDate
+                )
+                ;
+            })
+            ->when($endDate, function ($query) use ($endDate) {
+                $query->where(
+                    'transaksi_send_pos.tanggal',
+                    '<',
+                    Carbon::parse($endDate)->addDay()
+                );
+            })
+
+            ->select(
+                DB::raw("trim(transaksi_send_pos.nomor_identitas) as nomor_identitas"),
+                'transaksi_send_pos.nama_pengirim as nama'
+            );
+
+
+        // Send Branch
+        $sendBranch = DB::table('transaksi_send')
+            ->whereNotNull('transaksi_send.nomor_identitas')
+            ->whereRaw("trim(transaksi_send.nomor_identitas) <> ''")
+
+            ->when($startDate, function ($query) use ($startDate) {
+                $query->where(
+                    'transaksi_send.tanggal',
+                    '>=',
+                    $startDate
+                )
+                ;
+            })
+            ->when($endDate, function ($query) use ($endDate) {
+                $query->where(
+                    'transaksi_send.tanggal',
+                    '<',
+                    Carbon::parse($endDate)->addDay()
+                );
+            })
+
+            ->select(
+                DB::raw("trim(transaksi_send.nomor_identitas) as nomor_identitas"),
+                'transaksi_send.nama_pengirim as nama'
+            );
+
+        // Receive Branch
+        $receiveBranch = DB::table('transaksi_receive')
+            ->whereNotNull('transaksi_receive.nomor_identitas')
+            ->whereRaw("trim(transaksi_receive.nomor_identitas) <> ''")
+
+            ->when($startDate, function ($query) use ($startDate) {
+                $query->where(
+                    'transaksi_receive.tanggal',
+                    '>=',
+                    $startDate
+                );
+            })
+            ->when($endDate, function ($query) use ($endDate) {
+                $query->where(
+                    'transaksi_receive.tanggal',
+                    '<',
+                    Carbon::parse($endDate)->addDay()
+                );
+            })
+
+            ->select(
+                DB::raw("trim(transaksi_receive.nomor_identitas) as nomor_identitas"),
+                'transaksi_receive.nama_penerima as nama'
+            );
+
+        // Receive Client
+        $receiveClient = DB::table('transaksi_receive_clients')
+            ->whereNotNull('transaksi_receive_clients.nomor_identitas')
+            ->whereRaw("trim(transaksi_receive_clients.nomor_identitas) <> ''")
+            ->when($startDate, function ($query) use ($startDate) {
+                $query->where(
+                    'transaksi_receive_clients.tanggal',
+                    '>=',
+                    $startDate
+                );
+            })
+            ->when($endDate, function ($query) use ($endDate) {
+                $query->where(
+                    'transaksi_receive_clients.tanggal',
+                    '<',
+                    Carbon::parse($endDate)->addDay()
+                );
+            })
+
+            ->select(
+                DB::raw("trim(transaksi_receive_clients.nomor_identitas) as nomor_identitas"),
+                'transaksi_receive_clients.nama_penerima as nama'
+            );
+
+        // Send Client
+        $sendClient = DB::table('transaksi_send_clients')
+            ->whereNotNull('transaksi_send_clients.nomor_identitas')
+            ->whereRaw("trim(transaksi_send_clients.nomor_identitas) <> ''")
+            ->when($startDate, function ($query) use ($startDate) {
+                $query->where(
+                    'transaksi_send_clients.tanggal',
+                    '>=',
+                    $startDate
+                );
+            })
+            ->when($endDate, function ($query) use ($endDate) {
+                $query->where(
+                    'transaksi_send_clients.tanggal',
+                    '<',
+                    Carbon::parse($endDate)->addDay()
+                );
+            })
+
+            ->select(
+                DB::raw("trim(transaksi_send_clients.nomor_identitas) as nomor_identitas"),
+                'transaksi_send_clients.nama_pengirim as nama'
+            );
+
+        // UNION ALL
+        $allTransactions = $receivePos
+            ->unionAll($sendPos)
+            ->unionAll($sendBranch)
+            ->unionAll($receiveBranch)
+            ->unionAll($receiveClient)
+            ->unionAll($sendClient);
+
+        // GROUP BY nomor_identitas
+        $groupedCustomers = DB::query()
+            ->fromSub($allTransactions, 'transactions')
+            ->selectRaw("
+        nomor_identitas,
+        MAX(nama) AS nama,
+        COUNT(*) AS count_transaction
+    ")
+            ->groupBy('nomor_identitas');
+
+
+        // APPLY SEARCH
+        $customers = DB::query()
+            ->fromSub($groupedCustomers, 'customers')
+            ->when($search !== '', function ($query) use ($filterBy, $search) {
+                $query->where(
+                    $filterBy,
+                    'ILIKE',
+                    '%' . $search . '%'
+                );
+            });
+
+        // DEFAULT ORDER
+        $customers->orderByDesc('count_transaction');
+
+        // DATATABLE RESPONSE
+        return DataTables::of($customers)
+            ->addIndexColumn()
+            ->addColumn('action', function ($customer) use ($startDate, $endDate) {
+                $url = route('detail_transaction_return_customer', [
+                    'nomor_identitas' => $customer->nomor_identitas,
+                    'nama' => $customer->nama,
+                    'start_date' => $startDate,
+                    'end_date' => $endDate,
+                ]);
+
+                return '
+                    <a href="' . e($url) . '"
+                        class="crm-btn crm-btn-primary crm-btn-detail"
+                        title="Detail">
+                        Detail
+                    </a>
+                ';
+            })
+            ->rawColumns(['action'])
+            ->make(true);
+
+    }
+
+
+
+    // public function detail_transaction_return_customer(Request $request)
+    // {
+    //     $nomorIdentitas = trim((string) $request->input('nomor_identitas'));
+    //     $nama = trim((string) $request->input('nama'));
+
+    //     // ==========================================
+    //     // QUERY TRANSAKSI RETURN CUSTOMER
+    //     // ==========================================
+
+    //     // Receive Direct
+    //     $queryReceive = DB::table('transaksi_receive')
+    //         ->where('nomor_identitas', $nomorIdentitas)
+    //         ->get();
+
+    //     // Send Direct
+    //     $querySend = DB::table('transaksi_send')
+    //         ->where('nomor_identitas', $nomorIdentitas)
+    //         ->get();
+
+    //     // Receive POS
+    //     $dat = DB::table('transaksi_valid')
+    //         ->where('nomor_identitas', $nomorIdentitas)
+    //         ->where('deltawork', 'ya')
+    //         ->whereNotNull('id_transaksi')
+    //         ->get();
+
+    //     // Send POS
+    //     $querySendPos = DB::table('transaksi_send_pos')
+    //         ->where('nomor_identitas', $nomorIdentitas)
+    //         ->get();
+
+    //     // Receive Branch
+    //     $queryReceiveClient = DB::table('transaksi_receive_clients')
+    //         ->where('nomor_identitas', $nomorIdentitas)
+    //         ->get();
+
+    //     // Send Branch
+    //     $querySendClient = DB::table('transaksi_send_clients')
+    //         ->where('nomor_identitas', $nomorIdentitas)
+    //         ->get();
+
+    //     return view('checking.detail_transaction_return_customer', [
+    //         'hasDetail' => true,
+    //         'nama' => $nama,
+    //         'dat' => $dat,
+    //         'queryReceive' => $queryReceive,
+    //         'querySend' => $querySend,
+    //         'querySendPos' => $querySendPos,
+    //         'queryReceiveClient' => $queryReceiveClient,
+    //         'querySendClient' => $querySendClient,
+    //     ]);
+    // } // false
+
+
+    public function detail_transaction_return_customer(Request $request)
+    {
+        $nomorIdentitas = trim((string) $request->input('nomor_identitas'));
+        $nama = trim((string) $request->input('nama'));
+        $namaNorm = preg_replace('/\s+/', ' ', $nama);
+
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+
+        if ($nomorIdentitas === '' && $namaNorm === '') {
+            return redirect()->route('return_customer', $request->only('start_date', 'end_date'));
+        }
+
+        // NIK diutamakan; fallback ke nama (ternormalisasi) bila NIK kosong.
+        $applyMatch = function ($query, $nikCol, $namaCol) use ($nomorIdentitas, $namaNorm) {
+            if ($nomorIdentitas !== '') {
+                $query->whereRaw("trim($nikCol) = ?", [$nomorIdentitas]);
+            } else {
+                $query->whereRaw("regexp_replace(btrim($namaCol), '\\s+', ' ', 'g') = ?", [$namaNorm]);
+            }
+            return $query;
+        };
+
+        // Filter periode: sama persis dengan search_returncustomer
+        $applyDate = function ($query, $tanggalCol) use ($startDate, $endDate) {
+            if ($startDate) {
+                $query->where($tanggalCol, '>=', $startDate);
+            }
+            if ($endDate) {
+                $query->where($tanggalCol, '<', Carbon::parse($endDate)->addDay());
+            }
+            return $query;
+        };
+
+        // Receive Direct
+        $queryReceive = DB::table('transaksi_receive');
+        $applyMatch($queryReceive, 'transaksi_receive.nomor_identitas', 'transaksi_receive.nama_penerima');
+        $applyDate($queryReceive, 'transaksi_receive.tanggal');
+        $queryReceive = $queryReceive->get();
+
+        // Send Direct
+        $querySend = DB::table('transaksi_send');
+        $applyMatch($querySend, 'transaksi_send.nomor_identitas', 'transaksi_send.nama_pengirim');
+        $applyDate($querySend, 'transaksi_send.tanggal');
+        $querySend = $querySend->get();
+
+        // Receive Pos (butuh alias bsu & tgl_valid untuk view)
+        $dat = DB::table('transaksi_valid')
+            ->where('transaksi_valid.deltawork', 'ya')
+            ->whereNotNull('transaksi_valid.id_transaksi');
+        $applyMatch($dat, 'transaksi_valid.nomor_identitas', 'transaksi_valid.nama_penerima');
+        $applyDate($dat, 'transaksi_valid.tanggal');
+        $dat = $dat->select(
+            'transaksi_valid.*',
+            DB::raw("replace(transaksi_valid.bsubanyak, ',', '') as bsu"),
+            DB::raw('transaksi_valid.tanggal as tgl_valid')
+        )->get();
+
+        // Send Pos
+        $querySendPos = DB::table('transaksi_send_pos');
+        $applyMatch($querySendPos, 'transaksi_send_pos.nomor_identitas', 'transaksi_send_pos.nama_pengirim');
+        $applyDate($querySendPos, 'transaksi_send_pos.tanggal');
+        $querySendPos = $querySendPos->get();
+
+        // Receive Branch
+        $queryReceiveClient = DB::table('transaksi_receive_clients');
+        $applyMatch($queryReceiveClient, 'transaksi_receive_clients.nomor_identitas', 'transaksi_receive_clients.nama_penerima');
+        $applyDate($queryReceiveClient, 'transaksi_receive_clients.tanggal');
+        $queryReceiveClient = $queryReceiveClient->get();
+
+        // Send Branch
+        $querySendClient = DB::table('transaksi_send_clients');
+        $applyMatch($querySendClient, 'transaksi_send_clients.nomor_identitas', 'transaksi_send_clients.nama_pengirim');
+        $applyDate($querySendClient, 'transaksi_send_clients.tanggal');
+        $querySendClient = $querySendClient->get();
+
+        $transactionCount =
+            $dat->count() +
+            $queryReceiveClient->count() +
+            $queryReceive->count() +
+            $querySend->count() +
+            $querySendPos->count() +
+            $querySendClient->count();
+
+        // Isi listing profil: pakai input request, kalau kosong ambil dari baris pertama yang terisi.
+        $pick = function (string $field, string $fromRequest = '') use ($request, $dat, $queryReceiveClient, $queryReceive, $querySend, $querySendPos, $querySendClient) {
+            $v = trim((string) $request->input($field, $fromRequest));
+            if ($v !== '') {
+                return $v;
+            }
+            foreach ([$dat, $queryReceiveClient, $queryReceive, $querySend, $querySendPos, $querySendClient] as $rows) {
+                foreach ($rows as $row) {
+                    $v = trim((string) ($row->$field ?? ''));
+                    if ($v !== '') {
+                        return $v;
+                    }
+                }
+            }
+            return '';
+        };
+
+        return view('checking.return_customer', [
+            'hasDetail' => true,
+            'nama' => $nama,
+            'transactionCount' => $transactionCount,
+            'dat' => $dat,
+            'queryReceive' => $queryReceive,
+            'querySend' => $querySend,
+            'querySendPos' => $querySendPos,
+            'queryReceiveClient' => $queryReceiveClient,
+            'querySendClient' => $querySendClient,
+            'profilListing' => [
+                'nama' => $nama,
+                'alamat_penerima' => $pick('alamat_penerima'),
+                'telepon_penerima' => $pick('telepon_penerima'),
+                'tanggal_lahir' => $pick('tanggal_lahir'),
+                'nomor_identitas' => $nomorIdentitas,
+                // 'transactionCount' => $transactionCount,
+            ],
+        ]);
+    }
+
+    // public function search_returncustomer(Request $request)
+    // {
+
+    //     // Receive POS
+    //     $receivePos = DB::table('transaksi_valid')
+    //         ->where('transaksi_valid.deltawork', 'ya')
+    //         ->whereNotNull('transaksi_valid.id_transaksi')
+    //         ->whereNotNull('transaksi_valid.nomor_identitas')
+    //         ->whereRaw("trim(transaksi_valid.nomor_identitas) <> ''")
+    //         ->select(
+    //             DB::raw("trim(transaksi_valid.nomor_identitas) as nomor_identitas"),
+    //             'transaksi_valid.nama_penerima as nama'
+    //         );
+
+    //     // Send POS
+    //     $sendPos = DB::table('transaksi_send_pos')
+    //         ->whereNotNull('transaksi_send_pos.nomor_identitas')
+    //         ->whereRaw("trim(transaksi_send_pos.nomor_identitas) <> ''")
+    //         ->select(
+    //             DB::raw("trim(transaksi_send_pos.nomor_identitas) as nomor_identitas"),
+    //             'transaksi_send_pos.nama_pengirim as nama'
+    //         );
+
+    //     // Send Branch
+    //     $sendBranch = DB::table('transaksi_send')
+    //         ->whereNotNull('transaksi_send.nomor_identitas')
+    //         ->whereRaw("trim(transaksi_send.nomor_identitas) <> ''")
+    //         ->select(
+    //             DB::raw("trim(transaksi_send.nomor_identitas) as nomor_identitas"),
+    //             'transaksi_send.nama_pengirim as nama'
+    //         );
+
+    //     // Receive Branch
+    //     $receiveBranch = DB::table('transaksi_receive')
+    //         ->whereNotNull('transaksi_receive.nomor_identitas')
+    //         ->whereRaw("trim(transaksi_receive.nomor_identitas) <> ''")
+    //         ->select(
+    //             DB::raw("trim(transaksi_receive.nomor_identitas) as nomor_identitas"),
+    //             'transaksi_receive.nama_penerima as nama'
+    //         );
+
+    //     // Receive Client
+    //     $receiveClient = DB::table('transaksi_receive_clients')
+    //         ->whereNotNull('transaksi_receive_clients.nomor_identitas')
+    //         ->whereRaw("trim(transaksi_receive_clients.nomor_identitas) <> ''")
+    //         ->select(
+    //             DB::raw("trim(transaksi_receive_clients.nomor_identitas) as nomor_identitas"),
+    //             'transaksi_receive_clients.nama_penerima as nama'
+    //         );
+
+    //     // Send Client
+    //     $sendClient = DB::table('transaksi_send_clients')
+    //         ->whereNotNull('transaksi_send_clients.nomor_identitas')
+    //         ->whereRaw("trim(transaksi_send_clients.nomor_identitas) <> ''")
+    //         ->select(
+    //             DB::raw("trim(transaksi_send_clients.nomor_identitas) as nomor_identitas"),
+    //             'transaksi_send_clients.nama_pengirim as nama'
+    //         );
+
+    //     // Gabungkan seluruh transaksi
+    //     $allTransactions = $receivePos
+    //         ->unionAll($sendPos)
+    //         ->unionAll($sendBranch)
+    //         ->unionAll($receiveBranch)
+    //         ->unionAll($receiveClient)
+    //         ->unionAll($sendClient);
+
+    //     // Group berdasarkan nomor_identitas
+    //     $customers = DB::query()
+    //         ->fromSub($allTransactions, 'transactions')
+    //         ->selectRaw("
+    //             nomor_identitas,
+    //             MAX(nama) AS nama,
+    //             COUNT(*) AS count_transaction
+    //         ")
+    //         ->groupBy('nomor_identitas');
+
+    //     return DataTables::of($customers)
+    //         ->addIndexColumn()
+    //         ->addColumn('action', function ($customer) {
+
+    //             return '
+    //                 <a href="' . route('detail_transaksi', [
+    //                     'nomor_identitas' => $customer->nomor_identitas,
+    //                     'nama' => $customer->nama,
+    //                 ]) . '"
+    //                 class="btn btn-sm btn-primary"
+    //                 title="Detail">
+    //                     <i class="fas fa-eye"></i>
+    //                 </a>
+    //             ';
+    //         })
+    //         ->rawColumns(['action'])
+    //         ->make(true);
+
+    //     return response()->json([
+    //         'message' => 'You dont have access'
+    //     ], 401);
+    // }
+
 }
+
 
 

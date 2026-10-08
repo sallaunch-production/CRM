@@ -295,7 +295,7 @@
 <script>
     window.CrmDataTable = {
 
-        // LANGUAGE
+            // LANGUAGE
 
         language: {
             search: '',
@@ -310,565 +310,714 @@
                 next: @json(__('crm.dt_next'))
             }
         },
+            language: {
+                search: '',
+                searchPlaceholder: @json(__('crm.dt_filter_placeholder')),
+                lengthMenu: @json(__('crm.dt_length_menu')),
+                info: @json(__('crm.dt_info')),
+                infoEmpty: @json(__('crm.dt_info_empty')),
+                zeroRecords: @json(__('crm.dt_zero_records')),
+                paginate: {
+                    previous: @json(__('crm.dt_previous')),
+                    next: @json(__('crm.dt_next'))
+                }
+            },
 
 
-        // DATATABLE LAYOUT
+            // DATATABLE LAYOUT
 
-        domWithButtons: '<"crm-dt-top"' +
-            '<"crm-dt-length"l>' +
-            '<"crm-dt-toolbar-right"' +
-            '<"crm-dt-buttons"B>' +
-            '<"crm-dt-filter"f>' +
-            '>' +
-            '>' +
-            '<"crm-dt-scroll"rt>' +
-            '<"crm-dt-bottom"' +
-            '<"crm-dt-info"i>' +
-            '<"crm-dt-paginate"p>' +
-            '>',
-
-
-        // FILTER EXPORT SEMENTARA
-        // currentExportFilter dibaca oleh exportOptions.rows for rows
+            domWithButtons: '<"crm-dt-top"' +
+                '<"crm-dt-length"l>' +
+                '<"crm-dt-toolbar-right"' +
+                '<"crm-dt-buttons"B>' +
+                '<"crm-dt-filter"f>' +
+                '>' +
+                '>' +
+                '<"crm-dt-scroll"rt>' +
+                '<"crm-dt-bottom"' +
+                '<"crm-dt-info"i>' +
+                '<"crm-dt-paginate"p>' +
+                '>',
 
 
-        activeExportFilter: {},
+            // TEMPORARY EXPORT STATE
+            // currentExportFilter is read by exportOptions.rows
 
-        currentExportFilter: null,
+            activeExportFilter: {},
 
-        activeExportModalIds: [],
+            currentExportFilter: null,
 
-
-        // DEFAULT
-
-        defaults: function(extra) {
-
-            var options = Object.assign({
-
-                pageLength: 10,
-
-                order: [],
-
-                language: this.language,
-
-                dom: this.domWithButtons,
+            activeExportModalIds: [],
 
 
-                // EXCEL BUTTON
+            // DEFAULT OPTIONS
 
-                buttons: [
+            defaults: function(extra) {
 
-                    {
-                        extend: 'excelHtml5',
+                var options = Object.assign({
 
-                        text: '<i class="fas fa-file-export"></i> ' + @json(__('crm.generate')),
+                    pageLength: 10,
 
-                        className: 'crm-btn crm-btn-sm crm-btn-primary',
+                    order: [],
 
-                        title: 'Customer Profile',
+                    language: this.language,
+
+                    dom: this.domWithButtons,
 
 
-                        //
-                        // EXPORT OPTIONS
-                        //
+                    // EXCEL BUTTON
 
-                        exportOptions: {
+                    buttons: [
 
-                            // Don't Export the last action column
-                            columns: ':not(:last-child)',
+                        {
+                            extend: 'excelHtml5',
 
-                            modifier: {
+                            text: '<i class="fas fa-file-export"></i> ' + @json(__('crm.generate')),
 
-                                // Don't let DataTables search affect the export
-                                search: 'none',
+                            className: 'crm-btn crm-btn-sm crm-btn-primary',
 
-                                // Keep the DataTables ordering
-                                order: 'applied',
+                            title: 'Customer Profile',
 
-                                // Export all pages
-                                page: 'all'
+
+                            // EXPORT OPTIONS
+                            exportOptions: {
+
+                                // Do not export the last (Action) column
+                                columns: (extra && extra.exportDetail) ? ':visible' :
+                                    ':not(:last-child)',
+
+                                modifier: {
+
+                                    // Do not let the DataTables search affect the export
+                                    search: 'none',
+
+                                    // Keep the DataTables ordering
+                                    order: 'applied',
+
+                                    // Export all rows held by the table.
+                                    // For server-side tables this equals the visible page,
+                                    // or every row when exportAllRows() has redrawn with length = -1
+                                    page: 'all'
+                                },
+
+
+                                // Special export filter
+                                rows: function(rowIdx, rowData, rowNode) {
+
+                                    // Read the filter from the global variable.
+                                    // This is NOT DataTables ext.search, so it does not affect the main table.
+                                    var filter = window.CrmDataTable.currentExportFilter;
+
+                                    // No filter: export every row
+                                    if (!filter) {
+                                        return true;
+                                    }
+
+                                    // REPORT FILTER
+                                    if (
+                                        filter.laporCol !== null &&
+                                        filter.laporCol !== undefined
+                                    ) {
+
+                                        var lapor = rowData[filter.laporCol];
+
+                                        lapor =
+                                            lapor === null || lapor === undefined ?
+                                            '' :
+                                            String(lapor).replace(/<[^>]*>/g, '').trim();
+
+                                        // Skip rows whose Report value is empty
+                                        if (!lapor) {
+                                            return false;
+                                        }
+                                    }
+
+
+                                    // REQUIRED: Report Updated At cannot be NULL / empty
+                                    if (!rowNode) {
+                                        return false;
+                                    }
+
+                                    var exportDate = jQuery(rowNode).attr('data-export-date');
+
+                                    if (!exportDate || !String(exportDate).trim()) {
+                                        return false;
+                                    }
+
+
+                                    // Parse the Report Updated At date
+                                    var rowDate = window.CrmDataTable.parseExportDate(exportDate);
+
+                                    // Invalid date: do not export
+                                    if (!rowDate) {
+                                        return false;
+                                    }
+
+
+                                    // Date range filter (only when the user filled in the modal dates)
+                                    if (filter.start && rowDate < filter.start) {
+                                        return false;
+                                    }
+
+                                    if (filter.end && rowDate > filter.end) {
+                                        return false;
+                                    }
+
+
+                                    // Save the modal id of this row
+                                    if (extra && extra.exportModalFields) {
+
+                                        window.CrmDataTable
+                                            .activeExportModalIds
+                                            .push(jQuery(rowNode).attr('data-export-modal'));
+                                    }
+
+
+                                    // Row passed the filter
+                                    return true;
+                                }
                             },
 
 
-                            //  Special Export filter
-                            rows: function(rowIdx, rowData, rowNode) {
+                            // CUSTOMIZE DATA (rows and header before the sheet is built)
+                            customizeData: function(data) {
 
-                                // Get the filter from the global variable. This is NOT DataTables ext.search, so it doesn't affect the main table.
-                                var filter =
-                                    window.CrmDataTable.currentExportFilter
+                                // DETAIL MODE: renumber rows with a dot (1., 2., ...)
+                                if (extra && extra.exportDetail) {
 
-                                // EXPORT FILTER not found
-                                if (!filter) {
-                                    return true;
+                                    data.body.forEach(function(row, index) {
+                                        row[0] = (index + 1) + '.';
+                                    });
+
+                                    return;
                                 }
 
-                                // LAPOR FILTER 
-                                if (
-                                    filter.laporCol !== null &&
-                                    filter.laporCol !== undefined
-                                ) {
 
-                                    var lapor = rowData[filter.laporCol];
+                                // RETURN CUSTOMER MODE
+                                if (extra && extra.exportCurrentPage) {
 
-                                    lapor =
-                                        lapor === null ||
-                                        lapor === undefined ?
-                                        '' :
-                                        String(lapor)
-                                        .replace(/<[^>]*>/g, '')
-                                        .trim();
+                                    // Add a dot after the row number: 1 -> "1."
+                                    // The number itself is not changed (page 2 starts at 11.)
+                                    data.body.forEach(function(row) {
+
+                                        var no = String(row[0])
+                                            .replace(/<[^>]*>/g, '') // strip any HTML
+                                            .replace(/\.$/, '') // avoid a double dot
+                                            .trim();
+
+                                        row[0] = no + '.';
+                                    });
+
+                                    // Skip the default logic below
+                                    return;
+                                }
 
 
-                                    // if $lapor is empty, skip this row don't export please
-                                    if (!lapor) {
-                                        return false;
+                                // DEFAULT MODE: rebuild the serial number
+                                data.body.forEach(function(row, index) {
+                                    row[0] = (index + 1) + '.';
+                                });
+
+
+                                // Additional columns from the detail modal
+                                if (!extra || !extra.exportModalFields) {
+                                    return;
+                                }
+
+                                // Add the extra headers
+                                data.header.push(
+                                    'Remark',
+                                    'Report Updated At',
+                                    'Report Updated By'
+                                );
+
+
+                                // Read one value from a detail modal by its label
+                                function modalValue(modalId, label) {
+
+                                    var modal = document.getElementById(modalId);
+
+                                    if (!modal) {
+                                        return '';
                                     }
+
+                                    var item = jQuery(modal)
+                                        .find('.crm-detail-item')
+                                        .filter(function() {
+                                            return jQuery(this)
+                                                .find('label')
+                                                .text()
+                                                .trim() === label;
+                                        })
+                                        .first();
+
+                                    var value = item.find('div').first();
+
+                                    return (!value.length || value.hasClass('is-empty')) ?
+                                        '' :
+                                        value.text().trim();
                                 }
 
 
-                                // 2. REQUIRED: REPORT UPDATED AT Cannot be NULL / empty
-
-                                if (!rowNode) {
-                                    return false;
-                                }
-
-                                var exportDate =
-                                    jQuery(rowNode).attr('data-export-date');
-
-                                if (!exportDate || !String(exportDate).trim()) {
-                                    return false;
-                                }
-
-
-                                // PARSE LAPOR UPDATED AT
-                                var rowDate =
-                                    window.CrmDataTable
-                                    .parseExportDate(exportDate);
-
-                                // if the date not valid, -> do not export
-                                if (!rowDate) {
-                                    return false;
-                                }
-
-
-                                // Date Range Filter, this only runs if the user. Fills in the start/end date in the modal
-                                if (
-                                    filter.start &&
-                                    rowDate < filter.start
-                                ) {
-                                    return false;
-                                }
-
-                                if (
-                                    filter.end &&
-                                    rowDate > filter.end
-                                ) {
-                                    return false;
-                                }
-
-
-                                // SAVE MODAL ID
-                                if (
-                                    extra &&
-                                    extra.exportModalFields
-                                ) {
-
-                                    window.CrmDataTable
-                                        .activeExportModalIds
-                                        .push(
-                                            jQuery(rowNode)
-                                            .attr('data-export-modal')
-                                        );
-                                }
-
-
-                                // Row lolos export
-
-                                return true;
-                            }
-                        },
-
-
-                        //
-                        // CUSTOMIZE DATA
-                        //
-
-                        customizeData: function(data) {
-
-
-
-                            // excel serial number 
-                            data.body.forEach(function(row, index) {
-
-                                row[0] = (index + 1) + '.';
-
-                            });
-
-
-                            // Addtional column from modal
-                            if (
-                                !extra ||
-                                !extra.exportModalFields
-                            ) {
-                                return;
-                            }
-
-
-                            // Add header
-
-                            data.header.push(
-                                'Remark',
-                                'Report Updated At',
-                                'Report Updated By'
-                            );
-
-
-                            // Take  valued fork capital
-                            function modalValue(modalId, label) {
-
-                                var modal =
-                                    document.getElementById(modalId);
-
-
-                                if (!modal) {
-                                    return '';
-                                }
-
-
-                                var item =
-                                    jQuery(modal)
-                                    .find('.crm-detail-item')
-                                    .filter(function() {
-
-                                        return jQuery(this)
-                                            .find('label')
-                                            .text()
-                                            .trim() === label;
-
-                                    })
-                                    .first();
-
-
-                                var value =
-                                    item.find('div').first();
-
-
-                                return (
-                                        !value.length ||
-                                        value.hasClass('is-empty')
-                                    ) ?
-                                    '' :
-                                    value.text().trim();
-                            }
-
-
-                            // Input modal *DATA to excel
-                            data.body.forEach(function(row, index) {
-
-                                var modalId =
-                                    window.CrmDataTable
-                                    .activeExportModalIds[index];
-
-
-                                row.push(
-
-                                    modalValue(
-                                        modalId,
-                                        'Remark'
-                                    ),
-
-                                    modalValue(
-                                        modalId,
-                                        'Report Updated At'
-                                    ),
-
-                                    modalValue(
-                                        modalId,
-                                        'Report Updated By'
-                                    )
-
-                                );
-
-                            });
-
-                        },
-
-
-                        // CUSTOMIZE XLSX
-                        customize: function(xlsx) {
-
-                            if (
-                                !extra ||
-                                !extra.exportModalFields
-                            ) {
-                                return;
-                            }
-
-
-                            var sheet =
-                                xlsx.xl.worksheets['sheet1.xml'];
-
-
-                            var namespace =
-                                sheet.documentElement.namespaceURI;
-
-
-                            var cells =
-                                sheet.getElementsByTagName('c');
-
-
-                            // Convert ID Number (Column F, row >= 3) to text/inlineStr format to prevent long numbers from converting to scientific notation
-                            for (
-                                var i = 0; i < cells.length; i++
-                            ) {
-
-                                var cell =
-                                    cells[i];
-
-
-                                var reference =
-                                    cell.getAttribute('r');
-
-
-                                // Hanya kolom F, mulai dari row data
-                                if (
-                                    !/^F([3-9]|[1-9][0-9]+)$/.test(reference)
-                                ) {
-                                    continue;
-                                }
-
-
-                                var value =
-                                    cell.getElementsByTagName('v')[0];
-
-
-                                if (!value) {
-                                    continue;
-                                }
-
-
-                                var text =
-                                    value.textContent;
-
-
-                                var inlineString =
-                                    sheet.createElementNS(
-                                        namespace,
-                                        'is'
+                                // Push the modal values into every row
+                                data.body.forEach(function(row, index) {
+
+                                    var modalId = window.CrmDataTable.activeExportModalIds[
+                                        index];
+
+                                    row.push(
+                                        modalValue(modalId, 'Remark'),
+                                        modalValue(modalId, 'Report Updated At'),
+                                        modalValue(modalId, 'Report Updated By')
                                     );
+                                });
+                            },
 
 
-                                var textNode =
-                                    sheet.createElementNS(
-                                        namespace,
-                                        't'
-                                    );
+                            // CUSTOMIZE XLSX (sheet XML after it is built)
+                            customize: function(xlsx) {
+
+                                var sheet = xlsx.xl.worksheets['sheet1.xml'];
+                                var ns = sheet.documentElement.namespaceURI;
+
+                                // DETAIL MODE: keep the ID Number column as text.
+                                // Excel stores numbers with 15 significant digits only, so a 16-digit ID
+                                // must be written as a string to stay intact
+                                if (extra && extra.exportDetail) {
+
+                                    // Column index 6 -> letter "G"
+                                    var idLetter = String.fromCharCode(65 + (extra.exportIdCol ||
+                                        6));
+                                    var idPattern = new RegExp('^' + idLetter + '(\\d+)$');
+
+                                    var detailCells = sheet.getElementsByTagName('c');
+
+                                    for (var d = 0; d < detailCells.length; d++) {
+
+                                        var dc = detailCells[d];
+                                        var m = idPattern.exec(dc.getAttribute('r'));
+
+                                        // Data rows only (row 3 and below)
+                                        if (!m || parseInt(m[1], 10) < 3) continue;
+
+                                        var dv = dc.getElementsByTagName('v')[0];
+                                        if (!dv) continue;
+
+                                        var dIs = sheet.createElementNS(ns, 'is');
+                                        var dT = sheet.createElementNS(ns, 't');
+                                        dT.textContent = dv.textContent;
+                                        dIs.appendChild(dT);
+
+                                        dc.setAttribute('t', 'inlineStr');
+
+                                        while (dc.firstChild) dc.removeChild(dc.firstChild);
+
+                                        dc.appendChild(dIs);
+                                    }
+
+                                    return;
+                                }
+
+                                // RETURN CUSTOMER MODE: text ID, alignment, column widths
+                                if (extra && extra.exportCurrentPage) {
+
+                                    // 1. Add custom cell styles
+                                    var styles = xlsx.xl['styles.xml'];
+                                    var stNs = styles.documentElement.namespaceURI;
+                                    var cellXfs = styles.getElementsByTagName('cellXfs')[0];
+
+                                    // Create a new cell style and return its index
+                                    function addXf(numFmtId, horizontal) {
+
+                                        var xf = styles.createElementNS(stNs, 'xf');
+                                        xf.setAttribute('numFmtId', numFmtId);
+                                        xf.setAttribute('fontId', '0');
+                                        xf.setAttribute('fillId', '0');
+                                        xf.setAttribute('borderId', '0');
+                                        xf.setAttribute('xfId', '0');
+                                        xf.setAttribute('applyNumberFormat', '1');
+                                        xf.setAttribute('applyAlignment', '1');
+
+                                        var al = styles.createElementNS(stNs, 'alignment');
+                                        al.setAttribute('horizontal', horizontal);
+                                        al.setAttribute('vertical', 'center');
+                                        xf.appendChild(al);
+
+                                        cellXfs.appendChild(xf);
+
+                                        var count = cellXfs.getElementsByTagName('xf').length;
+                                        cellXfs.setAttribute('count', count);
+
+                                        return count - 1;
+                                    }
+
+                                    var styleCenter = addXf(0, 'center'); // No, Transaction Count
+                                    var styleTextLeft = addXf(49, 'left'); // numFmt 49 = text "@"
 
 
-                                textNode.textContent = text;
+                                    // 2. Format every data row (row 3 and below)
+                                    // Row 1 = title, row 2 = header
+                                    var rows = sheet.getElementsByTagName('row');
+
+                                    for (var r = 0; r < rows.length; r++) {
+
+                                        var rowNum = parseInt(rows[r].getAttribute('r'), 10);
+
+                                        if (rowNum < 3) continue;
+
+                                        var cells = rows[r].getElementsByTagName('c');
+
+                                        for (var k = 0; k < cells.length; k++) {
+
+                                            var c = cells[k];
+                                            var col = c.getAttribute('r').replace(/\d+/g, '');
+
+                                            if (col === 'B') {
+
+                                                // Identity Number: rebuild as an inline string
+                                                // so long numbers keep every digit
+                                                var v = c.getElementsByTagName('v')[0];
+
+                                                if (v) {
+                                                    var inl = sheet.createElementNS(ns, 'is');
+                                                    var tx = sheet.createElementNS(ns, 't');
+                                                    tx.textContent = v.textContent;
+                                                    inl.appendChild(tx);
+
+                                                    c.setAttribute('t', 'inlineStr');
+
+                                                    while (c.firstChild) c.removeChild(c
+                                                        .firstChild);
+
+                                                    c.appendChild(inl);
+                                                }
+
+                                                c.setAttribute('s', styleTextLeft);
+
+                                            } else if (col === 'C') {
+
+                                                // Name: left aligned text
+                                                c.setAttribute('s', styleTextLeft);
+
+                                            } else {
+
+                                                // No (A) and Transaction Count (D): centered
+                                                c.setAttribute('s', styleCenter);
+                                            }
+                                        }
+                                    }
 
 
-                                inlineString.appendChild(
-                                    textNode
-                                );
+                                    // 3. Column widths: No, Identity Number, Name, Transaction Count
+                                    var cols = sheet.getElementsByTagName('cols')[0];
 
+                                    if (cols) {
+                                        while (cols.firstChild) cols.removeChild(cols.firstChild);
+                                    } else {
+                                        cols = sheet.createElementNS(ns, 'cols');
+                                        var sheetData = sheet.getElementsByTagName('sheetData')[0];
+                                        sheetData.parentNode.insertBefore(cols, sheetData);
+                                    }
 
-                                cell.setAttribute(
-                                    't',
-                                    'inlineStr'
-                                );
+                                    [8, 30, 45, 20].forEach(function(width, i) {
 
+                                        var colEl = sheet.createElementNS(ns, 'col');
+                                        colEl.setAttribute('min', i + 1);
+                                        colEl.setAttribute('max', i + 1);
+                                        colEl.setAttribute('width', width);
+                                        colEl.setAttribute('customWidth', '1');
+                                        cols.appendChild(colEl);
+                                    });
 
-                                while (cell.firstChild) {
-
-                                    cell.removeChild(
-                                        cell.firstChild
-                                    );
-
+                                    // Skip the default logic below
+                                    return;
                                 }
 
 
-                                cell.appendChild(
-                                    inlineString
-                                );
+                                // DEFAULT MODE (only when extra modal fields are used)
+                                if (!extra || !extra.exportModalFields) {
+                                    return;
+                                }
 
+                                var cellsAll = sheet.getElementsByTagName('c');
+
+                                // Convert ID Number (column F, row >= 3) to inline text
+                                // to prevent long numbers from turning into scientific notation
+                                for (var i = 0; i < cellsAll.length; i++) {
+
+                                    var cell = cellsAll[i];
+                                    var reference = cell.getAttribute('r');
+
+                                    // Only column F, starting from the first data row
+                                    if (!/^F([3-9]|[1-9][0-9]+)$/.test(reference)) {
+                                        continue;
+                                    }
+
+                                    var value = cell.getElementsByTagName('v')[0];
+
+                                    if (!value) {
+                                        continue;
+                                    }
+
+                                    var text = value.textContent;
+
+                                    var inlineString = sheet.createElementNS(ns, 'is');
+                                    var textNode = sheet.createElementNS(ns, 't');
+
+                                    textNode.textContent = text;
+                                    inlineString.appendChild(textNode);
+
+                                    cell.setAttribute('t', 'inlineStr');
+
+                                    while (cell.firstChild) {
+                                        cell.removeChild(cell.firstChild);
+                                    }
+
+                                    cell.appendChild(inlineString);
+                                }
                             }
 
                         }
 
+                    ]
+
+                }, extra || {});
+
+
+                // Chain initComplete: move Generate into the card header (Profile pattern)
+                var userInitComplete = options.initComplete;
+
+                options.initComplete = function(settings, json) {
+
+                    var api = new jQuery.fn.dataTable.Api(settings);
+
+                    window.CrmDataTable.placeHeaderGenerate(api);
+
+                    if (typeof userInitComplete === 'function') {
+                        userInitComplete.call(this, settings, json);
                     }
+                };
 
-                ]
+                return options;
+            },
 
-            }, extra || {});
 
+            // Move the single Generate button into .crm-table-toolbar (like Profile).
+            // Multi-button setups (copy/csv/excel/pdf) stay in the filter row.
 
-            // Chain initComplete: pindahkan Generate ke header card (pola Profile).
-            var userInitComplete = options.initComplete;
+            placeHeaderGenerate: function(api) {
 
-            options.initComplete = function(settings, json) {
-
-                var api = new jQuery.fn.dataTable.Api(settings);
-
-                window.CrmDataTable.placeHeaderGenerate(api);
-
-                if (typeof userInitComplete === 'function') {
-                    userInitComplete.call(this, settings, json);
+                if (!api || !api.table) {
+                    return;
                 }
 
-            };
+                var buttonCount = 0;
+                var hasExcel = false;
 
-            return options;
-        },
+                try {
+                    buttonCount = api.buttons().count();
+                    hasExcel = api.buttons('.buttons-excel').any();
+                } catch (e) {
+                    return;
+                }
 
+                if (buttonCount !== 1 || !hasExcel) {
+                    return;
+                }
 
-        // Pindahkan tombol Generate tunggal ke .crm-table-toolbar (seperti Profile).
-        // Multi-button (copy/csv/excel/pdf) dibiarkan di baris filter.
+                var $table = jQuery(api.table().node());
+                var $card = $table.closest('.crm-table-card');
 
-        placeHeaderGenerate: function(api) {
+                if (!$card.length) {
+                    return;
+                }
 
-            if (!api || !api.table) {
-                return;
-            }
+                var $toolbar = $card.children('.crm-table-toolbar').first();
 
-            var buttonCount = 0;
-            var hasExcel = false;
+                // No card toolbar (e.g. profile detail tabs): keep Generate in the filter row
+                if (!$toolbar.length) {
+                    return;
+                }
 
-            try {
-                buttonCount = api.buttons().count();
-                hasExcel = api.buttons('.buttons-excel').any();
-            } catch (e) {
-                return;
-            }
+                // Hide the DataTables button only after the header has a place for it
+                $table.closest('.dataTables_wrapper')
+                    .find('.crm-dt-buttons')
+                    .addClass('is-relocated');
 
-            if (buttonCount !== 1 || !hasExcel) {
-                return;
-            }
+                var $actions = $toolbar.children('.crm-table-toolbar-actions').first();
 
-            var $table = jQuery(api.table().node());
-            var $card = $table.closest('.crm-table-card');
+                if (!$actions.length) {
 
-            if (!$card.length) {
-                return;
-            }
+                    // Old toolbars use .crm-actions: convert to the Profile pattern
+                    var $legacy = $toolbar.children('.crm-actions').first();
 
-            var $toolbar = $card.children('.crm-table-toolbar').first();
+                    if ($legacy.length) {
+                        $legacy
+                            .removeClass('crm-actions')
+                            .addClass('crm-table-toolbar-actions');
+                        $actions = $legacy;
+                    } else {
+                        $actions = jQuery('<div class="crm-table-toolbar-actions"></div>');
+                        $toolbar.children('.crm-badge').appendTo($actions);
+                        $toolbar.append($actions);
+                    }
+                }
 
-            // Tanpa toolbar card (mis. tab detail profil) — biarkan Generate di baris filter.
-            if (!$toolbar.length) {
-                return;
-            }
+                var tableId = $table.attr('id') || ('dt' + String(Date.now()));
+                var $btn = $actions.find(
+                    '.crm-btn-generate[data-crm-table="' + tableId + '"], #btnProfilGenerate'
+                ).first();
 
-            // Sembunyikan tombol DT hanya setelah ada tempat di header.
-            $table.closest('.dataTables_wrapper')
-                .find('.crm-dt-buttons')
-                .addClass('is-relocated');
+                if (!$btn.length) {
+                    // One Generate per table; do not duplicate if the toolbar already has one
+                    $btn = $actions.find('.crm-btn-generate, #btnProfilGenerate').first();
+                }
 
-            var $actions = $toolbar.children('.crm-table-toolbar-actions').first();
+                if (!$btn.length) {
+                    $btn = jQuery(
+                        '<button type="button"' +
+                        ' class="crm-btn crm-btn-sm crm-btn-primary crm-btn-generate"' +
+                        ' id="crm-generate-' + tableId + '"' +
+                        ' data-crm-table="' + tableId + '"' +
+                        ' title="' + @json(__('crm.generate_excel')) + '">' +
+                        '<i class="fas fa-file-export" aria-hidden="true"></i> ' +
+                        @json(__('crm.generate')) +
+                        '</button>'
+                    );
 
-            if (!$actions.length) {
-                // Toolbar lama pakai .crm-actions — samakan ke pola Profile.
-                var $legacy = $toolbar.children('.crm-actions').first();
-
-                if ($legacy.length) {
-                    $legacy
-                        .removeClass('crm-actions')
-                        .addClass('crm-table-toolbar-actions');
-                    $actions = $legacy;
+                    $actions.append($btn);
                 } else {
-                    $actions = jQuery('<div class="crm-table-toolbar-actions"></div>');
-                    $toolbar.children('.crm-badge').appendTo($actions);
-                    $toolbar.append($actions);
+                    $btn.attr('data-crm-table', tableId);
                 }
-            }
 
-            var tableId = $table.attr('id') || ('dt' + String(Date.now()));
-            var $btn = $actions.find(
-                '.crm-btn-generate[data-crm-table="' + tableId + '"], #btnProfilGenerate'
-            ).first();
-
-            if (!$btn.length) {
-                // Satu Generate per tabel; jangan dobel jika toolbar sudah punya tombol umum.
-                $btn = $actions.find('.crm-btn-generate, #btnProfilGenerate').first();
-            }
-
-            if (!$btn.length) {
-                $btn = jQuery(
-                    '<button type="button"' +
-                    ' class="crm-btn crm-btn-sm crm-btn-primary crm-btn-generate"' +
-                    ' id="crm-generate-' + tableId + '"' +
-                    ' data-crm-table="' + tableId + '"' +
-                    ' title="' + @json(__('crm.generate_excel')) + '">' +
-                    '<i class="fas fa-file-export" aria-hidden="true"></i> ' + @json(__('crm.generate')) +
-                    '</button>'
-                );
-
-                $actions.append($btn);
-            } else {
-                $btn.attr('data-crm-table', tableId);
-            }
-
-            $btn.off('click.crmGenerate').on('click.crmGenerate', function() {
-                api.button('.buttons-excel').trigger();
-            });
-        },
+                $btn.off('click.crmGenerate').on('click.crmGenerate', function() {
+                    api.button('.buttons-excel').trigger();
+                });
+            },
 
 
-        // PARSE EXPORT DATE
+            // BUILD THE AUTO TITLE
+            // Uses the dates selected by the user in the modal,
+            // e.g. "Counting Return Customer Report by Transaction Date 2026-09-01 to 2026-09-04"
 
-        parseExportDate: function(value) {
+            buildExportTitle: function(baseTitle, startLabel, endLabel) {
 
-            if (!value) {
-                return null;
-            }
+                return (baseTitle || 'Return Customer Report') +
+                    ' by Transaction Date ' + startLabel + ' to ' + endLabel;
+            },
 
-            value = String(value).trim();
+            buildExportFilename: function(prefix, startLabel, endLabel) {
 
-            // Format database umum:
-            // 2026-09-25 15:30:00
-            // diubah menjadi:
-            // 2026-09-25T15:30:00
-
-            if (/^\d{4}-\d{2}-\d{2} /.test(value)) {
-                value = value.replace(' ', 'T');
-            }
-
-            var date = new Date(value);
-
-            if (isNaN(date.getTime())) {
-                return null;
-            }
-
-            return date;
-        },
+                return (prefix || 'Export') + ' ' + startLabel + ' to ' + endLabel;
+            },
 
 
-        // SHOW MODAL
+            // EXPORT ALL ROWS of the selected date range
+            // How it works:
+            // 1. Ask the server for ALL rows of the selected date range (length = -1)
+            // 2. Run the Excel export once the table has been redrawn
+            // 3. Restore the previous page length and page number
 
-        showModal: function(overlay) {
-            overlay.addClass('show');
-        },
+            exportAllRows: function(context, startLabel, endLabel) {
+
+                var dt = context.dt;
+
+                // Remember the current view so it can be restored later
+                var originalLen = dt.page.len();
+                var originalPage = dt.page();
+
+                // Run the export right after the table has been redrawn with all rows
+                dt.one('draw.exportAll', function() {
+
+                    // File name for the "all data" export, e.g. ReturnCustomer_..._All_1363Rows
+                    context.config.filename = window.CrmDataTable.buildExportFilename(
+                        dt.init().exportFilePrefix,
+                        startLabel,
+                        endLabel
+                    );
+
+                    // Auto title from the dates selected by the user
+                    context.config.title = window.CrmDataTable.buildExportTitle(
+                        dt.init().exportTitle,
+                        startLabel,
+                        endLabel
+                    );
+
+                    // Run the Excel export
+                    window.CrmDataTable.originalExcelAction.call(
+                        context.buttonContext,
+                        context.e,
+                        dt,
+                        context.node,
+                        context.config,
+                        context.callback
+                    );
+
+                    // The export has been generated, so it is safe to clear the filter
+                    window.CrmDataTable.currentExportFilter = null;
+
+                    // Restore the original view (page length and page number)
+                    setTimeout(function() {
+                        dt.page.len(originalLen).page(originalPage).draw(false);
+                    }, 1500);
+                });
+
+                // -1 = all rows (the server-side endpoint must accept length = -1)
+                dt.page.len(-1).draw();
+            },
 
 
-        // HIDE MODAL
+            // PARSE EXPORT DATE
 
-        hideModal: function(overlay) {
-            overlay.removeClass('show');
-        },
+            parseExportDate: function(value) {
+
+                if (!value) {
+                    return null;
+                }
+
+                value = String(value).trim();
+
+                // Common database format:
+                // 2026-09-25 15:30:00  ->  2026-09-25T15:30:00
+                if (/^\d{4}-\d{2}-\d{2} /.test(value)) {
+                    value = value.replace(' ', 'T');
+                }
+
+                var date = new Date(value);
+
+                if (isNaN(date.getTime())) {
+                    return null;
+                }
+
+                return date;
+            },
 
 
-        // ENSURE EXPORT MODAL
+            // SHOW MODAL
 
-        ensureExportModal: function() {
-
-            // Kalau modal sudah ada, jangan dibuat ulang.
-
-            if (jQuery('#crm-export-overlay').length) {
-                return jQuery('#crm-export-overlay');
-            }
+            showModal: function(overlay) {
+                overlay.addClass('show');
+            },
 
 
-            var overlay = jQuery(`
+            // HIDE MODAL
+
+            hideModal: function(overlay) {
+                overlay.removeClass('show');
+            },
+
+
+            // ENSURE EXPORT MODAL
+
+            ensureExportModal: function() {
+
+                // If the modal already exists, do not create it again
+                if (jQuery('#crm-export-overlay').length) {
+                    return jQuery('#crm-export-overlay');
+                }
+
+
+                var overlay = jQuery(`
 
             <div class="crm-export-overlay" id="crm-export-overlay">
 
@@ -918,8 +1067,10 @@
 
                         <p class="crm-export-hint">
                             {{ __('crm.export_date_hint') }}
+                        <span class="crm-export-report-hint">
                             <br>
                             Only rows with a filled <strong>Report</strong> field will be exported.
+                        </span>
                         </p>
 
                     </div>
@@ -945,170 +1096,209 @@
         `);
 
 
-            jQuery('body').append(overlay);
+                jQuery('body').append(overlay);
 
 
-            // Native date: end date tidak boleh di bawah start date
-            var startInput = overlay.find('#crm-export-start');
-            var endInput = overlay.find('#crm-export-end');
+                // Native date inputs: end date cannot be earlier than start date
+                var startInput = overlay.find('#crm-export-start');
+                var endInput = overlay.find('#crm-export-end');
 
-            startInput.on('change', function () {
-                var startVal = startInput.val() || '';
-                endInput.attr('min', startVal);
-                if (endInput.val() && startVal && endInput.val() < startVal) {
-                    endInput.val('');
-                }
-            });
+                startInput.on('change', function() {
+                    var startVal = startInput.val() || '';
+                    endInput.attr('min', startVal);
+                    if (endInput.val() && startVal && endInput.val() < startVal) {
+                        endInput.val('');
+                    }
+                });
 
-            endInput.on('change', function () {
-                var endVal = endInput.val() || '';
-                startInput.attr('max', endVal);
-                if (startInput.val() && endVal && endVal < startInput.val()) {
-                    startInput.val(endVal);
-                }
-            });
+                endInput.on('change', function() {
+                    var endVal = endInput.val() || '';
+                    startInput.attr('max', endVal);
+                    if (startInput.val() && endVal && endVal < startInput.val()) {
+                        startInput.val(endVal);
+                    }
+                });
 
 
-            // CLICK OUTSIDE
+                // CLICK OUTSIDE
 
-            overlay.on('click', function(e) {
+                overlay.on('click', function(e) {
 
-                if (e.target === overlay.get(0)) {
+                    if (e.target === overlay.get(0)) {
+                        window.CrmDataTable.hideModal(overlay);
+                    }
+                });
+
+
+                // CLOSE
+
+                overlay.on('click', '.crm-export-box-close, .crm-export-cancel', function() {
                     window.CrmDataTable.hideModal(overlay);
-                }
-            });
+                });
 
 
-            // CLOSE
+                // DOWNLOAD EXCEL
 
-            overlay.on(
-                'click',
-                '.crm-export-box-close, .crm-export-cancel',
-                function() {
+                overlay.on('click', '.crm-export-confirm', function() {
+
+                        var context = overlay.data('excelContext');
+
+                        if (!context) {
+                            window.CrmDataTable.hideModal(overlay);
+                            return;
+                        }
+
+                        var dt = context.dt;
+
+                        var table = jQuery(dt.table().node());
+
+                        var tableId = table.attr('id');
+
+
+                        // Read the date inputs
+                        var startValue = jQuery('#crm-export-start').val();
+
+                        var endValue = jQuery('#crm-export-end').val();
+
+
+                        // Validation: end date cannot be earlier than start date
+                        if (startValue && endValue && endValue < startValue) {
+                            alert(@json(__('crm.export_end_before_start')));
+                            return;
+                        }
+
+                        var startDate = startValue ? new Date(startValue + 'T00:00:00') : null;
+
+                        var endDate = endValue ? new Date(endValue + 'T23:59:59') : null;
+
+
+                        // Read the DataTable init options (where exportCurrentPage etc. are defined)
+                        var init = dt.init();
+
+                        // Dates used for the title and file name.
+                        // Use the modal dates; fall back to the page dates (red badge) if empty
+                        var s = startValue || init.exportDefaultStart || '-';
+                        var en = endValue || init.exportDefaultEnd || '-';
+
+
+                        if (init.exportCurrentPage) {
+
+                            // CURRENT PAGE MODE (Return Customer)
+                            var info = dt.page.info();
+
+                            // No row filtering in this mode
+                            window.CrmDataTable.currentExportFilter = null;
+
+                            // File name suffix differs per page and per "show entries" value
+                            // Example: Page2_Show10_Rows11-20
+                            var pageSuffix = (info.length === -1) ?
+                                'ShowAll' :
+                                'Page' + (info.page + 1) + '_Show' + info.length +
+                                '_Rows' + (info.start + 1) + '-' + info.end;
+
+                            // Auto title from the dates selected by the user
+                            context.config.title = window.CrmDataTable.buildExportTitle(
+                                init.exportTitle,
+                                s,
+                                en
+                            );
+
+                            context.config.filename =
+                                (init.exportFilePrefix || 'Export') + '_' + s + '_to_' + en + '_' + pageSuffix;
+
+                        } else if (init.exportDetail) {
+
+                            // DETAIL MODE (Return Customer Profile tabs)
+                            // The period is locked to the page period, so no row filtering is needed
+                            window.CrmDataTable.currentExportFilter = null;
+
+                            // Title: "<base> by Transaction Date 2026-09-04 to 2026-09-04"
+                            context.config.title = window.CrmDataTable.buildExportTitle(
+                                init.exportTitle,
+                                s,
+                                en
+                            );
+
+                            // File name: "<base> 2026-09-04 to 2026-09-04"
+                            context.config.filename = window.CrmDataTable.buildExportFilename(
+                                init.exportFilePrefix,
+                                s,
+                                en
+                            );
+
+                    } else if (tableId === 'example') {
+
+                        // DEFAULT MODE: Report filter + date range filter
+                        window.CrmDataTable.activeExportFilter[tableId] = {
+
+                            // Report column is at index 6
+                            laporCol: 6,
+
+                            // Date is read from tr[data-export-date],
+                            // not from the Date of Birth column
+                            start: startDate,
+
+                            end: endDate
+                        };
+
+                        window.CrmDataTable.activeExportModalIds = [];
+
+                        window.CrmDataTable.currentExportFilter =
+                            window.CrmDataTable.activeExportFilter[tableId];
+
+                    } else {
+
+                        // Other tables: no export filter
+                        window.CrmDataTable.currentExportFilter = null;
+                    }
+
+
+                    // Close the modal
                     window.CrmDataTable.hideModal(overlay);
-                }
-            );
 
 
-            // DOWNLOAD EXCEL
+                    // EXPORT ALL ROWS of the selected date range, or only the visible page
+                    if (init.exportCurrentPage && init.exportAllRows) {
 
-            overlay.on('click', '.crm-export-confirm', function() {
+                        // The export runs inside exportAllRows()
+                        window.CrmDataTable.exportAllRows(context, s, en);
 
-                var context = overlay.data('excelContext');
+                    } else {
 
-                if (!context) {
-                    window.CrmDataTable.hideModal(overlay);
-                    return;
-                }
+                        // DEFAULT: export only the rows currently displayed
+                        if (window.CrmDataTable.originalExcelAction) {
 
-                var dt = context.dt;
-
-                var table = jQuery(dt.table().node());
-
-                var tableId = table.attr('id');
-
-
-                // AMBIL INPUT TANGGAL
-
-                var startValue = jQuery('#crm-export-start').val();
-
-                var endValue = jQuery('#crm-export-end').val();
-
-
-                // Validation : end date cannot be < start date
-                if (startValue && endValue && endValue < startValue) {
-                    alert(@json(__('crm.export_end_before_start')));
-                    return;
-                }
-
-                var startDate =
-                    startValue ?
-                    new Date(startValue + 'T00:00:00') :
-                    null;
-
-                var endDate =
-                    endValue ?
-                    new Date(endValue + 'T23:59:59') :
-                    null;
+                            // Use the original Buttons context.
+                            // Do NOT use .call(context.node), it causes:
+                            // "this.processing is not a function"
+                            window.CrmDataTable
+                                .originalExcelAction
+                                .call(
+                                    context.buttonContext,
+                                    context.e,
+                                    context.dt,
+                                    context.node,
+                                    context.config,
+                                    context.callback
+                                );
+                        }
+                    }
 
 
-                // SIMPAN FILTER EXPORT
-                //
-                // TIDAK memakai:
-                // ext.search, dt.search, dt.column.search, dt.draw
-                //
-                // Filter Lapor dan tanggal hanya berlaku untuk tabel
-                // hasil pencarian (#example). Tabel transaksi tidak
-                // punya kolom Lapor maupun data-export-date, jadi
-                // untuk tabel itu filter dimatikan.
+                    // CLEAR EXPORT FILTER (no dt.draw() here)
+                    // In "all rows" mode the cleanup is done inside exportAllRows()
+                    if (!(init.exportCurrentPage && init.exportAllRows)) {
 
-                if (tableId === 'example') {
+                        setTimeout(function() {
 
-                    window.CrmDataTable.activeExportFilter[tableId] = {
+                            delete window.CrmDataTable.activeExportFilter[tableId];
 
-                        // Lapor berada di kolom 6.
-                        laporCol: 6,
+                            window.CrmDataTable.currentExportFilter = null;
 
-                        // Date diambil dari tr[data-export-date],
-                        // bukan dari kolom Date of Birth.
-                        start: startDate,
+                        }, 1000);
+                    }
 
-                        end: endDate
-                    };
-
-                    window.CrmDataTable.activeExportModalIds = [];
-
-                    window.CrmDataTable.currentExportFilter =
-                        window.CrmDataTable.activeExportFilter[tableId];
-
-                } else {
-
-                    window.CrmDataTable.currentExportFilter = null;
-                }
-
-
-                // Tutup modal.
-
-                window.CrmDataTable.hideModal(overlay);
-
-
-                // PANGGIL ACTION EXCEL ASLI
-                //
-                // PENTING:
-                // Gunakan buttonContext.
-                //
-                // Jangan: .call(context.node)
-                // karena itu menyebabkan:
-                // this.processing is not a function
-
-                if (window.CrmDataTable.originalExcelAction) {
-
-                    window.CrmDataTable
-                        .originalExcelAction
-                        .call(
-                            context.buttonContext,
-                            context.e,
-                            context.dt,
-                            context.node,
-                            context.config,
-                            context.callback
-                        );
-                }
-
-
-                // CLEAR FILTER EXPORT
-                //
-                // Tidak melakukan dt.draw().
-
-                setTimeout(function() {
-
-                    delete window.CrmDataTable.activeExportFilter[tableId];
-
-                    window.CrmDataTable.currentExportFilter = null;
-
-                }, 1000);
-
-            });
+                });
 
 
             return overlay;
@@ -1119,8 +1309,7 @@
 
         attachExcelModal: function() {
 
-            // Pastikan Buttons tersedia.
-
+            // Make sure the Buttons extension is available
             if (
                 !window.jQuery ||
                 !jQuery.fn.dataTable ||
@@ -1129,27 +1318,23 @@
                 !jQuery.fn.dataTable.ext.buttons.excelHtml5
             ) {
 
-                console.error('CRM DataTable: Excel Buttons belum tersedia.');
+                console.error('CRM DataTable: Excel Buttons are not available.');
 
                 return;
             }
 
 
-            // Jangan attach dua kali.
-
+            // Do not attach twice
             if (this.originalExcelAction) {
                 return;
             }
 
 
-            // Simpan action Excel ASLI.
-
-            this.originalExcelAction =
-                jQuery.fn.dataTable.ext.buttons.excelHtml5.action;
+            // Keep the ORIGINAL Excel action
+            this.originalExcelAction = jQuery.fn.dataTable.ext.buttons.excelHtml5.action;
 
 
-            // Override action.
-
+            // Override the action so it opens the modal first
             jQuery.fn.dataTable.ext.buttons.excelHtml5.action = function(
                 e,
                 dt,
@@ -1158,10 +1343,8 @@
                 callback
             ) {
 
-                // Simpan context Buttons ASLI.
-                // Ini yang memperbaiki:
-                // this.processing is not a function
-
+                // Keep the ORIGINAL Buttons context.
+                // This fixes: this.processing is not a function
                 var buttonContext = this;
 
                 e.preventDefault();
@@ -1171,21 +1354,51 @@
                 var overlay = window.CrmDataTable.ensureExportModal();
 
 
-                // Selalu tampilkan filter tanggal.
-
+                // Always show the date filter
                 overlay.find('#crm-export-date-field').show();
 
 
-                // Reset tanggal (native date inputs).
-
+                // Reset the dates (native date inputs) and make them editable again
                 var startInput = overlay.find('#crm-export-start');
                 var endInput = overlay.find('#crm-export-end');
-                startInput.val('').removeAttr('max');
-                endInput.val('').removeAttr('min');
+
+                startInput.prop('disabled', false).val('').removeAttr('max');
+                endInput.prop('disabled', false).val('').removeAttr('min');
 
 
-                // Simpan context.
+                var initOpts = dt.init();
 
+                // Detail mode: the period is fixed to the page period
+                var isLocked = !!initOpts.exportDetail;
+
+                // Hide the "Report" hint when it does not apply (detail mode)
+                overlay.find('.crm-export-report-hint').toggle(!isLocked);
+
+
+                // Pre-fill the modal with the page dates ("Periode" on the profile card)
+                if (
+                    (initOpts.exportCurrentPage || initOpts.exportDetail) &&
+                    initOpts.exportDefaultStart
+                ) {
+
+                    startInput
+                        .val(initOpts.exportDefaultStart)
+                        .attr('max', initOpts.exportDefaultEnd || '');
+
+                    endInput
+                        .val(initOpts.exportDefaultEnd || '')
+                        .attr('min', initOpts.exportDefaultStart);
+                }
+
+
+                // Lock the dates so the user cannot change the period
+                if (isLocked) {
+                    startInput.prop('disabled', true);
+                    endInput.prop('disabled', true);
+                }
+
+
+                // Save the context for the confirm handler
                 overlay.data('excelContext', {
                     e: e,
                     dt: dt,
@@ -1196,8 +1409,7 @@
                 });
 
 
-                // Tampilkan modal.
-
+                // Show the modal
                 window.CrmDataTable.showModal(overlay);
             };
         },
@@ -1208,38 +1420,33 @@
         mount: function(selector, extra) {
 
             // jQuery
-
             if (!window.jQuery) {
-                console.error('CrmDataTable: jQuery tidak tersedia.');
+                console.error('CrmDataTable: jQuery is not available.');
                 return null;
             }
 
 
             // DataTables
-
             if (!jQuery.fn.DataTable) {
-                console.error('CrmDataTable: DataTables tidak tersedia.');
+                console.error('CrmDataTable: DataTables is not available.');
                 return null;
             }
 
 
             // Table
-
             if (!jQuery(selector).length) {
-                console.error('CrmDataTable: tabel tidak ditemukan:', selector);
+                console.error('CrmDataTable: table not found:', selector);
                 return null;
             }
 
 
-            // Destroy instance lama.
-
+            // Destroy the old instance
             if (jQuery.fn.DataTable.isDataTable(selector)) {
                 jQuery(selector).DataTable().destroy();
             }
 
 
-            // Initialize.
-
+            // Initialize
             return jQuery(selector).DataTable(this.defaults(extra));
         }
 
@@ -1250,13 +1457,11 @@
 
     jQuery(function() {
 
-        // Attach Excel modal.
-
+        // Attach the Excel modal
         window.CrmDataTable.attachExcelModal();
 
 
-        // Success alert.
-
+        // Success alert
         jQuery('#success-alert')
             .fadeTo(2000, 500)
             .fadeOut(500);
