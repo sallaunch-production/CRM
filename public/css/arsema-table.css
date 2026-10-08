@@ -1003,6 +1003,68 @@ table.crm-table {
     box-shadow: 0 0 0 0.15rem var(--crm-red-soft);
 }
 
+/* DataTables processing — red only (no default blue bars) */
+.dataTables_wrapper .dataTables_processing,
+div.dataTables_processing {
+    z-index: 20 !important;
+    top: 50% !important;
+    left: 50% !important;
+    width: auto !important;
+    min-width: 140px;
+    margin: 0 !important;
+    padding: 0.85rem 1.15rem !important;
+    transform: translate(-50%, -50%);
+    border: 1px solid var(--crm-slate-200) !important;
+    border-radius: 12px !important;
+    background: #fff !important;
+    box-shadow: 0 10px 28px rgba(15, 23, 42, 0.12) !important;
+    color: var(--crm-slate-700) !important;
+    font-size: 0.85rem !important;
+    font-weight: 600 !important;
+}
+
+.dataTables_wrapper .dataTables_processing > div:last-child,
+div.dataTables_processing > div:last-child {
+    height: 18px !important;
+    margin: 0.55rem auto 0 !important;
+}
+
+.dataTables_wrapper .dataTables_processing > div:last-child > div,
+div.dataTables_processing > div:last-child > div {
+    background: var(--crm-red) !important;
+    background-color: var(--crm-red) !important;
+    border-color: var(--crm-red) !important;
+}
+
+.crm-dt-processing {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    color: var(--crm-slate-700);
+    font-size: 0.85rem;
+    font-weight: 600;
+    line-height: 1;
+}
+
+.crm-dt-processing-spinner {
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--crm-slate-200);
+    border-top-color: var(--crm-red);
+    border-radius: 50%;
+    animation: crm-dt-spin 0.7s linear infinite;
+}
+
+/* Hide leftover default DT bar animation when custom spinner is used */
+.dataTables_wrapper .dataTables_processing .crm-dt-processing + div {
+    display: none !important;
+}
+
+@keyframes crm-dt-spin {
+    to { transform: rotate(360deg); }
+}
+
 .dataTables_wrapper .crm-dt-bottom {
     display: flex;
     flex-wrap: wrap;
@@ -1105,13 +1167,25 @@ table.crm-table {
     z-index: 1;
 }
 
+/* Active page — Bootstrap4 (.page-item.active .page-link) + default DT (a.paginate_button.current) */
 .dataTables_wrapper .dataTables_paginate .paginate_button.current .page-link,
 .dataTables_wrapper .dataTables_paginate .paginate_button.active .page-link,
-.dataTables_wrapper .dataTables_paginate .page-item.active .page-link {
+.dataTables_wrapper .dataTables_paginate .page-item.active .page-link,
+.dataTables_wrapper .dataTables_paginate a.paginate_button.current,
+.dataTables_wrapper .dataTables_paginate a.paginate_button.active,
+.dataTables_wrapper .dataTables_paginate .paginate_button.current,
+.dataTables_wrapper .dataTables_paginate span .paginate_button.current {
     background: var(--crm-red) !important;
     border-color: var(--crm-red) !important;
     color: #fff !important;
     cursor: default;
+}
+
+.dataTables_wrapper .dataTables_paginate a.paginate_button.current:hover,
+.dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+    background: var(--crm-red) !important;
+    border-color: var(--crm-red) !important;
+    color: #fff !important;
 }
 
 .dataTables_wrapper .dataTables_paginate .paginate_button.disabled .page-link,

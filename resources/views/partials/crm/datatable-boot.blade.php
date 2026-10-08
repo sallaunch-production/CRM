@@ -304,6 +304,7 @@
             info: @json(__('crm.dt_info')),
             infoEmpty: @json(__('crm.dt_info_empty')),
             zeroRecords: @json(__('crm.dt_zero_records')),
+            processing: '<span class="crm-dt-processing"><span class="crm-dt-processing-spinner" aria-hidden="true"></span>Loading…</span>',
             paginate: {
                 previous: @json(__('crm.dt_previous')),
                 next: @json(__('crm.dt_next'))

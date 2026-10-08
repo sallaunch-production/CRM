@@ -69,6 +69,7 @@
                                 <th>City Name</th>
                                 <th>BSU</th>
                                 <th>Perbuatan</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -76,24 +77,26 @@
                                 @php
                                     $nopend = substr($datas->id_pos_sanitized, 0, 5);
                                     $datakota = DB::table('nopend_lama')->where('kpc', 'LIKE', $nopend . '%')->first();
+                                    $detailRoute = $isOperations
+                                        ? route('detail_kota_operasional')
+                                        : route('detail_kota');
                                 @endphp
                                 <tr>
                                     <td>{{ $key + 1 }}</td>
-                                    <td>
-                                        @if($isCompliance)
-                                            <form action="{{ route('detail_kota') }}" method="POST" class="d-inline m-0">
-                                        @elseif($isOperations)
-                                            <form action="{{ route('detail_kota_operasional') }}" method="POST" class="d-inline m-0">
-                                        @endif
-                                            @csrf
-                                            <input type="hidden" name="id" value="{{ $datas->id_pos_sanitized }}">
-                                            <button type="submit" class="badge badge-primary">
-                                                {{ $datas->id_pos_sanitized }}({{ $datakota->nama ?? '' }})
-                                            </button>
-                                        </form>
-                                    </td>
+                                    <td>{{ $datas->id_pos_sanitized }} - {{ $datakota->nama ?? '' }}</td>
                                     <td>{{ number_format($datas->sum) }}</td>
                                     <td>{{ number_format($datas->perbuatan) }}</td>
+                                    <td>
+                                        @if($isCompliance || $isOperations)
+                                            <form action="{{ $detailRoute }}" method="POST" class="d-inline m-0">
+                                                @csrf
+                                                <input type="hidden" name="id" value="{{ $datas->id_pos_sanitized }}">
+                                                <button type="submit" class="crm-btn crm-btn-sm crm-btn-ghost crm-btn-detail">
+                                                    {{ __('crm.btn_detail') }}
+                                                </button>
+                                            </form>
+                                        @endif
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -150,29 +153,31 @@
                                 <th>City Name</th>
                                 <th>Perbuatan</th>
                                 <th>BSU</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($data as $key => $datas_s)
+                                @php
+                                    $nopend = substr($datas_s->id_pos, 0, 5);
+                                    $datakota = DB::table('nopend_lama')->where('kpc', 'LIKE', $nopend . '%')->first();
+                                @endphp
                                 <tr>
                                     <td>{{ $key + 1 }}</td>
+                                    <td>{{ $datas_s->id_pos }} - {{ $datakota->nama ?? '' }}</td>
+                                    <td>{{ $datas_s->perbuatan }}</td>
+                                    <td>{{ number_format($datas_s->sum) }}</td>
                                     <td>
-                                        @php
-                                            $nopend = substr($datas_s->id_pos, 0, 5);
-                                            $datakota = DB::table('nopend_lama')->where('kpc', 'LIKE', $nopend . '%')->first();
-                                        @endphp
                                         <form action="{{ route('tanggal_valid') }}" method="POST" class="d-inline m-0">
                                             @csrf
                                             <input type="hidden" name="id" value="{{ $datas_s->id_pos }}">
                                             <input type="hidden" name="dari" value="{{ $tanggal_dari }}">
                                             <input type="hidden" name="sampai" value="{{ $tanggal_sampai }}">
-                                            <button type="submit" class="badge badge-primary">
-                                                {{ $datas_s->id_pos }} ({{ $datakota->nama ?? '' }})
+                                            <button type="submit" class="crm-btn crm-btn-sm crm-btn-ghost crm-btn-detail">
+                                                {{ __('crm.btn_detail') }}
                                             </button>
                                         </form>
                                     </td>
-                                    <td>{{ $datas_s->perbuatan }}</td>
-                                    <td>{{ number_format($datas_s->sum) }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
