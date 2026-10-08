@@ -88,7 +88,9 @@ class NewCustomerQueryService
                 'direction' => 'receive',
                 'table' => 'transaksi_receive',
                 'name_column' => 'nama_penerima',
-                'place_column' => 'kota_kelahiran',
+                // Direct receive stores birth place mainly in tempat_lahir
+                'place_column' => 'tempat_lahir',
+                'place_fallback' => 'kota_kelahiran',
                 'phone_column' => null,
                 'detail_compliance' => 'transaction_receive_direct_compliance.detail',
                 'detail_operasional' => 'transaction_receive_direct_operasional.detail',
@@ -100,7 +102,9 @@ class NewCustomerQueryService
                 'direction' => 'send',
                 'table' => 'transaksi_send',
                 'name_column' => 'nama_pengirim',
-                'place_column' => 'kota_lahir_pengirim',
+                // Direct send fills tempat_lahir; kota_lahir_pengirim is often null
+                'place_column' => 'tempat_lahir',
+                'place_fallback' => 'kota_lahir_pengirim',
                 'phone_column' => 'telpon_pengirim',
                 'detail_compliance' => 'transaction_send_direct_compliance.detail',
                 'detail_operasional' => 'transaction_send_direct_operasional.detail',
@@ -175,12 +179,16 @@ class NewCustomerQueryService
         $table = $source['table'];
         $name = $source['name_column'];
         $place = $source['place_column'];
+        $placeFallback = $source['place_fallback'] ?? null;
         $phone = $source['phone_column'];
         $from = $startDate.' 00:00:00';
         $to = $endDate.' 23:59:59';
 
         // Columns are whitelist-controlled by $this->sources(); safe for interpolation.
         $phoneSelect = $phone ? "t.{$phone}" : 'NULL';
+        $placeSelect = $placeFallback
+            ? "COALESCE(NULLIF(TRIM(CAST(t.{$place} AS TEXT)), ''), NULLIF(TRIM(CAST(t.{$placeFallback} AS TEXT)), ''))"
+            : "t.{$place}";
 
         $sql = <<<SQL
             SELECT DISTINCT ON (TRIM(CAST(t.nomor_identitas AS TEXT)))
@@ -192,7 +200,7 @@ class NewCustomerQueryService
                 t.jenis_kelamin,
                 t.nomor_identitas,
                 t.tanggal_lahir,
-                t.{$place} AS place_of_birth,
+                {$placeSelect} AS place_of_birth,
                 {$phoneSelect} AS phone
             FROM {$table} AS t
             WHERE t.tanggal >= ?
