@@ -472,22 +472,22 @@ return [
             ],
         ],
         [
-            'text' => 'New Customer',
-            'url'  => 'newcustomer_operasional',
-            'can'  => ['operasional-only'],
-            'icon' => 'fas fa-fw fa-user-plus',
-            'active' => [
-                'newcustomer_operasional',
-                'newcustomer-send-operasional',
-                'search_newcustomer_operasional',
-                'search_newcustomer_send_operasional',
-            ],
-        ],
-        [
             'text' => 'Customer Analytics',
             'can'  => ['operasional-only'],
             'icon' => 'fas fa-fw fa-chart-bar',
             'submenu' => [
+                [
+                    'text'   => 'New Customer',
+                    'url'    => 'newcustomer_operasional',
+                    'shift'  => 'ml-3',
+                    'icon'   => 'fas fa-fw fa-user-plus',
+                    'active' => [
+                        'newcustomer_operasional',
+                        'newcustomer-send-operasional',
+                        'search_newcustomer_operasional',
+                        'search_newcustomer_send_operasional',
+                    ],
+                ],
                 [
                     'text'   => 'New Customer Receive',
                     'url'    => 'customer-analytics/new-customer-receive',

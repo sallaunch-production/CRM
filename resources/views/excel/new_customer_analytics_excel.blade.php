@@ -3,18 +3,18 @@
         <tr>
             <th colspan="9">
                 New Customer {{ $type === 'send' ? 'Send' : 'Receive' }}
-                ({{ $startDate }} s/d {{ $endDate }})
+                ({{ $startDate }} to {{ $endDate }})
             </th>
         </tr>
         <tr>
-            <th>No.</th>
-            <th>Nomor Referensi</th>
-            <th>{{ $type === 'send' ? 'Nama Pengirim' : 'Nama Penerima' }}</th>
-            <th>Nomor Identitas</th>
-            <th>Nomor Telepon</th>
-            <th>{{ $type === 'send' ? 'Negara Tujuan' : 'Negara Pengirim' }}</th>
-            <th>Nominal Transaksi</th>
-            <th>Tanggal Transaksi</th>
+            <th>No</th>
+            <th>Reference No</th>
+            <th>{{ $type === 'send' ? 'Sender Name' : 'Recipient Name' }}</th>
+            <th>ID Number</th>
+            <th>Phone Number</th>
+            <th>{{ $type === 'send' ? 'Destination Country' : 'Sender Country' }}</th>
+            <th>Amount</th>
+            <th>Transaction Date</th>
             <th>Nopend</th>
         </tr>
     </thead>
@@ -33,7 +33,7 @@
             </tr>
         @empty
             <tr>
-                <td colspan="9">Tidak ada data.</td>
+                <td colspan="9">No data.</td>
             </tr>
         @endforelse
     </tbody>

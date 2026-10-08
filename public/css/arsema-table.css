@@ -35,6 +35,13 @@
     gap: 0.75rem;
 }
 
+.crm-page-header-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+}
+
 .crm-page-title {
     margin: 0;
     font-size: 1.25rem;
@@ -46,6 +53,23 @@
     margin: 0.25rem 0 0;
     font-size: 0.9rem;
     color: var(--crm-slate-500);
+}
+
+/* Laravel pagination (non-DataTables) — active page in brand red */
+.crm-page .pagination .page-item.active .page-link {
+    background-color: var(--crm-red);
+    border-color: var(--crm-red);
+    color: #fff;
+}
+
+.crm-page .pagination .page-link {
+    color: var(--crm-slate-700);
+}
+
+.crm-page .pagination .page-link:hover {
+    color: var(--crm-red);
+    background-color: var(--crm-slate-50);
+    border-color: var(--crm-slate-300);
 }
 
 /* Context card (detail header: name + back) */
@@ -734,6 +758,23 @@
     max-width: 100%;
     min-width: 0;
     overflow: visible;
+}
+
+/* Wide tables: allow horizontal scroll without wrapping columns */
+.crm-table-wrap.crm-table-scroll-x {
+    overflow-x: auto;
+    overflow-y: visible;
+    -webkit-overflow-scrolling: touch;
+}
+
+.crm-table-wrap.crm-table-scroll-x .crm-table-wide {
+    width: max-content !important;
+    min-width: 100%;
+}
+
+.crm-table-wrap.crm-table-scroll-x .crm-table-wide th,
+.crm-table-wrap.crm-table-scroll-x .crm-table-wide td {
+    white-space: nowrap;
 }
 
 .dataTables_wrapper .crm-dt-scroll {

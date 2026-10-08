@@ -18,19 +18,19 @@
 </head>
 <body>
     <h2>New Customer {{ $type === 'send' ? 'Send' : 'Receive' }}</h2>
-    <p class="period">Periode {{ $startDate }} s/d {{ $endDate }}</p>
+    <p class="period">Period {{ $startDate }} to {{ $endDate }}</p>
 
     <table>
         <thead>
             <tr>
-                <th>No.</th>
-                <th>Nomor Referensi</th>
-                <th>{{ $type === 'send' ? 'Nama Pengirim' : 'Nama Penerima' }}</th>
-                <th>Nomor Identitas</th>
-                <th>Nomor Telepon</th>
-                <th>{{ $type === 'send' ? 'Negara Tujuan' : 'Negara Pengirim' }}</th>
-                <th>Nominal</th>
-                <th>Tanggal</th>
+                <th>No</th>
+                <th>Reference No</th>
+                <th>{{ $type === 'send' ? 'Sender Name' : 'Recipient Name' }}</th>
+                <th>ID Number</th>
+                <th>Phone Number</th>
+                <th>{{ $type === 'send' ? 'Destination Country' : 'Sender Country' }}</th>
+                <th>Amount</th>
+                <th>Date</th>
                 <th>Nopend</th>
             </tr>
         </thead>
@@ -44,12 +44,12 @@
                     <td>{{ $row->nomor_telepon ?: '-' }}</td>
                     <td>{{ $type === 'send' ? $row->negara_tujuan : $row->negara_pengirim }}</td>
                     <td class="right">Rp {{ number_format((float) $row->jumlah_transaksi, 0, ',', '.') }}</td>
-                    <td>{{ \Carbon\Carbon::parse($row->tanggal_transaksi)->format('d-m-Y H:i') }}</td>
+                    <td>{{ \App\Support\CrmTransactionDetail::formatDateMinute($row->tanggal_transaksi) }}</td>
                     <td class="center">{{ $row->nopend ?: '-' }}</td>
                 </tr>
             @empty
                 <tr>
-                    <td colspan="9" class="center">Tidak ada data.</td>
+                    <td colspan="9" class="center">No data.</td>
                 </tr>
             @endforelse
         </tbody>

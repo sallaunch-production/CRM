@@ -1,177 +1,117 @@
 @extends('adminlte::page')
 
-@section('title', 'Customer Transactions')
+@section('title', 'CRM Arsema')
 
 @section('content_header')
-    <h2 class="mb-0">Customer Transactions</h2>
 @stop
 
 @section('content')
-    <div class="container-fluid">
-        <div class="card shadow-sm mb-4">
-            <div class="card-header">
-                <h3 class="card-title">
-                    <i class="far fa-calendar-alt mr-2"></i>
-                    Send Transaction Period
-                </h3>
-            </div>
+@php
+    $startDate = old('start_date', request('start_date', ''));
+    $endDate = old('end_date', request('end_date', ''));
+@endphp
 
-            <div class="card-body">
-                @if ($errors->any())
-                    <div class="alert alert-danger">
-                        <ul class="mb-0 pl-3">
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
-
-                <form method="GET" action="{{ route('counting_customer_send') }}">
-                    <div class="row align-items-end">
-                        <div class="col-md-4 mb-3 mb-md-0">
-                            <label for="start_date">Start Date</label>
-                            <input
-                                type="date"
-                                name="start_date"
-                                id="start_date"
-                                class="form-control @error('start_date') is-invalid @enderror"
-                                value="{{ request('start_date') }}"
-                                max="{{ request('end_date') }}"
-                                required
-                            >
-                        </div>
-
-                        <div class="col-md-4 mb-3 mb-md-0">
-                            <label for="end_date">End Date</label>
-                            <input
-                                type="date"
-                                name="end_date"
-                                id="end_date"
-                                class="form-control @error('end_date') is-invalid @enderror"
-                                value="{{ request('end_date') }}"
-                                min="{{ request('start_date') }}"
-                                required
-                            >
-                        </div>
-
-                        <div class="col-md-2">
-                            <button type="submit" class="btn btn-primary btn-block">
-                                <i class="fas fa-search mr-1"></i>
-                                Tampilkan
-                            </button>
-                        </div>
-                    </div>
-                </form>
+<div class="container-fluid">
+    <div class="crm-page">
+        <div class="crm-page-header">
+            <div>
+                <h1 class="crm-page-title">Customer Transactions</h1>
+                <p class="crm-page-sub">
+                    Count send transactions per customer by period, then open detail.
+                </p>
             </div>
         </div>
 
-        @if ($hasFilter)
-            <div class="card shadow-sm">
-                <div class="card-header d-flex align-items-center">
-                    <h3 class="card-title">
-                        <i class="fas fa-users mr-2"></i>
-                        Customer Transactions List
-                    </h3>
-                    <span class="badge badge-primary ml-auto">{{ $data->total() }} customers</span>
+        @include('partials.crm.alerts')
+
+        <div class="crm-search">
+            <form class="crm-search-form" method="GET" action="{{ route('counting_customer_send') }}">
+                @include('partials.crm.date-range-filter', [
+                    'startDate' => $startDate,
+                    'endDate' => $endDate,
+                ])
+                <div class="crm-search-actions">
+                    <button type="submit" class="crm-btn crm-btn-primary">
+                        <i class="fas fa-search"></i> Search
+                    </button>
                 </div>
+            </form>
+        </div>
 
-                <div class="card-body">
-                    <p class="text-muted mb-3">
-                        Period {{ \Carbon\Carbon::parse(request('start_date'))->format('d-m-Y') }}
-                        to {{ \Carbon\Carbon::parse(request('end_date'))->format('d-m-Y') }}
-                    </p>
-
-                    <div class="table-responsive">
-                        <table id="countingCustomerSendTable" class="table table-striped table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>Sender Name</th>
-                                    <th>ID Number</th>
-                                    <th class="text-center">Jumlah Transaksi</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse ($data as $row)
-                                    <tr>
-                                        <td>{{ $row->nama_pengirim }}</td>
-                                        <td>{{ $row->nomor_identitas }}</td>
-                                        <td class="text-center font-weight-bold">{{ $row->jumlah_transaksi }}</td>
-                                        <td>
-                                            <a
-                                                href="{{ route('counting_customer_send.detail', [
-                                                    'nomor_identitas' => $row->nomor_identitas,
-                                                    'start_date' => request('start_date'),
-                                                    'end_date' => request('end_date'),
-                                                ]) }}"
-                                                class="crm-btn crm-btn-sm crm-btn-ghost crm-btn-detail"
-                                            >
-                                                {{ __('crm.btn_detail') }}
-                                            </a>
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="4" class="text-center text-muted py-4">
-                                            No data for the selected period.
-                                        </td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
-
-                    @if ($data->hasPages())
-                        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mt-3">
-                            <small class="text-muted mb-2 mb-md-0">
-                                Showing {{ $data->firstItem() }}–{{ $data->lastItem() }}
-                                dari {{ $data->total() }} customer
-                            </small>
-                            {{ $data->links() }}
+        @if (!$hasFilter)
+            <div class="crm-empty">
+                <div class="crm-empty-icon" aria-hidden="true">
+                    <i class="fas fa-calculator"></i>
+                </div>
+                <h2 class="crm-empty-title">Start with a period</h2>
+                <p class="crm-empty-text">
+                    Select a <strong>Start Date</strong> and <strong>End Date</strong>, then click <strong>Search</strong>
+                    to show customer transaction counts.
+                </p>
+            </div>
+        @else
+            <div class="crm-table-card">
+                <div class="crm-table-toolbar">
+                    <div>
+                        <h2 class="crm-table-title">Customer Transactions List</h2>
+                        <div class="crm-table-meta">
+                            Period {{ \Carbon\Carbon::parse(request('start_date'))->format('d-m-Y') }}
+                            to {{ \Carbon\Carbon::parse(request('end_date'))->format('d-m-Y') }}
                         </div>
-                    @endif
+                    </div>
+                    <span class="crm-badge">{{ number_format($data->total()) }} customers</span>
                 </div>
+                <div class="crm-table-wrap">
+                    <table class="table crm-table table-striped table-bordered" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Sender Name</th>
+                                <th>ID Number</th>
+                                <th class="text-center">Transaction Count</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse ($data as $row)
+                                <tr>
+                                    <td>{{ $row->nama_pengirim }}</td>
+                                    <td>{{ $row->nomor_identitas }}</td>
+                                    <td class="text-center font-weight-bold">{{ $row->jumlah_transaksi }}</td>
+                                    <td>
+                                        <a
+                                            href="{{ route('counting_customer_send.detail', [
+                                                'nomor_identitas' => $row->nomor_identitas,
+                                                'start_date' => request('start_date'),
+                                                'end_date' => request('end_date'),
+                                            ]) }}"
+                                            class="crm-btn crm-btn-sm crm-btn-ghost crm-btn-detail"
+                                        >
+                                            {{ __('crm.btn_detail') }}
+                                        </a>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted py-4">
+                                        No data for the selected period.
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+
+                @if ($data->hasPages())
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mt-3 px-1">
+                        <small class="text-muted mb-2 mb-md-0">
+                            Showing {{ $data->firstItem() }}–{{ $data->lastItem() }}
+                            of {{ $data->total() }} customers
+                        </small>
+                        {{ $data->links() }}
+                    </div>
+                @endif
             </div>
         @endif
     </div>
+</div>
 @stop
-
-@section('css')
-    <style>
-        #countingCustomerSendTable th {
-            white-space: nowrap;
-            vertical-align: middle;
-        }
-
-        #countingCustomerSendTable td {
-            vertical-align: middle;
-        }
-
-        .pagination {
-            margin-bottom: 0;
-        }
-    </style>
-@stop
-
-@section('js')
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const startDate = document.getElementById('start_date');
-            const endDate = document.getElementById('end_date');
-
-            startDate.addEventListener('change', function() {
-                endDate.min = startDate.value;
-
-                if (endDate.value && endDate.value < startDate.value) {
-                    endDate.value = '';
-                }
-            });
-
-            endDate.addEventListener('change', function() {
-                startDate.max = endDate.value;
-            });
-        });
-    </script>
-@stop
-
