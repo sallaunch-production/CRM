@@ -233,7 +233,7 @@ $(document).ready(function () {
                 { data: 'channel_label', name: 'channel_label' },
                 { data: 'direction_label', name: 'direction_label' },
                 { data: 'no_referensi', name: 'no_referensi' },
-                { data: 'tanggal_fmt', name: 'tanggal', orderable: false, searchable: false },
+                { data: 'tanggal_fmt', name: 'tanggal', orderable: true, searchable: false },
                 { data: 'id_pos', name: 'id_pos' },
                 { data: 'customer_name', name: 'customer_name' },
                 { data: 'nomor_identitas', name: 'nomor_identitas' },
