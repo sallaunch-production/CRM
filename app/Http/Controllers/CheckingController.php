@@ -498,10 +498,9 @@ class CheckingController extends Controller
         return $this->search_newcustomer($request);
     }
 
-<<<<<<< Updated upstream
-=======
+//  Updated upstream
 
->>>>>>> Stashed changes
+// >>>>>>> Stashed changes
     public function search_newcustomer_send(Request $request)
     {
         $request->merge([
